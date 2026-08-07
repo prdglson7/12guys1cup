@@ -355,6 +355,55 @@ async function renderTrending(containerId, { limit = null } = {}) {
 }
 
 /* ---------- NEWS: The Insiders (X embeds) ---------- */
+function loadTwitterScript() {
+  return new Promise((resolve) => {
+    if (window.twttr && window.twttr.widgets) {
+      resolve(window.twttr);
+      return;
+    }
+    if (document.getElementById("twitter-wjs")) {
+      // Script exists; poll briefly for twttr readiness
+      const start = Date.now();
+      const check = setInterval(() => {
+        if (window.twttr && window.twttr.widgets) {
+          clearInterval(check);
+          resolve(window.twttr);
+        } else if (Date.now() - start > 15000) {
+          clearInterval(check);
+          resolve(null);
+        }
+      }, 200);
+      return;
+    }
+    const s = document.createElement("script");
+    s.id = "twitter-wjs";
+    s.async = true;
+    s.src = "https://platform.twitter.com/widgets.js";
+    s.onload = () => {
+      // Twitter's script defines twttr.ready() for post-load callbacks
+      if (window.twttr && typeof window.twttr.ready === "function") {
+        window.twttr.ready((tw) => resolve(tw));
+      } else if (window.twttr && window.twttr.widgets) {
+        resolve(window.twttr);
+      } else {
+        // Poll for late attachment
+        const start = Date.now();
+        const check = setInterval(() => {
+          if (window.twttr && window.twttr.widgets) {
+            clearInterval(check);
+            resolve(window.twttr);
+          } else if (Date.now() - start > 10000) {
+            clearInterval(check);
+            resolve(null);
+          }
+        }, 200);
+      }
+    };
+    s.onerror = () => resolve(null);
+    document.body.appendChild(s);
+  });
+}
+
 function renderInsiders(containerId) {
   const el = document.getElementById(containerId);
   if (!el) return;
@@ -373,25 +422,40 @@ function renderInsiders(containerId) {
            data-theme="light"
            data-chrome="noheader nofooter noborders transparent"
            data-tweet-limit="5"
-           href="https://twitter.com/${esc(h.handle)}">
-          <div class="fallback">
+           data-dnt="true"
+           href="https://twitter.com/${esc(h.handle)}?ref_src=twsrc%5Etfw">
+          <span class="fallback">
             Loading @${esc(h.handle)}…
             <br><a href="https://twitter.com/${esc(h.handle)}" target="_blank" rel="noopener">Open on X ↗</a>
-          </div>
+          </span>
         </a>
       </div>
     </div>`).join("")}</div>`;
 
-  // Load widgets.js once
-  if (!document.getElementById("twitter-wjs")) {
-    const s = document.createElement("script");
-    s.id = "twitter-wjs";
-    s.async = true;
-    s.src = "https://platform.twitter.com/widgets.js";
-    document.body.appendChild(s);
-  } else if (window.twttr && window.twttr.widgets) {
-    window.twttr.widgets.load(el);
-  }
+  // Load X widgets script then explicitly trigger a scan of our container
+  loadTwitterScript().then((twttr) => {
+    if (twttr && twttr.widgets && typeof twttr.widgets.load === "function") {
+      try { twttr.widgets.load(el); } catch (_) { /* swallow */ }
+    } else {
+      // Widgets never loaded — show clearer fallback message
+      const wraps = el.querySelectorAll(".twitter-timeline-wrap");
+      wraps.forEach(w => {
+        // If the anchor is still there un-rendered, replace with a follow card
+        const anchor = w.querySelector("a.twitter-timeline");
+        if (anchor) {
+          const href = anchor.getAttribute("href").split("?")[0];
+          const handle = href.split("/").pop();
+          w.innerHTML = `
+            <div class="insider-followcard">
+              <p>X's embed didn't load. Their live feed is one click away:</p>
+              <a href="${esc(href)}" target="_blank" rel="noopener" class="control active">
+                Open @${esc(handle)} on X ↗
+              </a>
+            </div>`;
+        }
+      });
+    }
+  });
 }
 
 /* ---------- NEWS page: orchestrates all three sections ---------- */
@@ -757,6 +821,33 @@ function injuryCardHtml(entry) {
     </div>`;
 }
 
+/* Build a list from FantasyPros injuries when no league roster context needed */
+function buildAllNflInjuryList(fpInjuries) {
+  if (!fpInjuries || !fpInjuries.length) return [];
+  return fpInjuries.map(fp => ({
+    player_id: fp.player_id,
+    name: fp.name,
+    position: fp.position,
+    nfl_team: fp.team,
+    status: fp.status,
+    body_part: fp.injury_type || fp.practice_report_injury_type || "",
+    notes: fp.comment || "",
+    started: "",
+    owner: "",
+    owner_id: null,
+    isStarter: false,
+    fp_probability: fp.probability,
+    fp_update_date: fp.update_date,
+    fp_practice_1: fp.practice_1,
+    fp_practice_2: fp.practice_2,
+    fp_practice_3: fp.practice_3,
+  })).sort((a, b) => {
+    const ra = injuryRank(a.status), rb = injuryRank(b.status);
+    if (ra !== rb) return ra - rb;
+    return a.name.localeCompare(b.name);
+  });
+}
+
 async function renderInjuries() {
   const summaryEl = document.getElementById("injury-summary");
   const listEl = document.getElementById("injury-list");
@@ -768,23 +859,39 @@ async function renderInjuries() {
     const { teams } = await bootstrap();
     const [players, fpInjuries] = await Promise.all([
       getPlayers(),
-      getFantasyProsInjuries().catch(() => []),  // graceful fail if FP feed not ready
+      getFantasyProsInjuries().catch(() => []),
     ]);
-    const injuries = buildInjuryList(teams, players, fpInjuries);
 
-    if (!injuries.length) {
-      if (summaryEl) summaryEl.innerHTML = "";
-      if (listEl) listEl.innerHTML = empty("No injuries on rostered players. Good week.");
-      return;
-    }
+    const leagueList = buildInjuryList(teams, players, fpInjuries);
+    const allNflList = buildAllNflInjuryList(fpInjuries);
 
-    // Count by status
-    const counts = {};
-    injuries.forEach(i => { counts[i.status] = (counts[i.status] || 0) + 1; });
+    // Pre-draft detection: if there are no rostered players anywhere, default to All NFL
+    let hasAnyRosterPlayers = false;
+    teams.forEach(t => { if ((t.players || []).length) hasAnyRosterPlayers = true; });
+    const preDraft = !hasAnyRosterPlayers;
 
-    // Summary tiles
-    if (summaryEl) {
+    // Mode: "league" | "all"
+    let mode = preDraft ? "all" : "league";
+    let filterStatus = null;
+    let filterStartersOnly = false;
+
+    const activeList = () => {
+      let list = mode === "league" ? leagueList : allNflList;
+      if (filterStatus) list = list.filter(i => i.status === filterStatus);
+      if (filterStartersOnly && mode === "league") list = list.filter(i => i.isStarter);
+      return list;
+    };
+
+    const paintSummary = () => {
+      if (!summaryEl) return;
+      const list = mode === "league" ? leagueList : allNflList;
+      const counts = {};
+      list.forEach(i => { counts[i.status] = (counts[i.status] || 0) + 1; });
       const order = INJURY_ORDER.filter(s => counts[s]);
+      if (!order.length) {
+        summaryEl.innerHTML = "";
+        return;
+      }
       summaryEl.innerHTML = `
         <div class="injury-summary-grid">
           ${order.map(s => `
@@ -793,54 +900,98 @@ async function renderInjuries() {
               <div class="injury-tile-label">${esc(s)}</div>
             </div>`).join("")}
         </div>`;
-    }
-
-    // Filters
-    let filterStatus = null;
-    let filterStartersOnly = false;
-
-    const paint = () => {
-      let show = injuries;
-      if (filterStatus) show = show.filter(i => i.status === filterStatus);
-      if (filterStartersOnly) show = show.filter(i => i.isStarter);
-      if (!show.length) {
-        listEl.innerHTML = empty("No injuries match this filter.");
-      } else {
-        listEl.innerHTML = show.map(injuryCardHtml).join("");
-      }
     };
 
-    if (filtersEl) {
-      const btns = [
-        { label: "All", val: null },
-        ...INJURY_ORDER.filter(s => counts[s]).map(s => ({ label: `${s} (${counts[s]})`, val: s })),
-      ];
+    const paintList = () => {
+      const list = activeList();
+      if (!list.length) {
+        if (mode === "league") {
+          if (preDraft) {
+            listEl.innerHTML = empty("No rostered players yet — draft hasn't happened. Switch to 'All NFL' above to see the full league injury report.");
+          } else if (!leagueList.length) {
+            listEl.innerHTML = empty("No injuries on rostered players. Good week.");
+          } else {
+            listEl.innerHTML = empty("No injuries match this filter.");
+          }
+        } else {
+          listEl.innerHTML = empty("No NFL injuries in FantasyPros feed right now.");
+        }
+        return;
+      }
+      listEl.innerHTML = list.map(injuryCardHtml).join("");
+    };
+
+    const paintFilters = () => {
+      if (!filtersEl) return;
       filtersEl.innerHTML = "";
-      btns.forEach((b, i) => {
+
+      // Mode toggle
+      ["league", "all"].forEach(m => {
         const btn = document.createElement("button");
-        btn.className = "control" + (i === 0 ? " active" : "");
-        btn.textContent = b.label;
+        btn.className = "control" + (mode === m ? " active" : "");
+        btn.textContent = m === "league" ? "League only" : "All NFL";
+        btn.style.marginRight = "6px";
         btn.addEventListener("click", () => {
-          filterStatus = b.val;
-          [...filtersEl.children].forEach(c => c.classList.remove("active"));
-          btn.classList.add("active");
-          paint();
+          mode = m;
+          filterStatus = null;
+          filterStartersOnly = false;
+          paintFilters();
+          paintSummary();
+          paintList();
         });
         filtersEl.appendChild(btn);
       });
-      const starterBtn = document.createElement("button");
-      starterBtn.className = "control";
-      starterBtn.textContent = "Starters only";
-      starterBtn.style.marginLeft = "10px";
-      starterBtn.addEventListener("click", () => {
-        filterStartersOnly = !filterStartersOnly;
-        starterBtn.classList.toggle("active", filterStartersOnly);
-        paint();
-      });
-      filtersEl.appendChild(starterBtn);
-    }
 
-    paint();
+      // Separator
+      const sep = document.createElement("span");
+      sep.style.cssText = "display:inline-block;width:1px;background:var(--navy);height:20px;margin:0 10px;vertical-align:middle;";
+      filtersEl.appendChild(sep);
+
+      // Status filters
+      const list = mode === "league" ? leagueList : allNflList;
+      const counts = {};
+      list.forEach(i => { counts[i.status] = (counts[i.status] || 0) + 1; });
+
+      const allBtn = document.createElement("button");
+      allBtn.className = "control" + (filterStatus === null ? " active" : "");
+      allBtn.textContent = "All";
+      allBtn.addEventListener("click", () => {
+        filterStatus = null;
+        paintFilters();
+        paintList();
+      });
+      filtersEl.appendChild(allBtn);
+
+      INJURY_ORDER.filter(s => counts[s]).forEach(s => {
+        const btn = document.createElement("button");
+        btn.className = "control" + (filterStatus === s ? " active" : "");
+        btn.textContent = `${s} (${counts[s]})`;
+        btn.addEventListener("click", () => {
+          filterStatus = s;
+          paintFilters();
+          paintList();
+        });
+        filtersEl.appendChild(btn);
+      });
+
+      // Starters-only (only relevant in league mode)
+      if (mode === "league" && !preDraft) {
+        const starterBtn = document.createElement("button");
+        starterBtn.className = "control" + (filterStartersOnly ? " active" : "");
+        starterBtn.textContent = "Starters only";
+        starterBtn.style.marginLeft = "10px";
+        starterBtn.addEventListener("click", () => {
+          filterStartersOnly = !filterStartersOnly;
+          paintFilters();
+          paintList();
+        });
+        filtersEl.appendChild(starterBtn);
+      }
+    };
+
+    paintFilters();
+    paintSummary();
+    paintList();
   } catch (e) {
     if (summaryEl) summaryEl.innerHTML = errBox(e.message);
   }
