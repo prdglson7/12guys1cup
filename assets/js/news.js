@@ -113,16 +113,44 @@ async function getFantasyProsNews() {
     id: it.id,
     title: it.title || "",
     link: it.link || "#",
-    description: (it.body || it.description || "").replace(/<[^>]*>/g, "").trim().slice(0, 240),
+    description: (it.desc || it.body || it.description || "").replace(/<[^>]*>/g, "").trim().slice(0, 240),
+    impact: (it.impact || "").replace(/<[^>]*>/g, "").trim().slice(0, 240),
     pubDate: it.created || it.created_formated || "",
     ts: it.created ? new Date(it.created.replace(" ", "T") + "Z").getTime() : 0,
     source: "FANTASYPROS",
-    player: it.player_name || "",
+    player_id: it.player_id || null,
     team: it.team_id || "",
+    author: it.author || "",
+    categories: it.categories || [],
   })).filter(x => x.title);
+}
+
+/* FantasyPros official injury report (practice reports, prob of playing, etc.) */
+async function getFantasyProsInjuries() {
+  const res = await fetch("assets/data/fantasypros-injuries.json", { cache: "no-cache" });
+  if (!res.ok) throw new Error(`FantasyPros injuries → ${res.status}`);
+  const data = await res.json();
+  const list = data.injuries || [];
+  return list.map(inj => ({
+    player_id: inj.player_id,
+    name: inj.name || "",
+    team: inj.team_id || "",
+    position: inj.position_id || "",
+    status: inj.status || "",
+    status_short: inj.status_short || "",
+    injury_type: inj.injury_type || "",
+    comment: inj.comment || "",
+    update_date: inj.injury_update_date || "",
+    probability: inj.probability_of_playing != null ? Number(inj.probability_of_playing) : null,
+    practice_1: inj.practice_1 || "",
+    practice_2: inj.practice_2 || "",
+    practice_3: inj.practice_3 || "",
+    practice_report_injury_type: inj.practice_report_injury_type || "",
+  }));
 }
 
 window.News = {
   getEspnNews, rosteredPlayerNames, articleTouchesRoster,
-  getSleeperTrending, fetchRssFeed, fetchAllRss, getFantasyProsNews,
+  getSleeperTrending, fetchRssFeed, fetchAllRss,
+  getFantasyProsNews, getFantasyProsInjuries,
 };
