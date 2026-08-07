@@ -1299,6 +1299,50 @@ main { padding: 32px 0 60px; }
   border-left: 4px solid var(--gold);
 }
 
+/* Sub-tabs — position filters within Sleepers/Busts sections */
+.dk-sub-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.dk-sub-tab {
+  background: var(--paper);
+  border: 2px solid var(--navy);
+  padding: 6px 12px;
+  cursor: pointer;
+  font-family: var(--f-sign);
+  letter-spacing: 2px;
+  color: var(--navy);
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+.dk-sub-tab:hover { background: var(--cream-2); }
+.dk-sub-tab.active {
+  background: var(--navy);
+  color: var(--gold);
+  box-shadow: 2px 2px 0 var(--gold);
+}
+.dk-sub-tab-count {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  padding: 1px 5px;
+  background: rgba(30, 58, 95, 0.15);
+  color: var(--brown);
+}
+.dk-sub-tab.active .dk-sub-tab-count {
+  background: rgba(232, 184, 74, 0.25);
+  color: var(--cream);
+}
+/* Position-tinted actives */
+.dk-sub-tab-qb.active  { background: #B8386B; box-shadow: 2px 2px 0 #7A2149; }
+.dk-sub-tab-rb.active  { background: #2E7D32; box-shadow: 2px 2px 0 #1B5220; }
+.dk-sub-tab-wr.active  { background: #1565C0; box-shadow: 2px 2px 0 #0D3F7C; }
+.dk-sub-tab-te.active  { background: #E65100; box-shadow: 2px 2px 0 #963500; }
+
 /* Quick nav — sticky anchor bar for jumping between UDK sections */
 .dk-quicknav {
   position: sticky;
