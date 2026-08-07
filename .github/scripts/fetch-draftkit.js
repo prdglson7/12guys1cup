@@ -1,12 +1,13 @@
 /**
- * Fetches Draft Kit data (consensus rankings + ADP) from FantasyPros
- * and writes to assets/data/draftkit.json.
+ * Fetches Draft Kit data from FantasyPros HOF tier.
+ * With HOF: full-depth rankings (50+/pos), season projections, ADP.
  *
- * Run by .github/workflows/update-draftkit.yml every 8 hours.
+ * Total per run:
+ *   6 rankings + 4 projections (skill only) + 1 ADP = 11 calls
+ *   Runs every 6 hours = 44 calls/day
  *
- * API budget:
- *   8 calls per run × 3 runs/day = 24 calls/day
- *   Plus news workflow (24/day) = 48 total, under 50/day free tier limit.
+ * Combined with news+injuries workflow (48/day) = 92/day total.
+ * HOF rate limit is comfortably above this.
  */
 const https = require('https');
 const fs = require('fs');
@@ -14,28 +15,27 @@ const path = require('path');
 
 const FP_BASE = 'https://api.fantasypros.com/public/v2/json';
 const FP_KEY = process.env.FANTASYPROS_API_KEY;
-const SEASON = process.env.FP_SEASON || new Date().getFullYear().toString();
+const SEASON = process.env.FP_SEASON || '2026';
+const SCORING = process.env.FP_SCORING || 'PPR';   // Full PPR — user's league
 
 if (!FP_KEY) {
   console.error('FANTASYPROS_API_KEY secret not set.');
   process.exit(1);
 }
 
-console.log(`Fetching Draft Kit data for season ${SEASON}`);
+console.log(`Fetching Draft Kit — season ${SEASON}, scoring ${SCORING}`);
 
-function fetchJson(url, label) {
+function fetchJson(url) {
   return new Promise((resolve, reject) => {
     const opts = {
       headers: {
         'x-api-key': FP_KEY,
         'Accept': 'application/json',
       },
-      timeout: 15000,
+      timeout: 20000,
     };
     https.get(url, opts, res => {
-      if (res.statusCode !== 200) {
-        return reject(new Error(`HTTP ${res.statusCode}`));
-      }
+      if (res.statusCode !== 200) return reject(new Error(`HTTP ${res.statusCode}`));
       let data = '';
       res.on('data', c => data += c);
       res.on('end', () => {
@@ -47,10 +47,10 @@ function fetchJson(url, label) {
 }
 
 async function fetchRanking(position, scoring) {
-  const label = `[${position}/${scoring}]`;
+  const label = `[Rank ${position}/${scoring}]`;
   const url = `${FP_BASE}/nfl/${SEASON}/consensus-rankings?position=${position}&scoring=${scoring}&experts=show`;
   try {
-    const data = await fetchJson(url, label);
+    const data = await fetchJson(url);
     const players = (data.players || []).map(p => ({
       player_id: p.player_id,
       name: p.player_name,
@@ -61,9 +61,42 @@ async function fetchRanking(position, scoring) {
       rank: p.rank_ecr,
       pos_rank: p.pos_rank,
       tier: p.tier,
+      best_rank: p.rank_best,
+      worst_rank: p.rank_worst,
+      std_dev: p.rank_std_dev,
       owned_avg: p.player_owned_avg,
       page_url: p.player_page_url,
     }));
+    console.log(`${label} ✓ ${players.length} players`);
+    return { ok: true, players };
+  } catch (e) {
+    console.log(`${label} ✗ ${e.message}`);
+    return { ok: false, players: [], error: e.message };
+  }
+}
+
+async function fetchProjections(position, scoring) {
+  const label = `[Proj ${position}/${scoring}]`;
+  // week=0 for season-long projections
+  const url = `${FP_BASE}/nfl/${SEASON}/projections?position=${position}&scoring=${scoring}&week=0`;
+  try {
+    const data = await fetchJson(url);
+    const players = (data.players || []).map(p => {
+      const stats = p.stats || {};
+      return {
+        player_id: p.player_id,
+        name: p.player_name,
+        pos: p.player_position_id,
+        pts: p.fantasy_pts || stats.fantasy_pts || stats.points || null,
+        pass_yds: stats.pass_yds || null,
+        pass_tds: stats.pass_tds || null,
+        rush_yds: stats.rush_yds || null,
+        rush_tds: stats.rush_tds || null,
+        rec: stats.rec || null,
+        rec_yds: stats.rec_yds || null,
+        rec_tds: stats.rec_tds || null,
+      };
+    });
     console.log(`${label} ✓ ${players.length} players`);
     return { ok: true, players };
   } catch (e) {
@@ -76,13 +109,15 @@ async function fetchAdp() {
   const label = '[ADP]';
   const url = `${FP_BASE}/nfl/${SEASON}/rankings?type=ADP&range=true`;
   try {
-    const data = await fetchJson(url, label);
+    const data = await fetchJson(url);
     const players = (data.players || []).map(p => ({
       player_id: p.player_id || p.id,
       name: p.player_name || p.name,
       pos: p.player_position_id || p.position_id,
       team: p.player_team_id || p.team_id,
       adp: p.rank_adp || p.rank,
+      adp_low: p.rank_adp_low,
+      adp_high: p.rank_adp_high,
     }));
     console.log(`${label} ✓ ${players.length} players`);
     return { ok: true, players };
@@ -95,23 +130,62 @@ async function fetchAdp() {
 async function main() {
   const started = Date.now();
 
-  // Fire position-specific rankings + ADP in parallel.
-  // The ALL/OVERALL endpoint returns HTTP 400 on the free tier, so we skip it
-  // and build "overall" by merging the position lists ourselves.
-  const [qb, rb, wr, te, k, dst, adp] = await Promise.all([
-    fetchRanking('QB',  'PPR'),
-    fetchRanking('RB',  'PPR'),
-    fetchRanking('WR',  'PPR'),
-    fetchRanking('TE',  'PPR'),
+  // Fire everything in parallel
+  const [qb, rb, wr, te, k, dst, projQb, projRb, projWr, projTe, adp] = await Promise.all([
+    fetchRanking('QB',  SCORING),
+    fetchRanking('RB',  SCORING),
+    fetchRanking('WR',  SCORING),
+    fetchRanking('TE',  SCORING),
     fetchRanking('K',   'STD'),
     fetchRanking('DST', 'STD'),
+    fetchProjections('QB', SCORING),
+    fetchProjections('RB', SCORING),
+    fetchProjections('WR', SCORING),
+    fetchProjections('TE', SCORING),
     fetchAdp(),
   ]);
 
-  // Build overall by merging positions and sorting by ECR rank
-  const overallPlayers = [
-    ...qb.players, ...rb.players, ...wr.players,
-    ...te.players, ...k.players,  ...dst.players,
+  // Merge projections and ADP into rankings by player name
+  const projByName = new Map();
+  [projQb, projRb, projWr, projTe].forEach(res => {
+    res.players.forEach(p => {
+      if (p.name) projByName.set(p.name.toLowerCase(), p);
+    });
+  });
+
+  const adpByName = new Map();
+  adp.players.forEach(p => { if (p.name) adpByName.set(p.name.toLowerCase(), p); });
+
+  const enrich = (players) => players.map(p => {
+    const key = (p.name || '').toLowerCase();
+    const proj = projByName.get(key);
+    const a = adpByName.get(key);
+    return {
+      ...p,
+      proj_pts: proj ? proj.pts : null,
+      proj_stats: proj ? {
+        pass_yds: proj.pass_yds, pass_tds: proj.pass_tds,
+        rush_yds: proj.rush_yds, rush_tds: proj.rush_tds,
+        rec: proj.rec, rec_yds: proj.rec_yds, rec_tds: proj.rec_tds,
+      } : null,
+      adp: a ? a.adp : null,
+      adp_low: a ? a.adp_low : null,
+      adp_high: a ? a.adp_high : null,
+    };
+  });
+
+  const rankings = {
+    QB:  enrich(qb.players),
+    RB:  enrich(rb.players),
+    WR:  enrich(wr.players),
+    TE:  enrich(te.players),
+    K:   enrich(k.players),
+    DST: enrich(dst.players),
+  };
+
+  const overall = [
+    ...rankings.QB, ...rankings.RB, ...rankings.WR,
+    ...rankings.TE, ...rankings.K, ...rankings.DST,
   ]
     .filter(p => p.rank != null)
     .sort((a, b) => (a.rank || 9999) - (b.rank || 9999));
@@ -120,26 +194,19 @@ async function main() {
     fetched_at: new Date().toISOString(),
     duration_ms: Date.now() - started,
     season: SEASON,
-    scoring_default: 'PPR',
-    _note: 'Free tier caps position rankings at ~10 players. Overall is built from merged positions.',
+    scoring: SCORING,
     rankings: {
-      overall: overallPlayers,
-      QB: qb.players,
-      RB: rb.players,
-      WR: wr.players,
-      TE: te.players,
-      K:  k.players,
-      DST: dst.players,
+      overall,
+      ...rankings,
     },
-    adp: adp.players,
     _summary: {
-      overall: overallPlayers.length,
-      QB: qb.players.length,
-      RB: rb.players.length,
-      WR: wr.players.length,
-      TE: te.players.length,
-      K: k.players.length,
-      DST: dst.players.length,
+      overall: overall.length,
+      QB: rankings.QB.length,
+      RB: rankings.RB.length,
+      WR: rankings.WR.length,
+      TE: rankings.TE.length,
+      K: rankings.K.length,
+      DST: rankings.DST.length,
       adp: adp.players.length,
     },
   };
@@ -150,7 +217,7 @@ async function main() {
 
   console.log('');
   console.log(`Wrote ${outPath}`);
-  console.log(`Season ${SEASON}, ${Date.now() - started}ms`);
+  console.log(`Season ${SEASON} • ${SCORING} • ${Date.now() - started}ms`);
   console.log(`Summary:`, JSON.stringify(out._summary));
 }
 
