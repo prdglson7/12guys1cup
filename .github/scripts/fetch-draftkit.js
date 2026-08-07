@@ -95,9 +95,10 @@ async function fetchAdp() {
 async function main() {
   const started = Date.now();
 
-  // Fire all requests in parallel
-  const [overall, qb, rb, wr, te, k, dst, adp] = await Promise.all([
-    fetchRanking('ALL', 'PPR'),
+  // Fire position-specific rankings + ADP in parallel.
+  // The ALL/OVERALL endpoint returns HTTP 400 on the free tier, so we skip it
+  // and build "overall" by merging the position lists ourselves.
+  const [qb, rb, wr, te, k, dst, adp] = await Promise.all([
     fetchRanking('QB',  'PPR'),
     fetchRanking('RB',  'PPR'),
     fetchRanking('WR',  'PPR'),
@@ -107,13 +108,22 @@ async function main() {
     fetchAdp(),
   ]);
 
+  // Build overall by merging positions and sorting by ECR rank
+  const overallPlayers = [
+    ...qb.players, ...rb.players, ...wr.players,
+    ...te.players, ...k.players,  ...dst.players,
+  ]
+    .filter(p => p.rank != null)
+    .sort((a, b) => (a.rank || 9999) - (b.rank || 9999));
+
   const out = {
     fetched_at: new Date().toISOString(),
     duration_ms: Date.now() - started,
     season: SEASON,
     scoring_default: 'PPR',
+    _note: 'Free tier caps position rankings at ~10 players. Overall is built from merged positions.',
     rankings: {
-      overall: overall.players,
+      overall: overallPlayers,
       QB: qb.players,
       RB: rb.players,
       WR: wr.players,
@@ -123,7 +133,7 @@ async function main() {
     },
     adp: adp.players,
     _summary: {
-      overall: overall.players.length,
+      overall: overallPlayers.length,
       QB: qb.players.length,
       RB: rb.players.length,
       WR: wr.players.length,
