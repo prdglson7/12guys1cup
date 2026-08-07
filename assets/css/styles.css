@@ -509,6 +509,9 @@ main { padding: 32px 0 60px; }
 .wire-item .source.NFLCOM    { background: #013369; }
 .wire-item .source.PFF       { background: #2E2E2E; }
 .wire-item .source.FANTASYPROS { background: var(--gold-dark); color: var(--navy-dark); }
+.wire-item .source.R-NFL     { background: #FF4500; }
+.wire-item .source.R-FF      { background: #FF4500; }
+.wire-item .source.BREAKING  { background: #000; color: var(--gold); }
 /* Insider tweets via RSSHub */
 .wire-item .source.SCHEFTER  { background: #000; }
 .wire-item .source.RAPOPORT  { background: #000; }
