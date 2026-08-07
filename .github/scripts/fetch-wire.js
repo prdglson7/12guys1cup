@@ -30,7 +30,7 @@ const parser = new Parser({
   },
 });
 
-async function fetchOne(feed) {
+async function fetchRss(feed) {
   const label = `[${feed.tag.padEnd(12)}]`;
   try {
     const data = await parser.parseURL(feed.url);
@@ -57,6 +57,44 @@ async function fetchOne(feed) {
     console.log(`${label} ✗ ${e.message}`);
     return { ok: false, tag: feed.tag, items: [], error: e.message };
   }
+}
+
+async function fetchEspnJson(feed) {
+  const label = `[${feed.tag.padEnd(12)}]`;
+  try {
+    const https = require('https');
+    const raw = await new Promise((resolve, reject) => {
+      https.get(feed.url, { timeout: 15000 }, res => {
+        if (res.statusCode !== 200) return reject(new Error(`HTTP ${res.statusCode}`));
+        let data = '';
+        res.on('data', chunk => data += chunk);
+        res.on('end', () => resolve(data));
+      }).on('error', reject).on('timeout', () => reject(new Error('timeout')));
+    });
+    const json = JSON.parse(raw);
+    const items = (json.articles || []).slice(0, 15).map(a => {
+      const link = (a.links && a.links.web && a.links.web.href) || '';
+      const ts = a.published ? new Date(a.published).getTime() : 0;
+      return {
+        title: (a.headline || '').trim(),
+        link,
+        description: (a.description || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().slice(0, 240),
+        pubDate: a.published || '',
+        ts,
+        source: feed.tag,
+      };
+    }).filter(x => x.title && x.link);
+    console.log(`${label} ✓ ${items.length} items (JSON)`);
+    return { ok: true, tag: feed.tag, items };
+  } catch (e) {
+    console.log(`${label} ✗ ${e.message}`);
+    return { ok: false, tag: feed.tag, items: [], error: e.message };
+  }
+}
+
+async function fetchOne(feed) {
+  if (feed.type === 'espn-json') return fetchEspnJson(feed);
+  return fetchRss(feed);
 }
 
 async function main() {
