@@ -17,17 +17,15 @@ window.Config = {
   REDDIT_SUBS: [],
   INSIDER_KEYWORDS: [],
 
-  /* RSS feeds pulled into "The Wire".
-     type field: "rss" (default) or "espn-json" for ESPN's JSON API.
-     Add/remove freely. If one is down it'll just be skipped.
-
-     Insider feeds via rss.app go here too — see the docs for how to add. */
+  /* RSS feeds pulled into "The Wire" via the server-side workflow.
+     type field: "rss" (default) or "espn-json".
+     Note: ESPN blocks GitHub Actions IPs — we fetch ESPN client-side instead.
+     Add/remove freely. If one is down it'll just be skipped. */
   RSS_FEEDS: [
     { tag: "PFT",        url: "https://profootballtalk.nbcsports.com/feed/" },
     { tag: "ROTOWIRE",   url: "https://www.rotowire.com/rss/news.php?sport=NFL" },
     { tag: "ROTOBALLER", url: "https://www.rotoballer.com/feed" },
     { tag: "PFF",        url: "https://www.pff.com/feed" },
-    { tag: "ESPN",       url: "https://site.api.espn.com/apis/site/v2/sports/football/nfl/news?limit=25", type: "espn-json" },
 
     // Insider tweets via rss.app — replace these URLs after signing up
     // and generating feeds for each insider. Free trial is 7 days, then $8/mo.
