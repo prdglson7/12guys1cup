@@ -1161,41 +1161,64 @@ async function renderInjuriesWidget(containerId, { limit = 5 } = {}) {
 
 /* ---------- DRAFT KIT ---------- */
 
-/* Merge FantasyPros consensus rankings with Draft Sharks CSV overlay
-   by player name (case-insensitive). Returns merged rows. */
+/* Merge rankings prioritizing Draft Sharks (500+ players) over FantasyPros
+   (free tier caps at 10/pos). If DS CSV is loaded, use it as the base and
+   enrich with FP data where available. Otherwise fall back to FP alone. */
 function mergeRankings(fpRankings, dsRankings) {
-  const dsByName = new Map();
-  (dsRankings || []).forEach(d => {
-    if (d.name) dsByName.set(d.name.toLowerCase(), d);
+  const fpByName = new Map();
+  (fpRankings || []).forEach(f => {
+    if (f.name) fpByName.set(f.name.toLowerCase(), f);
   });
-  return (fpRankings || []).map(fp => {
-    const ds = dsByName.get((fp.name || '').toLowerCase());
-    return {
-      // FantasyPros side
-      name: fp.name,
-      short_name: fp.short_name,
-      pos: fp.pos,
-      team: fp.team,
-      bye: fp.bye,
-      fp_rank: fp.rank,
-      pos_rank: fp.pos_rank,
-      tier: fp.tier,
-      owned_avg: fp.owned_avg,
-      page_url: fp.page_url,
-      // Draft Sharks side (may be null)
-      ds_rank: ds ? ds.rank : null,
-      ds_adp: ds ? ds.adp : null,
-      ds_proj: ds ? ds.ds_proj : null,
-      ds_floor: ds ? ds.floor : null,
-      ds_ceiling: ds ? ds.ceiling : null,
-      ds_value_3d: ds ? ds.value_3d : null,
-      ds_injury_risk: ds ? ds.injury_risk : null,
-      ds_games: ds ? ds.games : null,
-      ds_sos: ds ? ds.sos : null,
-      // Delta: negative = you get value picking earlier than consensus
-      rank_delta: (ds && ds.rank && fp.rank) ? (ds.rank - fp.rank) : null,
-    };
-  });
+
+  const useDs = dsRankings && dsRankings.length > 0;
+
+  if (useDs) {
+    // Draft Sharks as primary
+    return dsRankings.map(ds => {
+      const fp = fpByName.get((ds.name || '').toLowerCase());
+      return {
+        name: ds.name,
+        pos: ds.pos,
+        team: ds.team,
+        bye: ds.bye,
+        // Primary ranks from DS
+        ds_rank: ds.rank,
+        ds_adp: ds.adp,
+        ds_proj: ds.ds_proj,
+        ds_floor: ds.floor,
+        ds_ceiling: ds.ceiling,
+        ds_value_3d: ds.value_3d,
+        ds_injury_risk: ds.injury_risk,
+        ds_games: ds.games,
+        ds_sos: ds.sos,
+        // FP enrichment (may be null for players outside top 10 at their position)
+        fp_rank: fp ? fp.rank : null,
+        pos_rank: fp ? fp.pos_rank : null,
+        tier: fp ? fp.tier : null,
+        owned_avg: fp ? fp.owned_avg : null,
+        page_url: fp ? fp.page_url : null,
+        // Delta — negative = DS values them higher than FP consensus
+        rank_delta: (fp && fp.rank && ds.rank) ? (ds.rank - fp.rank) : null,
+      };
+    });
+  }
+
+  // Fallback: FantasyPros only (no DS CSV loaded)
+  return (fpRankings || []).map(fp => ({
+    name: fp.name,
+    pos: fp.pos,
+    team: fp.team,
+    bye: fp.bye,
+    fp_rank: fp.rank,
+    pos_rank: fp.pos_rank,
+    tier: fp.tier,
+    owned_avg: fp.owned_avg,
+    page_url: fp.page_url,
+    ds_rank: null, ds_adp: null, ds_proj: null,
+    ds_floor: null, ds_ceiling: null, ds_value_3d: null,
+    ds_injury_risk: null, ds_games: null, ds_sos: null,
+    rank_delta: null,
+  }));
 }
 
 function _pillClass(pos) {
@@ -1208,18 +1231,18 @@ function draftBoardRowHtml(row, showDs) {
     : '';
   return `
     <tr>
-      <td class="num">${row.fp_rank ?? '—'}</td>
-      ${showDs ? `<td class="num ds-cell">${row.ds_rank ?? '—'} ${rankDeltaHtml}</td>` : ''}
+      ${showDs ? `<td class="num ds-cell">${row.ds_rank ?? '—'}</td>` : ''}
+      <td class="num">${row.fp_rank ?? '—'}${showDs ? ' ' + rankDeltaHtml : ''}</td>
       <td>
         <span class="player-name">${esc(row.name)}</span>
         <span class="${_pillClass(row.pos)}">${esc(row.pos)}</span>
         <span class="team-tag">${esc(row.team)}</span>
         ${row.bye ? `<span class="bye-tag">BYE ${esc(row.bye)}</span>` : ''}
       </td>
-      <td class="num">${row.pos_rank ?? '—'}</td>
-      <td class="num">${row.tier ?? '—'}</td>
+      ${showDs ? `<td class="num">${row.ds_adp != null ? row.ds_adp.toFixed(2) : '—'}</td>` : ''}
       ${showDs ? `<td class="num">${row.ds_proj != null ? row.ds_proj.toFixed(0) : '—'}</td>` : ''}
       ${showDs ? `<td class="num">${row.ds_value_3d != null ? row.ds_value_3d : '—'}</td>` : ''}
+      ${showDs ? `<td class="num">${row.ds_injury_risk || '—'}</td>` : ''}
     </tr>`;
 }
 
@@ -1227,13 +1250,13 @@ function renderBoardTable(rows, showDs) {
   return `
     <table class="stats-table dk-table">
       <thead><tr>
-        <th class="num">FP</th>
         ${showDs ? '<th class="num ds-cell">DS</th>' : ''}
+        <th class="num">FP${showDs ? ' (Δ)' : ''}</th>
         <th>Player</th>
-        <th class="num">Pos Rank</th>
-        <th class="num">Tier</th>
+        ${showDs ? '<th class="num">ADP</th>' : ''}
         ${showDs ? '<th class="num">DS Proj</th>' : ''}
         ${showDs ? '<th class="num">3D Val</th>' : ''}
+        ${showDs ? '<th class="num">Injury</th>' : ''}
       </tr></thead>
       <tbody>${rows.map(r => draftBoardRowHtml(r, showDs)).join("")}</tbody>
     </table>`;
@@ -1257,11 +1280,15 @@ async function renderDraftKit() {
     const showDs = dsRank.hasData;
     const positions = ["overall", "QB", "RB", "WR", "TE", "K", "DST"];
 
-    // Fresh info line
     const fetched = dk.fetched_at ? new Date(dk.fetched_at) : null;
-    const dsInfo = showDs ? `Draft Sharks: ${dsRank.count} players` : "No Draft Sharks CSV uploaded";
+    const fpTotal = (dk._summary && dk._summary.overall) || 0;
+    const dsTotal = dsRank.hasData ? dsRank.count : 0;
     if (metaEl) {
-      metaEl.textContent = `FantasyPros consensus${fetched ? ' • updated ' + relTime(fetched.toISOString()) : ''} • ${dsInfo}`;
+      if (dsRank.hasData) {
+        metaEl.textContent = `${fpTotal} FantasyPros consensus • ${dsTotal} Draft Sharks players${fetched ? ' • FP updated ' + relTime(fetched.toISOString()) : ''}`;
+      } else {
+        metaEl.textContent = `${fpTotal} FantasyPros consensus (free tier: 10/pos) • No Draft Sharks CSV yet`;
+      }
     }
 
     // Position toggle
@@ -1338,43 +1365,52 @@ async function renderDraftKit() {
       adpEl.innerHTML = empty("Upload assets/data/draft-sharks/adps.csv to see cross-platform ADP.");
     }
 
-    // Sleepers & steals — biggest rank_delta gaps (DS values higher than FP)
-    const mergedAll = mergeRankings(dk.rankings.overall, dsRank.rows);
-    const sleepers = mergedAll
-      .filter(r => r.rank_delta != null && r.rank_delta < -5)  // DS ranks them 5+ spots higher
-      .sort((a, b) => a.rank_delta - b.rank_delta)
-      .slice(0, 15);
-    if (sleepers.length) {
-      sleepersEl.innerHTML = `
-        <table class="stats-table dk-table">
-          <thead><tr>
-            <th>Player</th>
-            <th class="num">FP</th>
-            <th class="num">DS</th>
-            <th class="num">Δ</th>
-            <th class="num">DS Proj</th>
-            <th class="num">3D Val</th>
-          </tr></thead>
-          <tbody>
-            ${sleepers.map(r => `
-              <tr>
-                <td>
-                  <span class="player-name">${esc(r.name)}</span>
-                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
-                  <span class="team-tag">${esc(r.team)}</span>
-                </td>
-                <td class="num">${r.fp_rank}</td>
-                <td class="num">${r.ds_rank}</td>
-                <td class="num"><span class="up">${r.rank_delta}</span></td>
-                <td class="num">${r.ds_proj != null ? r.ds_proj.toFixed(0) : '—'}</td>
-                <td class="num">${r.ds_value_3d ?? '—'}</td>
-              </tr>`).join("")}
-          </tbody>
-        </table>`;
+    // Sleepers & steals — DS-favored players (DS ranks 5+ higher than FP)
+    // Only makes sense when we have both DS and FP data
+    if (dsRank.hasData) {
+      const mergedAll = mergeRankings(dk.rankings.overall, dsRank.rows);
+      const sleepers = mergedAll
+        .filter(r => r.rank_delta != null && r.rank_delta < -5)
+        .sort((a, b) => a.rank_delta - b.rank_delta)
+        .slice(0, 20);
+      if (sleepers.length) {
+        sleepersEl.innerHTML = `
+          <table class="stats-table dk-table">
+            <thead><tr>
+              <th>Player</th>
+              <th class="num">DS</th>
+              <th class="num">FP</th>
+              <th class="num">Δ</th>
+              <th class="num">DS Proj</th>
+              <th class="num">3D Val</th>
+              <th class="num">Injury</th>
+            </tr></thead>
+            <tbody>
+              ${sleepers.map(r => `
+                <tr>
+                  <td>
+                    <span class="player-name">${esc(r.name)}</span>
+                    <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
+                    <span class="team-tag">${esc(r.team)}</span>
+                  </td>
+                  <td class="num">${r.ds_rank}</td>
+                  <td class="num">${r.fp_rank}</td>
+                  <td class="num"><span class="up">${r.rank_delta}</span></td>
+                  <td class="num">${r.ds_proj != null ? r.ds_proj.toFixed(0) : '—'}</td>
+                  <td class="num">${r.ds_value_3d ?? '—'}</td>
+                  <td class="num">${r.ds_injury_risk || '—'}</td>
+                </tr>`).join("")}
+            </tbody>
+          </table>
+          <p style="font-family:var(--f-sign);letter-spacing:1px;color:var(--brown);font-size:13px;margin-top:12px;">
+            Δ shows how much higher Draft Sharks ranks each player vs. FantasyPros consensus.
+            Bigger negative number = bigger sleeper.
+          </p>`;
+      } else {
+        sleepersEl.innerHTML = empty("No significant rank gaps found. Draft Sharks and FantasyPros are aligned on the players with data on both sides.");
+      }
     } else {
-      sleepersEl.innerHTML = empty(showDs
-        ? "No significant gaps between FantasyPros and Draft Sharks right now."
-        : "Sleepers view needs the Draft Sharks CSV uploaded.");
+      sleepersEl.innerHTML = empty("Sleepers view needs the Draft Sharks CSV uploaded to assets/data/draft-sharks/rankings.csv.");
     }
 
   } catch (e) {
