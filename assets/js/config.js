@@ -13,14 +13,18 @@ window.Config = {
     { handle: "DMRussini",     name: "Dianna Russini", outlet: "The Athletic" },
   ],
 
+  /* Reddit disabled per user request. Set to [] to disable. */
+  REDDIT_SUBS: [],
+  INSIDER_KEYWORDS: [],
+
   /* RSS feeds pulled into "The Wire".
      Add/remove freely. If one is down it'll just be skipped. */
   RSS_FEEDS: [
     { tag: "PFT",       url: "https://profootballtalk.nbcsports.com/feed/" },
     { tag: "ROTOWIRE",  url: "https://www.rotowire.com/rss/news.php?sport=NFL" },
-    { tag: "CBS",       url: "https://www.cbssports.com/rss/headlines/nfl/" },
-    { tag: "YAHOO",     url: "https://sports.yahoo.com/nfl/rss/" },
-    { tag: "NFL.COM",   url: "https://www.nfl.com/feeds/rss/news" },
+    { tag: "NFLCOM",    url: "https://www.nfl.com/feeds/rss/news" },
+    { tag: "ESPN",      url: "https://www.espn.com/espn/rss/nfl/news" },
+    { tag: "PFF",       url: "https://www.pff.com/feed" },
   ],
 
   /* CORS proxy — allorigins is free and unlimited but occasionally slow.
