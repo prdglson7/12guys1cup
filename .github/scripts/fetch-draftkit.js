@@ -46,6 +46,12 @@ function fetchJson(url) {
   });
 }
 
+const num = (v) => {
+  if (v == null || v === '') return null;
+  const n = Number(v);
+  return isFinite(n) ? n : null;
+};
+
 async function fetchRanking(position, scoring) {
   const label = `[Rank ${position}/${scoring}]`;
   const url = `${FP_BASE}/nfl/${SEASON}/consensus-rankings?position=${position}&scoring=${scoring}&experts=show`;
@@ -58,13 +64,18 @@ async function fetchRanking(position, scoring) {
       pos: p.player_position_id,
       team: p.player_team_id,
       bye: p.player_bye_week,
-      rank: p.rank_ecr,
+      rank: num(p.rank_ecr),
       pos_rank: p.pos_rank,
-      tier: p.tier,
-      best_rank: p.rank_best,
-      worst_rank: p.rank_worst,
-      std_dev: p.rank_std_dev,
-      owned_avg: p.player_owned_avg,
+      tier: num(p.tier),
+      // Actual FP field names — my earlier version guessed wrong
+      best_rank: num(p.rank_min),
+      worst_rank: num(p.rank_max),
+      avg_rank: num(p.rank_ave),
+      std_dev: num(p.rank_std),
+      owned_avg: num(p.player_owned_avg),
+      owned_espn: num(p.player_owned_espn),
+      owned_yahoo: num(p.player_owned_yahoo),
+      ecr_delta: num(p.player_ecr_delta),
       page_url: p.player_page_url,
     }));
     console.log(`${label} ✓ ${players.length} players`);
@@ -77,7 +88,6 @@ async function fetchRanking(position, scoring) {
 
 async function fetchProjections(position, scoring) {
   const label = `[Proj ${position}/${scoring}]`;
-  // week=0 for season-long projections
   const url = `${FP_BASE}/nfl/${SEASON}/projections?position=${position}&scoring=${scoring}&week=0`;
   try {
     const data = await fetchJson(url);
@@ -87,14 +97,14 @@ async function fetchProjections(position, scoring) {
         player_id: p.player_id,
         name: p.player_name,
         pos: p.player_position_id,
-        pts: p.fantasy_pts || stats.fantasy_pts || stats.points || null,
-        pass_yds: stats.pass_yds || null,
-        pass_tds: stats.pass_tds || null,
-        rush_yds: stats.rush_yds || null,
-        rush_tds: stats.rush_tds || null,
-        rec: stats.rec || null,
-        rec_yds: stats.rec_yds || null,
-        rec_tds: stats.rec_tds || null,
+        pts: num(p.fantasy_pts || stats.fantasy_pts || stats.points),
+        pass_yds: num(stats.pass_yds),
+        pass_tds: num(stats.pass_tds),
+        rush_yds: num(stats.rush_yds),
+        rush_tds: num(stats.rush_tds),
+        rec: num(stats.rec),
+        rec_yds: num(stats.rec_yds),
+        rec_tds: num(stats.rec_tds),
       };
     });
     console.log(`${label} ✓ ${players.length} players`);
@@ -115,9 +125,9 @@ async function fetchAdp() {
       name: p.player_name || p.name,
       pos: p.player_position_id || p.position_id,
       team: p.player_team_id || p.team_id,
-      adp: p.rank_adp || p.rank,
-      adp_low: p.rank_adp_low,
-      adp_high: p.rank_adp_high,
+      adp: num(p.rank_adp || p.rank),
+      adp_low: num(p.rank_adp_low),
+      adp_high: num(p.rank_adp_high),
     }));
     console.log(`${label} ✓ ${players.length} players`);
     return { ok: true, players };
