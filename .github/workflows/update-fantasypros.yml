@@ -1,31 +1,38 @@
 name: Update FantasyPros feed
 
-# Fetches NFL news from FantasyPros every 2 hours and commits
-# the result to assets/data/fantasypros.json so the static site
-# can read it without exposing the API key.
+# Fetches NFL news + injuries from FantasyPros every 2 hours and commits
+# results to assets/data/ so the static site can read them without exposing
+# the API key.
 #
-# Rate math: 12 runs/day × 1 endpoint = 12 requests/day
+# Endpoints (from https://api.fantasypros.com/public/v2/docs):
+#   News:     GET /public/v2/json/nfl/news?limit=100
+#   Injuries: GET /public/v2/json/nfl/injuries?year=YYYY&week=N&include_probabilities=true
+#
+# Rate math: 12 runs/day × 2 endpoints = 24 requests/day
 # FantasyPros free personal tier is 50/day. Plenty of headroom.
 #
 # SETUP:
 #   Repo → Settings → Secrets and variables → Actions → New repository secret
 #   Name:  FANTASYPROS_API_KEY
 #   Value: your FantasyPros API key
-#
-# The workflow needs write access to commit back to the repo, which is
-# granted below via `permissions`.
 
 on:
   schedule:
-    - cron: "0 */2 * * *"   # every 2 hours on the hour (UTC)
-  workflow_dispatch:         # manual trigger button in the Actions tab
+    - cron: "0 */2 * * *"
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - ".github/workflows/update-fantasypros.yml"   # re-run on workflow edits
+      - ".github/workflows/update-fantasypros.yml"
 
 permissions:
   contents: write
+
+env:
+  FP_BASE: "https://api.fantasypros.com/public/v2/json"
+  # Season & week — bump these each year / during season if you want
+  # week-specific injury data. year=0 or missing returns preseason.
+  FP_SEASON: "2026"
 
 jobs:
   fetch:
@@ -34,7 +41,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Fetch FantasyPros news
+      - name: Fetch FantasyPros data
         env:
           FP_KEY: ${{ secrets.FANTASYPROS_API_KEY }}
         run: |
@@ -42,48 +49,85 @@ jobs:
           mkdir -p assets/data
 
           if [ -z "$FP_KEY" ]; then
-            echo "::error::FANTASYPROS_API_KEY secret is not set. See workflow file header for setup steps."
+            echo "::error::FANTASYPROS_API_KEY secret is not set."
             exit 1
           fi
 
-          # Fetch NFL news. Retry once on transient failure.
-          for attempt in 1 2; do
+          TS="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+          fetch_endpoint () {
+            local URL="$1"
+            local OUT="$2"
+            local LABEL="$3"
+
+            echo "→ $LABEL"
+            echo "  URL: $URL"
+
             HTTP_CODE=$(curl -sS -o /tmp/fp.json -w "%{http_code}" \
               -H "x-api-key: $FP_KEY" \
-              "https://api.fantasypros.com/v2/json/nfl/news" || echo "000")
-            if [ "$HTTP_CODE" = "200" ]; then break; fi
-            echo "Attempt $attempt got HTTP $HTTP_CODE, retrying in 10s…"
-            sleep 10
-          done
+              -H "Accept: application/json" \
+              "$URL" || echo "000")
 
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "::error::FantasyPros returned HTTP $HTTP_CODE"
-            cat /tmp/fp.json || true
+            echo "  HTTP $HTTP_CODE"
+
+            if [ "$HTTP_CODE" != "200" ]; then
+              echo "::warning::$LABEL returned HTTP $HTTP_CODE"
+              head -c 300 /tmp/fp.json || true
+              return 1
+            fi
+
+            if ! jq empty /tmp/fp.json 2>/dev/null; then
+              echo "::warning::$LABEL returned non-JSON"
+              head -c 300 /tmp/fp.json || true
+              return 1
+            fi
+
+            jq --arg t "$TS" --arg u "$URL" \
+              '. + {fetched_at: $t, source_url: $u}' \
+              /tmp/fp.json > "$OUT"
+
+            echo "  ✓ Wrote $OUT"
+            return 0
+          }
+
+          # --- News ---
+          NEWS_OK=0
+          fetch_endpoint \
+            "${FP_BASE}/nfl/news?limit=50" \
+            "assets/data/fantasypros.json" \
+            "News" && NEWS_OK=1
+
+          # --- Injuries (include practice-report probabilities) ---
+          # Use week=0 in preseason/offseason; API tolerates missing week
+          INJURIES_OK=0
+          fetch_endpoint \
+            "${FP_BASE}/nfl/injuries?year=${FP_SEASON}&include_probabilities=true" \
+            "assets/data/fantasypros-injuries.json" \
+            "Injuries" && INJURIES_OK=1
+
+          if [ "$NEWS_OK" -ne 1 ] && [ "$INJURIES_OK" -ne 1 ]; then
+            echo "::error::Both endpoints failed. Check API key and tier."
             exit 1
           fi
 
-          # Validate JSON and pretty-print for cleaner diffs
-          if ! jq empty /tmp/fp.json 2>/dev/null; then
-            echo "::error::Response was not valid JSON"
-            head -c 500 /tmp/fp.json
-            exit 1
+          echo "News:     $([ $NEWS_OK     -eq 1 ] && echo OK || echo FAILED)"
+          echo "Injuries: $([ $INJURIES_OK -eq 1 ] && echo OK || echo FAILED)"
+
+          if [ "$NEWS_OK" -eq 1 ]; then
+            echo "News item count: $(jq '.items | length // 0' assets/data/fantasypros.json)"
           fi
-
-          # Add a fetched_at timestamp so the client can show freshness
-          jq --arg t "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            '. + {fetched_at: $t}' /tmp/fp.json > assets/data/fantasypros.json
-
-          echo "Wrote assets/data/fantasypros.json"
-          echo "Item count: $(jq '.items | length' assets/data/fantasypros.json)"
+          if [ "$INJURIES_OK" -eq 1 ]; then
+            echo "Injury count: $(jq '.injuries | length // .count // 0' assets/data/fantasypros-injuries.json)"
+          fi
 
       - name: Commit and push if changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet assets/data/fantasypros.json; then
+          git add assets/data/fantasypros.json assets/data/fantasypros-injuries.json 2>/dev/null || true
+          if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
           fi
-          git add assets/data/fantasypros.json
           git commit -m "Update FantasyPros feed [skip ci]"
           git push
