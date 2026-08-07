@@ -8,7 +8,7 @@ const { getState, getLeague, getUsers, getRosters, getMatchups,
         getTransactions, getWinnersBracket, getPlayers,
         buildTeamMap, computePowerRankings } = window.Sleeper;
 const { getEspnNews, rosteredPlayerNames, articleTouchesRoster,
-        getSleeperTrending, fetchAllRss, getFantasyProsNews } = window.News;
+        getSleeperTrending, fetchAllRss, getFantasyProsNews, getFantasyProsInjuries } = window.News;
 const { loading, empty, errBox, esc, fmt1, fmt2, relTime, avatarUrl } = window.UI;
 
 /* ---------- Cached shared bootstrap ---------- */
@@ -670,27 +670,47 @@ function injuryRank(status) {
   return i === -1 ? 99 : i;
 }
 
-/* Build the list of rostered players with injuries, cross-linked to team */
-function buildInjuryList(teams, players) {
+/* Build the list of rostered players with injuries, cross-linked to team.
+   Also enriches each entry with FantasyPros data (practice reports, prob
+   of playing) when available. */
+function buildInjuryList(teams, players, fpInjuries) {
+  // Index FantasyPros injuries by lowercase name for cross-matching
+  const fpByName = new Map();
+  if (fpInjuries && fpInjuries.length) {
+    fpInjuries.forEach(fp => {
+      if (fp.name) fpByName.set(fp.name.toLowerCase(), fp);
+    });
+  }
+
   const out = [];
   teams.forEach(team => {
     (team.players || []).forEach(pid => {
       const p = players[pid];
       if (!p) return;
       if (!p.injury_status || p.injury_status === "Healthy") return;
+
+      const nameLower = (p.full_name || `${p.first_name || ""} ${p.last_name || ""}`.trim()).toLowerCase();
+      const fp = fpByName.get(nameLower);
+
       out.push({
         player_id: pid,
         name: p.full_name || `${p.first_name || ""} ${p.last_name || ""}`.trim() || `Player ${pid}`,
         position: p.position || "",
         nfl_team: p.team || "FA",
         status: p.injury_status,
-        body_part: p.injury_body_part || "",
-        notes: p.injury_notes || "",
+        body_part: p.injury_body_part || (fp ? fp.injury_type : ""),
+        notes: p.injury_notes || (fp ? fp.comment : ""),
         started: p.injury_start_date || "",
         owner: team.team_name || `Team ${team.roster_id}`,
         owner_id: team.roster_id,
         owner_avatar: team.avatar,
         isStarter: (team.starters || []).includes(pid),
+        // FantasyPros enrichments
+        fp_probability: fp ? fp.probability : null,
+        fp_update_date: fp ? fp.update_date : "",
+        fp_practice_1: fp ? fp.practice_1 : "",
+        fp_practice_2: fp ? fp.practice_2 : "",
+        fp_practice_3: fp ? fp.practice_3 : "",
       });
     });
   });
@@ -705,6 +725,18 @@ function buildInjuryList(teams, players) {
 function injuryCardHtml(entry) {
   const cls = INJURY_CLASS[entry.status] || "questionable";
   const starterBadge = entry.isStarter ? '<span class="starter-tag">STARTER</span>' : "";
+
+  // FantasyPros probability of playing (0-1 → %)
+  const probHtml = entry.fp_probability != null
+    ? `<span class="injury-prob">${Math.round(entry.fp_probability * 100)}% to play</span>`
+    : "";
+
+  // Practice report (W/Th/F participation)
+  const practices = [entry.fp_practice_1, entry.fp_practice_2, entry.fp_practice_3].filter(Boolean);
+  const practiceHtml = practices.length
+    ? `<div class="injury-practice">Practice: ${practices.map(esc).join(" → ")}</div>`
+    : "";
+
   return `
     <div class="injury-card ${cls}">
       <div class="injury-status ${cls}">${esc(entry.status)}</div>
@@ -713,12 +745,14 @@ function injuryCardHtml(entry) {
           <span class="injury-player">${esc(entry.name)}</span>
           <span class="injury-meta">${esc(entry.position)} • ${esc(entry.nfl_team)}</span>
           ${starterBadge}
+          ${probHtml}
         </div>
         <div class="injury-line2">
           <span class="injury-owner">Rostered by ${esc(entry.owner)}</span>
           ${entry.body_part ? `<span class="injury-part">${esc(entry.body_part)}</span>` : ""}
         </div>
         ${entry.notes ? `<div class="injury-notes">${esc(entry.notes)}</div>` : ""}
+        ${practiceHtml}
       </div>
     </div>`;
 }
@@ -732,8 +766,11 @@ async function renderInjuries() {
 
   try {
     const { teams } = await bootstrap();
-    const players = await getPlayers();
-    const injuries = buildInjuryList(teams, players);
+    const [players, fpInjuries] = await Promise.all([
+      getPlayers(),
+      getFantasyProsInjuries().catch(() => []),  // graceful fail if FP feed not ready
+    ]);
+    const injuries = buildInjuryList(teams, players, fpInjuries);
 
     if (!injuries.length) {
       if (summaryEl) summaryEl.innerHTML = "";
@@ -816,8 +853,11 @@ async function renderInjuriesWidget(containerId, { limit = 5 } = {}) {
   el.innerHTML = loading("Loading injuries…");
   try {
     const { teams } = await bootstrap();
-    const players = await getPlayers();
-    const injuries = buildInjuryList(teams, players);
+    const [players, fpInjuries] = await Promise.all([
+      getPlayers(),
+      getFantasyProsInjuries().catch(() => []),
+    ]);
+    const injuries = buildInjuryList(teams, players, fpInjuries);
     const sorted = [...injuries].sort((a, b) => {
       if (a.isStarter !== b.isStarter) return a.isStarter ? -1 : 1;
       return injuryRank(a.status) - injuryRank(b.status);
