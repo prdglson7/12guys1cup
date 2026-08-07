@@ -1,8 +1,1796 @@
 {
-  "fetched_at": "1970-01-01T00:00:00Z",
+  "fetched_at": "2026-08-07T20:02:31.903Z",
+  "duration_ms": 519,
   "season": "2026",
   "scoring_default": "PPR",
-  "rankings": { "overall": [], "QB": [], "RB": [], "WR": [], "TE": [], "K": [], "DST": [] },
-  "adp": [],
-  "_note": "Auto-updated by .github/workflows/update-draftkit.yml every 8 hours."
+  "rankings": {
+    "overall": [],
+    "QB": [
+      {
+        "player_id": 17298,
+        "name": "Josh Allen",
+        "short_name": "J. Allen",
+        "pos": "QB",
+        "team": "BUF",
+        "bye": "7",
+        "rank": 1,
+        "pos_rank": "QB1",
+        "owned_avg": 99.4,
+        "page_url": "https://www.fantasypros.com/nfl/players/josh-allen-qb.php"
+      },
+      {
+        "player_id": 17233,
+        "name": "Lamar Jackson",
+        "short_name": "L. Jackson",
+        "pos": "QB",
+        "team": "BAL",
+        "bye": "13",
+        "rank": 2,
+        "pos_rank": "QB2",
+        "owned_avg": 99.1,
+        "page_url": "https://www.fantasypros.com/nfl/players/lamar-jackson.php"
+      },
+      {
+        "player_id": 23046,
+        "name": "Drake Maye",
+        "short_name": "D. Maye",
+        "pos": "QB",
+        "team": "NE",
+        "bye": "11",
+        "rank": 3,
+        "pos_rank": "QB3",
+        "owned_avg": 98.6,
+        "page_url": "https://www.fantasypros.com/nfl/players/drake-maye.php"
+      },
+      {
+        "player_id": 19196,
+        "name": "Joe Burrow",
+        "short_name": "J. Burrow",
+        "pos": "QB",
+        "team": "CIN",
+        "bye": "6",
+        "rank": 4,
+        "pos_rank": "QB4",
+        "owned_avg": 98,
+        "page_url": "https://www.fantasypros.com/nfl/players/joe-burrow.php"
+      },
+      {
+        "player_id": 22902,
+        "name": "Jayden Daniels",
+        "short_name": "J. Daniels",
+        "pos": "QB",
+        "team": "WAS",
+        "bye": "7",
+        "rank": 5,
+        "pos_rank": "QB5",
+        "owned_avg": 97.1,
+        "page_url": "https://www.fantasypros.com/nfl/players/jayden-daniels.php"
+      },
+      {
+        "player_id": 19275,
+        "name": "Jalen Hurts",
+        "short_name": "J. Hurts",
+        "pos": "QB",
+        "team": "PHI",
+        "bye": "10",
+        "rank": 6,
+        "pos_rank": "QB6",
+        "owned_avg": 97.7,
+        "page_url": "https://www.fantasypros.com/nfl/players/jalen-hurts.php"
+      },
+      {
+        "player_id": 23084,
+        "name": "Caleb Williams",
+        "short_name": "C. Williams",
+        "pos": "QB",
+        "team": "CHI",
+        "bye": "10",
+        "rank": 7,
+        "pos_rank": "QB7",
+        "owned_avg": 93,
+        "page_url": "https://www.fantasypros.com/nfl/players/caleb-williams.php"
+      },
+      {
+        "player_id": 18635,
+        "name": "Justin Herbert",
+        "short_name": "J. Herbert",
+        "pos": "QB",
+        "team": "LAC",
+        "bye": "7",
+        "rank": 8,
+        "pos_rank": "QB8",
+        "owned_avg": 93.2,
+        "page_url": "https://www.fantasypros.com/nfl/players/justin-herbert.php"
+      },
+      {
+        "player_id": 19780,
+        "name": "Trevor Lawrence",
+        "short_name": "T. Lawrence",
+        "pos": "QB",
+        "team": "JAC",
+        "bye": "7",
+        "rank": 9,
+        "pos_rank": "QB9",
+        "owned_avg": 88.9,
+        "page_url": "https://www.fantasypros.com/nfl/players/trevor-lawrence.php"
+      },
+      {
+        "player_id": 15600,
+        "name": "Dak Prescott",
+        "short_name": "D. Prescott",
+        "pos": "QB",
+        "team": "DAL",
+        "bye": "14",
+        "rank": 10,
+        "pos_rank": "QB10",
+        "owned_avg": 93.2,
+        "page_url": "https://www.fantasypros.com/nfl/players/dak-prescott.php"
+      }
+    ],
+    "RB": [
+      {
+        "player_id": 22968,
+        "name": "Jahmyr Gibbs",
+        "short_name": "J. Gibbs",
+        "pos": "RB",
+        "team": "DET",
+        "bye": "6",
+        "rank": 1,
+        "pos_rank": "RB1",
+        "owned_avg": 99.4,
+        "page_url": "https://www.fantasypros.com/nfl/players/jahmyr-gibbs.php"
+      },
+      {
+        "player_id": 23133,
+        "name": "Bijan Robinson",
+        "short_name": "B. Robinson",
+        "pos": "RB",
+        "team": "ATL",
+        "bye": "11",
+        "rank": 2,
+        "pos_rank": "RB2",
+        "owned_avg": 99.4,
+        "page_url": "https://www.fantasypros.com/nfl/players/bijan-robinson.php"
+      },
+      {
+        "player_id": 16393,
+        "name": "Christian McCaffrey",
+        "short_name": "C. McCaffrey",
+        "pos": "RB",
+        "team": "SF",
+        "bye": "8",
+        "rank": 3,
+        "pos_rank": "RB3",
+        "owned_avg": 99.5,
+        "page_url": "https://www.fantasypros.com/nfl/players/christian-mccaffrey.php"
+      },
+      {
+        "player_id": 19217,
+        "name": "Jonathan Taylor",
+        "short_name": "J. Taylor",
+        "pos": "RB",
+        "team": "IND",
+        "bye": "13",
+        "rank": 4,
+        "pos_rank": "RB4",
+        "owned_avg": 99.3,
+        "page_url": "https://www.fantasypros.com/nfl/players/jonathan-taylor.php"
+      },
+      {
+        "player_id": 25989,
+        "name": "Ashton Jeanty",
+        "short_name": "A. Jeanty",
+        "pos": "RB",
+        "team": "LV",
+        "bye": "13",
+        "rank": 5,
+        "pos_rank": "RB5",
+        "owned_avg": 99,
+        "page_url": "https://www.fantasypros.com/nfl/players/ashton-jeanty.php"
+      },
+      {
+        "player_id": 25324,
+        "name": "Chase Brown",
+        "short_name": "C. Brown",
+        "pos": "RB",
+        "team": "CIN",
+        "bye": "6",
+        "rank": 6,
+        "pos_rank": "RB6",
+        "owned_avg": 98.7,
+        "page_url": "https://www.fantasypros.com/nfl/players/chase-brown.php"
+      },
+      {
+        "player_id": 22958,
+        "name": "James Cook III",
+        "short_name": "J. Cook III",
+        "pos": "RB",
+        "team": "BUF",
+        "bye": "7",
+        "rank": 7,
+        "pos_rank": "RB7",
+        "owned_avg": 99.5,
+        "page_url": "https://www.fantasypros.com/nfl/players/james-cook.php"
+      },
+      {
+        "player_id": 23136,
+        "name": "De'Von Achane",
+        "short_name": "D. Achane",
+        "pos": "RB",
+        "team": "MIA",
+        "bye": "6",
+        "rank": 8,
+        "pos_rank": "RB8",
+        "owned_avg": 99.2,
+        "page_url": "https://www.fantasypros.com/nfl/players/devon-achane.php"
+      },
+      {
+        "player_id": 25395,
+        "name": "Omarion Hampton",
+        "short_name": "O. Hampton",
+        "pos": "RB",
+        "team": "LAC",
+        "bye": "7",
+        "rank": 9,
+        "pos_rank": "RB9",
+        "owned_avg": 98.7,
+        "page_url": "https://www.fantasypros.com/nfl/players/omarion-hampton.php"
+      },
+      {
+        "player_id": 17240,
+        "name": "Saquon Barkley",
+        "short_name": "S. Barkley",
+        "pos": "RB",
+        "team": "PHI",
+        "bye": "10",
+        "rank": 10,
+        "pos_rank": "RB10",
+        "owned_avg": 99.4,
+        "page_url": "https://www.fantasypros.com/nfl/players/saquon-barkley.php"
+      }
+    ],
+    "WR": [
+      {
+        "player_id": 19788,
+        "name": "Ja'Marr Chase",
+        "short_name": "J. Chase",
+        "pos": "WR",
+        "team": "CIN",
+        "bye": "6",
+        "rank": 1,
+        "pos_rank": "WR1",
+        "owned_avg": 99.2,
+        "page_url": "https://www.fantasypros.com/nfl/players/jamarr-chase.php"
+      },
+      {
+        "player_id": 23180,
+        "name": "Puka Nacua",
+        "short_name": "P. Nacua",
+        "pos": "WR",
+        "team": "LAR",
+        "bye": "11",
+        "rank": 2,
+        "pos_rank": "WR2",
+        "owned_avg": 99.5,
+        "page_url": "https://www.fantasypros.com/nfl/players/puka-nacua.php"
+      },
+      {
+        "player_id": 23070,
+        "name": "Jaxon Smith-Njigba",
+        "short_name": "J. Smith-Njigba",
+        "pos": "WR",
+        "team": "SEA",
+        "bye": "11",
+        "rank": 3,
+        "pos_rank": "WR3",
+        "owned_avg": 99.6,
+        "page_url": "https://www.fantasypros.com/nfl/players/jaxon-smith-njigba.php"
+      },
+      {
+        "player_id": 19799,
+        "name": "Amon-Ra St. Brown",
+        "short_name": "A. St. Brown",
+        "pos": "WR",
+        "team": "DET",
+        "bye": "6",
+        "rank": 4,
+        "pos_rank": "WR4",
+        "owned_avg": 99.2,
+        "page_url": "https://www.fantasypros.com/nfl/players/amonra-stbrown.php"
+      },
+      {
+        "player_id": 19202,
+        "name": "CeeDee Lamb",
+        "short_name": "C. Lamb",
+        "pos": "WR",
+        "team": "DAL",
+        "bye": "14",
+        "rank": 5,
+        "pos_rank": "WR5",
+        "owned_avg": 99.4,
+        "page_url": "https://www.fantasypros.com/nfl/players/ceedee-lamb.php"
+      },
+      {
+        "player_id": 19236,
+        "name": "Justin Jefferson",
+        "short_name": "J. Jefferson",
+        "pos": "WR",
+        "team": "MIN",
+        "bye": "6",
+        "rank": 6,
+        "pos_rank": "WR6",
+        "owned_avg": 99.3,
+        "page_url": "https://www.fantasypros.com/nfl/players/justin-jefferson.php"
+      },
+      {
+        "player_id": 23163,
+        "name": "Drake London",
+        "short_name": "D. London",
+        "pos": "WR",
+        "team": "ATL",
+        "bye": "11",
+        "rank": 7,
+        "pos_rank": "WR7",
+        "owned_avg": 99.2,
+        "page_url": "https://www.fantasypros.com/nfl/players/drake-london.php"
+      },
+      {
+        "player_id": 18218,
+        "name": "A.J. Brown",
+        "short_name": "A.J. Brown",
+        "pos": "WR",
+        "team": "NE",
+        "bye": "11",
+        "rank": 8,
+        "pos_rank": "WR8",
+        "owned_avg": 99.2,
+        "page_url": "https://www.fantasypros.com/nfl/players/aj-brown.php"
+      },
+      {
+        "player_id": 20130,
+        "name": "Nico Collins",
+        "short_name": "N. Collins",
+        "pos": "WR",
+        "team": "HOU",
+        "bye": "8",
+        "rank": 9,
+        "pos_rank": "WR9",
+        "owned_avg": 99,
+        "page_url": "https://www.fantasypros.com/nfl/players/nico-collins.php"
+      },
+      {
+        "player_id": 22963,
+        "name": "George Pickens",
+        "short_name": "G. Pickens",
+        "pos": "WR",
+        "team": "DAL",
+        "bye": "14",
+        "rank": 10,
+        "pos_rank": "WR10",
+        "owned_avg": 99.2,
+        "page_url": "https://www.fantasypros.com/nfl/players/george-pickens.php"
+      }
+    ],
+    "TE": [
+      {
+        "player_id": 22936,
+        "name": "Trey McBride",
+        "short_name": "T. McBride",
+        "pos": "TE",
+        "team": "ARI",
+        "bye": "14",
+        "rank": 1,
+        "pos_rank": "TE1",
+        "owned_avg": 99.3,
+        "page_url": "https://www.fantasypros.com/nfl/players/trey-mcbride.php"
+      },
+      {
+        "player_id": 22955,
+        "name": "Brock Bowers",
+        "short_name": "B. Bowers",
+        "pos": "TE",
+        "team": "LV",
+        "bye": "13",
+        "rank": 2,
+        "pos_rank": "TE2",
+        "owned_avg": 99.2,
+        "page_url": "https://www.fantasypros.com/nfl/players/brock-bowers.php"
+      },
+      {
+        "player_id": 26006,
+        "name": "Colston Loveland",
+        "short_name": "C. Loveland",
+        "pos": "TE",
+        "team": "CHI",
+        "bye": "10",
+        "rank": 3,
+        "pos_rank": "TE3",
+        "owned_avg": 98.5,
+        "page_url": "https://www.fantasypros.com/nfl/players/colston-loveland.php"
+      },
+      {
+        "player_id": 26434,
+        "name": "Tyler Warren",
+        "short_name": "T. Warren",
+        "pos": "TE",
+        "team": "IND",
+        "bye": "13",
+        "rank": 4,
+        "pos_rank": "TE4",
+        "owned_avg": 98.2,
+        "page_url": "https://www.fantasypros.com/nfl/players/tyler-warren.php"
+      },
+      {
+        "player_id": 27050,
+        "name": "Harold Fannin Jr.",
+        "short_name": "H. Fannin Jr.",
+        "pos": "TE",
+        "team": "CLE",
+        "bye": "11",
+        "rank": 5,
+        "pos_rank": "TE5",
+        "owned_avg": 93.7,
+        "page_url": "https://www.fantasypros.com/nfl/players/harold-fannin-jr.php"
+      },
+      {
+        "player_id": 25298,
+        "name": "Tucker Kraft",
+        "short_name": "T. Kraft",
+        "pos": "TE",
+        "team": "GB",
+        "bye": "11",
+        "rank": 6,
+        "pos_rank": "TE6",
+        "owned_avg": 93.4,
+        "page_url": "https://www.fantasypros.com/nfl/players/tucker-kraft.php"
+      },
+      {
+        "player_id": 20164,
+        "name": "Kyle Pitts Sr.",
+        "short_name": "K. Pitts Sr.",
+        "pos": "TE",
+        "team": "ATL",
+        "bye": "11",
+        "rank": 7,
+        "pos_rank": "TE7",
+        "owned_avg": 94.9,
+        "page_url": "https://www.fantasypros.com/nfl/players/kyle-pitts.php"
+      },
+      {
+        "player_id": 22978,
+        "name": "Sam LaPorta",
+        "short_name": "S. LaPorta",
+        "pos": "TE",
+        "team": "DET",
+        "bye": "6",
+        "rank": 8,
+        "pos_rank": "TE8",
+        "owned_avg": 95.6,
+        "page_url": "https://www.fantasypros.com/nfl/players/sam-laporta.php"
+      },
+      {
+        "player_id": 11594,
+        "name": "Travis Kelce",
+        "short_name": "T. Kelce",
+        "pos": "TE",
+        "team": "KC",
+        "bye": "5",
+        "rank": 9,
+        "pos_rank": "TE9",
+        "owned_avg": 88.9,
+        "page_url": "https://www.fantasypros.com/nfl/players/travis-kelce.php"
+      },
+      {
+        "player_id": 16499,
+        "name": "George Kittle",
+        "short_name": "G. Kittle",
+        "pos": "TE",
+        "team": "SF",
+        "bye": "8",
+        "rank": 10,
+        "pos_rank": "TE10",
+        "owned_avg": 92.3,
+        "page_url": "https://www.fantasypros.com/nfl/players/george-kittle.php"
+      }
+    ],
+    "K": [
+      {
+        "player_id": 26068,
+        "name": "Brandon Aubrey",
+        "short_name": "B. Aubrey",
+        "pos": "K",
+        "team": "DAL",
+        "bye": "14",
+        "rank": 1,
+        "pos_rank": "K1",
+        "owned_avg": 98.5,
+        "page_url": "https://www.fantasypros.com/nfl/players/brandon-aubrey.php"
+      },
+      {
+        "player_id": 15756,
+        "name": "Ka'imi Fairbairn",
+        "short_name": "K. Fairbairn",
+        "pos": "K",
+        "team": "HOU",
+        "bye": "8",
+        "rank": 2,
+        "pos_rank": "K2",
+        "owned_avg": 89.5,
+        "page_url": "https://www.fantasypros.com/nfl/players/kaimi-fairbairn.php"
+      },
+      {
+        "player_id": 23901,
+        "name": "Cameron Dicker",
+        "short_name": "C. Dicker",
+        "pos": "K",
+        "team": "LAC",
+        "bye": "7",
+        "rank": 3,
+        "pos_rank": "K3",
+        "owned_avg": 95.5,
+        "page_url": "https://www.fantasypros.com/nfl/players/cameron-dicker.php"
+      },
+      {
+        "player_id": 14003,
+        "name": "Jason Myers",
+        "short_name": "J. Myers",
+        "pos": "K",
+        "team": "SEA",
+        "bye": "11",
+        "rank": 4,
+        "pos_rank": "K4",
+        "owned_avg": 92,
+        "page_url": "https://www.fantasypros.com/nfl/players/jason-myers.php"
+      },
+      {
+        "player_id": 26475,
+        "name": "Cam Little",
+        "short_name": "C. Little",
+        "pos": "K",
+        "team": "JAC",
+        "bye": "7",
+        "rank": 5,
+        "pos_rank": "K5",
+        "owned_avg": 87.4,
+        "page_url": "https://www.fantasypros.com/nfl/players/cam-little.php"
+      },
+      {
+        "player_id": 17575,
+        "name": "Eddy Pineiro",
+        "short_name": "E. Pineiro",
+        "pos": "K",
+        "team": "SF",
+        "bye": "8",
+        "rank": 6,
+        "pos_rank": "K6",
+        "owned_avg": 60.5,
+        "page_url": "https://www.fantasypros.com/nfl/players/eddy-pineiro.php"
+      },
+      {
+        "player_id": 27534,
+        "name": "Tyler Loop",
+        "short_name": "T. Loop",
+        "pos": "K",
+        "team": "BAL",
+        "bye": "13",
+        "rank": 7,
+        "pos_rank": "K7",
+        "owned_avg": 54.8,
+        "page_url": "https://www.fantasypros.com/nfl/players/tyler-loop.php"
+      },
+      {
+        "player_id": 23297,
+        "name": "Evan McPherson",
+        "short_name": "E. McPherson",
+        "pos": "K",
+        "team": "CIN",
+        "bye": "6",
+        "rank": 8,
+        "pos_rank": "K8",
+        "owned_avg": 40,
+        "page_url": "https://www.fantasypros.com/nfl/players/evan-mcpherson.php"
+      },
+      {
+        "player_id": 13731,
+        "name": "Cairo Santos",
+        "short_name": "C. Santos",
+        "pos": "K",
+        "team": "CHI",
+        "bye": "10",
+        "rank": 9,
+        "pos_rank": "K9",
+        "owned_avg": 25.5,
+        "page_url": "https://www.fantasypros.com/nfl/players/cairo-santos.php"
+      },
+      {
+        "player_id": 26075,
+        "name": "Jake Bates",
+        "short_name": "J. Bates",
+        "pos": "K",
+        "team": "DET",
+        "bye": "6",
+        "rank": 10,
+        "pos_rank": "K10",
+        "owned_avg": 62.1,
+        "page_url": "https://www.fantasypros.com/nfl/players/jake-bates.php"
+      }
+    ],
+    "DST": [
+      {
+        "player_id": 8120,
+        "name": "Houston Texans",
+        "short_name": "HOU DST",
+        "pos": "DST",
+        "team": "HOU",
+        "bye": "8",
+        "rank": 1,
+        "pos_rank": "DST1",
+        "owned_avg": 96.2,
+        "page_url": "https://www.fantasypros.com/nfl/players/houston-defense.php"
+      },
+      {
+        "player_id": 8090,
+        "name": "Denver Broncos",
+        "short_name": "DEN DST",
+        "pos": "DST",
+        "team": "DEN",
+        "bye": "10",
+        "rank": 2,
+        "pos_rank": "DST2",
+        "owned_avg": 94.4,
+        "page_url": "https://www.fantasypros.com/nfl/players/denver-defense.php"
+      },
+      {
+        "player_id": 8280,
+        "name": "Los Angeles Rams",
+        "short_name": "LAR DST",
+        "pos": "DST",
+        "team": "LAR",
+        "bye": "11",
+        "rank": 3,
+        "pos_rank": "DST3",
+        "owned_avg": 84.5,
+        "page_url": "https://www.fantasypros.com/nfl/players/los-angeles-rams-defense.php"
+      },
+      {
+        "player_id": 8260,
+        "name": "Seattle Seahawks",
+        "short_name": "SEA DST",
+        "pos": "DST",
+        "team": "SEA",
+        "bye": "11",
+        "rank": 4,
+        "pos_rank": "DST4",
+        "owned_avg": 95.4,
+        "page_url": "https://www.fantasypros.com/nfl/players/seattle-defense.php"
+      },
+      {
+        "player_id": 8230,
+        "name": "Philadelphia Eagles",
+        "short_name": "PHI DST",
+        "pos": "DST",
+        "team": "PHI",
+        "bye": "10",
+        "rank": 5,
+        "pos_rank": "DST5",
+        "owned_avg": 83.8,
+        "page_url": "https://www.fantasypros.com/nfl/players/philadelphia-defense.php"
+      },
+      {
+        "player_id": 8180,
+        "name": "New England Patriots",
+        "short_name": "NE DST",
+        "pos": "DST",
+        "team": "NE",
+        "bye": "11",
+        "rank": 6,
+        "pos_rank": "DST6",
+        "owned_avg": 79.8,
+        "page_url": "https://www.fantasypros.com/nfl/players/new-england-defense.php"
+      },
+      {
+        "player_id": 8170,
+        "name": "Minnesota Vikings",
+        "short_name": "MIN DST",
+        "pos": "DST",
+        "team": "MIN",
+        "bye": "6",
+        "rank": 7,
+        "pos_rank": "DST7",
+        "owned_avg": 63,
+        "page_url": "https://www.fantasypros.com/nfl/players/minnesota-defense.php"
+      },
+      {
+        "player_id": 8140,
+        "name": "Jacksonville Jaguars",
+        "short_name": "JAC DST",
+        "pos": "DST",
+        "team": "JAC",
+        "bye": "7",
+        "rank": 8,
+        "pos_rank": "DST8",
+        "owned_avg": 67.7,
+        "page_url": "https://www.fantasypros.com/nfl/players/jacksonville-defense.php"
+      },
+      {
+        "player_id": 8240,
+        "name": "Pittsburgh Steelers",
+        "short_name": "PIT DST",
+        "pos": "DST",
+        "team": "PIT",
+        "bye": "9",
+        "rank": 9,
+        "pos_rank": "DST9",
+        "owned_avg": 70.5,
+        "page_url": "https://www.fantasypros.com/nfl/players/pittsburgh-defense.php"
+      },
+      {
+        "player_id": 8020,
+        "name": "Baltimore Ravens",
+        "short_name": "BAL DST",
+        "pos": "DST",
+        "team": "BAL",
+        "bye": "13",
+        "rank": 10,
+        "pos_rank": "DST10",
+        "owned_avg": 49.2,
+        "page_url": "https://www.fantasypros.com/nfl/players/baltimore-defense.php"
+      }
+    ]
+  },
+  "adp": [
+    {
+      "player_id": 8000,
+      "name": "Arizona Cardinals",
+      "pos": "DST",
+      "team": "ARI",
+      "adp": {
+        "ECR": {
+          "WK1-STD": {
+            "DST": 30
+          },
+          "WK1-PPR": {
+            "DST": 30
+          },
+          "WK1-HALF": {
+            "DST": 30
+          },
+          "STD": {
+            "DST": 32
+          },
+          "PPR": {
+            "DST": 32
+          },
+          "HALF": {
+            "DST": 32,
+            "ALL": 476
+          },
+          "DYN": {
+            "ALL": 457,
+            "DST": 27
+          },
+          "BB-HALF": {
+            "DST": 27
+          }
+        },
+        "ECR_MIN": {
+          "WK1-STD": {
+            "DST": 28
+          },
+          "WK1-PPR": {
+            "DST": 28
+          },
+          "WK1-HALF": {
+            "DST": 28
+          },
+          "STD": {
+            "DST": 30
+          },
+          "PPR": {
+            "DST": 30
+          },
+          "HALF": {
+            "DST": 30,
+            "ALL": 348
+          },
+          "DYN": {
+            "ALL": 248,
+            "DST": 26
+          },
+          "BB-HALF": {
+            "DST": 10
+          }
+        },
+        "ECR_MAX": {
+          "WK1-STD": {
+            "DST": 32
+          },
+          "WK1-PPR": {
+            "DST": 32
+          },
+          "WK1-HALF": {
+            "DST": 32
+          },
+          "STD": {
+            "DST": 32
+          },
+          "PPR": {
+            "DST": 32
+          },
+          "HALF": {
+            "DST": 32,
+            "ALL": 397
+          },
+          "DYN": {
+            "ALL": 357,
+            "DST": 30
+          },
+          "BB-HALF": {
+            "DST": 32
+          }
+        },
+        "ADP": {
+          "BB-HALF": {
+            "ALL": 481,
+            "DST": 32
+          }
+        }
+      }
+    },
+    {
+      "player_id": 8010,
+      "name": "Atlanta Falcons",
+      "pos": "DST",
+      "team": "ATL",
+      "adp": {
+        "ECR": {
+          "WK1-STD": {
+            "DST": 18
+          },
+          "WK1-PPR": {
+            "DST": 18
+          },
+          "WK1-HALF": {
+            "DST": 18
+          },
+          "STD": {
+            "ALL": 281,
+            "DST": 19
+          },
+          "PPR": {
+            "DST": 19,
+            "ALL": 283
+          },
+          "HALF": {
+            "DST": 19,
+            "ALL": 280
+          },
+          "DYN": {
+            "DST": 21
+          },
+          "BB-HALF": {
+            "ALL": 283,
+            "DST": 17
+          }
+        },
+        "ECR_MIN": {
+          "WK1-STD": {
+            "DST": 16
+          },
+          "WK1-PPR": {
+            "DST": 16
+          },
+          "WK1-HALF": {
+            "DST": 16
+          },
+          "STD": {
+            "ALL": 185,
+            "DST": 13
+          },
+          "PPR": {
+            "DST": 13,
+            "ALL": 186
+          },
+          "HALF": {
+            "DST": 13,
+            "ALL": 204
+          },
+          "DYN": {
+            "DST": 19
+          },
+          "BB-HALF": {
+            "ALL": 217,
+            "DST": 16
+          }
+        },
+        "ECR_MAX": {
+          "WK1-STD": {
+            "DST": 19
+          },
+          "WK1-PPR": {
+            "DST": 19
+          },
+          "WK1-HALF": {
+            "DST": 19
+          },
+          "STD": {
+            "ALL": 355,
+            "DST": 25
+          },
+          "PPR": {
+            "DST": 25,
+            "ALL": 356
+          },
+          "HALF": {
+            "DST": 25,
+            "ALL": 355
+          },
+          "DYN": {
+            "DST": 24
+          },
+          "BB-HALF": {
+            "ALL": 289,
+            "DST": 19
+          }
+        },
+        "ADP": {
+          "BB-HALF": {
+            "ALL": 335,
+            "DST": 17
+          }
+        }
+      }
+    },
+    {
+      "player_id": 8020,
+      "name": "Baltimore Ravens",
+      "pos": "DST",
+      "team": "BAL",
+      "adp": {
+        "ECR": {
+          "WK1-STD": {
+            "DST": 4
+          },
+          "WK1-PPR": {
+            "DST": 4
+          },
+          "WK1-HALF": {
+            "DST": 4
+          },
+          "STD": {
+            "ALL": 202,
+            "DST": 10
+          },
+          "PPR": {
+            "DST": 10,
+            "ALL": 206
+          },
+          "HALF": {
+            "DST": 10,
+            "ALL": 214
+          },
+          "DYN": {
+            "ALL": 283,
+            "DST": 13
+          },
+          "BB-HALF": {
+            "ALL": 238,
+            "DST": 16
+          }
+        },
+        "ECR_MIN": {
+          "WK1-STD": {
+            "DST": 6
+          },
+          "WK1-PPR": {
+            "DST": 6
+          },
+          "WK1-HALF": {
+            "DST": 6
+          },
+          "STD": {
+            "ALL": 171,
+            "DST": 6
+          },
+          "PPR": {
+            "DST": 6,
+            "ALL": 161
+          },
+          "HALF": {
+            "DST": 6,
+            "ALL": 160
+          },
+          "DYN": {
+            "ALL": 220,
+            "DST": 10
+          },
+          "BB-HALF": {
+            "ALL": 175,
+            "DST": 16
+          }
+        },
+        "ECR_MAX": {
+          "WK1-STD": {
+            "DST": 6
+          },
+          "WK1-PPR": {
+            "DST": 6
+          },
+          "WK1-HALF": {
+            "DST": 6
+          },
+          "STD": {
+            "ALL": 279,
+            "DST": 19
+          },
+          "PPR": {
+            "DST": 19,
+            "ALL": 280
+          },
+          "HALF": {
+            "DST": 19,
+            "ALL": 330
+          },
+          "DYN": {
+            "ALL": 345,
+            "DST": 15
+          },
+          "BB-HALF": {
+            "ALL": 260,
+            "DST": 17
+          }
+        },
+        "ADP": {
+          "BB-HALF": {
+            "ALL": 315,
+            "DST": 11
+          }
+        }
+      }
+    },
+    {
+      "player_id": 8030,
+      "name": "Buffalo Bills",
+      "pos": "DST",
+      "team": "BUF",
+      "adp": {
+        "ECR": {
+          "WK1-STD": {
+            "DST": 11
+          },
+          "WK1-PPR": {
+            "DST": 11
+          },
+          "WK1-HALF": {
+            "DST": 11
+          },
+          "STD": {
+            "ALL": 235,
+            "DST": 16
+          },
+          "PPR": {
+            "DST": 16,
+            "ALL": 238
+          },
+          "HALF": {
+            "DST": 16,
+            "ALL": 238
+          },
+          "DYN": {
+            "ALL": 332,
+            "DST": 16
+          },
+          "BB-HALF": {
+            "ALL": 257,
+            "DST": 15
+          }
+        },
+        "ECR_MIN": {
+          "WK1-STD": {
+            "DST": 8
+          },
+          "WK1-PPR": {
+            "DST": 8
+          },
+          "WK1-HALF": {
+            "DST": 8
+          },
+          "STD": {
+            "ALL": 190,
+            "DST": 12
+          },
+          "PPR": {
+            "DST": 12,
+            "ALL": 190
+          },
+          "HALF": {
+            "DST": 12,
+            "ALL": 188
+          },
+          "DYN": {
+            "ALL": 274,
+            "DST": 16
+          },
+          "BB-HALF": {
+            "ALL": 189,
+            "DST": 15
+          }
+        },
+        "ECR_MAX": {
+          "WK1-STD": {
+            "DST": 12
+          },
+          "WK1-PPR": {
+            "DST": 12
+          },
+          "WK1-HALF": {
+            "DST": 12
+          },
+          "STD": {
+            "ALL": 279,
+            "DST": 22
+          },
+          "PPR": {
+            "DST": 22,
+            "ALL": 280
+          },
+          "HALF": {
+            "DST": 22,
+            "ALL": 352
+          },
+          "DYN": {
+            "ALL": 343,
+            "DST": 18
+          },
+          "BB-HALF": {
+            "ALL": 279,
+            "DST": 17
+          }
+        },
+        "ADP": {
+          "BB-HALF": {
+            "ALL": 334,
+            "DST": 16
+          }
+        }
+      }
+    },
+    {
+      "player_id": 8040,
+      "name": "Carolina Panthers",
+      "pos": "DST",
+      "team": "CAR",
+      "adp": {
+        "ECR": {
+          "WK1-STD": {
+            "DST": 31
+          },
+          "WK1-PPR": {
+            "DST": 31
+          },
+          "WK1-HALF": {
+            "DST": 31
+          },
+          "STD": {
+            "ALL": 349,
+            "DST": 24
+          },
+          "PPR": {
+            "DST": 24,
+            "ALL": 342
+          },
+          "HALF": {
+            "DST": 24,
+            "ALL": 342
+          },
+          "DYN": {
+            "DST": 20
+          },
+          "BB-HALF": {
+            "DST": 25
+          }
+        },
+        "ECR_MIN": {
+          "WK1-STD": {
+            "DST": 30
+          },
+          "WK1-PPR": {
+            "DST": 30
+          },
+          "WK1-HALF": {
+            "DST": 30
+          },
+          "STD": {
+            "ALL": 184,
+            "DST": 15
+          },
+          "PPR": {
+            "DST": 15,
+            "ALL": 185
+          },
+          "HALF": {
+            "DST": 15,
+            "ALL": 219
+          },
+          "DYN": {
+            "DST": 19
+          },
+          "BB-HALF": {
+            "DST": 22
+          }
+        },
+        "ECR_MAX": {
+          "WK1-STD": {
+            "DST": 31
+          },
+          "WK1-PPR": {
+            "DST": 31
+          },
+          "WK1-HALF": {
+            "DST": 31
+          },
+          "STD": {
+            "ALL": 361,
+            "DST": 30
+          },
+          "PPR": {
+            "DST": 30,
+            "ALL": 367
+          },
+          "HALF": {
+            "DST": 30,
+            "ALL": 380
+          },
+          "DYN": {
+            "DST": 24
+          },
+          "BB-HALF": {
+            "DST": 26
+          }
+        },
+        "ADP": {
+          "BB-HALF": {
+            "ALL": 426,
+            "DST": 24
+          }
+        }
+      }
+    },
+    {
+      "player_id": 8050,
+      "name": "Chicago Bears",
+      "pos": "DST",
+      "team": "CHI",
+      "adp": {
+        "ECR": {
+          "WK1-STD": {
+            "DST": 20
+          },
+          "WK1-PPR": {
+            "DST": 20
+          },
+          "WK1-HALF": {
+            "DST": 20
+          },
+          "STD": {
+            "ALL": 314,
+            "DST": 21
+          },
+          "PPR": {
+            "DST": 21,
+            "ALL": 315
+          },
+          "HALF": {
+            "DST": 21,
+            "ALL": 316
+          },
+          "DYN": {
+            "ALL": 389,
+            "DST": 22
+          },
+          "BB-HALF": {
+            "DST": 23
+          }
+        },
+        "ECR_MIN": {
+          "WK1-STD": {
+            "DST": 14
+          },
+          "WK1-PPR": {
+            "DST": 14
+          },
+          "WK1-HALF": {
+            "DST": 14
+          },
+          "STD": {
+            "ALL": 184,
+            "DST": 13
+          },
+          "PPR": {
+            "DST": 13,
+            "ALL": 185
+          },
+          "HALF": {
+            "DST": 13,
+            "ALL": 189
+          },
+          "DYN": {
+            "ALL": 204,
+            "DST": 18
+          },
+          "BB-HALF": {
+            "DST": 22
+          }
+        },
+        "ECR_MAX": {
+          "WK1-STD": {
+            "DST": 27
+          },
+          "WK1-PPR": {
+            "DST": 27
+          },
+          "WK1-HALF": {
+            "DST": 27
+          },
+          "STD": {
+            "ALL": 347,
+            "DST": 31
+          },
+          "PPR": {
+            "DST": 31,
+            "ALL": 345
+          },
+          "HALF": {
+            "DST": 31,
+            "ALL": 368
+          },
+          "DYN": {
+            "ALL": 369,
+            "DST": 27
+          },
+          "BB-HALF": {
+            "DST": 23
+          }
+        },
+        "ADP": {
+          "BB-HALF": {
+            "ALL": 324,
+            "DST": 12
+          }
+        }
+      }
+    },
+    {
+      "player_id": 8060,
+      "name": "Cincinnati Bengals",
+      "pos": "DST",
+      "team": "CIN",
+      "adp": {
+        "ECR": {
+          "WK1-STD": {
+            "DST": 24
+          },
+          "WK1-PPR": {
+            "DST": 24
+          },
+          "WK1-HALF": {
+            "DST": 24
+          },
+          "STD": {
+            "ALL": 411,
+            "DST": 27
+          },
+          "PPR": {
+            "DST": 27,
+            "ALL": 402
+          },
+          "HALF": {
+            "DST": 27,
+            "ALL": 407
+          },
+          "DYN": {
+            "DST": 31
+          },
+          "BB-HALF": {
+            "DST": 30
+          }
+        },
+        "ECR_MIN": {
+          "WK1-STD": {
+            "DST": 23
+          },
+          "WK1-PPR": {
+            "DST": 23
+          },
+          "WK1-HALF": {
+            "DST": 23
+          },
+          "STD": {
+            "ALL": 211,
+            "DST": 17
+          },
+          "PPR": {
+            "DST": 17,
+            "ALL": 212
+          },
+          "HALF": {
+            "DST": 17,
+            "ALL": 204
+          },
+          "DYN": {
+            "DST": 29
+          },
+          "BB-HALF": {
+            "DST": 27
+          }
+        },
+        "ECR_MAX": {
+          "WK1-STD": {
+            "DST": 27
+          },
+          "WK1-PPR": {
+            "DST": 27
+          },
+          "WK1-HALF": {
+            "DST": 27
+          },
+          "STD": {
+            "ALL": 355,
+            "DST": 31
+          },
+          "PPR": {
+            "DST": 31,
+            "ALL": 357
+          },
+          "HALF": {
+            "DST": 31,
+            "ALL": 378
+          },
+          "DYN": {
+            "DST": 31
+          },
+          "BB-HALF": {
+            "DST": 29
+          }
+        },
+        "ADP": {
+          "BB-HALF": {
+            "ALL": 454,
+            "DST": 27
+          }
+        }
+      }
+    },
+    {
+      "player_id": 8070,
+      "name": "Cleveland Browns",
+      "pos": "DST",
+      "team": "CLE",
+      "adp": {
+        "ECR": {
+          "WK1-STD": {
+            "DST": 15
+          },
+          "WK1-PPR": {
+            "DST": 15
+          },
+          "WK1-HALF": {
+            "DST": 15
+          },
+          "STD": {
+            "ALL": 228,
+            "DST": 15
+          },
+          "PPR": {
+            "DST": 15,
+            "ALL": 235
+          },
+          "HALF": {
+            "DST": 15,
+            "ALL": 250
+          },
+          "DYN": {
+            "ALL": 327,
+            "DST": 15
+          },
+          "BB-HALF": {
+            "ALL": 268,
+            "DST": 12
+          }
+        },
+        "ECR_MIN": {
+          "WK1-STD": {
+            "DST": 14
+          },
+          "WK1-PPR": {
+            "DST": 14
+          },
+          "WK1-HALF": {
+            "DST": 14
+          },
+          "STD": {
+            "ALL": 166,
+            "DST": 5
+          },
+          "PPR": {
+            "DST": 5,
+            "ALL": 167
+          },
+          "HALF": {
+            "DST": 5,
+            "ALL": 169
+          },
+          "DYN": {
+            "ALL": 272,
+            "DST": 11
+          },
+          "BB-HALF": {
+            "ALL": 185,
+            "DST": 12
+          }
+        },
+        "ECR_MAX": {
+          "WK1-STD": {
+            "DST": 17
+          },
+          "WK1-PPR": {
+            "DST": 17
+          },
+          "WK1-HALF": {
+            "DST": 17
+          },
+          "STD": {
+            "ALL": 355,
+            "DST": 25
+          },
+          "PPR": {
+            "DST": 25,
+            "ALL": 356
+          },
+          "HALF": {
+            "DST": 25,
+            "ALL": 355
+          },
+          "DYN": {
+            "ALL": 338,
+            "DST": 18
+          },
+          "BB-HALF": {
+            "ALL": 244,
+            "DST": 13
+          }
+        },
+        "ADP": {
+          "BB-HALF": {
+            "ALL": 325,
+            "DST": 13
+          }
+        }
+      }
+    },
+    {
+      "player_id": 8080,
+      "name": "Dallas Cowboys",
+      "pos": "DST",
+      "team": "DAL",
+      "adp": {
+        "ECR": {
+          "WK1-STD": {
+            "DST": 22
+          },
+          "WK1-PPR": {
+            "DST": 22
+          },
+          "WK1-HALF": {
+            "DST": 22
+          },
+          "STD": {
+            "ALL": 348,
+            "DST": 22
+          },
+          "PPR": {
+            "DST": 22,
+            "ALL": 349
+          },
+          "HALF": {
+            "DST": 22,
+            "ALL": 356
+          },
+          "DYN": {
+            "ALL": 402,
+            "DST": 26
+          },
+          "BB-HALF": {
+            "ALL": 294,
+            "DST": 21
+          }
+        },
+        "ECR_MIN": {
+          "WK1-STD": {
+            "DST": 21
+          },
+          "WK1-PPR": {
+            "DST": 21
+          },
+          "WK1-HALF": {
+            "DST": 21
+          },
+          "STD": {
+            "ALL": 150,
+            "DST": 1
+          },
+          "PPR": {
+            "DST": 1,
+            "ALL": 151
+          },
+          "HALF": {
+            "DST": 1,
+            "ALL": 136
+          },
+          "DYN": {
+            "ALL": 225,
+            "DST": 23
+          },
+          "BB-HALF": {
+            "ALL": 185,
+            "DST": 17
+          }
+        },
+        "ECR_MAX": {
+          "WK1-STD": {
+            "DST": 23
+          },
+          "WK1-PPR": {
+            "DST": 23
+          },
+          "WK1-HALF": {
+            "DST": 23
+          },
+          "STD": {
+            "ALL": 350,
+            "DST": 32
+          },
+          "PPR": {
+            "DST": 32,
+            "ALL": 366
+          },
+          "HALF": {
+            "DST": 32,
+            "ALL": 386
+          },
+          "DYN": {
+            "ALL": 375,
+            "DST": 26
+          },
+          "BB-HALF": {
+            "ALL": 232,
+            "DST": 25
+          }
+        },
+        "ADP": {
+          "BB-HALF": {
+            "ALL": 353,
+            "DST": 22
+          }
+        }
+      }
+    },
+    {
+      "player_id": 8090,
+      "name": "Denver Broncos",
+      "pos": "DST",
+      "team": "DEN",
+      "adp": {
+        "ECR": {
+          "WK1-STD": {
+            "DST": 3
+          },
+          "WK1-PPR": {
+            "DST": 3
+          },
+          "WK1-HALF": {
+            "DST": 3
+          },
+          "STD": {
+            "ALL": 168,
+            "DST": 2
+          },
+          "PPR": {
+            "DST": 2,
+            "ALL": 169
+          },
+          "HALF": {
+            "DST": 2,
+            "ALL": 189
+          },
+          "DYN": {
+            "ALL": 246,
+            "DST": 1
+          },
+          "BB-HALF": {
+            "ALL": 202,
+            "DST": 2
+          }
+        },
+        "ECR_MIN": {
+          "WK1-STD": {
+            "DST": 4
+          },
+          "WK1-PPR": {
+            "DST": 4
+          },
+          "WK1-HALF": {
+            "DST": 4
+          },
+          "STD": {
+            "ALL": 150,
+            "DST": 1
+          },
+          "PPR": {
+            "DST": 1,
+            "ALL": 150
+          },
+          "HALF": {
+            "DST": 1,
+            "ALL": 130
+          },
+          "DYN": {
+            "ALL": 192,
+            "DST": 1
+          },
+          "BB-HALF": {
+            "ALL": 160,
+            "DST": 2
+          }
+        },
+        "ECR_MAX": {
+          "WK1-STD": {
+            "DST": 4
+          },
+          "WK1-PPR": {
+            "DST": 4
+          },
+          "WK1-HALF": {
+            "DST": 4
+          },
+          "STD": {
+            "ALL": 182,
+            "DST": 5
+          },
+          "PPR": {
+            "DST": 5,
+            "ALL": 201
+          },
+          "HALF": {
+            "DST": 5,
+            "ALL": 314
+          },
+          "DYN": {
+            "ALL": 248,
+            "DST": 4
+          },
+          "BB-HALF": {
+            "ALL": 221,
+            "DST": 2
+          }
+        },
+        "ADP": {
+          "BB-HALF": {
+            "ALL": 296,
+            "DST": 4
+          }
+        }
+      }
+    }
+  ],
+  "_summary": {
+    "overall": 0,
+    "QB": 10,
+    "RB": 10,
+    "WR": 10,
+    "TE": 10,
+    "K": 10,
+    "DST": 10,
+    "adp": 10
+  }
 }
