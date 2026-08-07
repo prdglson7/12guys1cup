@@ -33,10 +33,12 @@ function passesInsiderFilter(item) {
 
 // -- Fetcher ----------------------------------------------------------------
 const parser = new Parser({
-  timeout: 15000,
+  timeout: 8000,  // 8s per feed — fail fast on stragglers, keep others rolling
   headers: {
-    'User-Agent': 'Mozilla/5.0 (compatible; 12guys1cup-wire/1.0; +https://12guys1cup.com)',
+    // Reddit rejects generic bots — use a browser-style UA that all our sources accept
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 12guys1cup-wire/1.0',
     'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+    'Accept-Language': 'en-US,en;q=0.9',
   },
 });
 
@@ -174,7 +176,9 @@ async function main() {
   console.log(`  ${out.duration_ms}ms`);
 }
 
-main().catch(err => {
-  console.error(err);
-  process.exit(1);
-});
+main()
+  .then(() => process.exit(0))   // rss-parser holds open sockets; force exit
+  .catch(err => {
+    console.error(err);
+    process.exit(1);
+  });
