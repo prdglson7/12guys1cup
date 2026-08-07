@@ -1,0 +1,78 @@
+name: Update Draft Kit
+
+# Fetches consensus rankings + ADP from FantasyPros every 8 hours.
+# 8 API calls per run × 3 runs/day = 24 calls/day pre-draft.
+#
+# SUNSET: Draft Kit workflow stops running after 2026-09-07 00:00 UTC
+# (draft is 9/6/26). The freed 24 calls/day budget shifts to the
+# news+injuries workflow which doubles its refresh rate.
+
+on:
+  schedule:
+    - cron: "0 */8 * * *"     # every 8 hours (00, 08, 16 UTC)
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/update-draftkit.yml"
+      - ".github/scripts/fetch-draftkit.js"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-draftkit
+  cancel-in-progress: true
+
+env:
+  FP_SEASON: "2026"
+  SUNSET_DATE: "2026-09-07 00:00:00"
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check if past sunset date
+        id: check
+        run: |
+          NOW_EPOCH=$(date -u +%s)
+          SUNSET_EPOCH=$(date -u -d "${SUNSET_DATE}" +%s)
+          NOW_HUMAN=$(date -u -Iseconds)
+          echo "Now:    ${NOW_HUMAN}"
+          echo "Sunset: ${SUNSET_DATE} UTC"
+          if [ "$NOW_EPOCH" -ge "$SUNSET_EPOCH" ]; then
+            echo "should_run=false" >> $GITHUB_OUTPUT
+            echo "::notice::Draft Kit workflow is past sunset date. Skipping."
+          else
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Node
+        if: steps.check.outputs.should_run == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Fetch Draft Kit
+        if: steps.check.outputs.should_run == 'true'
+        env:
+          FANTASYPROS_API_KEY: ${{ secrets.FANTASYPROS_API_KEY }}
+          FP_SEASON: ${{ env.FP_SEASON }}
+        run: node .github/scripts/fetch-draftkit.js
+
+      - name: Commit if changed
+        if: steps.check.outputs.should_run == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/data/draftkit.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Update Draft Kit [skip ci]"
+          git push
