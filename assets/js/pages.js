@@ -111,11 +111,11 @@ async function renderHome() {
       matchupsEl.innerHTML = empty("No matchups posted yet.");
     }
 
-    // Standings snapshot (top 6)
+    // Standings snapshot (all teams)
     const ranked = Array.from(teams.values()).sort((a,b) => {
       if (b.wins !== a.wins) return b.wins - a.wins;
       return b.fpts - a.fpts;
-    }).slice(0, 6);
+    });
     standingsEl.innerHTML = `
       <table class="stats-table">
         <thead><tr><th>#</th><th>Team</th><th>W-L</th><th class="num">PF</th></tr></thead>
@@ -132,7 +132,7 @@ async function renderHome() {
         </tbody>
       </table>`;
 
-    // The wire (top 5) + trending (top 6) + injuries (top 4)
+    // Injury alerts + wire top 6 (trending removed per user preference)
     newsEl.innerHTML = `
       <div class="grid" style="grid-template-columns:1fr;gap:30px;">
         <div>
@@ -149,17 +149,9 @@ async function renderHome() {
           </div>
           <div id="home-wire"></div>
         </div>
-        <div>
-          <div class="section-head" style="margin-bottom:12px;">
-            <h2 style="font-size:22px;">Trending on Sleeper</h2>
-            <span class="meta">Most-added ${(window.Config && window.Config.TRENDING_HOURS) || 24}h</span>
-          </div>
-          <div id="home-trending"></div>
-        </div>
       </div>`;
     renderInjuriesWidget("home-injuries", { limit: 4 });
-    renderWire("home-wire",     { limit: 5 });
-    renderTrending("home-trending", { limit: 6 });
+    renderWire("home-wire",     { limit: 6 });
   } catch (e) {
     heroEl.innerHTML = errBox(`League fetch failed: ${e.message}`);
   }
@@ -287,12 +279,101 @@ function wireItemHtml(item) {
     </div>`;
 }
 
-async function renderWire(containerId, { limit = null } = {}) {
+/* Module-level cache so modal can access items after render */
+let _wireItemsBySource = new Map();
+
+function groupBySource(items) {
+  const groups = new Map();
+  items.forEach(item => {
+    const src = item.source || "UNKNOWN";
+    if (!groups.has(src)) groups.set(src, []);
+    groups.get(src).push(item);
+  });
+  // Sort each group's items newest first (defensive — they're mostly sorted already)
+  groups.forEach(list => list.sort((a, b) => (b.ts || 0) - (a.ts || 0)));
+  return groups;
+}
+
+function sourceCardHtml(source, items) {
+  const recent = items.slice(0, 3);
+  const total24h = items.filter(i => (Date.now() - (i.ts || 0)) < 24*60*60*1000).length;
+  return `
+    <div class="source-card">
+      <div class="source-card-head">
+        <span class="source ${esc(source)}">${esc(source)}</span>
+        <span class="source-count">${total24h} in last 24h</span>
+      </div>
+      <div class="source-card-body">
+        ${recent.map(item => `
+          <div class="source-card-item">
+            <a href="${esc(item.link)}" target="_blank" rel="noopener">${esc(item.title)}</a>
+            <div class="source-card-when">${esc(relTime(item.pubDate))}</div>
+          </div>`).join("")}
+      </div>
+      ${total24h > recent.length
+        ? `<button class="source-see-all" data-source="${esc(source)}">
+             See all ${total24h} from last 24h →
+           </button>`
+        : ""}
+    </div>`;
+}
+
+function openWireModal(source) {
+  const items = (_wireItemsBySource.get(source) || [])
+    .filter(i => (Date.now() - (i.ts || 0)) < 24*60*60*1000);
+
+  // Remove any existing modal
+  const existing = document.getElementById("wire-modal");
+  if (existing) existing.remove();
+
+  const modal = document.createElement("div");
+  modal.id = "wire-modal";
+  modal.className = "modal-overlay";
+  modal.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-head">
+        <div>
+          <span class="source ${esc(source)}">${esc(source)}</span>
+          <span class="modal-count">${items.length} items in last 24 hours</span>
+        </div>
+        <button class="modal-close" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        ${items.length ? items.map(item => `
+          <div class="wire-item">
+            <div class="source ${esc(item.source)}">${esc(item.source)}</div>
+            <div>
+              <h3><a href="${esc(item.link)}" target="_blank" rel="noopener">${esc(item.title)}</a></h3>
+              ${item.description ? `<p>${esc(item.description)}</p>` : ""}
+            </div>
+            <div class="when">${esc(relTime(item.pubDate))}</div>
+          </div>
+        `).join("") : `<div class="state">No items in the last 24 hours.</div>`}
+      </div>
+    </div>`;
+
+  document.body.appendChild(modal);
+  document.body.style.overflow = "hidden";
+
+  const close = () => {
+    modal.remove();
+    document.body.style.overflow = "";
+    document.removeEventListener("keydown", onKey);
+  };
+  const onKey = (e) => { if (e.key === "Escape") close(); };
+
+  modal.querySelector(".modal-close").addEventListener("click", close);
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) close();
+  });
+  document.addEventListener("keydown", onKey);
+}
+
+async function renderWire(containerId, { limit = null, categorized = false } = {}) {
   const el = document.getElementById(containerId);
   if (!el) return;
   el.innerHTML = loading("Pulling the wire…");
 
-  // NFL-only guard for client-side sources (ESPN can include cross-sport)
   const NON_NFL_RE = /\b(nba|mlb|mls|nhl|mma|ufc|pga|lpga|nascar|f1|wnba|soccer|epl|premier league|la liga|serie a|bundesliga|champions league|cricket|tennis|atp|wta|indycar|boxing|wwe|hockey|baseball|basketball)\b/i;
   const isNfl = (it) => !NON_NFL_RE.test(`${it.title || ''} ${it.description || ''}`);
 
@@ -320,8 +401,34 @@ async function renderWire(containerId, { limit = null } = {}) {
       el.innerHTML = empty("The wire is quiet right now. If you just deployed, the first fetch runs within 15 minutes.");
       return;
     }
-    const show = limit ? items.slice(0, limit) : items;
-    el.innerHTML = show.map(wireItemHtml).join("");
+
+    if (categorized) {
+      // Group by source, render one card per source
+      _wireItemsBySource = groupBySource(items);
+
+      // Preferred display order — pin important ones first, others alphabetical
+      const priority = ["ESPN", "FANTASYPROS", "PFT", "ROTOWIRE", "ROTOBALLER", "PFF", "R-NFL", "R-FF"];
+      const sources = Array.from(_wireItemsBySource.keys()).sort((a, b) => {
+        const pa = priority.indexOf(a), pb = priority.indexOf(b);
+        if (pa !== -1 && pb !== -1) return pa - pb;
+        if (pa !== -1) return -1;
+        if (pb !== -1) return 1;
+        return a.localeCompare(b);
+      });
+
+      el.innerHTML = `<div class="source-grid">${
+        sources.map(src => sourceCardHtml(src, _wireItemsBySource.get(src))).join("")
+      }</div>`;
+
+      // Wire up "See all" buttons
+      el.querySelectorAll(".source-see-all").forEach(btn => {
+        btn.addEventListener("click", () => openWireModal(btn.dataset.source));
+      });
+    } else {
+      // Legacy compact list for the home page
+      const show = limit ? items.slice(0, limit) : items;
+      el.innerHTML = show.map(wireItemHtml).join("");
+    }
   } catch (e) {
     el.innerHTML = errBox("Wire is down. Try again in a bit.");
   }
@@ -476,14 +583,11 @@ function renderInsiders(containerId) {
 
 /* ---------- NEWS page: orchestrates all three sections ---------- */
 async function renderNews() {
-  // Kick these off in parallel — none blocks the others
-  renderWire("wire-list");
-  renderTrending("trending-list");
-  // Insiders section removed — X's syndication API returns 429 (rate limited)
-  // for embedded timelines from third-party sites. Reddit-based insider news
-  // now flows into The Wire via r/nfl and r/fantasyfootball with keyword filter.
+  // The Wire in categorized mode — one card per source
+  renderWire("wire-list", { categorized: true });
+  // Trending and Insiders removed per user preference
 
-  // ESPN features section + rostered-player filter (existing behavior)
+  // Feature stories — top 3 recent, click to see more
   const listEl = document.getElementById("news-list");
   if (!listEl) return;
   listEl.innerHTML = loading("Fetching feature stories…");
@@ -491,16 +595,20 @@ async function renderNews() {
   let articles = [];
   let rosteredSet = null;
   let filterRostered = false;
+  let expanded = false;
   const filterEl = document.getElementById("news-filter");
 
   const paint = () => {
-    const show = filterRostered
+    const source = filterRostered
       ? articles.filter(a => articleTouchesRoster(a, rosteredSet))
       : articles;
-    if (!show.length) {
+    if (!source.length) {
       listEl.innerHTML = empty(filterRostered ? "No features touching a rostered player right now." : "No features available.");
       return;
     }
+    const show = expanded ? source : source.slice(0, 3);
+    const remaining = source.length - show.length;
+
     listEl.innerHTML = show.map(a => {
       const isRostered = rosteredSet && articleTouchesRoster(a, rosteredSet);
       return `
@@ -512,7 +620,17 @@ async function renderNews() {
           <h3><a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.headline)}</a></h3>
           <p>${esc(a.description)}</p>
         </div>`;
-    }).join("");
+    }).join("") + (remaining > 0
+      ? `<button class="source-see-all" id="features-expand">Show all ${source.length} features →</button>`
+      : "");
+
+    const expandBtn = document.getElementById("features-expand");
+    if (expandBtn) {
+      expandBtn.addEventListener("click", () => {
+        expanded = true;
+        paint();
+      });
+    }
   };
 
   try {
@@ -535,6 +653,7 @@ async function renderNews() {
         btn.addEventListener("click", () => {
           filterRostered = !filterRostered;
           btn.classList.toggle("active", filterRostered);
+          expanded = false;
           paint();
         });
         filterEl.appendChild(btn);
