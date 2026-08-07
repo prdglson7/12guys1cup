@@ -1,0 +1,89 @@
+name: Update FantasyPros feed
+
+# Fetches NFL news from FantasyPros every 2 hours and commits
+# the result to assets/data/fantasypros.json so the static site
+# can read it without exposing the API key.
+#
+# Rate math: 12 runs/day × 1 endpoint = 12 requests/day
+# FantasyPros free personal tier is 50/day. Plenty of headroom.
+#
+# SETUP:
+#   Repo → Settings → Secrets and variables → Actions → New repository secret
+#   Name:  FANTASYPROS_API_KEY
+#   Value: your FantasyPros API key
+#
+# The workflow needs write access to commit back to the repo, which is
+# granted below via `permissions`.
+
+on:
+  schedule:
+    - cron: "0 */2 * * *"   # every 2 hours on the hour (UTC)
+  workflow_dispatch:         # manual trigger button in the Actions tab
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/update-fantasypros.yml"   # re-run on workflow edits
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch FantasyPros news
+        env:
+          FP_KEY: ${{ secrets.FANTASYPROS_API_KEY }}
+        run: |
+          set -e
+          mkdir -p assets/data
+
+          if [ -z "$FP_KEY" ]; then
+            echo "::error::FANTASYPROS_API_KEY secret is not set. See workflow file header for setup steps."
+            exit 1
+          fi
+
+          # Fetch NFL news. Retry once on transient failure.
+          for attempt in 1 2; do
+            HTTP_CODE=$(curl -sS -o /tmp/fp.json -w "%{http_code}" \
+              -H "x-api-key: $FP_KEY" \
+              "https://api.fantasypros.com/v2/json/nfl/news" || echo "000")
+            if [ "$HTTP_CODE" = "200" ]; then break; fi
+            echo "Attempt $attempt got HTTP $HTTP_CODE, retrying in 10s…"
+            sleep 10
+          done
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::FantasyPros returned HTTP $HTTP_CODE"
+            cat /tmp/fp.json || true
+            exit 1
+          fi
+
+          # Validate JSON and pretty-print for cleaner diffs
+          if ! jq empty /tmp/fp.json 2>/dev/null; then
+            echo "::error::Response was not valid JSON"
+            head -c 500 /tmp/fp.json
+            exit 1
+          fi
+
+          # Add a fetched_at timestamp so the client can show freshness
+          jq --arg t "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            '. + {fetched_at: $t}' /tmp/fp.json > assets/data/fantasypros.json
+
+          echo "Wrote assets/data/fantasypros.json"
+          echo "Item count: $(jq '.items | length' assets/data/fantasypros.json)"
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet assets/data/fantasypros.json; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git add assets/data/fantasypros.json
+          git commit -m "Update FantasyPros feed [skip ci]"
+          git push
