@@ -8,7 +8,8 @@ const { getState, getLeague, getUsers, getRosters, getMatchups,
         getTransactions, getWinnersBracket, getPlayers,
         buildTeamMap, computePowerRankings } = window.Sleeper;
 const { getEspnNews, rosteredPlayerNames, articleTouchesRoster,
-        getSleeperTrending, fetchAllRss, getFantasyProsNews, getFantasyProsInjuries } = window.News;
+        getSleeperTrending, fetchAllRss, fetchAllReddit,
+        getFantasyProsNews, getFantasyProsInjuries, getWireStatic } = window.News;
 const { loading, empty, errBox, esc, fmt1, fmt2, relTime, avatarUrl } = window.UI;
 
 /* ---------- Cached shared bootstrap ---------- */
@@ -291,17 +292,18 @@ async function renderWire(containerId, { limit = null } = {}) {
   if (!el) return;
   el.innerHTML = loading("Pulling the wire…");
   try {
-    // Fetch RSS and FantasyPros in parallel — either can fail independently
-    const [rssResult, fpResult] = await Promise.allSettled([
-      fetchAllRss(),
+    // Static wire (pre-fetched by GitHub Action, cached in localStorage)
+    // + FantasyPros (separate workflow) in parallel
+    const [wireResult, fpResult] = await Promise.allSettled([
+      getWireStatic(),
       getFantasyProsNews(),
     ]);
-    const rss = rssResult.status === "fulfilled" ? rssResult.value : [];
-    const fp  = fpResult.status  === "fulfilled" ? fpResult.value  : [];
-    const items = [...rss, ...fp].sort((a, b) => (b.ts || 0) - (a.ts || 0));
+    const wire = wireResult.status === "fulfilled" ? (wireResult.value.items || []) : [];
+    const fp   = fpResult.status   === "fulfilled" ? fpResult.value : [];
+    const items = [...wire, ...fp].sort((a, b) => (b.ts || 0) - (a.ts || 0));
 
     if (!items.length) {
-      el.innerHTML = empty("The wire is quiet right now.");
+      el.innerHTML = empty("The wire is quiet right now. If you just deployed, the first fetch runs within 15 minutes.");
       return;
     }
     const show = limit ? items.slice(0, limit) : items;
