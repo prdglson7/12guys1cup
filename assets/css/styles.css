@@ -625,6 +625,19 @@ main { padding: 32px 0 60px; }
   letter-spacing: 2px;
   color: var(--red);
 }
+.insider-followcard {
+  padding: 30px 20px;
+  text-align: center;
+  font-family: var(--f-body);
+  color: var(--brown);
+}
+.insider-followcard p {
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+.insider-followcard a.control {
+  text-decoration: none;
+}
 
 /* ---- Injuries ---- */
 .injury-summary-grid {
