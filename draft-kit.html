@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draft Kit — 12 Guys 1 Cup</title>
+  <link rel="icon" href="assets/img/logo.jpg">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header id="site-header" class="site-header"></header>
+  <nav id="site-nav" class="site-nav"></nav>
+
+  <main class="wrap">
+    <section class="section">
+      <div class="section-head">
+        <h2>Draft Kit</h2>
+        <span class="meta" id="dk-meta">Rankings, ADP & projections</span>
+      </div>
+      <div id="dk-controls" class="controls"></div>
+      <div id="dk-board"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>ADP comparison</h2>
+        <span class="meta">Where you can steal value</span>
+      </div>
+      <div id="dk-adp"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Sleepers &amp; steals</h2>
+        <span class="meta">Rank vs. ADP gaps</span>
+      </div>
+      <div id="dk-sleepers"></div>
+    </section>
+  </main>
+
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/sleeper.js"></script>
+  <script src="assets/js/news.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+  <script>
+    UI.renderChrome("draft-kit.html");
+    Pages.renderDraftKit();
+  </script>
+</body>
+</html>
