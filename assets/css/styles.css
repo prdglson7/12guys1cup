@@ -1299,6 +1299,131 @@ main { padding: 32px 0 60px; }
   border-left: 4px solid var(--gold);
 }
 
+/* Quick nav — sticky anchor bar for jumping between UDK sections */
+.dk-quicknav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--cream);
+  border-bottom: 3px solid var(--navy);
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  overflow-x: auto;
+}
+.dk-nav-link {
+  font-family: var(--f-sign);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: var(--navy);
+  padding: 6px 12px;
+  border: 2px solid var(--navy);
+  background: var(--paper);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.dk-nav-link:hover {
+  background: var(--navy);
+  color: var(--gold);
+}
+
+/* VBD section — flagship look, gold accents */
+.dk-baseline-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 14px;
+  background: rgba(232, 184, 74, 0.15);
+  border: 2px solid var(--gold-dark);
+  margin-bottom: 12px;
+}
+.dk-baseline-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--paper);
+  border: 1px solid var(--navy);
+}
+.dk-baseline-val {
+  font-family: var(--f-mono);
+  font-weight: 700;
+  color: var(--navy);
+  font-size: 14px;
+}
+.dk-baseline-note {
+  margin-top: 0;
+}
+.dk-vbd-card {
+  border-left: 6px solid var(--gold);
+}
+.dk-vbd-card .dk-vbd-rank {
+  color: var(--gold-dark);
+  background: rgba(232, 184, 74, 0.12);
+}
+
+/* Bust card — red left stripe, warning vibes */
+.dk-bust {
+  border-left: 6px solid var(--red-dark);
+}
+.dk-bust .dk-rank {
+  color: var(--red-dark);
+}
+
+/* RB Handcuff pair layout */
+.dk-handcuff-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.dk-handcuff-pair {
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+.dk-handcuff-arrow {
+  font-family: var(--f-display);
+  font-size: 28px;
+  color: var(--red);
+  text-align: center;
+  line-height: 1;
+}
+.dk-handcuff-starter {
+  border-left: 6px solid var(--red);
+}
+.dk-handcuff-backup {
+  border-left: 6px solid var(--brown);
+  background: rgba(139, 90, 60, 0.08);
+}
+.dk-hc-role {
+  grid-column: 1 / -1;
+  font-family: var(--f-sign);
+  letter-spacing: 2px;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--brown);
+  text-align: center;
+  padding-top: 6px;
+  border-top: 1px dashed var(--cream-2);
+  margin-top: 8px;
+}
+
+@media (max-width: 640px) {
+  .dk-handcuff-pair {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .dk-handcuff-arrow {
+    transform: rotate(90deg);
+    font-size: 22px;
+    padding: 4px 0;
+  }
+}
+
 /* Responsive tweaks for cards on narrow screens */
 @media (max-width: 640px) {
   .dk-cards { grid-template-columns: 1fr; }
