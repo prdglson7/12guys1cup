@@ -48,15 +48,10 @@ window.Config = {
     { tag: "ROTOWIRE",   url: "https://www.rotowire.com/rss/news.php?sport=NFL" },
     { tag: "PFF",        url: "https://www.pff.com/feed" },
 
-    // RotoBaller — NFL-only category feeds. All tagged ROTOBALLER,
-    // duplicates deduped by URL in the workflow.
-    // The main /feed and /player-news/feed are all-sports (MLB, NBA, NHL,
-    // MMA, UFC, PGA, NASCAR) so we don't use them.
+    // RotoBaller — only /category/nfl/feed reliably returns content.
+    // Other category slugs (nfl-injury-news, nfl-dfs, nfl-player-news,
+    // fantasy-football) exist but return empty feeds.
     { tag: "ROTOBALLER", url: "https://www.rotoballer.com/category/nfl/feed" },
-    { tag: "ROTOBALLER", url: "https://www.rotoballer.com/category/fantasy-football/feed" },
-    { tag: "ROTOBALLER", url: "https://www.rotoballer.com/category/nfl-injury-news/feed" },
-    { tag: "ROTOBALLER", url: "https://www.rotoballer.com/category/nfl-dfs/feed" },
-    { tag: "ROTOBALLER", url: "https://www.rotoballer.com/category/nfl-player-news/feed" },
 
     // Reddit RSS with insider-keyword filter — free, catches insider tweet
     // reposts within 30-60 seconds of them dropping
