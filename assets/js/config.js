@@ -18,26 +18,24 @@ window.Config = {
   INSIDER_KEYWORDS: [],
 
   /* RSS feeds pulled into "The Wire".
+     type field: "rss" (default) or "espn-json" for ESPN's JSON API.
      Add/remove freely. If one is down it'll just be skipped.
 
-     The last block uses RSSHub (a free public service that scrapes X/Twitter
-     profiles and produces RSS). It's occasionally rate-limited or down —
-     when it works, you get insider tweets live in your Wire. When it
-     doesn't, the section is silently skipped. Zero downside to trying. */
+     Insider feeds via rss.app go here too — see the docs for how to add. */
   RSS_FEEDS: [
     { tag: "PFT",        url: "https://profootballtalk.nbcsports.com/feed/" },
     { tag: "ROTOWIRE",   url: "https://www.rotowire.com/rss/news.php?sport=NFL" },
     { tag: "ROTOBALLER", url: "https://www.rotoballer.com/feed" },
-    { tag: "NFLCOM",     url: "https://www.nfl.com/feeds/rss/news" },
-    { tag: "ESPN",       url: "https://www.espn.com/espn/rss/nfl/news" },
     { tag: "PFF",        url: "https://www.pff.com/feed" },
+    { tag: "ESPN",       url: "https://site.api.espn.com/apis/site/v2/sports/football/nfl/news?limit=25", type: "espn-json" },
 
-    // Insider tweets via RSSHub — may not always work but worth trying
-    { tag: "SCHEFTER",   url: "https://rsshub.app/twitter/user/AdamSchefter" },
-    { tag: "RAPOPORT",   url: "https://rsshub.app/twitter/user/RapSheet" },
-    { tag: "PELISSERO",  url: "https://rsshub.app/twitter/user/TomPelissero" },
-    { tag: "SCHULTZ",    url: "https://rsshub.app/twitter/user/Schultz_Report" },
-    { tag: "RUSSINI",    url: "https://rsshub.app/twitter/user/DMRussini" },
+    // Insider tweets via rss.app — replace these URLs after signing up
+    // and generating feeds for each insider. Free trial is 7 days, then $8/mo.
+    // { tag: "SCHEFTER",   url: "https://rss.app/feeds/YOUR_ID.xml" },
+    // { tag: "RAPOPORT",   url: "https://rss.app/feeds/YOUR_ID.xml" },
+    // { tag: "PELISSERO",  url: "https://rss.app/feeds/YOUR_ID.xml" },
+    // { tag: "SCHULTZ",    url: "https://rss.app/feeds/YOUR_ID.xml" },
+    // { tag: "RUSSINI",    url: "https://rss.app/feeds/YOUR_ID.xml" },
   ],
 
   /* CORS proxy — allorigins is free and unlimited but occasionally slow.
