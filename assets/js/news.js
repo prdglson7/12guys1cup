@@ -265,10 +265,154 @@ async function getDraftKit() {
   return data;
 }
 
+/* ---- FantasyPros CSV overlay (weekly manual upload) ---- */
+
+function _parseCsv(text) {
+  const lines = text.split(/\r?\n/);
+  const parseLine = (line) => {
+    const cells = [];
+    let cur = '', inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') {
+        if (inQuotes && line[i+1] === '"') { cur += '"'; i++; }
+        else inQuotes = !inQuotes;
+      } else if (c === ',' && !inQuotes) {
+        cells.push(cur); cur = '';
+      } else {
+        cur += c;
+      }
+    }
+    cells.push(cur);
+    return cells.map(s => s.trim());
+  };
+  return lines.map(parseLine);
+}
+
+const _toNum = (v) => {
+  if (v == null || v === '') return null;
+  const n = Number(String(v).replace(/[,%]/g, '').trim());
+  return isFinite(n) ? n : null;
+};
+
+/* Sleepers CSV — one file per position.
+   Columns: Rank, Tier, [PositionName], Team, Bye, Num Experts, ECR, ADP */
+async function getFpSleepers(pos) {
+  const file = `sleepers-${pos.toLowerCase()}.csv`;
+  try {
+    const res = await fetch(`assets/data/fp-csv/${file}`, { cache: "no-cache" });
+    if (!res.ok) return { rows: [], hasData: false };
+    const text = await res.text();
+    const rows = _parseCsv(text).filter(r => r.length >= 4);
+    if (rows.length < 2) return { rows: [], hasData: false };
+
+    const header = rows[0].map(h => h.toLowerCase());
+    // Skip empty trailing rows and the header
+    const players = rows.slice(1)
+      .filter(r => r[0] && r[0] !== '' && r[2])
+      .map(r => ({
+        rank: _toNum(r[0]),
+        tier: _toNum(r[1]),
+        name: r[2],
+        team: (r[3] || '').toUpperCase(),
+        bye: r[4] || '',
+        experts: _toNum(r[5]),
+        ecr: _toNum(r[6]),
+        adp: _toNum(r[7]),
+        pos: pos.toUpperCase(),
+      }))
+      .filter(p => p.name && p.name !== '');
+
+    return { rows: players, hasData: players.length > 0 };
+  } catch (e) {
+    return { rows: [], hasData: false, error: e.message };
+  }
+}
+
+/* Busts CSV — multi-section file with all positions in one.
+   Format: section header row (empty first cell + position name in cell 2),
+   then data rows where first cell is "<Position> Busts", then blank row.
+   May contain "No busts found for the filters selected" rows to skip. */
+async function getFpBusts() {
+  try {
+    const res = await fetch(`assets/data/fp-csv/busts.csv`, { cache: "no-cache" });
+    if (!res.ok) return { rows: [], hasData: false };
+    const text = await res.text();
+    const rows = _parseCsv(text);
+    if (rows.length < 2) return { rows: [], hasData: false };
+
+    const POS_MAP = {
+      'running backs': 'RB',
+      'wide receivers': 'WR',
+      'quarterbacks': 'QB',
+      'tight ends': 'TE',
+    };
+
+    const players = [];
+    let currentPos = null;
+
+    for (const r of rows) {
+      // Section header: first cell empty, second cell has position name
+      if ((!r[0] || r[0] === '') && r[1] && POS_MAP[r[1].toLowerCase()]) {
+        currentPos = POS_MAP[r[1].toLowerCase()];
+        continue;
+      }
+      // Skip blank rows
+      if (r.every(c => !c || c === '')) continue;
+      // Skip "No busts found" placeholder rows
+      if (r[1] && r[1].toLowerCase().includes('no busts found')) continue;
+      // Data row — first cell is like "Running Back Busts", second is player name
+      if (r[0] && r[0].toLowerCase().includes('bust') && r[1] && currentPos) {
+        players.push({
+          pos: currentPos,
+          name: r[1],
+          team: (r[2] || '').toUpperCase(),
+          rank: _toNum(r[3]),
+          adp: _toNum(r[4]),
+          delta: _toNum(r[5]),  // vs. ADP — negative means being drafted ahead of rank
+        });
+      }
+    }
+
+    return { rows: players, hasData: players.length > 0 };
+  } catch (e) {
+    return { rows: [], hasData: false, error: e.message };
+  }
+}
+
+/* Handcuffs CSV — single file, one row per team.
+   Columns: TEAM, PROJECTED STARTER, ECR, HANDCUFF, ECR, ADP */
+async function getFpHandcuffs() {
+  try {
+    const res = await fetch(`assets/data/fp-csv/handcuffs.csv`, { cache: "no-cache" });
+    if (!res.ok) return { rows: [], hasData: false };
+    const text = await res.text();
+    const rows = _parseCsv(text).filter(r => r.length >= 6 && r[0]);
+    if (rows.length < 2) return { rows: [], hasData: false };
+
+    // First row is header
+    const pairs = rows.slice(1)
+      .filter(r => r[0] && r[1] && r[3])
+      .map(r => ({
+        team: r[0],
+        starter_name: r[1],
+        starter_ecr: _toNum(r[2]),
+        handcuff_name: r[3],
+        handcuff_ecr: _toNum(r[4]),
+        handcuff_adp_text: r[5] || '',
+      }));
+
+    return { rows: pairs, hasData: pairs.length > 0 };
+  } catch (e) {
+    return { rows: [], hasData: false, error: e.message };
+  }
+}
+
 window.News = {
   getEspnNews, rosteredPlayerNames, articleTouchesRoster,
   getSleeperTrending, fetchRssFeed, fetchAllRss,
   fetchSubreddit, fetchAllReddit,
   getFantasyProsNews, getFantasyProsInjuries,
   getWireStatic, getDraftKit,
+  getFpSleepers, getFpBusts, getFpHandcuffs,
 };
