@@ -1161,6 +1161,17 @@ async function renderInjuriesWidget(containerId, { limit = 5 } = {}) {
 
 /* ---------- DRAFT KIT (FantasyPros HOF exclusively) ---------- */
 
+/* Safe number formatter — FP sometimes returns numeric fields as strings.
+   Coerce first, then format. Returns '—' for anything that isn't a real number. */
+function toFix(v, d) {
+  const n = Number(v);
+  return isFinite(n) ? n.toFixed(d != null ? d : 1) : '—';
+}
+function toNum(v) {
+  const n = Number(v);
+  return isFinite(n) ? n : null;
+}
+
 function _pillClass(pos) {
   return `pos-pill pos-${(pos || 'FLEX').toLowerCase()}`;
 }
@@ -1169,8 +1180,10 @@ function _pillClass(pos) {
 function draftCardHtml(row) {
   const bye = row.bye ? `<span class="dk-bye">BYE ${esc(row.bye)}</span>` : '';
   const posRankBadge = row.pos_rank ? `<span class="dk-pos-rank">${esc(row.pos_rank)}</span>` : '';
-  const adpDelta = (row.adp != null && row.rank != null)
-    ? Math.round(row.adp) - row.rank
+  const adpNum = toNum(row.adp);
+  const rankNum = toNum(row.rank);
+  const adpDelta = (adpNum != null && rankNum != null)
+    ? Math.round(adpNum) - rankNum
     : null;
   const adpBadge = adpDelta !== null && Math.abs(adpDelta) >= 3
     ? `<span class="rank-delta ${adpDelta > 0 ? 'up' : 'down'}">${adpDelta > 0 ? '+' : ''}${adpDelta}</span>`
@@ -1189,12 +1202,12 @@ function draftCardHtml(row) {
         </div>
       </div>
       <div class="dk-stats">
-        <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${row.adp != null ? row.adp.toFixed(1) : '—'} ${adpBadge}</span></div>
-        <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${row.proj_pts != null ? Math.round(row.proj_pts) : '—'}</span></div>
+        <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${toFix(row.adp)} ${adpBadge}</span></div>
+        <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${row.proj_pts != null ? Math.round(toNum(row.proj_pts)) : '—'}</span></div>
         <div class="dk-stat"><span class="lbl">Tier</span><span class="val">${row.tier ?? '—'}</span></div>
         <div class="dk-stat"><span class="lbl">Best</span><span class="val gold">${row.best_rank ?? '—'}</span></div>
         <div class="dk-stat"><span class="lbl">Worst</span><span class="val">${row.worst_rank ?? '—'}</span></div>
-        <div class="dk-stat"><span class="lbl">Std</span><span class="val">${row.std_dev != null ? Number(row.std_dev).toFixed(1) : '—'}</span></div>
+        <div class="dk-stat"><span class="lbl">Std</span><span class="val">${toFix(row.std_dev)}</span></div>
       </div>
     </div>`;
 }
@@ -1249,23 +1262,44 @@ function renderDraftBoard(rows) {
 }
 
 async function renderDraftKit() {
-  const boardEl    = document.getElementById("dk-board");
-  const controlsEl = document.getElementById("dk-controls");
-  const adpEl      = document.getElementById("dk-adp");
-  const sleepersEl = document.getElementById("dk-sleepers");
-  const metaEl     = document.getElementById("dk-meta");
+  const boardEl     = document.getElementById("dk-board");
+  const controlsEl  = document.getElementById("dk-controls");
+  const adpEl       = document.getElementById("dk-adp");
+  const sleepersEl  = document.getElementById("dk-sleepers");
+  const bustsEl     = document.getElementById("dk-busts");
+  const vbdEl       = document.getElementById("dk-vbd");
+  const handcuffsEl = document.getElementById("dk-handcuffs");
+  const quicknavEl  = document.getElementById("dk-quicknav");
+  const metaEl      = document.getElementById("dk-meta");
   if (boardEl) boardEl.innerHTML = loading("Loading Draft Kit…");
 
   try {
     const dk = await getDraftKit();
     const positions = ["overall", "QB", "RB", "WR", "TE", "K", "DST"];
 
+    // Meta line
     const fetched = dk.fetched_at ? new Date(dk.fetched_at) : null;
     const totalPlayers = (dk._summary && dk._summary.overall) || 0;
     if (metaEl) {
       metaEl.textContent = `${totalPlayers} players ranked${fetched ? ' • updated ' + relTime(fetched.toISOString()) : ''} • FantasyPros HOF • ${dk.scoring || 'PPR'}`;
     }
 
+    // Quick nav — sticky anchor bar
+    if (quicknavEl) {
+      const links = [
+        { id: 'sec-board',     label: 'Board' },
+        { id: 'sec-vbd',       label: 'VBD' },
+        { id: 'sec-sleepers',  label: 'Sleepers' },
+        { id: 'sec-busts',     label: 'Busts' },
+        { id: 'sec-handcuffs', label: 'Handcuffs' },
+        { id: 'sec-values',    label: 'Values' },
+      ];
+      quicknavEl.innerHTML = links.map(l =>
+        `<a href="#${l.id}" class="dk-nav-link">${l.label}</a>`
+      ).join("");
+    }
+
+    // ========== BOARD (position tabs + tiers) ==========
     let activePos = "overall";
     let searchTerm = "";
 
@@ -1293,8 +1327,7 @@ async function renderDraftKit() {
       </div>`;
 
     const paintBoard = () => {
-      const rows = buildRows();
-      boardEl.innerHTML = renderDraftBoard(rows);
+      boardEl.innerHTML = renderDraftBoard(buildRows());
     };
 
     controlsEl.querySelectorAll(".dk-tab").forEach(btn => {
@@ -1319,10 +1352,229 @@ async function renderDraftKit() {
 
     paintBoard();
 
-    // ---------- Value picks (drafted later than they're ranked) ----------
-    const withAdp = (dk.rankings.overall || []).filter(r => r.adp != null && r.rank != null);
+    // ========== VBD (Value Based Drafting) ==========
+    // Baselines for 12-team full PPR:
+    //   QB=QB12, RB=RB30 (incl flex), WR=WR36 (incl flex), TE=TE12, K=K12, DST=DST12
+    const BASELINES = { QB: 12, RB: 30, WR: 36, TE: 12, K: 12, DST: 12 };
+
+    const getBaselineProj = (pos) => {
+      const arr = (dk.rankings[pos] || [])
+        .map(p => toNum(p.proj_pts))
+        .filter(n => n != null)
+        .sort((a, b) => b - a);
+      const idx = (BASELINES[pos] || 12) - 1;
+      return arr[idx] != null ? arr[idx] : (arr.length ? arr[arr.length - 1] : 0);
+    };
+
+    const baselines = {
+      QB:  getBaselineProj("QB"),
+      RB:  getBaselineProj("RB"),
+      WR:  getBaselineProj("WR"),
+      TE:  getBaselineProj("TE"),
+      K:   getBaselineProj("K"),
+      DST: getBaselineProj("DST"),
+    };
+
+    const vbdRows = (dk.rankings.overall || [])
+      .map(r => {
+        const pts = toNum(r.proj_pts);
+        const base = baselines[r.pos] || 0;
+        return { ...r, _vbd: (pts != null && base != null) ? pts - base : null, _proj: pts };
+      })
+      .filter(r => r._vbd != null)
+      .sort((a, b) => b._vbd - a._vbd)
+      .slice(0, 100);
+
+    if (vbdRows.length) {
+      vbdEl.innerHTML = `
+        <div class="dk-baseline-strip">
+          ${Object.entries(baselines).map(([pos, val]) =>
+            `<div class="dk-baseline-item">
+               <span class="${_pillClass(pos)}">${pos}</span>
+               <span class="dk-baseline-val">${val ? Math.round(val) : '—'}</span>
+             </div>`).join("")}
+        </div>
+        <p class="dk-note dk-baseline-note">
+          VBD = projected points − position baseline. Baselines above are the projected points
+          of the last startable player at each position in a 12-team full-PPR league
+          (QB12, RB30, WR36, TE12, K12, DST12).
+        </p>
+        <div class="dk-cards">
+          ${vbdRows.slice(0, 60).map((r, i) => `
+            <div class="dk-card dk-vbd-card">
+              <div class="dk-rank dk-vbd-rank">${i + 1}</div>
+              <div class="dk-info">
+                <div class="dk-name">${esc(r.name)}</div>
+                <div class="dk-meta">
+                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
+                  <span class="dk-team">${esc(r.team)}</span>
+                  ${r.bye ? `<span class="dk-bye">BYE ${esc(r.bye)}</span>` : ''}
+                  <span class="dk-fp">ECR ${r.rank ?? '—'}</span>
+                </div>
+              </div>
+              <div class="dk-stats">
+                <div class="dk-stat"><span class="lbl">VBD</span><span class="val gold">${Math.round(r._vbd)}</span></div>
+                <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${r._proj != null ? Math.round(r._proj) : '—'}</span></div>
+                <div class="dk-stat"><span class="lbl">Base</span><span class="val">${Math.round(baselines[r.pos] || 0)}</span></div>
+                <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${toFix(r.adp)}</span></div>
+              </div>
+            </div>`).join("")}
+        </div>`;
+    } else {
+      vbdEl.innerHTML = empty("VBD needs projection data. If this stays empty, check the workflow logs.");
+    }
+
+    // ========== SLEEPERS (rank << ADP) ==========
+    // Formula: sleeper_score = ADP - ECR (higher = bigger sleeper)
+    const sleeperRows = (dk.rankings.overall || [])
+      .map(r => {
+        const adp = toNum(r.adp), rank = toNum(r.rank);
+        return { ...r, _adp: adp, _rank: rank, _score: (adp != null && rank != null) ? adp - rank : null };
+      })
+      .filter(r => r._score != null && r._score >= 15 && r._rank > 30 && r._rank <= 200)
+      .sort((a, b) => b._score - a._score)
+      .slice(0, 25);
+
+    if (sleeperRows.length) {
+      sleepersEl.innerHTML = `
+        <div class="dk-cards">
+          ${sleeperRows.map(r => `
+            <div class="dk-card dk-sleeper">
+              <div class="dk-rank">${r._rank}</div>
+              <div class="dk-info">
+                <div class="dk-name">${esc(r.name)}</div>
+                <div class="dk-meta">
+                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
+                  <span class="dk-team">${esc(r.team)}</span>
+                  ${r.bye ? `<span class="dk-bye">BYE ${esc(r.bye)}</span>` : ''}
+                </div>
+              </div>
+              <div class="dk-stats">
+                <div class="dk-stat"><span class="lbl">Score</span><span class="val gold">+${Math.round(r._score)}</span></div>
+                <div class="dk-stat"><span class="lbl">ECR</span><span class="val">${r._rank}</span></div>
+                <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${toFix(r._adp)}</span></div>
+                <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${r.proj_pts != null ? Math.round(toNum(r.proj_pts)) : '—'}</span></div>
+              </div>
+            </div>`).join("")}
+        </div>
+        <p class="dk-note">
+          Sleeper Score = ADP − ECR. Bigger score = drafted much later than experts rank.
+          Filtered to players ranked #31–200 with a gap of at least 15 spots.
+        </p>`;
+    } else {
+      sleepersEl.innerHTML = empty("No sleepers matching the filter right now.");
+    }
+
+    // ========== BUSTS (ECR >> ADP — going too early) ==========
+    // Formula: bust_score = ECR - ADP (higher = more overdrafted)
+    const bustRows = (dk.rankings.overall || [])
+      .map(r => {
+        const adp = toNum(r.adp), rank = toNum(r.rank);
+        return { ...r, _adp: adp, _rank: rank, _score: (adp != null && rank != null) ? rank - adp : null };
+      })
+      .filter(r => r._score != null && r._score >= 10 && r._adp < 60)
+      .sort((a, b) => b._score - a._score)
+      .slice(0, 20);
+
+    if (bustRows.length) {
+      bustsEl.innerHTML = `
+        <div class="dk-cards">
+          ${bustRows.map(r => `
+            <div class="dk-card dk-bust">
+              <div class="dk-rank">${r._rank}</div>
+              <div class="dk-info">
+                <div class="dk-name">${esc(r.name)}</div>
+                <div class="dk-meta">
+                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
+                  <span class="dk-team">${esc(r.team)}</span>
+                  ${r.bye ? `<span class="dk-bye">BYE ${esc(r.bye)}</span>` : ''}
+                </div>
+              </div>
+              <div class="dk-stats">
+                <div class="dk-stat"><span class="lbl">Bust</span><span class="val down">+${Math.round(r._score)}</span></div>
+                <div class="dk-stat"><span class="lbl">ECR</span><span class="val">${r._rank}</span></div>
+                <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${toFix(r._adp)}</span></div>
+                <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${r.proj_pts != null ? Math.round(toNum(r.proj_pts)) : '—'}</span></div>
+              </div>
+            </div>`).join("")}
+        </div>
+        <p class="dk-note">
+          Bust Score = ECR − ADP. Higher score = drafted much earlier than experts rank.
+          Filtered to top-60 ADP with a gap of at least 10 spots — where overreaching hurts.
+        </p>`;
+    } else {
+      bustsEl.innerHTML = empty("No busts matching the filter right now.");
+    }
+
+    // ========== RB HANDCUFFS ==========
+    // Pair top-50 starter RBs with next-best RB on their team
+    const rbs = (dk.rankings.RB || [])
+      .map(r => ({ ...r, _rank: toNum(r.rank) }))
+      .filter(r => r._rank != null)
+      .sort((a, b) => a._rank - b._rank);
+
+    const rbsByTeam = new Map();
+    rbs.forEach(r => {
+      if (!r.team) return;
+      if (!rbsByTeam.has(r.team)) rbsByTeam.set(r.team, []);
+      rbsByTeam.get(r.team).push(r);
+    });
+
+    const handcuffPairs = [];
+    rbs.filter(r => r._rank <= 50).forEach(starter => {
+      const teamRbs = rbsByTeam.get(starter.team) || [];
+      const backup = teamRbs.find(r => r._rank > starter._rank);
+      if (backup) {
+        handcuffPairs.push({ starter, backup });
+      }
+    });
+
+    if (handcuffPairs.length) {
+      handcuffsEl.innerHTML = `
+        <div class="dk-handcuff-list">
+          ${handcuffPairs.map(({ starter, backup }) => `
+            <div class="dk-handcuff-pair">
+              <div class="dk-card dk-handcuff-starter">
+                <div class="dk-rank">${starter._rank}</div>
+                <div class="dk-info">
+                  <div class="dk-name">${esc(starter.name)}</div>
+                  <div class="dk-meta">
+                    <span class="${_pillClass('RB')}">RB</span>
+                    <span class="dk-team">${esc(starter.team)}</span>
+                    ${starter.bye ? `<span class="dk-bye">BYE ${esc(starter.bye)}</span>` : ''}
+                  </div>
+                </div>
+                <div class="dk-hc-role">Starter</div>
+              </div>
+              <div class="dk-handcuff-arrow">→</div>
+              <div class="dk-card dk-handcuff-backup">
+                <div class="dk-rank">${backup._rank}</div>
+                <div class="dk-info">
+                  <div class="dk-name">${esc(backup.name)}</div>
+                  <div class="dk-meta">
+                    <span class="${_pillClass('RB')}">RB</span>
+                    <span class="dk-team">${esc(backup.team)}</span>
+                    ${backup.bye ? `<span class="dk-bye">BYE ${esc(backup.bye)}</span>` : ''}
+                  </div>
+                </div>
+                <div class="dk-hc-role">Handcuff</div>
+              </div>
+            </div>`).join("")}
+        </div>
+        <p class="dk-note">
+          Each top-50 RB paired with the next-highest-ranked RB on their team.
+          Consider your handcuffs late — bench insurance for high-value starters.
+        </p>`;
+    } else {
+      handcuffsEl.innerHTML = empty("No handcuff pairs — need RB rankings to populate.");
+    }
+
+    // ========== VALUE PICKS (kept from before) ==========
+    const withAdp = (dk.rankings.overall || [])
+      .map(r => ({ ...r, _adp: toNum(r.adp), _rank: toNum(r.rank) }))
+      .filter(r => r._adp != null && r._rank != null);
     const valuePicks = withAdp
-      .map(r => ({ ...r, value: Math.round(r.adp) - r.rank }))
+      .map(r => ({ ...r, value: Math.round(r._adp) - r._rank }))
       .filter(r => r.value >= 5)
       .sort((a, b) => b.value - a.value)
       .slice(0, 20);
@@ -1339,63 +1591,27 @@ async function renderDraftKit() {
                   <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
                   <span class="dk-team">${esc(r.team)}</span>
                   ${r.bye ? `<span class="dk-bye">BYE ${esc(r.bye)}</span>` : ''}
-                  <span class="dk-fp">ADP ${r.adp.toFixed(1)} <span class="rank-delta up">+${r.value}</span></span>
+                  <span class="dk-fp">ADP ${toFix(r.adp)} <span class="rank-delta up">+${r.value}</span></span>
                 </div>
               </div>
               <div class="dk-stats">
-                <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${r.proj_pts != null ? Math.round(r.proj_pts) : '—'}</span></div>
+                <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${r.proj_pts != null ? Math.round(toNum(r.proj_pts)) : '—'}</span></div>
                 <div class="dk-stat"><span class="lbl">Tier</span><span class="val">${r.tier ?? '—'}</span></div>
-                <div class="dk-stat"><span class="lbl">Owned</span><span class="val">${r.owned_avg != null ? Math.round(r.owned_avg) + '%' : '—'}</span></div>
+                <div class="dk-stat"><span class="lbl">Owned</span><span class="val">${r.owned_avg != null ? Math.round(toNum(r.owned_avg)) + '%' : '—'}</span></div>
               </div>
             </div>`).join("")}
         </div>
         <p class="dk-note">
-          These players are being drafted later (higher ADP) than where FantasyPros ranks them.
-          Green +N shows how many spots later they go on average — bigger = better value.
+          Drafted later than they're ranked. Green +N shows how many spots later they go on average.
         </p>`;
     } else {
       adpEl.innerHTML = empty("No significant value picks right now.");
-    }
-
-    // ---------- Sleepers ----------
-    const sleepers = (dk.rankings.overall || [])
-      .filter(r => r.rank <= 150 && r.owned_avg != null && r.owned_avg < 40)
-      .sort((a, b) => a.rank - b.rank)
-      .slice(0, 20);
-
-    if (sleepers.length) {
-      sleepersEl.innerHTML = `
-        <div class="dk-cards">
-          ${sleepers.map(r => `
-            <div class="dk-card dk-sleeper">
-              <div class="dk-rank">${r.rank}</div>
-              <div class="dk-info">
-                <div class="dk-name">${esc(r.name)}</div>
-                <div class="dk-meta">
-                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
-                  <span class="dk-team">${esc(r.team)}</span>
-                  ${r.bye ? `<span class="dk-bye">BYE ${esc(r.bye)}</span>` : ''}
-                </div>
-              </div>
-              <div class="dk-stats">
-                <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${r.adp != null ? r.adp.toFixed(1) : '—'}</span></div>
-                <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${r.proj_pts != null ? Math.round(r.proj_pts) : '—'}</span></div>
-                <div class="dk-stat"><span class="lbl">Owned</span><span class="val">${Math.round(r.owned_avg)}%</span></div>
-              </div>
-            </div>`).join("")}
-        </div>
-        <p class="dk-note">
-          Top-150 ranked players with low ownership — leagues are sleeping on them.
-        </p>`;
-    } else {
-      sleepersEl.innerHTML = empty("Sleepers list will populate as ownership data flows in.");
     }
 
   } catch (e) {
     if (boardEl) boardEl.innerHTML = errBox(e.message);
   }
 }
-
 
 window.Pages = {
   renderHome, renderMatchups, renderStandings, renderNews,
