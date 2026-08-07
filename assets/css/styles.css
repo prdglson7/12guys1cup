@@ -503,10 +503,10 @@ main { padding: 32px 0 60px; }
 }
 .wire-item .source.PFT       { background: var(--red); }
 .wire-item .source.ROTOWIRE  { background: var(--brown); }
-.wire-item .source.CBS       { background: var(--navy); }
-.wire-item .source.YAHOO     { background: #6E4B9E; }
 .wire-item .source.ESPN      { background: var(--red-dark); }
 .wire-item .source.NFL       { background: #013369; }
+.wire-item .source.NFLCOM    { background: #013369; }
+.wire-item .source.PFF       { background: #2E2E2E; }
 .wire-item .source.FANTASYPROS { background: var(--gold-dark); color: var(--navy-dark); }
 .wire-item h3 {
   font-family: var(--f-display);
