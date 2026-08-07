@@ -962,62 +962,370 @@ main { padding: 32px 0 60px; }
   margin-bottom: 10px;
 }
 
-/* ---- Draft Kit ---- */
-.dk-table {
-  font-size: 14px;
+/* ============================================================
+   Draft Kit — magazine-style board with tier bands + cards
+   ============================================================ */
+
+/* Position tabs — big pill buttons with counts */
+.dk-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+  width: 100%;
 }
-.dk-table td, .dk-table th {
-  padding: 8px 10px;
-}
-.dk-table .player-name {
-  font-family: var(--f-display);
-  font-size: 15px;
+.dk-tab {
+  background: var(--paper);
+  border: 2px solid var(--navy);
+  padding: 8px 14px;
+  cursor: pointer;
+  font-family: var(--f-sign);
+  letter-spacing: 2px;
   color: var(--navy);
-  margin-right: 8px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: none;
 }
-.dk-table .pos-pill {
-  display: inline-block;
+.dk-tab:hover { background: var(--cream-2); }
+.dk-tab.active {
+  background: var(--navy);
+  color: var(--gold);
+  box-shadow: 3px 3px 0 var(--gold);
+}
+.dk-tab-label {
+  font-size: 15px;
+}
+.dk-tab-count {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  background: rgba(30, 58, 95, 0.15);
+  padding: 2px 6px;
+  color: var(--brown);
+}
+.dk-tab.active .dk-tab-count {
+  background: rgba(232, 184, 74, 0.25);
+  color: var(--cream);
+}
+/* Position-tinted borders on active state */
+.dk-tab-qb.active   { background: #B8386B; box-shadow: 3px 3px 0 #7A2149; }
+.dk-tab-rb.active   { background: #2E7D32; box-shadow: 3px 3px 0 #1B5220; }
+.dk-tab-wr.active   { background: #1565C0; box-shadow: 3px 3px 0 #0D3F7C; }
+.dk-tab-te.active   { background: #E65100; box-shadow: 3px 3px 0 #963500; }
+.dk-tab-k.active    { background: #6A1B9A; box-shadow: 3px 3px 0 #451265; }
+.dk-tab-dst.active  { background: #37474F; box-shadow: 3px 3px 0 #1F2A2F; }
+
+/* Search input */
+.dk-search {
+  width: 100%;
+  margin-bottom: 20px;
+}
+.dk-search input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--navy);
+  background: var(--paper);
+  font-family: var(--f-body);
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+}
+.dk-search input:focus {
+  border-color: var(--red);
+  box-shadow: 3px 3px 0 var(--gold);
+}
+.dk-search input::placeholder {
+  color: var(--brown);
   font-family: var(--f-sign);
   letter-spacing: 1.5px;
-  font-size: 11px;
-  padding: 1px 6px;
-  color: var(--cream);
-  margin-right: 4px;
+  font-size: 13px;
 }
-.dk-table .pos-qb  { background: #B8386B; }
-.dk-table .pos-rb  { background: #2E7D32; }
-.dk-table .pos-wr  { background: #1565C0; }
-.dk-table .pos-te  { background: #E65100; }
-.dk-table .pos-k   { background: #6A1B9A; }
-.dk-table .pos-dst { background: #37474F; }
-.dk-table .pos-flex { background: var(--brown); }
-.dk-table .team-tag {
+
+/* Tier bands — the ribbon separator between rounds */
+.dk-tier {
+  margin-bottom: 26px;
+}
+.dk-tier-band {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--navy);
+  color: var(--cream);
+  border-left: 8px solid var(--gold);
+  margin-bottom: 12px;
+  position: relative;
+}
+.dk-tier-band::after {
+  content: "";
+  position: absolute;
+  right: 0; left: 60px; bottom: -3px;
+  height: 3px;
+  background:
+    repeating-linear-gradient(90deg,
+      var(--red) 0 30px,
+      var(--gold) 30px 60px);
+}
+.dk-tier-num {
+  font-family: var(--f-display);
+  font-size: 32px;
+  color: var(--gold);
+  line-height: 1;
+  padding-right: 14px;
+  border-right: 2px solid var(--gold);
+}
+.dk-tier-label {
+  font-family: var(--f-sign);
+  letter-spacing: 3px;
+  font-size: 16px;
+  color: var(--cream);
+  text-transform: uppercase;
+}
+
+/* Cards grid inside a tier */
+.dk-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 12px;
+}
+
+/* Individual player card */
+.dk-card {
+  background: var(--paper);
+  border: 3px solid var(--navy);
+  box-shadow: 4px 4px 0 var(--gold);
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  align-items: center;
+  gap: 14px;
+}
+.dk-card .dk-rank {
+  font-family: var(--f-display);
+  font-size: 34px;
+  color: var(--red);
+  text-align: center;
+  padding: 6px 0;
+  background: var(--cream);
+  border: 2px solid var(--navy);
+  line-height: 1;
+}
+.dk-card .dk-info {
+  min-width: 0;
+}
+.dk-card .dk-name {
+  font-family: var(--f-display);
+  font-size: 19px;
+  color: var(--navy);
+  line-height: 1.1;
+  margin-bottom: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dk-card .dk-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.dk-card .dk-team {
+  font-family: var(--f-sign);
+  letter-spacing: 1.5px;
+  font-size: 12px;
+  color: var(--brown);
+}
+.dk-card .dk-bye {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--brown);
+  padding: 1px 6px;
+  border: 1px solid var(--brown);
+  letter-spacing: 1px;
+}
+.dk-card .dk-pos-rank {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--navy);
+  padding: 1px 6px;
+  background: rgba(30, 58, 95, 0.12);
+  border: 1px solid var(--navy);
+  letter-spacing: 0.5px;
+}
+.dk-card .dk-fp {
   font-family: var(--f-sign);
   font-size: 11px;
   letter-spacing: 1px;
   color: var(--brown);
-  margin-right: 6px;
+  background: rgba(232, 184, 74, 0.18);
+  padding: 2px 6px;
 }
-.dk-table .bye-tag {
-  font-family: var(--f-mono);
-  font-size: 10px;
-  color: var(--brown);
-  padding: 1px 4px;
-  border: 1px solid var(--brown);
-}
-.dk-table .ds-cell {
-  background: rgba(232, 184, 74, 0.12);
-}
-.dk-table .rank-delta {
-  display: inline-block;
-  font-family: var(--f-mono);
-  font-size: 11px;
+.dk-card .dk-fp .rank-delta {
   margin-left: 4px;
+  font-family: var(--f-mono);
 }
-.dk-table .rank-delta.up { color: #2E7D32; }   /* DS ranks higher = green */
-.dk-table .rank-delta.down { color: var(--red-dark); }
-.dk-table .up { color: #2E7D32; font-weight: 700; }
-.dk-table .down { color: var(--red-dark); font-weight: 700; }
+.rank-delta.up   { color: #2E7D32; font-weight: 700; }
+.rank-delta.down { color: var(--red-dark); font-weight: 700; }
+
+/* Position pills */
+.pos-pill {
+  display: inline-block;
+  font-family: var(--f-sign);
+  letter-spacing: 2px;
+  font-size: 11px;
+  padding: 2px 8px;
+  color: var(--cream);
+}
+.pos-qb   { background: #B8386B; }
+.pos-rb   { background: #2E7D32; }
+.pos-wr   { background: #1565C0; }
+.pos-te   { background: #E65100; }
+.pos-k    { background: #6A1B9A; }
+.pos-dst  { background: #37474F; }
+.pos-flex { background: var(--brown); }
+
+/* Stats block on right side of card */
+.dk-card .dk-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(48px, auto));
+  gap: 4px 10px;
+  font-size: 12px;
+}
+.dk-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  min-width: 42px;
+}
+.dk-stat .lbl {
+  font-family: var(--f-sign);
+  letter-spacing: 1px;
+  font-size: 9px;
+  color: var(--brown);
+  text-transform: uppercase;
+}
+.dk-stat .val {
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--navy);
+  line-height: 1.1;
+}
+.dk-stat .val.proj  { color: #2E7D32; }
+.dk-stat .val.gold  { color: var(--gold-dark); }
+.dk-stat .val.inj   { font-family: var(--f-mono); }
+.dk-stat .val.inj.high { color: var(--red-dark); }
+.dk-stat .val.inj.med  { color: var(--gold-dark); }
+.dk-stat .val.inj.low  { color: #2E7D32; }
+
+/* Sleeper card gets a highlight strip */
+.dk-sleeper {
+  border-left: 6px solid var(--gold);
+}
+
+/* ADP comparison list — different layout from board */
+.dk-adp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dk-adp-row {
+  background: var(--paper);
+  border: 2px solid var(--navy);
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 50px 1fr auto auto;
+  gap: 14px;
+  align-items: center;
+}
+.dk-adp-row .dk-rank {
+  font-family: var(--f-display);
+  font-size: 22px;
+  color: var(--navy);
+  text-align: center;
+  padding: 4px 0;
+  border: 2px solid var(--navy);
+  background: var(--cream);
+  line-height: 1;
+}
+.dk-adp-row .dk-name {
+  font-family: var(--f-display);
+  font-size: 16px;
+  color: var(--navy);
+  margin-bottom: 3px;
+}
+.dk-adp-numbers, .dk-adp-markets {
+  display: flex;
+  gap: 8px;
+}
+.dk-adp-num, .dk-adp-market {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 44px;
+}
+.dk-adp-num .lbl, .dk-adp-market .lbl {
+  font-family: var(--f-sign);
+  letter-spacing: 1px;
+  font-size: 9px;
+  color: var(--brown);
+  text-transform: uppercase;
+}
+.dk-adp-num .val {
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--navy);
+}
+.dk-adp-market .val {
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--brown);
+}
+.dk-adp-market.up .val   { color: #2E7D32; }
+.dk-adp-market.down .val { color: var(--red-dark); }
+
+.dk-note {
+  font-family: var(--f-sign);
+  letter-spacing: 1px;
+  color: var(--brown);
+  font-size: 13px;
+  margin-top: 14px;
+  padding: 10px;
+  background: rgba(232, 184, 74, 0.12);
+  border-left: 4px solid var(--gold);
+}
+
+/* Responsive tweaks for cards on narrow screens */
+@media (max-width: 640px) {
+  .dk-cards { grid-template-columns: 1fr; }
+  .dk-card {
+    grid-template-columns: 50px 1fr;
+    row-gap: 12px;
+  }
+  .dk-card .dk-stats {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, 1fr);
+    padding-top: 10px;
+    border-top: 1px dashed var(--cream-2);
+  }
+  .dk-card .dk-rank { font-size: 24px; }
+  .dk-card .dk-name { font-size: 17px; }
+  .dk-tier-band { padding: 10px 12px; }
+  .dk-tier-num  { font-size: 24px; }
+  .dk-tier-label { font-size: 13px; letter-spacing: 2px; }
+  .dk-adp-row {
+    grid-template-columns: 1fr;
+    row-gap: 8px;
+  }
+  .dk-adp-numbers, .dk-adp-markets { justify-content: space-between; }
+}
+
+/* Remove the old table-based dk-table styling — no longer used but harmless if referenced */
+.dk-table { font-size: 14px; }
 
 /* ---- Responsive ---- */
 @media (max-width: 640px) {
