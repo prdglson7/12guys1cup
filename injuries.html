@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Injuries — 12 Guys 1 Cup</title>
+  <link rel="icon" href="assets/img/logo.jpg">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header id="site-header" class="site-header"></header>
+  <nav id="site-nav" class="site-nav"></nav>
+
+  <main class="wrap">
+    <section class="section">
+      <div class="section-head">
+        <h2>League injury report</h2>
+        <span class="meta">Rostered players only</span>
+      </div>
+      <div id="injury-summary"></div>
+      <div id="injury-filters" class="controls"></div>
+      <div id="injury-list"></div>
+    </section>
+  </main>
+
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/sleeper.js"></script>
+  <script src="assets/js/news.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+  <script>
+    UI.renderChrome("injuries.html");
+    Pages.renderInjuries();
+  </script>
+</body>
+</html>
