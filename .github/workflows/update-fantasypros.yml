@@ -1,18 +1,8 @@
 name: Update FantasyPros feed
 
-# Fetches NFL news + injuries from FantasyPros.
-#
-# API budget management:
-#   Before 2026-09-07 00:00 UTC (draft season):
-#     - Runs every 2 hours (12 runs/day × 2 endpoints = 24 calls/day)
-#     - Draft Kit workflow uses the other 24 calls/day (48 total, under 50 limit)
-#
-#   After 2026-09-07 00:00 UTC (regular season):
-#     - Runs every hour (24 runs/day × 2 endpoints = 48 calls/day)
-#     - Draft Kit workflow has sunset, so all budget goes here for fastest news
-#
-# The workflow runs hourly all the time — it uses a date-check step to skip
-# the odd-hour runs before sunset.
+# Fetches NFL news + injuries from FantasyPros HOF every hour.
+# 2 endpoints × 24 runs/day = 48 API calls/day.
+# HOF rate limit supports this easily.
 
 on:
   schedule:
@@ -33,7 +23,6 @@ concurrency:
 env:
   FP_BASE: "https://api.fantasypros.com/public/v2/json"
   FP_SEASON: "2026"
-  SUNSET_DATE: "2026-09-07 00:00:00"
 
 jobs:
   fetch:
@@ -43,44 +32,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Decide whether to run this hour
-        id: check
-        run: |
-          NOW_EPOCH=$(date -u +%s)
-          SUNSET_EPOCH=$(date -u -d "${SUNSET_DATE}" +%s)
-          HOUR=$(date -u +%H)
-          NOW_HUMAN=$(date -u -Iseconds)
-          echo "Now: ${NOW_HUMAN} (hour=${HOUR})"
-
-          # Always run on manual dispatch
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "Manual trigger — running."
-            echo "should_run=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-          # Always run on push (config change)
-          if [ "${{ github.event_name }}" = "push" ]; then
-            echo "Push trigger — running."
-            echo "should_run=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          if [ "$NOW_EPOCH" -ge "$SUNSET_EPOCH" ]; then
-            echo "Post-sunset: running every hour."
-            echo "should_run=true" >> $GITHUB_OUTPUT
-          else
-            # Pre-sunset: only run on even hours (every 2 hours)
-            if [ $((10#$HOUR % 2)) -eq 0 ]; then
-              echo "Pre-sunset even hour: running."
-              echo "should_run=true" >> $GITHUB_OUTPUT
-            else
-              echo "Pre-sunset odd hour: skipping (2h cadence)."
-              echo "should_run=false" >> $GITHUB_OUTPUT
-            fi
-          fi
-
       - name: Fetch FantasyPros data
-        if: steps.check.outputs.should_run == 'true'
         env:
           FP_KEY: ${{ secrets.FANTASYPROS_API_KEY }}
         run: |
@@ -129,7 +81,7 @@ jobs:
             return 0
           }
 
-          # --- News ---
+          # --- News (HOF returns 50+ items instead of 10) ---
           NEWS_OK=0
           fetch_endpoint \
             "${FP_BASE}/nfl/news?limit=50" \
@@ -159,7 +111,6 @@ jobs:
           fi
 
       - name: Commit and push if changed
-        if: steps.check.outputs.should_run == 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
