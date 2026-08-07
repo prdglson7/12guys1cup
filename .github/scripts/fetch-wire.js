@@ -19,7 +19,17 @@ if (!match) {
 }
 const CONFIG = eval('(' + match[1] + ')');
 const FEEDS = CONFIG.RSS_FEEDS || [];
+const INSIDER_KEYWORDS = (CONFIG.INSIDER_KEYWORDS || []).map(k => k.toLowerCase());
 console.log(`Loaded ${FEEDS.length} feed(s) from config.js`);
+console.log(`Insider keyword filter: ${INSIDER_KEYWORDS.length} terms`);
+
+/* When feed.filterInsiders is true, keep only items whose title/description
+   contain one of the INSIDER_KEYWORDS. Used for Reddit noise reduction. */
+function passesInsiderFilter(item) {
+  if (!INSIDER_KEYWORDS.length) return true;
+  const hay = ((item.title || '') + ' ' + (item.description || '')).toLowerCase();
+  return INSIDER_KEYWORDS.some(k => hay.includes(k));
+}
 
 // -- Fetcher ----------------------------------------------------------------
 const parser = new Parser({
@@ -34,7 +44,7 @@ async function fetchRss(feed) {
   const label = `[${feed.tag.padEnd(12)}]`;
   try {
     const data = await parser.parseURL(feed.url);
-    const items = (data.items || []).slice(0, 15).map(it => {
+    const rawItems = (data.items || []).slice(0, 25).map(it => {
       const isoTs = it.isoDate ? new Date(it.isoDate).getTime() : 0;
       const pubTs = it.pubDate ? new Date(it.pubDate).getTime() : 0;
       const ts = isoTs || pubTs || 0;
@@ -51,7 +61,11 @@ async function fetchRss(feed) {
         source: feed.tag,
       };
     }).filter(x => x.title && x.link);
-    console.log(`${label} ✓ ${items.length} items`);
+    const items = feed.filterInsiders
+      ? rawItems.filter(passesInsiderFilter)
+      : rawItems;
+    const filtered = feed.filterInsiders ? ` (${rawItems.length} → ${items.length} after filter)` : '';
+    console.log(`${label} ✓ ${items.length} items${filtered}`);
     return { ok: true, tag: feed.tag, items };
   } catch (e) {
     console.log(`${label} ✗ ${e.message}`);
@@ -97,13 +111,39 @@ async function fetchOne(feed) {
   return fetchRss(feed);
 }
 
+/* Global safety filter: drop items about non-NFL sports.
+   This applies to ALL feeds — even if RotoBaller (or any source) posts a
+   stray NBA/MLB/UFC item it never makes it to your Wire. */
+const NON_NFL_KEYWORDS = /\b(nba|mlb|mls|nhl|mma|ufc|pga|lpga|nascar|f1|formula ?1|wnba|soccer|epl|premier league|la liga|serie a|bundesliga|champions league|cricket|tennis|atp|wta|indycar|boxing|wwe|hockey|baseball|basketball)\b/i;
+
+function isNflOnly(item) {
+  const hay = ((item.title || '') + ' ' + (item.description || '')).toLowerCase();
+  return !NON_NFL_KEYWORDS.test(hay);
+}
+
 async function main() {
   const started = Date.now();
   const results = await Promise.all(FEEDS.map(fetchOne));
 
-  const items = results
-    .flatMap(r => r.items)
-    .sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  const allItems = results.flatMap(r => r.items);
+
+  // Filter to NFL-only (drops NBA, MLB, UFC, etc.)
+  const nflItems = allItems.filter(isNflOnly);
+  const nonNflDropped = allItems.length - nflItems.length;
+
+  // Dedupe by canonical URL — same story fetched from multiple category
+  // feeds is common with RotoBaller. Keep the first occurrence.
+  const seen = new Set();
+  const items = [];
+  for (const item of nflItems) {
+    const key = (item.link || '').split('?')[0].replace(/\/$/, '').toLowerCase();
+    if (key && seen.has(key)) continue;
+    seen.add(key);
+    items.push(item);
+  }
+  const dupCount = nflItems.length - items.length;
+
+  items.sort((a, b) => (b.ts || 0) - (a.ts || 0));
 
   const okSources = results.filter(r => r.ok).length;
   const summary = results.map(r => `${r.tag}:${r.ok ? r.items.length : 'X'}`).join(' ');
@@ -114,8 +154,10 @@ async function main() {
     total_sources: results.length,
     ok_sources: okSources,
     total_items: items.length,
+    non_nfl_dropped: nonNflDropped,
+    duplicates_removed: dupCount,
     summary,
-    items: items.slice(0, 100),  // cap for reasonable file size
+    items: items.slice(0, 100),
   };
 
   const outPath = 'assets/data/wire.json';
@@ -124,7 +166,9 @@ async function main() {
 
   console.log('');
   console.log(`Wrote ${outPath}`);
-  console.log(`  ${out.total_items} items merged, kept top ${out.items.length}`);
+  console.log(`  ${allItems.length} raw → ${nflItems.length} after NFL filter (${nonNflDropped} non-NFL dropped)`);
+  console.log(`  ${nflItems.length} → ${items.length} after dedup (${dupCount} duplicates)`);
+  console.log(`  Kept top ${out.items.length}`);
   console.log(`  ${okSources}/${results.length} sources OK`);
   console.log(`  ${summary}`);
   console.log(`  ${out.duration_ms}ms`);
