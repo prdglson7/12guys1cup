@@ -10,7 +10,7 @@ const { getState, getLeague, getUsers, getRosters, getMatchups,
 const { getEspnNews, rosteredPlayerNames, articleTouchesRoster,
         getSleeperTrending, fetchAllRss, fetchAllReddit,
         getFantasyProsNews, getFantasyProsInjuries, getWireStatic,
-        getDraftKit } = window.News;
+        getDraftKit, getFpSleepers, getFpBusts, getFpHandcuffs } = window.News;
 const { loading, empty, errBox, esc, fmt1, fmt2, relTime, avatarUrl } = window.UI;
 
 /* ---------- Cached shared bootstrap ---------- */
@@ -1305,6 +1305,10 @@ async function renderDraftKit() {
 
     const buildRows = () => {
       let rows = (dk.rankings && dk.rankings[activePos]) || [];
+      // "All" tab excludes K and DST (skill positions only)
+      if (activePos === "overall") {
+        rows = rows.filter(r => r.pos && !["K", "DST"].includes(r.pos));
+      }
       if (searchTerm) {
         const t = searchTerm.toLowerCase();
         rows = rows.filter(r => (r.name || '').toLowerCase().includes(t));
@@ -1312,7 +1316,13 @@ async function renderDraftKit() {
       return rows;
     };
 
-    const posCount = (pos) => (dk.rankings && dk.rankings[pos]) ? dk.rankings[pos].length : 0;
+    const posCount = (pos) => {
+      if (!dk.rankings || !dk.rankings[pos]) return 0;
+      if (pos === "overall") {
+        return dk.rankings[pos].filter(r => r.pos && !["K", "DST"].includes(r.pos)).length;
+      }
+      return dk.rankings[pos].length;
+    };
 
     controlsEl.innerHTML = `
       <div class="dk-tabs">
@@ -1424,137 +1434,151 @@ async function renderDraftKit() {
       vbdEl.innerHTML = empty("VBD needs projection data. If this stays empty, check the workflow logs.");
     }
 
-    // ========== SLEEPERS (rank << ADP) ==========
-    // Formula: sleeper_score = ADP - ECR (higher = bigger sleeper)
-    const sleeperRows = (dk.rankings.overall || [])
-      .map(r => {
-        const adp = toNum(r.adp), rank = toNum(r.rank);
-        return { ...r, _adp: adp, _rank: rank, _score: (adp != null && rank != null) ? adp - rank : null };
-      })
-      .filter(r => r._score != null && r._score >= 15 && r._rank > 30 && r._rank <= 200)
-      .sort((a, b) => b._score - a._score)
-      .slice(0, 25);
+    // ========== SLEEPERS (CSV-driven, position tabs) ==========
+    const sleeperPositions = ["QB", "RB", "WR", "TE"];
+    let sleeperActivePos = "RB";
 
-    if (sleeperRows.length) {
+    const paintSleepers = async () => {
       sleepersEl.innerHTML = `
-        <div class="dk-cards">
-          ${sleeperRows.map(r => `
-            <div class="dk-card dk-sleeper">
-              <div class="dk-rank">${r._rank}</div>
-              <div class="dk-info">
-                <div class="dk-name">${esc(r.name)}</div>
-                <div class="dk-meta">
-                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
-                  <span class="dk-team">${esc(r.team)}</span>
-                  ${r.bye ? `<span class="dk-bye">BYE ${esc(r.bye)}</span>` : ''}
-                </div>
-              </div>
-              <div class="dk-stats">
-                <div class="dk-stat"><span class="lbl">Score</span><span class="val gold">+${Math.round(r._score)}</span></div>
-                <div class="dk-stat"><span class="lbl">ECR</span><span class="val">${r._rank}</span></div>
-                <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${toFix(r._adp)}</span></div>
-                <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${r.proj_pts != null ? Math.round(toNum(r.proj_pts)) : '—'}</span></div>
-              </div>
-            </div>`).join("")}
+        <div class="dk-sub-tabs">
+          ${sleeperPositions.map(p => `
+            <button class="dk-sub-tab ${p === sleeperActivePos ? 'active' : ''} dk-sub-tab-${p.toLowerCase()}" data-pos="${p}">
+              ${p}
+            </button>`).join("")}
         </div>
-        <p class="dk-note">
-          Sleeper Score = ADP − ECR. Bigger score = drafted much later than experts rank.
-          Filtered to players ranked #31–200 with a gap of at least 15 spots.
-        </p>`;
-    } else {
-      sleepersEl.innerHTML = empty("No sleepers matching the filter right now.");
-    }
+        <div id="dk-sleepers-body">${loading("Loading sleepers…")}</div>`;
 
-    // ========== BUSTS (ECR >> ADP — going too early) ==========
-    // Formula: bust_score = ECR - ADP (higher = more overdrafted)
-    const bustRows = (dk.rankings.overall || [])
-      .map(r => {
-        const adp = toNum(r.adp), rank = toNum(r.rank);
-        return { ...r, _adp: adp, _rank: rank, _score: (adp != null && rank != null) ? rank - adp : null };
-      })
-      .filter(r => r._score != null && r._score >= 10 && r._adp < 60)
-      .sort((a, b) => b._score - a._score)
-      .slice(0, 20);
+      sleepersEl.querySelectorAll(".dk-sub-tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+          sleeperActivePos = btn.dataset.pos;
+          paintSleepers();
+        });
+      });
 
-    if (bustRows.length) {
-      bustsEl.innerHTML = `
-        <div class="dk-cards">
-          ${bustRows.map(r => `
-            <div class="dk-card dk-bust">
-              <div class="dk-rank">${r._rank}</div>
-              <div class="dk-info">
-                <div class="dk-name">${esc(r.name)}</div>
-                <div class="dk-meta">
-                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
-                  <span class="dk-team">${esc(r.team)}</span>
-                  ${r.bye ? `<span class="dk-bye">BYE ${esc(r.bye)}</span>` : ''}
-                </div>
-              </div>
-              <div class="dk-stats">
-                <div class="dk-stat"><span class="lbl">Bust</span><span class="val down">+${Math.round(r._score)}</span></div>
-                <div class="dk-stat"><span class="lbl">ECR</span><span class="val">${r._rank}</span></div>
-                <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${toFix(r._adp)}</span></div>
-                <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${r.proj_pts != null ? Math.round(toNum(r.proj_pts)) : '—'}</span></div>
-              </div>
-            </div>`).join("")}
-        </div>
-        <p class="dk-note">
-          Bust Score = ECR − ADP. Higher score = drafted much earlier than experts rank.
-          Filtered to top-60 ADP with a gap of at least 10 spots — where overreaching hurts.
-        </p>`;
-    } else {
-      bustsEl.innerHTML = empty("No busts matching the filter right now.");
-    }
-
-    // ========== RB HANDCUFFS ==========
-    // Pair top-50 starter RBs with next-best RB on their team
-    const rbs = (dk.rankings.RB || [])
-      .map(r => ({ ...r, _rank: toNum(r.rank) }))
-      .filter(r => r._rank != null)
-      .sort((a, b) => a._rank - b._rank);
-
-    const rbsByTeam = new Map();
-    rbs.forEach(r => {
-      if (!r.team) return;
-      if (!rbsByTeam.has(r.team)) rbsByTeam.set(r.team, []);
-      rbsByTeam.get(r.team).push(r);
-    });
-
-    const handcuffPairs = [];
-    rbs.filter(r => r._rank <= 50).forEach(starter => {
-      const teamRbs = rbsByTeam.get(starter.team) || [];
-      const backup = teamRbs.find(r => r._rank > starter._rank);
-      if (backup) {
-        handcuffPairs.push({ starter, backup });
+      const body = document.getElementById("dk-sleepers-body");
+      const result = await getFpSleepers(sleeperActivePos);
+      if (!result.hasData) {
+        body.innerHTML = empty(`No ${sleeperActivePos} sleepers uploaded yet. Add ${'`'}sleepers-${sleeperActivePos.toLowerCase()}.csv${'`'} to assets/data/fp-csv/.`);
+        return;
       }
-    });
+      body.innerHTML = `
+        <div class="dk-cards">
+          ${result.rows.map(r => `
+            <div class="dk-card dk-sleeper">
+              <div class="dk-rank">${r.rank ?? '—'}</div>
+              <div class="dk-info">
+                <div class="dk-name">${esc(r.name)}</div>
+                <div class="dk-meta">
+                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
+                  <span class="dk-team">${esc(r.team)}</span>
+                  ${r.bye ? `<span class="dk-bye">BYE ${esc(r.bye)}</span>` : ''}
+                  ${r.experts ? `<span class="dk-fp">${r.experts} expert${r.experts > 1 ? 's' : ''}</span>` : ''}
+                </div>
+              </div>
+              <div class="dk-stats">
+                <div class="dk-stat"><span class="lbl">ECR</span><span class="val">${r.ecr ?? '—'}</span></div>
+                <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${r.adp ?? '—'}</span></div>
+                ${r.tier ? `<div class="dk-stat"><span class="lbl">Tier</span><span class="val">${r.tier}</span></div>` : ''}
+              </div>
+            </div>`).join("")}
+        </div>
+        <p class="dk-note">
+          Consensus sleepers from FantasyPros HOF experts. Updated weekly via CSV upload.
+        </p>`;
+    };
+    paintSleepers();
 
-    if (handcuffPairs.length) {
+    // ========== BUSTS (CSV-driven, position tabs) ==========
+    let bustActivePos = "ALL";
+
+    const paintBusts = async () => {
+      const result = await getFpBusts();
+      if (!result.hasData) {
+        bustsEl.innerHTML = empty("No busts CSV uploaded yet. Add busts.csv to assets/data/fp-csv/.");
+        return;
+      }
+      // Get unique positions present in the data
+      const posesInData = Array.from(new Set(result.rows.map(r => r.pos)));
+      const bustPositions = ["ALL", ...["RB", "WR", "QB", "TE"].filter(p => posesInData.includes(p))];
+      // If active pos no longer in data, reset to ALL
+      if (bustActivePos !== "ALL" && !posesInData.includes(bustActivePos)) {
+        bustActivePos = "ALL";
+      }
+      const filtered = bustActivePos === "ALL"
+        ? result.rows
+        : result.rows.filter(r => r.pos === bustActivePos);
+
+      bustsEl.innerHTML = `
+        <div class="dk-sub-tabs">
+          ${bustPositions.map(p => `
+            <button class="dk-sub-tab ${p === bustActivePos ? 'active' : ''} ${p !== 'ALL' ? 'dk-sub-tab-' + p.toLowerCase() : ''}" data-pos="${p}">
+              ${p === "ALL" ? "All" : p}
+              <span class="dk-sub-tab-count">${p === "ALL" ? result.rows.length : result.rows.filter(r => r.pos === p).length}</span>
+            </button>`).join("")}
+        </div>
+        <div class="dk-cards">
+          ${filtered.map(r => `
+            <div class="dk-card dk-bust">
+              <div class="dk-rank">${r.rank ?? '—'}</div>
+              <div class="dk-info">
+                <div class="dk-name">${esc(r.name)}</div>
+                <div class="dk-meta">
+                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
+                  <span class="dk-team">${esc(r.team)}</span>
+                </div>
+              </div>
+              <div class="dk-stats">
+                <div class="dk-stat"><span class="lbl">Rank</span><span class="val">${r.rank ?? '—'}</span></div>
+                <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${r.adp ?? '—'}</span></div>
+                <div class="dk-stat"><span class="lbl">vs ADP</span><span class="val down">${r.delta != null ? r.delta : '—'}</span></div>
+              </div>
+            </div>`).join("")}
+        </div>
+        <p class="dk-note">
+          Consensus busts from FantasyPros HOF experts. "vs ADP" shows how many spots later
+          they're ranked than where they're being drafted — big red negative = getting drafted way too early.
+        </p>`;
+
+      bustsEl.querySelectorAll(".dk-sub-tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+          bustActivePos = btn.dataset.pos;
+          paintBusts();
+        });
+      });
+    };
+    paintBusts();
+
+    // ========== RB HANDCUFFS (CSV-driven) ==========
+    const paintHandcuffs = async () => {
+      const result = await getFpHandcuffs();
+      if (!result.hasData) {
+        handcuffsEl.innerHTML = empty("No handcuffs CSV uploaded yet. Add handcuffs.csv to assets/data/fp-csv/.");
+        return;
+      }
       handcuffsEl.innerHTML = `
         <div class="dk-handcuff-list">
-          ${handcuffPairs.map(({ starter, backup }) => `
+          ${result.rows.map(p => `
             <div class="dk-handcuff-pair">
               <div class="dk-card dk-handcuff-starter">
-                <div class="dk-rank">${starter._rank}</div>
+                <div class="dk-rank">${p.starter_ecr ?? '—'}</div>
                 <div class="dk-info">
-                  <div class="dk-name">${esc(starter.name)}</div>
+                  <div class="dk-name">${esc(p.starter_name)}</div>
                   <div class="dk-meta">
                     <span class="${_pillClass('RB')}">RB</span>
-                    <span class="dk-team">${esc(starter.team)}</span>
-                    ${starter.bye ? `<span class="dk-bye">BYE ${esc(starter.bye)}</span>` : ''}
+                    <span class="dk-team">${esc(p.team)}</span>
                   </div>
                 </div>
                 <div class="dk-hc-role">Starter</div>
               </div>
               <div class="dk-handcuff-arrow">→</div>
               <div class="dk-card dk-handcuff-backup">
-                <div class="dk-rank">${backup._rank}</div>
+                <div class="dk-rank">${p.handcuff_ecr ?? '—'}</div>
                 <div class="dk-info">
-                  <div class="dk-name">${esc(backup.name)}</div>
+                  <div class="dk-name">${esc(p.handcuff_name)}</div>
                   <div class="dk-meta">
                     <span class="${_pillClass('RB')}">RB</span>
-                    <span class="dk-team">${esc(backup.team)}</span>
-                    ${backup.bye ? `<span class="dk-bye">BYE ${esc(backup.bye)}</span>` : ''}
+                    <span class="dk-team">${esc(p.team)}</span>
+                    ${p.handcuff_adp_text ? `<span class="dk-fp">${esc(p.handcuff_adp_text)}</span>` : ''}
                   </div>
                 </div>
                 <div class="dk-hc-role">Handcuff</div>
@@ -1562,12 +1586,11 @@ async function renderDraftKit() {
             </div>`).join("")}
         </div>
         <p class="dk-note">
-          Each top-50 RB paired with the next-highest-ranked RB on their team.
-          Consider your handcuffs late — bench insurance for high-value starters.
+          All 32 teams — projected starter paired with their handcuff. ADP shows the draft round
+          where the handcuff typically goes.
         </p>`;
-    } else {
-      handcuffsEl.innerHTML = empty("No handcuff pairs — need RB rankings to populate.");
-    }
+    };
+    paintHandcuffs();
 
     // ========== VALUE PICKS (kept from before) ==========
     const withAdp = (dk.rankings.overall || [])
