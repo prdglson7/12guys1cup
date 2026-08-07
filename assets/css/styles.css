@@ -963,6 +963,219 @@ main { padding: 32px 0 60px; }
 }
 
 /* ============================================================
+   ESPN-style ticker (home page matchups)
+   ============================================================ */
+.ticker-shell {
+  display: flex;
+  align-items: stretch;
+  background: var(--navy);
+  border: 3px solid var(--navy);
+  box-shadow: 5px 5px 0 var(--gold);
+  overflow: hidden;
+}
+.ticker-badge {
+  flex: 0 0 auto;
+  background: var(--red);
+  color: var(--cream);
+  padding: 14px 18px;
+  font-family: var(--f-sign);
+  letter-spacing: 3px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  border-right: 3px solid var(--gold);
+  white-space: nowrap;
+}
+.ticker-empty {
+  padding: 14px 18px;
+  color: var(--cream);
+  font-family: var(--f-sign);
+  letter-spacing: 1px;
+  font-size: 14px;
+}
+.ticker-track-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.ticker-track {
+  display: flex;
+  gap: 40px;
+  padding: 12px 20px;
+  white-space: nowrap;
+  animation: ticker-scroll 60s linear infinite;
+  width: max-content;
+}
+.ticker-track-wrap:hover .ticker-track {
+  animation-play-state: paused;
+}
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.ticker-game {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--cream);
+  font-family: var(--f-body);
+  border-right: 1px dashed rgba(245, 233, 201, 0.25);
+  padding-right: 40px;
+}
+.ticker-game:last-child { border-right: none; }
+.ticker-status {
+  font-family: var(--f-sign);
+  letter-spacing: 1.5px;
+  font-size: 10px;
+  padding: 2px 6px;
+  color: var(--cream);
+}
+.ticker-game.pre  .ticker-status { background: var(--brown); }
+.ticker-game.live .ticker-status { background: #C43D2E; animation: live-pulse 2s ease-in-out infinite; }
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+.ticker-team {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.ticker-team-name {
+  font-family: var(--f-display);
+  font-size: 15px;
+  color: var(--cream);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ticker-team-score {
+  font-family: var(--f-mono);
+  font-weight: 700;
+  color: var(--gold);
+  font-size: 16px;
+}
+.ticker-vs {
+  font-family: var(--f-sign);
+  letter-spacing: 2px;
+  font-size: 11px;
+  color: rgba(245, 233, 201, 0.6);
+}
+.ticker-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 2px solid var(--gold);
+}
+.ticker-avatar-blank {
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  background: var(--brown);
+  color: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-display);
+  font-size: 13px;
+  border: 2px solid var(--gold);
+}
+
+/* ============================================================
+   Wall of Champions (history page)
+   ============================================================ */
+.champ-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+.champ-card {
+  background: var(--paper);
+  border: 3px solid var(--navy);
+  box-shadow: 5px 5px 0 var(--gold);
+  padding: 20px 16px;
+  text-align: center;
+  position: relative;
+}
+.champ-card.reigning {
+  border-color: var(--gold-dark);
+  box-shadow: 5px 5px 0 var(--red);
+  background: linear-gradient(180deg, rgba(232, 184, 74, 0.15), var(--paper) 60%);
+}
+.champ-trophy {
+  font-size: 34px;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+.champ-season {
+  font-family: var(--f-sign);
+  letter-spacing: 3px;
+  font-size: 13px;
+  color: var(--brown);
+  margin-bottom: 8px;
+}
+.champ-team {
+  font-family: var(--f-display);
+  font-size: 22px;
+  color: var(--navy);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.champ-manager {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--brown);
+}
+.champ-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--red);
+  color: var(--cream);
+  font-family: var(--f-sign);
+  letter-spacing: 2px;
+  font-size: 10px;
+  padding: 3px 10px;
+  border: 2px solid var(--navy);
+}
+
+/* ============================================================
+   Scroll-to-top floating button
+   ============================================================ */
+.scroll-top-btn {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 50px;
+  height: 50px;
+  background: var(--navy);
+  color: var(--gold);
+  border: 3px solid var(--gold);
+  box-shadow: 3px 3px 0 var(--red);
+  font-family: var(--f-display);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.15s ease;
+  z-index: 100;
+  padding: 0;
+}
+.scroll-top-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.scroll-top-btn:hover {
+  background: var(--gold);
+  color: var(--navy);
+  transform: translateY(-3px);
+}
+
+/* ============================================================
    Draft Kit — magazine-style board with tier bands + cards
    ============================================================ */
 
