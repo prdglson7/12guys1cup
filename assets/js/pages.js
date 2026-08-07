@@ -291,9 +291,12 @@ async function renderWire(containerId, { limit = null } = {}) {
   const el = document.getElementById(containerId);
   if (!el) return;
   el.innerHTML = loading("Pulling the wire…");
+
+  // NFL-only guard for client-side sources (ESPN can include cross-sport)
+  const NON_NFL_RE = /\b(nba|mlb|mls|nhl|mma|ufc|pga|lpga|nascar|f1|wnba|soccer|epl|premier league|la liga|serie a|bundesliga|champions league|cricket|tennis|atp|wta|indycar|boxing|wwe|hockey|baseball|basketball)\b/i;
+  const isNfl = (it) => !NON_NFL_RE.test(`${it.title || ''} ${it.description || ''}`);
+
   try {
-    // Static wire (server-side pre-fetch), FantasyPros (server-side workflow),
-    // and ESPN (client-side because ESPN blocks GitHub Actions IPs) in parallel
     const [wireResult, fpResult, espnResult] = await Promise.allSettled([
       getWireStatic(),
       getFantasyProsNews(),
@@ -309,7 +312,7 @@ async function renderWire(containerId, { limit = null } = {}) {
           pubDate: a.published || "",
           ts: a.published ? new Date(a.published).getTime() : 0,
           source: "ESPN",
-        }))
+        })).filter(isNfl)
       : [];
     const items = [...wire, ...fp, ...espn].sort((a, b) => (b.ts || 0) - (a.ts || 0));
 
@@ -476,7 +479,9 @@ async function renderNews() {
   // Kick these off in parallel — none blocks the others
   renderWire("wire-list");
   renderTrending("trending-list");
-  renderInsiders("insiders-list");
+  // Insiders section removed — X's syndication API returns 429 (rate limited)
+  // for embedded timelines from third-party sites. Reddit-based insider news
+  // now flows into The Wire via r/nfl and r/fantasyfootball with keyword filter.
 
   // ESPN features section + rostered-player filter (existing behavior)
   const listEl = document.getElementById("news-list");
@@ -878,13 +883,13 @@ async function renderInjuries() {
     const leagueList = buildInjuryList(teams, players, fpInjuries);
     const allNflList = buildAllNflInjuryList(fpInjuries);
 
-    // Pre-draft detection: if there are no rostered players anywhere, default to All NFL
+    // Pre-draft detection: kept for reference but user prefers All NFL always
     let hasAnyRosterPlayers = false;
     teams.forEach(t => { if ((t.players || []).length) hasAnyRosterPlayers = true; });
     const preDraft = !hasAnyRosterPlayers;
 
-    // Mode: "league" | "all"
-    let mode = preDraft ? "all" : "league";
+    // Mode: "league" | "all" — default to All NFL so all injuries are visible
+    let mode = "all";
     let filterStatus = null;
     let filterStartersOnly = false;
 
