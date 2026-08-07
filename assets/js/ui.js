@@ -39,6 +39,25 @@ function renderChrome(activePage) {
       12 GUYS 1 CUP • Powered by <a href="https://sleeper.com" target="_blank" rel="noopener">Sleeper</a>
       &amp; <a href="https://www.espn.com/nfl" target="_blank" rel="noopener">ESPN</a>
     </div>`;
+
+  // Scroll-to-top button — appears after scrolling 400px, smooth-scrolls on click
+  if (!document.getElementById("scroll-top-btn")) {
+    const btn = document.createElement("button");
+    btn.id = "scroll-top-btn";
+    btn.className = "scroll-top-btn";
+    btn.setAttribute("aria-label", "Scroll to top");
+    btn.innerHTML = "▲";
+    btn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    document.body.appendChild(btn);
+
+    const onScroll = () => {
+      btn.classList.toggle("visible", window.scrollY > 400);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
 }
 
 /* State helpers */
