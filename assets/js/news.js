@@ -101,15 +101,103 @@ async function fetchAllRss() {
   return items;
 }
 
+/* ---- Reddit: public .json endpoints, CORS-safe, no key ---- */
+async function fetchSubreddit(sub, tag, limit = 25) {
+  const url = `https://www.reddit.com/r/${encodeURIComponent(sub)}/new.json?limit=${limit}&raw_json=1`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Reddit r/${sub} → ${res.status}`);
+  const data = await res.json();
+  const posts = (data.data && data.data.children) || [];
+  return posts.map(p => {
+    const d = p.data || {};
+    return {
+      title: (d.title || "").replace(/\s+/g, " ").trim(),
+      link: d.permalink ? `https://www.reddit.com${d.permalink}` : (d.url || "#"),
+      description: (d.selftext || "").replace(/\s+/g, " ").trim().slice(0, 240),
+      pubDate: d.created_utc ? new Date(d.created_utc * 1000).toISOString() : "",
+      ts: d.created_utc ? d.created_utc * 1000 : 0,
+      source: tag,
+      author: d.author ? `u/${d.author}` : "",
+      score: d.score || 0,
+    };
+  }).filter(x => x.title);
+}
+
+function matchesInsiderKeyword(title, keywords) {
+  if (!keywords || !keywords.length) return true;
+  const t = (title || "").toLowerCase();
+  return keywords.some(k => t.includes(k.toLowerCase()));
+}
+
+async function fetchAllReddit() {
+  const cfg = window.Config || {};
+  const subs = cfg.REDDIT_SUBS || [];
+  const keywords = cfg.INSIDER_KEYWORDS || [];
+  const results = await Promise.allSettled(
+    subs.map(s => fetchSubreddit(s.sub, s.tag, s.limit || 25))
+  );
+  let items = [];
+  results.forEach((r, i) => {
+    if (r.status !== "fulfilled") return;
+    const src = subs[i];
+    const filtered = src.filterInsiders
+      ? r.value.filter(x => matchesInsiderKeyword(x.title, keywords))
+      : r.value;
+    items = items.concat(filtered);
+  });
+  items.sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  return items;
+}
+
+/* ---- Static wire (pre-fetched by GitHub Action every 15 min) ----
+   Client reads assets/data/wire.json instead of hitting the CORS proxy.
+   Also cached in localStorage for 5 min so repeat visits are instant. */
+const WIRE_CACHE_KEY = "wire.static.v1";
+const WIRE_CACHE_TTL = 5 * 60 * 1000;  // 5 minutes
+
+async function getWireStatic() {
+  // localStorage cache first
+  try {
+    const raw = localStorage.getItem(WIRE_CACHE_KEY);
+    if (raw) {
+      const { ts, data } = JSON.parse(raw);
+      if (Date.now() - ts < WIRE_CACHE_TTL) {
+        return { items: data.items || [], cached: true, fetched_at: data.fetched_at };
+      }
+    }
+  } catch (_) { /* fall through */ }
+
+  const res = await fetch("assets/data/wire.json", { cache: "no-cache" });
+  if (!res.ok) throw new Error(`wire.json → ${res.status}`);
+  const data = await res.json();
+
+  try {
+    localStorage.setItem(WIRE_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
+  } catch (_) {}
+
+  return { items: data.items || [], cached: false, fetched_at: data.fetched_at };
+}
+
 /* ---- FantasyPros: reads static JSON produced by GitHub Actions ----
+   Same localStorage pattern as wire — 10min TTL since FP refreshes every 2h.
    The workflow at .github/workflows/update-fantasypros.yml refreshes
-   assets/data/fantasypros.json every 2 hours. Key never touches the client. */
+   assets/data/fantasypros.json. Key never touches the client. */
+const FP_CACHE_KEY = "fp.news.v1";
+const FP_CACHE_TTL = 10 * 60 * 1000;
+
 async function getFantasyProsNews() {
+  try {
+    const raw = localStorage.getItem(FP_CACHE_KEY);
+    if (raw) {
+      const { ts, items } = JSON.parse(raw);
+      if (Date.now() - ts < FP_CACHE_TTL) return items;
+    }
+  } catch (_) {}
+
   const res = await fetch("assets/data/fantasypros.json", { cache: "no-cache" });
   if (!res.ok) throw new Error(`FantasyPros feed → ${res.status}`);
   const data = await res.json();
-  const items = data.items || [];
-  return items.map(it => ({
+  const items = (data.items || []).map(it => ({
     id: it.id,
     title: it.title || "",
     link: it.link || "#",
@@ -123,6 +211,12 @@ async function getFantasyProsNews() {
     author: it.author || "",
     categories: it.categories || [],
   })).filter(x => x.title);
+
+  try {
+    localStorage.setItem(FP_CACHE_KEY, JSON.stringify({ ts: Date.now(), items }));
+  } catch (_) {}
+
+  return items;
 }
 
 /* FantasyPros official injury report (practice reports, prob of playing, etc.) */
@@ -152,5 +246,7 @@ async function getFantasyProsInjuries() {
 window.News = {
   getEspnNews, rosteredPlayerNames, articleTouchesRoster,
   getSleeperTrending, fetchRssFeed, fetchAllRss,
+  fetchSubreddit, fetchAllReddit,
   getFantasyProsNews, getFantasyProsInjuries,
+  getWireStatic,
 };
