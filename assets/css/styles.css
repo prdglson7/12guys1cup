@@ -962,6 +962,63 @@ main { padding: 32px 0 60px; }
   margin-bottom: 10px;
 }
 
+/* ---- Draft Kit ---- */
+.dk-table {
+  font-size: 14px;
+}
+.dk-table td, .dk-table th {
+  padding: 8px 10px;
+}
+.dk-table .player-name {
+  font-family: var(--f-display);
+  font-size: 15px;
+  color: var(--navy);
+  margin-right: 8px;
+}
+.dk-table .pos-pill {
+  display: inline-block;
+  font-family: var(--f-sign);
+  letter-spacing: 1.5px;
+  font-size: 11px;
+  padding: 1px 6px;
+  color: var(--cream);
+  margin-right: 4px;
+}
+.dk-table .pos-qb  { background: #B8386B; }
+.dk-table .pos-rb  { background: #2E7D32; }
+.dk-table .pos-wr  { background: #1565C0; }
+.dk-table .pos-te  { background: #E65100; }
+.dk-table .pos-k   { background: #6A1B9A; }
+.dk-table .pos-dst { background: #37474F; }
+.dk-table .pos-flex { background: var(--brown); }
+.dk-table .team-tag {
+  font-family: var(--f-sign);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--brown);
+  margin-right: 6px;
+}
+.dk-table .bye-tag {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--brown);
+  padding: 1px 4px;
+  border: 1px solid var(--brown);
+}
+.dk-table .ds-cell {
+  background: rgba(232, 184, 74, 0.12);
+}
+.dk-table .rank-delta {
+  display: inline-block;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  margin-left: 4px;
+}
+.dk-table .rank-delta.up { color: #2E7D32; }   /* DS ranks higher = green */
+.dk-table .rank-delta.down { color: var(--red-dark); }
+.dk-table .up { color: #2E7D32; font-weight: 700; }
+.dk-table .down { color: var(--red-dark); font-weight: 700; }
+
 /* ---- Responsive ---- */
 @media (max-width: 640px) {
   .site-nav a { padding: 10px 12px; font-size: 15px; letter-spacing: 1px; }
