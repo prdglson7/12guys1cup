@@ -269,6 +269,19 @@ async function getDraftKit() {
 
 function _parseCsv(text) {
   const lines = text.split(/\r?\n/);
+  if (!lines.length) return [];
+
+  // Auto-detect delimiter — sample first non-empty line and pick whichever
+  // separator appears more often (comma or tab). Handles CSV, TSV, and files
+  // that got tab-converted after opening in Excel.
+  let delimiter = ',';
+  const sampleLine = lines.find(l => l && l.trim());
+  if (sampleLine) {
+    const tabs = (sampleLine.match(/\t/g) || []).length;
+    const commas = (sampleLine.match(/,/g) || []).length;
+    if (tabs > commas) delimiter = '\t';
+  }
+
   const parseLine = (line) => {
     const cells = [];
     let cur = '', inQuotes = false;
@@ -277,7 +290,7 @@ function _parseCsv(text) {
       if (c === '"') {
         if (inQuotes && line[i+1] === '"') { cur += '"'; i++; }
         else inQuotes = !inQuotes;
-      } else if (c === ',' && !inQuotes) {
+      } else if (c === delimiter && !inQuotes) {
         cells.push(cur); cur = '';
       } else {
         cur += c;
