@@ -292,15 +292,26 @@ async function renderWire(containerId, { limit = null } = {}) {
   if (!el) return;
   el.innerHTML = loading("Pulling the wire…");
   try {
-    // Static wire (pre-fetched by GitHub Action, cached in localStorage)
-    // + FantasyPros (separate workflow) in parallel
-    const [wireResult, fpResult] = await Promise.allSettled([
+    // Static wire (server-side pre-fetch), FantasyPros (server-side workflow),
+    // and ESPN (client-side because ESPN blocks GitHub Actions IPs) in parallel
+    const [wireResult, fpResult, espnResult] = await Promise.allSettled([
       getWireStatic(),
       getFantasyProsNews(),
+      getEspnNews(),
     ]);
     const wire = wireResult.status === "fulfilled" ? (wireResult.value.items || []) : [];
     const fp   = fpResult.status   === "fulfilled" ? fpResult.value : [];
-    const items = [...wire, ...fp].sort((a, b) => (b.ts || 0) - (a.ts || 0));
+    const espn = espnResult.status === "fulfilled"
+      ? espnResult.value.map(a => ({
+          title: a.headline || "",
+          link: a.link || "#",
+          description: a.description || "",
+          pubDate: a.published || "",
+          ts: a.published ? new Date(a.published).getTime() : 0,
+          source: "ESPN",
+        }))
+      : [];
+    const items = [...wire, ...fp, ...espn].sort((a, b) => (b.ts || 0) - (a.ts || 0));
 
     if (!items.length) {
       el.innerHTML = empty("The wire is quiet right now. If you just deployed, the first fetch runs within 15 minutes.");
