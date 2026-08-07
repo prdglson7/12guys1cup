@@ -10,7 +10,7 @@ const { getState, getLeague, getUsers, getRosters, getMatchups,
 const { getEspnNews, rosteredPlayerNames, articleTouchesRoster,
         getSleeperTrending, fetchAllRss, fetchAllReddit,
         getFantasyProsNews, getFantasyProsInjuries, getWireStatic,
-        getDraftKit, getDraftSharksRankings, getDraftSharksAdps } = window.News;
+        getDraftKit } = window.News;
 const { loading, empty, errBox, esc, fmt1, fmt2, relTime, avatarUrl } = window.UI;
 
 /* ---------- Cached shared bootstrap ---------- */
@@ -1159,107 +1159,93 @@ async function renderInjuriesWidget(containerId, { limit = 5 } = {}) {
   }
 }
 
-/* ---------- DRAFT KIT ---------- */
-
-/* Merge rankings prioritizing Draft Sharks (500+ players) over FantasyPros
-   (free tier caps at 10/pos). If DS CSV is loaded, use it as the base and
-   enrich with FP data where available. Otherwise fall back to FP alone. */
-function mergeRankings(fpRankings, dsRankings) {
-  const fpByName = new Map();
-  (fpRankings || []).forEach(f => {
-    if (f.name) fpByName.set(f.name.toLowerCase(), f);
-  });
-
-  const useDs = dsRankings && dsRankings.length > 0;
-
-  if (useDs) {
-    // Draft Sharks as primary
-    return dsRankings.map(ds => {
-      const fp = fpByName.get((ds.name || '').toLowerCase());
-      return {
-        name: ds.name,
-        pos: ds.pos,
-        team: ds.team,
-        bye: ds.bye,
-        // Primary ranks from DS
-        ds_rank: ds.rank,
-        ds_adp: ds.adp,
-        ds_proj: ds.ds_proj,
-        ds_floor: ds.floor,
-        ds_ceiling: ds.ceiling,
-        ds_value_3d: ds.value_3d,
-        ds_injury_risk: ds.injury_risk,
-        ds_games: ds.games,
-        ds_sos: ds.sos,
-        // FP enrichment (may be null for players outside top 10 at their position)
-        fp_rank: fp ? fp.rank : null,
-        pos_rank: fp ? fp.pos_rank : null,
-        tier: fp ? fp.tier : null,
-        owned_avg: fp ? fp.owned_avg : null,
-        page_url: fp ? fp.page_url : null,
-        // Delta — negative = DS values them higher than FP consensus
-        rank_delta: (fp && fp.rank && ds.rank) ? (ds.rank - fp.rank) : null,
-      };
-    });
-  }
-
-  // Fallback: FantasyPros only (no DS CSV loaded)
-  return (fpRankings || []).map(fp => ({
-    name: fp.name,
-    pos: fp.pos,
-    team: fp.team,
-    bye: fp.bye,
-    fp_rank: fp.rank,
-    pos_rank: fp.pos_rank,
-    tier: fp.tier,
-    owned_avg: fp.owned_avg,
-    page_url: fp.page_url,
-    ds_rank: null, ds_adp: null, ds_proj: null,
-    ds_floor: null, ds_ceiling: null, ds_value_3d: null,
-    ds_injury_risk: null, ds_games: null, ds_sos: null,
-    rank_delta: null,
-  }));
-}
+/* ---------- DRAFT KIT (FantasyPros HOF exclusively) ---------- */
 
 function _pillClass(pos) {
   return `pos-pill pos-${(pos || 'FLEX').toLowerCase()}`;
 }
 
-function draftBoardRowHtml(row, showDs) {
-  const rankDeltaHtml = row.rank_delta !== null
-    ? `<span class="rank-delta ${row.rank_delta < 0 ? 'up' : row.rank_delta > 0 ? 'down' : ''}">${row.rank_delta > 0 ? '+' : ''}${row.rank_delta}</span>`
+/* Player card for the draft board */
+function draftCardHtml(row) {
+  const bye = row.bye ? `<span class="dk-bye">BYE ${esc(row.bye)}</span>` : '';
+  const posRankBadge = row.pos_rank ? `<span class="dk-pos-rank">${esc(row.pos_rank)}</span>` : '';
+  const adpDelta = (row.adp != null && row.rank != null)
+    ? Math.round(row.adp) - row.rank
+    : null;
+  const adpBadge = adpDelta !== null && Math.abs(adpDelta) >= 3
+    ? `<span class="rank-delta ${adpDelta > 0 ? 'up' : 'down'}">${adpDelta > 0 ? '+' : ''}${adpDelta}</span>`
     : '';
+
   return `
-    <tr>
-      ${showDs ? `<td class="num ds-cell">${row.ds_rank ?? '—'}</td>` : ''}
-      <td class="num">${row.fp_rank ?? '—'}${showDs ? ' ' + rankDeltaHtml : ''}</td>
-      <td>
-        <span class="player-name">${esc(row.name)}</span>
-        <span class="${_pillClass(row.pos)}">${esc(row.pos)}</span>
-        <span class="team-tag">${esc(row.team)}</span>
-        ${row.bye ? `<span class="bye-tag">BYE ${esc(row.bye)}</span>` : ''}
-      </td>
-      ${showDs ? `<td class="num">${row.ds_adp != null ? row.ds_adp.toFixed(2) : '—'}</td>` : ''}
-      ${showDs ? `<td class="num">${row.ds_proj != null ? row.ds_proj.toFixed(0) : '—'}</td>` : ''}
-      ${showDs ? `<td class="num">${row.ds_value_3d != null ? row.ds_value_3d : '—'}</td>` : ''}
-      ${showDs ? `<td class="num">${row.ds_injury_risk || '—'}</td>` : ''}
-    </tr>`;
+    <div class="dk-card" data-name="${esc((row.name || '').toLowerCase())}">
+      <div class="dk-rank">${row.rank ?? '—'}</div>
+      <div class="dk-info">
+        <div class="dk-name">${esc(row.name)}</div>
+        <div class="dk-meta">
+          <span class="${_pillClass(row.pos)}">${esc(row.pos)}</span>
+          ${posRankBadge}
+          <span class="dk-team">${esc(row.team)}</span>
+          ${bye}
+        </div>
+      </div>
+      <div class="dk-stats">
+        <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${row.adp != null ? row.adp.toFixed(1) : '—'} ${adpBadge}</span></div>
+        <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${row.proj_pts != null ? Math.round(row.proj_pts) : '—'}</span></div>
+        <div class="dk-stat"><span class="lbl">Tier</span><span class="val">${row.tier ?? '—'}</span></div>
+        <div class="dk-stat"><span class="lbl">Best</span><span class="val gold">${row.best_rank ?? '—'}</span></div>
+        <div class="dk-stat"><span class="lbl">Worst</span><span class="val">${row.worst_rank ?? '—'}</span></div>
+        <div class="dk-stat"><span class="lbl">Std</span><span class="val">${row.std_dev != null ? Number(row.std_dev).toFixed(1) : '—'}</span></div>
+      </div>
+    </div>`;
 }
 
-function renderBoardTable(rows, showDs) {
-  return `
-    <table class="stats-table dk-table">
-      <thead><tr>
-        ${showDs ? '<th class="num ds-cell">DS</th>' : ''}
-        <th class="num">FP${showDs ? ' (Δ)' : ''}</th>
-        <th>Player</th>
-        ${showDs ? '<th class="num">ADP</th>' : ''}
-        ${showDs ? '<th class="num">DS Proj</th>' : ''}
-        ${showDs ? '<th class="num">3D Val</th>' : ''}
-        ${showDs ? '<th class="num">Injury</th>' : ''}
-      </tr></thead>
-      <tbody>${rows.map(r => draftBoardRowHtml(r, showDs)).join("")}</tbody>
-    </table>`;
+/* Group by FantasyPros tiers when available, otherwise 12-per-round */
+function groupIntoTiers(rows) {
+  const hasFpTiers = rows.some(r => r.tier != null);
+  if (hasFpTiers) {
+    const byTier = new Map();
+    rows.forEach(r => {
+      const t = r.tier || 99;
+      if (!byTier.has(t)) byTier.set(t, []);
+      byTier.get(t).push(r);
+    });
+    return [...byTier.entries()]
+      .sort((a, b) => a[0] - b[0])
+      .map(([tier, players]) => {
+        const first = players[0].rank;
+        const last = players[players.length - 1].rank;
+        return {
+          tier,
+          label: `Tier ${tier} • ${players.length} player${players.length > 1 ? 's' : ''} • Ranks ${first}–${last}`,
+          players,
+        };
+      });
+  }
+  const tiers = [];
+  for (let i = 0; i < rows.length; i += 12) {
+    const tierNum = Math.floor(i / 12) + 1;
+    tiers.push({
+      tier: tierNum,
+      label: `Tier ${tierNum} • Picks ${i + 1}–${Math.min(i + 12, rows.length)}`,
+      players: rows.slice(i, i + 12),
+    });
+  }
+  return tiers;
+}
+
+function renderDraftBoard(rows) {
+  if (!rows.length) return empty("No players in this view.");
+  const tiers = groupIntoTiers(rows);
+  return tiers.map(tier => `
+    <div class="dk-tier">
+      <div class="dk-tier-band">
+        <span class="dk-tier-num">${tier.tier}</span>
+        <span class="dk-tier-label">${esc(tier.label)}</span>
+      </div>
+      <div class="dk-cards">
+        ${tier.players.map(p => draftCardHtml(p)).join("")}
+      </div>
+    </div>`).join("");
 }
 
 async function renderDraftKit() {
@@ -1271,152 +1257,145 @@ async function renderDraftKit() {
   if (boardEl) boardEl.innerHTML = loading("Loading Draft Kit…");
 
   try {
-    const [dk, dsRank, dsAdps] = await Promise.all([
-      getDraftKit(),
-      getDraftSharksRankings(),
-      getDraftSharksAdps(),
-    ]);
-
-    const showDs = dsRank.hasData;
+    const dk = await getDraftKit();
     const positions = ["overall", "QB", "RB", "WR", "TE", "K", "DST"];
 
     const fetched = dk.fetched_at ? new Date(dk.fetched_at) : null;
-    const fpTotal = (dk._summary && dk._summary.overall) || 0;
-    const dsTotal = dsRank.hasData ? dsRank.count : 0;
+    const totalPlayers = (dk._summary && dk._summary.overall) || 0;
     if (metaEl) {
-      if (dsRank.hasData) {
-        metaEl.textContent = `${fpTotal} FantasyPros consensus • ${dsTotal} Draft Sharks players${fetched ? ' • FP updated ' + relTime(fetched.toISOString()) : ''}`;
-      } else {
-        metaEl.textContent = `${fpTotal} FantasyPros consensus (free tier: 10/pos) • No Draft Sharks CSV yet`;
-      }
+      metaEl.textContent = `${totalPlayers} players ranked${fetched ? ' • updated ' + relTime(fetched.toISOString()) : ''} • FantasyPros HOF • ${dk.scoring || 'PPR'}`;
     }
 
-    // Position toggle
     let activePos = "overall";
-    const paintBoard = () => {
-      const fpRows = (dk.rankings && dk.rankings[activePos]) || [];
-      // Filter Draft Sharks by position if not overall
-      const dsRows = activePos === "overall"
-        ? dsRank.rows
-        : dsRank.rows.filter(r => r.pos === activePos);
-      const merged = mergeRankings(fpRows, dsRows);
-      if (!merged.length) {
-        boardEl.innerHTML = empty(`No ${activePos} rankings available yet. Workflow runs every 8 hours.`);
-        return;
+    let searchTerm = "";
+
+    const buildRows = () => {
+      let rows = (dk.rankings && dk.rankings[activePos]) || [];
+      if (searchTerm) {
+        const t = searchTerm.toLowerCase();
+        rows = rows.filter(r => (r.name || '').toLowerCase().includes(t));
       }
-      boardEl.innerHTML = renderBoardTable(merged.slice(0, 100), showDs);
+      return rows;
     };
 
-    controlsEl.innerHTML = "";
-    positions.forEach(pos => {
-      const btn = document.createElement("button");
-      btn.className = "control" + (pos === activePos ? " active" : "");
-      btn.textContent = pos === "overall" ? "Overall" : pos;
+    const posCount = (pos) => (dk.rankings && dk.rankings[pos]) ? dk.rankings[pos].length : 0;
+
+    controlsEl.innerHTML = `
+      <div class="dk-tabs">
+        ${positions.map(pos => `
+          <button class="dk-tab ${pos === activePos ? 'active' : ''} dk-tab-${pos.toLowerCase()}" data-pos="${pos}">
+            <span class="dk-tab-label">${pos === "overall" ? "All" : pos}</span>
+            <span class="dk-tab-count">${posCount(pos)}</span>
+          </button>`).join("")}
+      </div>
+      <div class="dk-search">
+        <input type="search" id="dk-search-input" placeholder="Search player name…" autocomplete="off">
+      </div>`;
+
+    const paintBoard = () => {
+      const rows = buildRows();
+      boardEl.innerHTML = renderDraftBoard(rows);
+    };
+
+    controlsEl.querySelectorAll(".dk-tab").forEach(btn => {
       btn.addEventListener("click", () => {
-        activePos = pos;
-        [...controlsEl.children].forEach(c => c.classList.remove("active"));
-        btn.classList.add("active");
+        activePos = btn.dataset.pos;
+        controlsEl.querySelectorAll(".dk-tab").forEach(b => b.classList.toggle("active", b === btn));
         paintBoard();
       });
-      controlsEl.appendChild(btn);
     });
+
+    const searchInput = document.getElementById("dk-search-input");
+    if (searchInput) {
+      let debounce;
+      searchInput.addEventListener("input", () => {
+        clearTimeout(debounce);
+        debounce = setTimeout(() => {
+          searchTerm = searchInput.value.trim();
+          paintBoard();
+        }, 150);
+      });
+    }
 
     paintBoard();
 
-    // ADP comparison section — needs Draft Sharks ADP CSV
-    if (dsAdps.hasData) {
-      const rows = dsAdps.rows.slice(0, 60);
+    // ---------- Value picks (drafted later than they're ranked) ----------
+    const withAdp = (dk.rankings.overall || []).filter(r => r.adp != null && r.rank != null);
+    const valuePicks = withAdp
+      .map(r => ({ ...r, value: Math.round(r.adp) - r.rank }))
+      .filter(r => r.value >= 5)
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 20);
+
+    if (valuePicks.length) {
       adpEl.innerHTML = `
-        <table class="stats-table dk-table">
-          <thead><tr>
-            <th class="num">DS</th>
-            <th>Player</th>
-            <th class="num">CBS ADP</th>
-            <th class="num">CBS Δ</th>
-            <th class="num">Cons ADP</th>
-            <th class="num">Sleeper ADP</th>
-            <th class="num">Sleep Δ</th>
-          </tr></thead>
-          <tbody>
-            ${rows.map(r => {
-              const marketArrow = (v) => v == null ? '—'
-                : `<span class="${v < 0 ? 'up' : v > 0 ? 'down' : ''}">${v > 0 ? '+' : ''}${v}</span>`;
-              return `<tr>
-                <td class="num">${r.ds_rank ?? '—'}</td>
-                <td>
-                  <span class="player-name">${esc(r.name)}</span>
+        <div class="dk-cards">
+          ${valuePicks.map(r => `
+            <div class="dk-card dk-value">
+              <div class="dk-rank">${r.rank}</div>
+              <div class="dk-info">
+                <div class="dk-name">${esc(r.name)}</div>
+                <div class="dk-meta">
                   <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
-                  <span class="team-tag">${esc(r.team)}</span>
-                </td>
-                <td class="num">${r.cbs_adp    ?? '—'}</td>
-                <td class="num">${marketArrow(r.cbs_market)}</td>
-                <td class="num">${r.cons_adp   ?? '—'}</td>
-                <td class="num">${r.sleep_adp  ?? '—'}</td>
-                <td class="num">${marketArrow(r.sleep_market)}</td>
-              </tr>`;
-            }).join("")}
-          </tbody>
-        </table>
-        <p style="font-family:var(--f-sign);letter-spacing:1px;color:var(--brown);font-size:13px;margin-top:12px;">
-          Market Δ shows how many spots later a player is being drafted vs. Draft Sharks' rank.
-          Negative (green) = you can wait; Positive (red) = they're going earlier than DS values them.
+                  <span class="dk-team">${esc(r.team)}</span>
+                  ${r.bye ? `<span class="dk-bye">BYE ${esc(r.bye)}</span>` : ''}
+                  <span class="dk-fp">ADP ${r.adp.toFixed(1)} <span class="rank-delta up">+${r.value}</span></span>
+                </div>
+              </div>
+              <div class="dk-stats">
+                <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${r.proj_pts != null ? Math.round(r.proj_pts) : '—'}</span></div>
+                <div class="dk-stat"><span class="lbl">Tier</span><span class="val">${r.tier ?? '—'}</span></div>
+                <div class="dk-stat"><span class="lbl">Owned</span><span class="val">${r.owned_avg != null ? Math.round(r.owned_avg) + '%' : '—'}</span></div>
+              </div>
+            </div>`).join("")}
+        </div>
+        <p class="dk-note">
+          These players are being drafted later (higher ADP) than where FantasyPros ranks them.
+          Green +N shows how many spots later they go on average — bigger = better value.
         </p>`;
     } else {
-      adpEl.innerHTML = empty("Upload assets/data/draft-sharks/adps.csv to see cross-platform ADP.");
+      adpEl.innerHTML = empty("No significant value picks right now.");
     }
 
-    // Sleepers & steals — DS-favored players (DS ranks 5+ higher than FP)
-    // Only makes sense when we have both DS and FP data
-    if (dsRank.hasData) {
-      const mergedAll = mergeRankings(dk.rankings.overall, dsRank.rows);
-      const sleepers = mergedAll
-        .filter(r => r.rank_delta != null && r.rank_delta < -5)
-        .sort((a, b) => a.rank_delta - b.rank_delta)
-        .slice(0, 20);
-      if (sleepers.length) {
-        sleepersEl.innerHTML = `
-          <table class="stats-table dk-table">
-            <thead><tr>
-              <th>Player</th>
-              <th class="num">DS</th>
-              <th class="num">FP</th>
-              <th class="num">Δ</th>
-              <th class="num">DS Proj</th>
-              <th class="num">3D Val</th>
-              <th class="num">Injury</th>
-            </tr></thead>
-            <tbody>
-              ${sleepers.map(r => `
-                <tr>
-                  <td>
-                    <span class="player-name">${esc(r.name)}</span>
-                    <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
-                    <span class="team-tag">${esc(r.team)}</span>
-                  </td>
-                  <td class="num">${r.ds_rank}</td>
-                  <td class="num">${r.fp_rank}</td>
-                  <td class="num"><span class="up">${r.rank_delta}</span></td>
-                  <td class="num">${r.ds_proj != null ? r.ds_proj.toFixed(0) : '—'}</td>
-                  <td class="num">${r.ds_value_3d ?? '—'}</td>
-                  <td class="num">${r.ds_injury_risk || '—'}</td>
-                </tr>`).join("")}
-            </tbody>
-          </table>
-          <p style="font-family:var(--f-sign);letter-spacing:1px;color:var(--brown);font-size:13px;margin-top:12px;">
-            Δ shows how much higher Draft Sharks ranks each player vs. FantasyPros consensus.
-            Bigger negative number = bigger sleeper.
-          </p>`;
-      } else {
-        sleepersEl.innerHTML = empty("No significant rank gaps found. Draft Sharks and FantasyPros are aligned on the players with data on both sides.");
-      }
+    // ---------- Sleepers ----------
+    const sleepers = (dk.rankings.overall || [])
+      .filter(r => r.rank <= 150 && r.owned_avg != null && r.owned_avg < 40)
+      .sort((a, b) => a.rank - b.rank)
+      .slice(0, 20);
+
+    if (sleepers.length) {
+      sleepersEl.innerHTML = `
+        <div class="dk-cards">
+          ${sleepers.map(r => `
+            <div class="dk-card dk-sleeper">
+              <div class="dk-rank">${r.rank}</div>
+              <div class="dk-info">
+                <div class="dk-name">${esc(r.name)}</div>
+                <div class="dk-meta">
+                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
+                  <span class="dk-team">${esc(r.team)}</span>
+                  ${r.bye ? `<span class="dk-bye">BYE ${esc(r.bye)}</span>` : ''}
+                </div>
+              </div>
+              <div class="dk-stats">
+                <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${r.adp != null ? r.adp.toFixed(1) : '—'}</span></div>
+                <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${r.proj_pts != null ? Math.round(r.proj_pts) : '—'}</span></div>
+                <div class="dk-stat"><span class="lbl">Owned</span><span class="val">${Math.round(r.owned_avg)}%</span></div>
+              </div>
+            </div>`).join("")}
+        </div>
+        <p class="dk-note">
+          Top-150 ranked players with low ownership — leagues are sleeping on them.
+        </p>`;
     } else {
-      sleepersEl.innerHTML = empty("Sleepers view needs the Draft Sharks CSV uploaded to assets/data/draft-sharks/rankings.csv.");
+      sleepersEl.innerHTML = empty("Sleepers list will populate as ownership data flows in.");
     }
 
   } catch (e) {
     if (boardEl) boardEl.innerHTML = errBox(e.message);
   }
 }
+
 
 window.Pages = {
   renderHome, renderMatchups, renderStandings, renderNews,
