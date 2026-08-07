@@ -97,20 +97,66 @@ async function renderHome() {
         <div class="weeknum">W${week}</div>
       </div>`;
 
-    // Matchups (top 4)
+    // Matchups — ESPN-style horizontal ticker (auto-scrolls, pauses on hover)
     try {
       const m = await getMatchups(week);
       if (!m.length) {
-        matchupsEl.innerHTML = empty("No matchups posted yet. Check back at kickoff.");
+        matchupsEl.innerHTML = `
+          <div class="ticker-shell">
+            <div class="ticker-badge">WEEK ${week}</div>
+            <div class="ticker-empty">Season starting soon — matchups populate as the league schedule is set.</div>
+          </div>`;
       } else {
-        const pairs = pairMatchups(m, teams).slice(0, 4);
-        matchupsEl.innerHTML = `<div class="grid">${
-          pairs.map(p => matchupCardHtml(p[0], p[1])).join("")
-        }</div>`;
+        const pairs = pairMatchups(m, teams);
+        const now = Date.now();
+        const stateLabel = (a, b) => {
+          const scored = (Number(a?.points) || 0) + (Number(b?.points) || 0);
+          if (scored > 0.1) return { label: "LIVE", cls: "live" };
+          return { label: "PRE",  cls: "pre" };
+        };
+        const tickerItem = (a, b) => {
+          const st = stateLabel(a, b);
+          const aName = esc(a?.team?.name || "TBD");
+          const bName = esc(b?.team?.name || "TBD");
+          const aScore = (Number(a?.points) || 0).toFixed(1);
+          const bScore = (Number(b?.points) || 0).toFixed(1);
+          const aAvatar = a?.team?.avatar
+            ? `<img class="ticker-avatar" src="${esc(avatarUrl(a.team.avatar))}" alt="">`
+            : `<div class="ticker-avatar-blank">${esc(aName[0] || "?")}</div>`;
+          const bAvatar = b?.team?.avatar
+            ? `<img class="ticker-avatar" src="${esc(avatarUrl(b.team.avatar))}" alt="">`
+            : `<div class="ticker-avatar-blank">${esc(bName[0] || "?")}</div>`;
+          return `
+            <div class="ticker-game ${st.cls}">
+              <span class="ticker-status">${st.label}</span>
+              <span class="ticker-team">
+                ${aAvatar}
+                <span class="ticker-team-name">${aName}</span>
+                <span class="ticker-team-score">${aScore}</span>
+              </span>
+              <span class="ticker-vs">vs</span>
+              <span class="ticker-team">
+                <span class="ticker-team-score">${bScore}</span>
+                <span class="ticker-team-name">${bName}</span>
+                ${bAvatar}
+              </span>
+            </div>`;
+        };
+        // Duplicate the list so the CSS marquee loops seamlessly
+        const items = pairs.map(p => tickerItem(p[0], p[1])).join("");
+        matchupsEl.innerHTML = `
+          <div class="ticker-shell">
+            <div class="ticker-badge">WEEK ${week}</div>
+            <div class="ticker-track-wrap">
+              <div class="ticker-track">${items}${items}</div>
+            </div>
+          </div>`;
       }
     } catch (e) {
-      matchupsEl.innerHTML = empty("No matchups posted yet.");
+      matchupsEl.innerHTML = errBox("Matchups unavailable right now.");
     }
+
+    // Standings — full league
 
     // Standings snapshot (all teams)
     const ranked = Array.from(teams.values()).sort((a,b) => {
@@ -834,19 +880,31 @@ async function renderHistory() {
       }
     }
 
-    if (!champions.length) {
-      listEl.innerHTML = empty("No completed seasons on record yet. Champions of past seasons will show up here once the league finishes its first title.");
+    // Hardcoded past champions (pre-Sleeper history), most recent first
+    const HISTORICAL_CHAMPIONS = [
+      { season: "2024-25", team: "CeeDees TD's",  manager: "Andry Nunez",     reigning: true  },
+      { season: "2023-24", team: "Kittle Cookd",  manager: "Keyro Collado",   reigning: false },
+      { season: "2022-23", team: "King",          manager: "John King",       reigning: false },
+      { season: "2021-22", team: "Gaskin For Air", manager: "Adam Morales",    reigning: false },
+    ];
+
+    // Any Sleeper-archived champions get merged in (they'll usually be newer than 2024-25)
+    const combined = [...champions, ...HISTORICAL_CHAMPIONS];
+
+    if (!combined.length) {
+      listEl.innerHTML = empty("No completed seasons on record yet.");
     } else {
       listEl.innerHTML = `
-        <table class="stats-table">
-          <thead><tr><th>Season</th><th>Champion</th></tr></thead>
-          <tbody>${champions.map(c => `
-            <tr>
-              <td class="num" style="text-align:left;">${esc(c.season)}</td>
-              <td>🏆 ${esc(c.team)}</td>
-            </tr>`).join("")}
-          </tbody>
-        </table>`;
+        <div class="champ-wall">
+          ${combined.map((c, i) => `
+            <div class="champ-card ${c.reigning || i === 0 ? 'reigning' : ''}">
+              <div class="champ-trophy">🏆</div>
+              <div class="champ-season">${esc(c.season)}</div>
+              <div class="champ-team">${esc(c.team)}</div>
+              ${c.manager ? `<div class="champ-manager">${esc(c.manager)}</div>` : ''}
+              ${c.reigning || i === 0 ? '<div class="champ-badge">Reigning</div>' : ''}
+            </div>`).join("")}
+        </div>`;
     }
   } catch (e) {
     listEl.innerHTML = errBox(e.message);
