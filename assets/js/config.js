@@ -69,4 +69,10 @@ window.Config = {
   /* Sleeper trending: how many hours back and how many players to show */
   TRENDING_HOURS: 24,
   TRENDING_LIMIT: 25,
+
+  /* Discord server integration — paste your server ID here after enabling widget.
+     To find: Discord → Server Settings → Widget → Enable Widget → copy Server ID.
+     Leave as null to hide the widget on the home page. */
+  DISCORD_SERVER_ID: 1535440994299023433,
+  DISCORD_INVITE_URL: https://discord.gg/6X57hpWx6,  // Optional: paste your permanent invite link (e.g. https://discord.gg/XXXX)
 };
