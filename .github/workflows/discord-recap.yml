@@ -1,0 +1,36 @@
+name: Discord — Weekly recap
+
+# Posts the week's recap + standings to #recap every Tuesday morning after MNF.
+# 8am ET Tuesday = 12:00 UTC Tuesday (during DST) / 13:00 UTC (standard time).
+# We run at 13:00 UTC to be safe post-MNF regardless of DST.
+
+on:
+  schedule:
+    - cron: "0 13 * * 2"   # Tuesday 13:00 UTC ≈ 8am ET (9am EDT / 8am EST)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: discord-recap
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Post recap to Discord
+        env:
+          DISCORD_RECAP_WEBHOOK: ${{ secrets.DISCORD_RECAP_WEBHOOK }}
+          SLEEPER_LEAGUE_ID: "1389753693590532096"
+        run: node .github/scripts/discord-recap.js
