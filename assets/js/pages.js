@@ -199,7 +199,6 @@ async function renderHome() {
       </div>`;
     renderInjuriesWidget("home-injuries", { limit: 4 });
     renderWire("home-wire",     { limit: 6 });
-    renderDiscordWidget("home-discord");
   } catch (e) {
     heroEl.innerHTML = errBox(`League fetch failed: ${e.message}`);
   }
@@ -1801,8 +1800,14 @@ async function renderDues() {
               </tr>`;
           }).join('')}
         </tbody>
-      </table>`;
-     
+      </table>
+      <p class="dues-note">
+        <strong>To update payment status:</strong> edit
+        <code>assets/data/dues.json</code> on GitHub. Add a team's roster ID
+        (shown in the ID column) to <code>paid_roster_ids</code> to mark them paid,
+        remove it to mark them owing. Site updates on next page load.
+      </p>`;
+
     // ========== SECTION 2 & 3 — need matchup data ==========
     // Fetch matchups for all weeks 1-17 in one pass (used by both sections)
     weeklyEl.innerHTML = loading("Loading weekly scores…");
