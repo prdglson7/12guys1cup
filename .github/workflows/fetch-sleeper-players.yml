@@ -1,0 +1,49 @@
+name: Update Sleeper players DB
+
+# Fetches the Sleeper NFL player database weekly for roster sync (Trade Finder).
+# Sleeper's DB is ~5MB; we slim it to ~500KB by dropping fields we don't use.
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"    # Every Monday 9am UTC (~4am ET)
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fetch-sleeper-players.yml"
+      - ".github/scripts/fetch-sleeper-players.js"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-sleeper-players
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Fetch Sleeper players
+        run: node .github/scripts/fetch-sleeper-players.js
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/data/sleeper-players.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Update Sleeper players DB [skip ci]"
+          git push
