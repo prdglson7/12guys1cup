@@ -5,7 +5,7 @@ name: Discord — News alerts
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "5,20,35,50 * * * *"
   workflow_dispatch:
 
 permissions:
