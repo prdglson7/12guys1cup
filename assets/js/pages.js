@@ -1731,12 +1731,244 @@ async function renderDraftKit() {
   }
 }
 
+
+/* ---------- DUES ---------- */
+async function renderDues() {
+  const paymentsEl = document.getElementById("dues-payments");
+  const weeklyEl = document.getElementById("dues-weekly");
+  const seasonEl = document.getElementById("dues-season");
+  const metaEl = document.getElementById("dues-meta");
+
+  paymentsEl.innerHTML = loading("Loading dues…");
+  weeklyEl.innerHTML = loading();
+  seasonEl.innerHTML = loading();
+
+  try {
+    const { state, league, teams } = await bootstrap();
+
+    // Load dues config (paid teams tracker)
+    let dues = { paid_roster_ids: [], dues_amount: 150, weekly_penalty: 10 };
+    try {
+      const res = await fetch("assets/data/dues.json", { cache: "no-cache" });
+      if (res.ok) dues = await res.json();
+    } catch (_) {}
+    const paidIds = new Set((dues.paid_roster_ids || []).map(Number));
+    const amt = dues.dues_amount || 150;
+    const wp = dues.weekly_penalty || 10;
+
+    // ========== SECTION 1: PAYMENT STATUS ==========
+    const teamList = Array.from(teams.values());
+    const paidCount = teamList.filter(t => paidIds.has(t.roster_id)).length;
+    const collected = paidCount * amt;
+    const target = teamList.length * amt;
+
+    metaEl.textContent = `$${amt} per team • ${paidCount}/${teamList.length} paid • $${collected} of $${target} collected`;
+
+    // Sort: paid first, then owing (both alphabetical)
+    const sortedTeams = [...teamList].sort((a, b) => {
+      const aP = paidIds.has(a.roster_id) ? 0 : 1;
+      const bP = paidIds.has(b.roster_id) ? 0 : 1;
+      if (aP !== bP) return aP - bP;
+      return (a.team_name || '').localeCompare(b.team_name || '');
+    });
+
+    paymentsEl.innerHTML = `
+      <table class="stats-table dues-table">
+        <thead>
+          <tr>
+            <th>Team</th>
+            <th class="num">ID</th>
+            <th class="num">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${sortedTeams.map(t => {
+            const paid = paidIds.has(t.roster_id);
+            return `
+              <tr class="${paid ? 'dues-row-paid' : 'dues-row-owing'}">
+                <td>
+                  <div class="team-cell">
+                    <img class="avatar-sm" src="${esc(avatarUrl(t))}" alt="" onerror="this.src='assets/img/logo.jpg'">
+                    ${esc(t.team_name)}
+                  </div>
+                </td>
+                <td class="num">${t.roster_id}</td>
+                <td class="num">
+                  ${paid
+                    ? '<span class="dues-badge dues-paid">✓ Paid</span>'
+                    : '<span class="dues-badge dues-owing">✗ Owing</span>'}
+                </td>
+              </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+      <p class="dues-note">
+        <strong>To update payment status:</strong> edit
+        <code>assets/data/dues.json</code> on GitHub. Add a team's roster ID
+        (shown in the ID column) to <code>paid_roster_ids</code> to mark them paid,
+        remove it to mark them owing. Site updates on next page load.
+      </p>`;
+
+    // ========== SECTION 2 & 3 — need matchup data ==========
+    // Fetch matchups for all weeks 1-17 in one pass (used by both sections)
+    weeklyEl.innerHTML = loading("Loading weekly scores…");
+    seasonEl.innerHTML = loading("Tallying season totals…");
+
+    const allWeeks = new Map();  // week -> matchups array
+    const currentWeek = (state && state.week) || 0;
+    for (let w = 1; w <= 17; w++) {
+      // Stop fetching once we pass current week (offseason: currentWeek=0, so no fetches)
+      if (currentWeek > 0 && w > currentWeek) break;
+      try {
+        const m = await getMatchups(w);
+        if (!m || !m.length) continue;
+        // Only count weeks with actual scoring
+        const hasScoring = m.some(x => (x.points || 0) > 0.1);
+        if (!hasScoring) continue;
+        allWeeks.set(w, m);
+      } catch (_) { break; }
+    }
+
+    // ========== SECTION 2: WEEKLY HIGH / LOW ==========
+    if (!allWeeks.size) {
+      weeklyEl.innerHTML = empty("Weekly winners populate as games play.");
+    } else {
+      const weeklyRows = [];
+      let totalPenalty = 0;
+      for (const [w, matchups] of allWeeks) {
+        const scored = matchups.filter(x => (x.points || 0) > 0.1);
+        if (!scored.length) continue;
+        const high = scored.reduce((max, x) => x.points > max.points ? x : max, scored[0]);
+        const low  = scored.reduce((min, x) => x.points < min.points ? x : min, scored[0]);
+        const highTeam = teams.get(high.roster_id);
+        const lowTeam  = teams.get(low.roster_id);
+        weeklyRows.push({
+          week: w,
+          high: { team: highTeam, points: high.points },
+          low:  { team: lowTeam,  points: low.points },
+        });
+        totalPenalty += wp;
+      }
+
+      weeklyEl.innerHTML = `
+        <div class="dues-summary">
+          Penalty pot so far: <strong class="gold">$${totalPenalty}</strong>
+          across ${weeklyRows.length} week${weeklyRows.length !== 1 ? 's' : ''}
+        </div>
+        <table class="stats-table dues-weekly-table">
+          <thead>
+            <tr>
+              <th>Week</th>
+              <th>High score</th>
+              <th class="num">Pts</th>
+              <th>Low score</th>
+              <th class="num">Pts</th>
+              <th class="num">Owes</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${weeklyRows.map(r => `
+              <tr>
+                <td class="dues-week">W${r.week}</td>
+                <td class="team-cell">
+                  <img class="avatar-sm" src="${esc(avatarUrl(r.high.team))}" alt="" onerror="this.src='assets/img/logo.jpg'">
+                  ${esc(r.high.team?.team_name || '?')}
+                </td>
+                <td class="num gold">${fmt1(r.high.points)}</td>
+                <td class="team-cell">
+                  <img class="avatar-sm" src="${esc(avatarUrl(r.low.team))}" alt="" onerror="this.src='assets/img/logo.jpg'">
+                  ${esc(r.low.team?.team_name || '?')}
+                </td>
+                <td class="num red">${fmt1(r.low.points)}</td>
+                <td class="num">$${wp}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    // ========== SECTION 3: SEASON LEADERS ==========
+    if (!allWeeks.size) {
+      seasonEl.innerHTML = empty("Season leaderboard populates as games play.");
+    } else {
+      // Sum every team's points across all weeks
+      const totals = new Map();
+      const bestGame = { pts: 0, team: null, week: null };
+      const worstGame = { pts: Infinity, team: null, week: null };
+
+      for (const [w, matchups] of allWeeks) {
+        matchups.forEach(x => {
+          if (!x.roster_id) return;
+          const pts = x.points || 0;
+          totals.set(x.roster_id, (totals.get(x.roster_id) || 0) + pts);
+          if (pts > bestGame.pts) {
+            bestGame.pts = pts; bestGame.team = teams.get(x.roster_id); bestGame.week = w;
+          }
+          if (pts > 0 && pts < worstGame.pts) {
+            worstGame.pts = pts; worstGame.team = teams.get(x.roster_id); worstGame.week = w;
+          }
+        });
+      }
+
+      const penaltyPot = allWeeks.size * wp;
+      const ranked = Array.from(totals.entries())
+        .map(([rid, pts]) => ({ roster_id: rid, team: teams.get(rid), points: pts }))
+        .sort((a, b) => b.points - a.points);
+
+      const leader = ranked[0];
+      seasonEl.innerHTML = `
+        <div class="dues-summary">
+          🏆 <strong>${esc(leader.team?.team_name || '?')}</strong> leading the season points chase —
+          on track for the <span class="gold">$${penaltyPot}</span> penalty pot at year end
+        </div>
+        <table class="stats-table dues-season-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Team</th>
+              <th class="num">Total Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${ranked.map((t, i) => `
+              <tr class="${i === 0 ? 'top-row' : ''}">
+                <td class="rank ${i===0?'gold':''}">${i + 1}</td>
+                <td class="team-cell">
+                  <img class="avatar-sm" src="${esc(avatarUrl(t.team))}" alt="" onerror="this.src='assets/img/logo.jpg'">
+                  ${esc(t.team?.team_name || '?')}
+                </td>
+                <td class="num">${fmt1(t.points)}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+        <div class="dues-records">
+          <div class="dues-record">
+            <div class="dues-record-label">🎯 Best single-week</div>
+            <div class="dues-record-value">
+              ${esc(bestGame.team?.team_name || '—')} —
+              <span class="gold">${fmt1(bestGame.pts)}</span> pts, Week ${bestGame.week ?? '—'}
+            </div>
+          </div>
+          <div class="dues-record">
+            <div class="dues-record-label">💀 Worst single-week</div>
+            <div class="dues-record-value">
+              ${esc(worstGame.team?.team_name || '—')} —
+              <span class="red">${worstGame.pts === Infinity ? '—' : fmt1(worstGame.pts)}</span> pts,
+              Week ${worstGame.week ?? '—'}
+            </div>
+          </div>
+        </div>`;
+    }
+  } catch (e) {
+    paymentsEl.innerHTML = errBox(e.message);
+  }
+}
+
 window.Pages = {
   renderHome, renderMatchups, renderStandings, renderNews,
   renderTransactions, renderHistory,
   renderWire, renderTrending, renderInsiders,
   renderInjuries, renderInjuriesWidget,
-  renderDraftKit,
+  renderDraftKit, renderDues,
 };
 
 })();
