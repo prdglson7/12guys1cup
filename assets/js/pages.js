@@ -882,9 +882,10 @@ async function renderHistory() {
 
     // Hardcoded past champions (pre-Sleeper history), most recent first
     const HISTORICAL_CHAMPIONS = [
-      { season: "2024-25", team: "CeeDees TD's",  manager: "Andry Nunez",     reigning: true  },
-      { season: "2023-24", team: "Kittle Cookd",  manager: "Keyro Collado",   reigning: false },
-      { season: "2022-23", team: "King",          manager: "John King",       reigning: false },
+      { season: "2025-26", team: "Indiana Jones",  manager: "Andrew Morales",  reigning: true  },
+      { season: "2024-25", team: "CeeDees TD's",   manager: "Andry Nunez",     reigning: false },
+      { season: "2023-24", team: "Kittle Cookd",   manager: "Keyro Collado",   reigning: false },
+      { season: "2022-23", team: "King",           manager: "Jon King",        reigning: false },
       { season: "2021-22", team: "Gaskin For Air", manager: "Adam Morales",    reigning: false },
     ];
 
