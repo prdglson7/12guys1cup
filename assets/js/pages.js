@@ -199,9 +199,45 @@ async function renderHome() {
       </div>`;
     renderInjuriesWidget("home-injuries", { limit: 4 });
     renderWire("home-wire",     { limit: 6 });
+    renderDiscordWidget("home-discord");
   } catch (e) {
     heroEl.innerHTML = errBox(`League fetch failed: ${e.message}`);
   }
+}
+
+/* ---------- DISCORD WIDGET ---------- */
+function renderDiscordWidget(elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const serverId = window.Config && window.Config.DISCORD_SERVER_ID;
+  const invite = window.Config && window.Config.DISCORD_INVITE_URL;
+
+  if (!serverId) {
+    el.innerHTML = `
+      <div class="discord-setup">
+        <div class="discord-setup-title">Discord not configured yet</div>
+        <div class="discord-setup-body">
+          Set <code>DISCORD_SERVER_ID</code> in <code>assets/js/config.js</code> to show the live widget.
+        </div>
+      </div>`;
+    return;
+  }
+
+  const inviteBtn = invite
+    ? `<a class="discord-invite-btn" href="${esc(invite)}" target="_blank" rel="noopener">Join the server</a>`
+    : '';
+
+  el.innerHTML = `
+    <div class="discord-widget-shell">
+      <iframe
+        src="https://discord.com/widget?id=${esc(serverId)}&theme=dark"
+        width="100%" height="400"
+        allowtransparency="true" frameborder="0"
+        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+        title="12guys1cup Discord widget">
+      </iframe>
+      ${inviteBtn}
+    </div>`;
 }
 
 /* ---------- MATCHUPS ---------- */
