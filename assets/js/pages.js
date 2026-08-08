@@ -1800,13 +1800,7 @@ async function renderDues() {
               </tr>`;
           }).join('')}
         </tbody>
-      </table>
-      <p class="dues-note">
-        <strong>To update payment status:</strong> edit
-        <code>assets/data/dues.json</code> on GitHub. Add a team's roster ID
-        (shown in the ID column) to <code>paid_roster_ids</code> to mark them paid,
-        remove it to mark them owing. Site updates on next page load.
-      </p>`;
+      </table>`;
 
     // ========== SECTION 2 & 3 — need matchup data ==========
     // Fetch matchups for all weeks 1-17 in one pass (used by both sections)
@@ -1962,12 +1956,433 @@ async function renderDues() {
   }
 }
 
+
+/* ============================================================
+   TOOLS — Trade Analyzer + Start/Sit
+   ============================================================ */
+
+/* Value formula constants — transparent, no bias */
+const POS_MULTIPLIER = {
+  RB: 1.15, TE: 1.10, WR: 1.05, QB: 0.90, K: 0.70, DST: 0.70,
+};
+const INJURY_DISCOUNT = {
+  'Out': 0.30, 'IR': 0.30, 'PUP': 0.30, 'Sus': 0.30,
+  'Doubtful': 0.50,
+  'Questionable': 0.85,
+  'Probable': 0.95,
+};
+function tierBonus(overallRank) {
+  if (!overallRank) return 1.0;
+  if (overallRank <= 12) return 1.10;
+  if (overallRank <= 24) return 1.05;
+  if (overallRank <= 60) return 1.00;
+  if (overallRank <= 120) return 0.95;
+  return 0.90;
+}
+function normalizeName(name) {
+  return (name || '').toLowerCase()
+    .replace(/[^a-z\s]/g, '')
+    .replace(/\s+(jr|sr|ii|iii|iv|v)$/i, '')
+    .trim();
+}
+function computePlayerValue(player, injuryStatus) {
+  const proj = Number(player.proj_pts) || 0;
+  const posM = POS_MULTIPLIER[player.pos] || 1.0;
+  const tierM = tierBonus(Number(player.rank));
+  const injM = injuryStatus ? (INJURY_DISCOUNT[injuryStatus] || 1.0) : 1.0;
+  const value = proj * posM * tierM * injM;
+  return {
+    value: value,
+    proj, posM, tierM, injM,
+    injuryStatus,
+  };
+}
+
+async function renderTools() {
+  // Set up tab switching
+  document.querySelectorAll(".tools-tab").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll(".tools-tab").forEach(b => b.classList.toggle("active", b === btn));
+      document.querySelectorAll(".tools-panel").forEach(p => {
+        p.classList.toggle("active", p.id === `tools-${tab}`);
+      });
+    });
+  });
+
+  const tradeBody = document.getElementById("trade-body");
+  const ssBody = document.getElementById("startsit-body");
+  const tradeMeta = document.getElementById("trade-meta");
+  const ssMeta = document.getElementById("ss-meta");
+
+  tradeBody.innerHTML = loading("Loading player database…");
+  ssBody.innerHTML = loading("Loading player database…");
+
+  // Load player database from draftkit.json + injuries
+  const dk = await getDraftKit();
+  if (!dk || !dk.rankings || !dk.rankings.overall) {
+    tradeBody.innerHTML = errBox("Draft Kit data unavailable — cannot load player database.");
+    ssBody.innerHTML = errBox("Draft Kit data unavailable.");
+    return;
+  }
+
+  // Build unified player list
+  const allPlayers = dk.rankings.overall.filter(p => p.name && p.pos);
+  console.log(`Player DB loaded: ${allPlayers.length} players`);
+
+  // Build injury lookup by normalized name
+  const injuries = await getFantasyProsInjuries();
+  const injuryByName = new Map();
+  (injuries.injuries || []).forEach(inj => {
+    if (inj.name && inj.status) {
+      injuryByName.set(normalizeName(inj.name), inj.status);
+    }
+  });
+
+  // Attach injury status to each player
+  allPlayers.forEach(p => {
+    p._injury = injuryByName.get(normalizeName(p.name)) || null;
+  });
+
+  const fetched = dk.fetched_at ? new Date(dk.fetched_at) : null;
+  tradeMeta.textContent = `${allPlayers.length} players • ${dk.scoring || 'PPR'} • updated ${fetched ? relTime(fetched.toISOString()) : 'recently'}`;
+  ssMeta.textContent = tradeMeta.textContent;
+
+  renderTradeAnalyzer(allPlayers, tradeBody);
+  renderStartSit(allPlayers, ssBody);
+}
+
+/* ---------- Player search dropdown (shared) ---------- */
+function playerSearchHtml(id, placeholder) {
+  return `
+    <div class="player-search">
+      <input type="search" id="${id}" placeholder="${esc(placeholder)}" autocomplete="off">
+      <div id="${id}-results" class="player-search-results"></div>
+    </div>`;
+}
+
+function attachPlayerSearch(inputId, allPlayers, onPick) {
+  const input = document.getElementById(inputId);
+  const results = document.getElementById(`${inputId}-results`);
+  if (!input) return;
+
+  const search = (q) => {
+    if (!q || q.length < 2) { results.innerHTML = ''; results.style.display = 'none'; return; }
+    const qn = q.toLowerCase();
+    const matches = allPlayers
+      .filter(p => (p.name || '').toLowerCase().includes(qn))
+      .slice(0, 8);
+    if (!matches.length) {
+      results.innerHTML = '<div class="player-search-empty">No matches</div>';
+      results.style.display = 'block';
+      return;
+    }
+    results.innerHTML = matches.map((p, i) => `
+      <button class="player-search-item" data-idx="${allPlayers.indexOf(p)}">
+        <span class="player-search-rank">#${p.rank || '—'}</span>
+        <span class="player-search-name">${esc(p.name)}</span>
+        <span class="${_pillClass(p.pos)}">${esc(p.pos)}</span>
+        <span class="player-search-team">${esc(p.team || '')}</span>
+      </button>`).join('');
+    results.style.display = 'block';
+    results.querySelectorAll('.player-search-item').forEach(b => {
+      b.addEventListener('click', () => {
+        const idx = Number(b.dataset.idx);
+        onPick(allPlayers[idx]);
+        input.value = '';
+        results.innerHTML = '';
+        results.style.display = 'none';
+      });
+    });
+  };
+
+  let debounce;
+  input.addEventListener('input', () => {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => search(input.value.trim()), 150);
+  });
+  input.addEventListener('focus', () => {
+    if (input.value.trim()) search(input.value.trim());
+  });
+  document.addEventListener('click', (e) => {
+    if (!input.parentElement.contains(e.target)) {
+      results.style.display = 'none';
+    }
+  });
+}
+
+/* ---------- Trade Analyzer ---------- */
+function renderTradeAnalyzer(allPlayers, container) {
+  let teamA = [];
+  let teamB = [];
+
+  container.innerHTML = `
+    <div class="trade-grid">
+      <div class="trade-side">
+        <h3 class="trade-side-title">Team A gives</h3>
+        ${playerSearchHtml('trade-a-search', 'Search player to add…')}
+        <div id="trade-a-list" class="trade-list"></div>
+        <div id="trade-a-total" class="trade-total"></div>
+      </div>
+      <div class="trade-vs">⇄</div>
+      <div class="trade-side">
+        <h3 class="trade-side-title">Team B gives</h3>
+        ${playerSearchHtml('trade-b-search', 'Search player to add…')}
+        <div id="trade-b-list" class="trade-list"></div>
+        <div id="trade-b-total" class="trade-total"></div>
+      </div>
+    </div>
+
+    <div id="trade-verdict" class="trade-verdict-empty">
+      Add at least 1 player to each side to see the verdict
+    </div>
+
+    <button class="tools-toggle" id="trade-toggle-math">
+      Show me the math ▼
+    </button>
+    <div id="trade-math" class="tools-math hidden">
+      <h4>How player value is calculated</h4>
+      <pre class="tools-formula">Value = Projected Points × Position × Tier × Injury
+
+Position multiplier (scarcity):
+  RB × 1.15    TE × 1.10    WR × 1.05
+  QB × 0.90    K × 0.70     DST × 0.70
+
+Tier bonus (overall rank):
+  Top 12  × 1.10    (elite)
+  Top 24  × 1.05    (near-elite)
+  Top 60  × 1.00    (starter)
+  Top 120 × 0.95    (bench)
+  120+    × 0.90    (deep bench)
+
+Injury discount:
+  Healthy       × 1.00
+  Questionable  × 0.85
+  Doubtful      × 0.50
+  Out / IR      × 0.30
+
+Total value each side = sum of all player values.
+Winner = higher total. Fair trade = within 5%.</pre>
+    </div>`;
+
+  const toggle = document.getElementById('trade-toggle-math');
+  const math = document.getElementById('trade-math');
+  toggle.addEventListener('click', () => {
+    const hidden = math.classList.toggle('hidden');
+    toggle.textContent = hidden ? 'Show me the math ▼' : 'Hide the math ▲';
+  });
+
+  const repaint = () => {
+    ['a', 'b'].forEach(side => {
+      const team = side === 'a' ? teamA : teamB;
+      const listEl = document.getElementById(`trade-${side}-list`);
+      const totalEl = document.getElementById(`trade-${side}-total`);
+      if (!team.length) {
+        listEl.innerHTML = '<div class="trade-empty">No players added yet</div>';
+        totalEl.innerHTML = '';
+        return;
+      }
+      let total = 0;
+      listEl.innerHTML = team.map((p, i) => {
+        const v = computePlayerValue(p, p._injury);
+        total += v.value;
+        return `
+          <div class="trade-player">
+            <div class="trade-player-info">
+              <div class="trade-player-name">${esc(p.name)}
+                ${p._injury ? `<span class="trade-injury">${esc(p._injury)}</span>` : ''}
+              </div>
+              <div class="trade-player-meta">
+                <span class="${_pillClass(p.pos)}">${esc(p.pos)}</span>
+                <span class="trade-team">${esc(p.team || '')}</span>
+                <span class="trade-rank">ECR #${p.rank || '—'}</span>
+              </div>
+            </div>
+            <div class="trade-player-value">${v.value.toFixed(1)}</div>
+            <button class="trade-remove" data-side="${side}" data-idx="${i}" aria-label="Remove">✕</button>
+          </div>`;
+      }).join('');
+      totalEl.innerHTML = `
+        <div class="trade-total-label">Total value</div>
+        <div class="trade-total-value">${total.toFixed(1)}</div>`;
+      listEl.querySelectorAll('.trade-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = Number(btn.dataset.idx);
+          if (btn.dataset.side === 'a') teamA.splice(idx, 1);
+          else teamB.splice(idx, 1);
+          repaint();
+        });
+      });
+    });
+
+    // Verdict
+    const totalA = teamA.reduce((s, p) => s + computePlayerValue(p, p._injury).value, 0);
+    const totalB = teamB.reduce((s, p) => s + computePlayerValue(p, p._injury).value, 0);
+    const verdictEl = document.getElementById('trade-verdict');
+    if (!teamA.length || !teamB.length) {
+      verdictEl.className = 'trade-verdict-empty';
+      verdictEl.textContent = 'Add at least 1 player to each side to see the verdict';
+    } else {
+      const diff = totalA - totalB;
+      const pct = Math.abs(diff) / Math.max(totalA, totalB) * 100;
+      let verdict, cls, note;
+      if (pct < 5) {
+        verdict = 'FAIR TRADE';
+        cls = 'trade-verdict-fair';
+        note = `Values within ${pct.toFixed(1)}% — go for it.`;
+      } else if (diff > 0) {
+        verdict = 'TEAM B WINS';
+        cls = 'trade-verdict-b';
+        note = `Team A giving up ${pct.toFixed(1)}% more value. Recommend: decline or counter.`;
+      } else {
+        verdict = 'TEAM A WINS';
+        cls = 'trade-verdict-a';
+        note = `Team B giving up ${pct.toFixed(1)}% more value. Team A steals this one.`;
+      }
+      verdictEl.className = `trade-verdict ${cls}`;
+      verdictEl.innerHTML = `
+        <div class="trade-verdict-title">${verdict}</div>
+        <div class="trade-verdict-note">${note}</div>
+        <div class="trade-verdict-scores">
+          <span>Team A: <strong>${totalA.toFixed(1)}</strong></span>
+          <span class="trade-verdict-vs">vs</span>
+          <span>Team B: <strong>${totalB.toFixed(1)}</strong></span>
+        </div>`;
+    }
+  };
+
+  attachPlayerSearch('trade-a-search', allPlayers, (p) => { teamA.push(p); repaint(); });
+  attachPlayerSearch('trade-b-search', allPlayers, (p) => { teamB.push(p); repaint(); });
+  repaint();
+}
+
+/* ---------- Start / Sit ---------- */
+function renderStartSit(allPlayers, container) {
+  let picks = [];
+
+  container.innerHTML = `
+    <div class="ss-notice">
+      <strong>Foundation build.</strong> Right now uses season-long ECR + season projections + injury status.
+      Weekly ECR, weekly projections, defense-vs-position matchup, and recent form will populate
+      once the season starts and workflows fetch weekly data.
+    </div>
+
+    <div class="ss-search-row">
+      ${playerSearchHtml('ss-search', 'Search player to compare…')}
+    </div>
+
+    <div id="ss-picks"></div>
+    <div id="ss-verdict"></div>
+
+    <button class="tools-toggle" id="ss-toggle-math">
+      Show me the math ▼
+    </button>
+    <div id="ss-math" class="tools-math hidden">
+      <h4>How Start/Sit score is calculated (currently — will expand Week 3)</h4>
+      <pre class="tools-formula">Score = 50 × (100 − normalized ECR)
+      + 30 × projected points
+      + 10 × recent form (LAST 3 GAMES — coming Week 3)
+      + 10 × opponent DEF vs POS rank (coming Week 1)
+      − Injury discount
+
+Right now: only ECR + projection + injury are live.
+Higher score = stronger start.
+
+Confidence = (top score − 2nd score) / top score × 100</pre>
+    </div>`;
+
+  const toggle = document.getElementById('ss-toggle-math');
+  const math = document.getElementById('ss-math');
+  toggle.addEventListener('click', () => {
+    const hidden = math.classList.toggle('hidden');
+    toggle.textContent = hidden ? 'Show me the math ▼' : 'Hide the math ▲';
+  });
+
+  const computeSsScore = (p) => {
+    const rankPart = p.rank ? Math.max(0, 100 - Number(p.rank)) : 0;
+    const projPart = Number(p.proj_pts) || 0;
+    let score = 50 * (rankPart / 100) + 30 * (projPart / 20);  // scaled
+    if (p._injury) {
+      score *= (INJURY_DISCOUNT[p._injury] || 1);
+    }
+    return {
+      total: score,
+      rank_component: 50 * (rankPart / 100),
+      proj_component: 30 * (projPart / 20),
+      injury_mult: INJURY_DISCOUNT[p._injury] || 1,
+    };
+  };
+
+  const repaint = () => {
+    const picksEl = document.getElementById('ss-picks');
+    const verdictEl = document.getElementById('ss-verdict');
+
+    if (!picks.length) {
+      picksEl.innerHTML = '<div class="ss-empty">Add 2-4 players to compare</div>';
+      verdictEl.innerHTML = '';
+      return;
+    }
+
+    // Compute scores
+    const scored = picks.map(p => ({ p, s: computeSsScore(p) }))
+      .sort((a, b) => b.s.total - a.s.total);
+
+    picksEl.innerHTML = `
+      <div class="ss-list">
+        ${scored.map((x, i) => `
+          <div class="ss-card ${i === 0 ? 'ss-card-start' : ''}">
+            <div class="ss-card-badge">${i === 0 ? '✓ START' : 'SIT'}</div>
+            <div class="ss-card-name">${esc(x.p.name)}
+              ${x.p._injury ? `<span class="trade-injury">${esc(x.p._injury)}</span>` : ''}
+            </div>
+            <div class="ss-card-meta">
+              <span class="${_pillClass(x.p.pos)}">${esc(x.p.pos)}</span>
+              <span>${esc(x.p.team || '')}</span>
+              ${x.p.bye ? `<span>BYE ${esc(x.p.bye)}</span>` : ''}
+            </div>
+            <div class="ss-card-stats">
+              <div><span class="lbl">ECR</span><span class="val">${x.p.rank ?? '—'}</span></div>
+              <div><span class="lbl">Proj</span><span class="val">${x.p.proj_pts != null ? Math.round(x.p.proj_pts) : '—'}</span></div>
+              <div><span class="lbl">Score</span><span class="val gold">${x.s.total.toFixed(1)}</span></div>
+            </div>
+            <button class="ss-remove" data-idx="${picks.indexOf(x.p)}">✕</button>
+          </div>`).join('')}
+      </div>`;
+
+    picksEl.querySelectorAll('.ss-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        picks.splice(Number(btn.dataset.idx), 1);
+        repaint();
+      });
+    });
+
+    if (scored.length >= 2) {
+      const top = scored[0], second = scored[1];
+      const confidence = Math.min(99, Math.max(50, ((top.s.total - second.s.total) / top.s.total) * 100 + 50));
+      verdictEl.innerHTML = `
+        <div class="ss-verdict">
+          <div class="ss-verdict-title">START <strong>${esc(top.p.name)}</strong></div>
+          <div class="ss-verdict-conf">${confidence.toFixed(0)}% confidence</div>
+        </div>`;
+    } else {
+      verdictEl.innerHTML = '<div class="ss-empty">Add one more player to see a verdict</div>';
+    }
+  };
+
+  attachPlayerSearch('ss-search', allPlayers, (p) => {
+    if (picks.length >= 4) picks.shift();  // cap at 4
+    picks.push(p);
+    repaint();
+  });
+  repaint();
+}
+
 window.Pages = {
   renderHome, renderMatchups, renderStandings, renderNews,
   renderTransactions, renderHistory,
   renderWire, renderTrending, renderInsiders,
   renderInjuries, renderInjuriesWidget,
-  renderDraftKit, renderDues,
+  renderDraftKit, renderDues, renderTools,
 };
 
 })();
