@@ -1959,42 +1959,72 @@ async function renderDues() {
 
 /* ============================================================
    TOOLS — Trade Analyzer + Start/Sit
+   Statistically unbiased algorithm using Value Based Drafting (VBD)
    ============================================================ */
 
-/* Value formula constants — transparent, no bias */
-const POS_MULTIPLIER = {
-  RB: 1.15, TE: 1.10, WR: 1.05, QB: 0.90, K: 0.70, DST: 0.70,
+/* Baseline ranks for 12-team full PPR — the last "startable" player
+   at each position (used to compute Points Above Replacement). */
+const VBD_BASELINE_RANKS = {
+  QB: 12,   // 12 teams × 1 QB starter
+  RB: 30,   // 12 × 2 RB + flex share
+  WR: 36,   // 12 × 3 WR/flex slots
+  TE: 12,   // 12 × 1 TE
+  K:  12,
+  DST: 12,
 };
-const INJURY_DISCOUNT = {
-  'Out': 0.30, 'IR': 0.30, 'PUP': 0.30, 'Sus': 0.30,
-  'Doubtful': 0.50,
-  'Questionable': 0.85,
+
+/* Fallback injury discount used only if FP hasn't published a play probability. */
+const INJURY_STATUS_FALLBACK = {
+  'Out': 0.05, 'IR': 0.05, 'PUP': 0.10, 'Sus': 0.05,
+  'Doubtful': 0.35,
+  'Questionable': 0.80,
   'Probable': 0.95,
 };
-function tierBonus(overallRank) {
-  if (!overallRank) return 1.0;
-  if (overallRank <= 12) return 1.10;
-  if (overallRank <= 24) return 1.05;
-  if (overallRank <= 60) return 1.00;
-  if (overallRank <= 120) return 0.95;
-  return 0.90;
-}
+
 function normalizeName(name) {
   return (name || '').toLowerCase()
     .replace(/[^a-z\s]/g, '')
     .replace(/\s+(jr|sr|ii|iii|iv|v)$/i, '')
     .trim();
 }
-function computePlayerValue(player, injuryStatus) {
+
+/** Compute VBD baseline projections from actual ranked players. */
+function computeBaselines(rankings) {
+  const baselines = {};
+  Object.entries(VBD_BASELINE_RANKS).forEach(([pos, rank]) => {
+    const positional = (rankings[pos] || [])
+      .map(p => Number(p.proj_pts))
+      .filter(n => n != null && !isNaN(n) && n > 0)
+      .sort((a, b) => b - a);
+    baselines[pos] = positional[rank - 1] || 0;
+  });
+  return baselines;
+}
+
+/** VBD-based player value: (Projected − Baseline) × Injury Probability. */
+function computePlayerValue(player, baselines) {
   const proj = Number(player.proj_pts) || 0;
-  const posM = POS_MULTIPLIER[player.pos] || 1.0;
-  const tierM = tierBonus(Number(player.rank));
-  const injM = injuryStatus ? (INJURY_DISCOUNT[injuryStatus] || 1.0) : 1.0;
-  const value = proj * posM * tierM * injM;
+  const baseline = baselines[player.pos] || 0;
+  const par = proj - baseline;   // Points Above Replacement
+
+  // Floor: below-replacement players still have minimal roster utility
+  const baseValue = par > 0 ? par : Math.max(proj * 0.05, 2);
+
+  // Injury adjustment — prefer FP's published probability, fall back to status
+  let injuryMult = 1.0;
+  let injuryLabel = null;
+  if (player._injury_prob != null && player._injury_prob >= 0 && player._injury_prob <= 1) {
+    injuryMult = player._injury_prob;
+    injuryLabel = `${(player._injury_prob * 100).toFixed(0)}% play prob`;
+  } else if (player._injury && INJURY_STATUS_FALLBACK[player._injury] != null) {
+    injuryMult = INJURY_STATUS_FALLBACK[player._injury];
+    injuryLabel = player._injury;
+  }
+
   return {
-    value: value,
-    proj, posM, tierM, injM,
-    injuryStatus,
+    value: baseValue * injuryMult,
+    proj, baseline, par, baseValue,
+    injuryMult, injuryLabel,
   };
 }
 
@@ -2018,7 +2048,7 @@ async function renderTools() {
   tradeBody.innerHTML = loading("Loading player database…");
   ssBody.innerHTML = loading("Loading player database…");
 
-  // Load player database from draftkit.json + injuries
+  // Load player database from draftkit.json
   const dk = await getDraftKit();
   if (!dk || !dk.rankings || !dk.rankings.overall) {
     tradeBody.innerHTML = errBox("Draft Kit data unavailable — cannot load player database.");
@@ -2026,29 +2056,39 @@ async function renderTools() {
     return;
   }
 
-  // Build unified player list
   const allPlayers = dk.rankings.overall.filter(p => p.name && p.pos);
   console.log(`Player DB loaded: ${allPlayers.length} players`);
 
-  // Build injury lookup by normalized name
+  // Compute VBD baselines from actual data
+  const baselines = computeBaselines(dk.rankings);
+  console.log('Baselines:', baselines);
+
+  // Load injuries including probability of playing
   const injuries = await getFantasyProsInjuries();
   const injuryByName = new Map();
   (injuries.injuries || []).forEach(inj => {
-    if (inj.name && inj.status) {
-      injuryByName.set(normalizeName(inj.name), inj.status);
-    }
+    if (!inj.name) return;
+    const prob = inj.probability_of_playing != null && inj.probability_of_playing !== ''
+      ? parseFloat(inj.probability_of_playing)
+      : null;
+    injuryByName.set(normalizeName(inj.name), {
+      status: inj.status || null,
+      prob: (prob != null && !isNaN(prob)) ? prob : null,
+    });
   });
 
-  // Attach injury status to each player
+  // Attach injury data to each player
   allPlayers.forEach(p => {
-    p._injury = injuryByName.get(normalizeName(p.name)) || null;
+    const inj = injuryByName.get(normalizeName(p.name));
+    p._injury = inj?.status || null;
+    p._injury_prob = inj?.prob != null ? inj.prob : null;
   });
 
   const fetched = dk.fetched_at ? new Date(dk.fetched_at) : null;
-  tradeMeta.textContent = `${allPlayers.length} players • ${dk.scoring || 'PPR'} • updated ${fetched ? relTime(fetched.toISOString()) : 'recently'}`;
-  ssMeta.textContent = tradeMeta.textContent;
+  tradeMeta.textContent = `${allPlayers.length} players • VBD-based • ${dk.scoring || 'PPR'} • updated ${fetched ? relTime(fetched.toISOString()) : 'recently'}`;
+  ssMeta.textContent = `${allPlayers.length} players • ${dk.scoring || 'PPR'} • updated ${fetched ? relTime(fetched.toISOString()) : 'recently'}`;
 
-  renderTradeAnalyzer(allPlayers, tradeBody);
+  renderTradeAnalyzer(allPlayers, baselines, tradeBody);
   renderStartSit(allPlayers, ssBody);
 }
 
@@ -2112,7 +2152,7 @@ function attachPlayerSearch(inputId, allPlayers, onPick) {
 }
 
 /* ---------- Trade Analyzer ---------- */
-function renderTradeAnalyzer(allPlayers, container) {
+function renderTradeAnalyzer(allPlayers, baselines, container) {
   let teamA = [];
   let teamB = [];
 
@@ -2141,28 +2181,63 @@ function renderTradeAnalyzer(allPlayers, container) {
       Show me the math ▼
     </button>
     <div id="trade-math" class="tools-math hidden">
-      <h4>How player value is calculated</h4>
-      <pre class="tools-formula">Value = Projected Points × Position × Tier × Injury
+      <h4>Value Based Drafting (VBD) with consolidation adjustment</h4>
+      <pre class="tools-formula">Adjusted Value = Raw VORP ± Consolidation Adjustment
 
-Position multiplier (scarcity):
-  RB × 1.15    TE × 1.10    WR × 1.05
-  QB × 0.90    K × 0.70     DST × 0.70
+━━━ STEP 1: RAW VORP PER PLAYER ━━━
+VORP = (Projected Points − Position Baseline) × Injury Probability
 
-Tier bonus (overall rank):
-  Top 12  × 1.10    (elite)
-  Top 24  × 1.05    (near-elite)
-  Top 60  × 1.00    (starter)
-  Top 120 × 0.95    (bench)
-  120+    × 0.90    (deep bench)
+━━━ POSITION BASELINE ━━━
+Projected points of the LAST STARTABLE player at each position:
 
-Injury discount:
-  Healthy       × 1.00
-  Questionable  × 0.85
-  Doubtful      × 0.50
-  Out / IR      × 0.30
+  Position   Baseline Rank    ${'Current baseline (pts)'}
+  QB         QB12             ${(baselines.QB || 0).toFixed(1)}
+  RB         RB30             ${(baselines.RB || 0).toFixed(1)}
+  WR         WR36             ${(baselines.WR || 0).toFixed(1)}
+  TE         TE12             ${(baselines.TE || 0).toFixed(1)}
+  K          K12              ${(baselines.K || 0).toFixed(1)}
+  DST        DST12            ${(baselines.DST || 0).toFixed(1)}
 
-Total value each side = sum of all player values.
-Winner = higher total. Fair trade = within 5%.</pre>
+Computed from actual FP data every fetch — no hardcoded values.
+Positional scarcity is captured automatically (elite RBs get big
+numbers, deep QBs get small ones).
+
+━━━ INJURY PROBABILITY ━━━
+FantasyPros' published probability_of_playing (0-100%).
+Fallback if unpublished:
+  Questionable × 0.80    Doubtful × 0.35
+  Out/IR/Sus  × 0.05    Probable × 0.95
+
+━━━ STEP 2: CONSOLIDATION ADJUSTMENT ━━━
+Trading 3-for-1 is NOT equal even if raw VORP totals match.
+The team receiving 3 players must drop 2 existing rostered
+players. The team giving 3 frees 2 spots for waiver adds.
+
+  Drop penalty:   +10 VORP per extra player received
+                  (= value of avg droppable bench player)
+  Waiver gain:    −3 VORP per freed spot
+                  (= value of avg waiver-wire pickup)
+
+Example: A gives 1 (VORP 180), B gives 3 (VORP 180)
+  Team A: adjusted = 180 + (2 × 10) = 200  (must drop 2)
+  Team B: adjusted = 180 − (2 × 3)  = 174  (frees 2 spots)
+  Verdict: Team B wins by 13% — consolidation is real.
+
+━━━ STEP 3: FAIRNESS SCORE (0-100) ━━━
+Fairness = 100 − (|diff| ÷ higher_side × 100)
+
+  95-100  PERFECTLY BALANCED
+  85-95   VERY FAIR
+  75-85   FAIR
+  65-75   SLIGHTLY UNEVEN
+  50-65   UNEVEN
+  30-50   UNFAIR
+   0-30   ROBBERY 🚨
+
+━━━ BELOW-REPLACEMENT FLOOR ━━━
+Bench players below baseline get minimum value (5% of
+projection or 2 points, whichever is higher). They still
+have bye-week / injury-insurance utility.</pre>
     </div>`;
 
   const toggle = document.getElementById('trade-toggle-math');
@@ -2184,13 +2259,13 @@ Winner = higher total. Fair trade = within 5%.</pre>
       }
       let total = 0;
       listEl.innerHTML = team.map((p, i) => {
-        const v = computePlayerValue(p, p._injury);
+        const v = computePlayerValue(p, baselines);
         total += v.value;
         return `
-          <div class="trade-player">
+          <div class="trade-player" title="Proj ${v.proj.toFixed(1)} − Baseline ${v.baseline.toFixed(1)} = PAR ${v.par.toFixed(1)}${v.injuryLabel ? ' × ' + v.injuryMult.toFixed(2) + ' (' + v.injuryLabel + ')' : ''}">
             <div class="trade-player-info">
               <div class="trade-player-name">${esc(p.name)}
-                ${p._injury ? `<span class="trade-injury">${esc(p._injury)}</span>` : ''}
+                ${v.injuryLabel ? `<span class="trade-injury">${esc(v.injuryLabel)}</span>` : ''}
               </div>
               <div class="trade-player-meta">
                 <span class="${_pillClass(p.pos)}">${esc(p.pos)}</span>
@@ -2203,7 +2278,7 @@ Winner = higher total. Fair trade = within 5%.</pre>
           </div>`;
       }).join('');
       totalEl.innerHTML = `
-        <div class="trade-total-label">Total value</div>
+        <div class="trade-total-label">Raw VORP given</div>
         <div class="trade-total-value">${total.toFixed(1)}</div>`;
       listEl.querySelectorAll('.trade-remove').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -2215,40 +2290,122 @@ Winner = higher total. Fair trade = within 5%.</pre>
       });
     });
 
-    // Verdict
-    const totalA = teamA.reduce((s, p) => s + computePlayerValue(p, p._injury).value, 0);
-    const totalB = teamB.reduce((s, p) => s + computePlayerValue(p, p._injury).value, 0);
+    // Verdict — VORP + consolidation + fairness score
     const verdictEl = document.getElementById('trade-verdict');
     if (!teamA.length || !teamB.length) {
       verdictEl.className = 'trade-verdict-empty';
       verdictEl.textContent = 'Add at least 1 player to each side to see the verdict';
-    } else {
-      const diff = totalA - totalB;
-      const pct = Math.abs(diff) / Math.max(totalA, totalB) * 100;
-      let verdict, cls, note;
-      if (pct < 5) {
-        verdict = 'FAIR TRADE';
-        cls = 'trade-verdict-fair';
-        note = `Values within ${pct.toFixed(1)}% — go for it.`;
-      } else if (diff > 0) {
-        verdict = 'TEAM B WINS';
-        cls = 'trade-verdict-b';
-        note = `Team A giving up ${pct.toFixed(1)}% more value. Recommend: decline or counter.`;
-      } else {
-        verdict = 'TEAM A WINS';
-        cls = 'trade-verdict-a';
-        note = `Team B giving up ${pct.toFixed(1)}% more value. Team A steals this one.`;
-      }
-      verdictEl.className = `trade-verdict ${cls}`;
-      verdictEl.innerHTML = `
-        <div class="trade-verdict-title">${verdict}</div>
-        <div class="trade-verdict-note">${note}</div>
-        <div class="trade-verdict-scores">
-          <span>Team A: <strong>${totalA.toFixed(1)}</strong></span>
-          <span class="trade-verdict-vs">vs</span>
-          <span>Team B: <strong>${totalB.toFixed(1)}</strong></span>
-        </div>`;
+      return;
     }
+
+    // Raw VORP each side gives up
+    const rawA = teamA.reduce((s, p) => s + computePlayerValue(p, baselines).value, 0);
+    const rawB = teamB.reduce((s, p) => s + computePlayerValue(p, baselines).value, 0);
+
+    // Consolidation math
+    const DROP_PENALTY = 10;   // VORP of average droppable bench player
+    const WAIVER_GAIN = 3;     // VORP of average waiver pickup
+    const rosterDelta = teamB.length - teamA.length;  // positive if A receives more
+
+    let adjA = rawA, adjB = rawB;
+    let noteA = '', noteB = '';
+    let consolidationDetail = '';
+
+    if (rosterDelta > 0) {
+      // Team A receives MORE players — must drop existing bench
+      const penalty = rosterDelta * DROP_PENALTY;
+      const spotGain = rosterDelta * WAIVER_GAIN;
+      adjA += penalty;   // effectively gives up more (must drop rostered players)
+      adjB -= spotGain;  // effectively gives up less (frees spots)
+      noteA = `+${penalty.toFixed(0)} drop penalty`;
+      noteB = `−${spotGain.toFixed(0)} freed spots`;
+      consolidationDetail = `Team A receives ${rosterDelta} more player${rosterDelta > 1 ? 's' : ''} → must drop ${rosterDelta} rostered player${rosterDelta > 1 ? 's' : ''} (~${penalty.toFixed(0)} VORP lost). Team B frees ${rosterDelta} spot${rosterDelta > 1 ? 's' : ''} for waiver adds (~${spotGain.toFixed(0)} VORP gained).`;
+    } else if (rosterDelta < 0) {
+      const spots = Math.abs(rosterDelta);
+      const penalty = spots * DROP_PENALTY;
+      const spotGain = spots * WAIVER_GAIN;
+      adjB += penalty;
+      adjA -= spotGain;
+      noteB = `+${penalty.toFixed(0)} drop penalty`;
+      noteA = `−${spotGain.toFixed(0)} freed spots`;
+      consolidationDetail = `Team B receives ${spots} more player${spots > 1 ? 's' : ''} → must drop ${spots} rostered player${spots > 1 ? 's' : ''} (~${penalty.toFixed(0)} VORP lost). Team A frees ${spots} spot${spots > 1 ? 's' : ''} for waiver adds (~${spotGain.toFixed(0)} VORP gained).`;
+    }
+
+    // Fairness score & label
+    const diff = adjA - adjB;
+    const higher = Math.max(adjA, adjB, 0.01);
+    const pctDiff = Math.abs(diff) / higher * 100;
+    const fairness = Math.max(0, Math.min(100, Math.round(100 - pctDiff)));
+
+    let label, cls, note;
+    if (fairness >= 95) {
+      label = 'PERFECTLY BALANCED';
+      cls = 'fair-100';
+      note = 'Effectively even. Both sides get what they give.';
+    } else if (fairness >= 85) {
+      label = 'VERY FAIR';
+      cls = 'fair-90';
+      note = 'Minor edge but well within acceptable range.';
+    } else if (fairness >= 75) {
+      label = 'FAIR';
+      cls = 'fair-80';
+      note = 'One side has an edge but the other still gets reasonable value.';
+    } else if (fairness >= 65) {
+      label = 'SLIGHTLY UNEVEN';
+      cls = 'fair-70';
+      note = 'Meaningful gap. Losing side should ask for a sweetener.';
+    } else if (fairness >= 50) {
+      label = 'UNEVEN';
+      cls = 'fair-60';
+      note = 'Big gap. Losing side should decline unless they need the position badly.';
+    } else if (fairness >= 30) {
+      label = 'UNFAIR';
+      cls = 'fair-40';
+      note = 'Losing side is being taken advantage of. Hard decline.';
+    } else {
+      label = 'ROBBERY 🚨';
+      cls = 'fair-20';
+      note = 'Someone should file a police report. Absolute lopsided deal.';
+    }
+
+    const winner = diff > 0.5 ? 'B' : (diff < -0.5 ? 'A' : null);
+    const winnerText = winner
+      ? `<div class="fair-winner">Winner: <strong>Team ${winner}</strong> by ${pctDiff.toFixed(1)}% of value</div>`
+      : `<div class="fair-winner fair-winner-even">Trade is essentially even</div>`;
+
+    verdictEl.className = `trade-verdict ${cls}`;
+    verdictEl.innerHTML = `
+      <div class="fair-score-row">
+        <div class="fair-score">
+          <div class="fair-score-num">${fairness}</div>
+          <div class="fair-score-outof">/ 100</div>
+        </div>
+        <div class="fair-label-block">
+          <div class="fair-label">${label}</div>
+          <div class="fair-note">${note}</div>
+        </div>
+      </div>
+      ${winnerText}
+      <div class="fair-breakdown">
+        <div class="fair-side">
+          <div class="fair-side-label">Team A gives (adjusted)</div>
+          <div class="fair-side-value">${adjA.toFixed(1)}</div>
+          <div class="fair-side-detail">
+            Raw VORP: <strong>${rawA.toFixed(1)}</strong>
+            ${noteA ? ` • ${noteA}` : ''}
+          </div>
+        </div>
+        <div class="fair-vs">vs</div>
+        <div class="fair-side">
+          <div class="fair-side-label">Team B gives (adjusted)</div>
+          <div class="fair-side-value">${adjB.toFixed(1)}</div>
+          <div class="fair-side-detail">
+            Raw VORP: <strong>${rawB.toFixed(1)}</strong>
+            ${noteB ? ` • ${noteB}` : ''}
+          </div>
+        </div>
+      </div>
+      ${consolidationDetail ? `<div class="fair-consolidation">${consolidationDetail}</div>` : ''}`;
   };
 
   attachPlayerSearch('trade-a-search', allPlayers, (p) => { teamA.push(p); repaint(); });
@@ -2262,9 +2419,9 @@ function renderStartSit(allPlayers, container) {
 
   container.innerHTML = `
     <div class="ss-notice">
-      <strong>Foundation build.</strong> Right now uses season-long ECR + season projections + injury status.
-      Weekly ECR, weekly projections, defense-vs-position matchup, and recent form will populate
-      once the season starts and workflows fetch weekly data.
+      <strong>Foundation build.</strong> Right now uses season-long projected points × injury probability
+      (both from FantasyPros HOF). In-season, this expands to weekly projections and recent-form trend
+      once game data flows through.
     </div>
 
     <div class="ss-search-row">
@@ -2278,17 +2435,36 @@ function renderStartSit(allPlayers, container) {
       Show me the math ▼
     </button>
     <div id="ss-math" class="tools-math hidden">
-      <h4>How Start/Sit score is calculated (currently — will expand Week 3)</h4>
-      <pre class="tools-formula">Score = 50 × (100 − normalized ECR)
-      + 30 × projected points
-      + 10 × recent form (LAST 3 GAMES — coming Week 3)
-      + 10 × opponent DEF vs POS rank (coming Week 1)
-      − Injury discount
+      <h4>Statistically unbiased Start/Sit</h4>
+      <pre class="tools-formula">Score = Projected Points × Injury Probability
 
-Right now: only ECR + projection + injury are live.
-Higher score = stronger start.
+━━━ PROJECTED POINTS ━━━
+From FantasyPros HOF. Currently season-long — Week 1 onward
+we switch to WEEKLY projections which factor in the specific
+matchup, home/away, and Vegas game script.
 
-Confidence = (top score − 2nd score) / top score × 100</pre>
+━━━ INJURY PROBABILITY ━━━
+FP's published probability_of_playing (0-100%). If missing,
+falls back to status-based estimate:
+  Questionable × 0.80    Doubtful × 0.35
+  Out/IR/Sus  × 0.05    Probable × 0.95
+
+━━━ CONFIDENCE ━━━
+Gap between top score and runner-up, as a percentage of the top.
+Bigger gap = higher confidence. A 30% gap = ~80% confidence.
+
+━━━ IN-SEASON EXPANSIONS (Week 1+) ━━━
+Score = Weekly Projected Points × Injury Prob × Trend Factor
+        × Matchup Factor
+
+Trend factor:   (last-3 avg / season avg per game), clipped
+                to [0.7, 1.3] so hot/cold streaks matter but
+                don't dominate.
+
+Matchup factor: 1.0 + (0.15 × (DEF-vs-POS rank - 16.5) / 16)
+                Weak defenses give up to +15% bonus.
+
+Both come from live Sleeper matchup data (in-season only).</pre>
     </div>`;
 
   const toggle = document.getElementById('ss-toggle-math');
@@ -2299,17 +2475,21 @@ Confidence = (top score − 2nd score) / top score × 100</pre>
   });
 
   const computeSsScore = (p) => {
-    const rankPart = p.rank ? Math.max(0, 100 - Number(p.rank)) : 0;
-    const projPart = Number(p.proj_pts) || 0;
-    let score = 50 * (rankPart / 100) + 30 * (projPart / 20);  // scaled
-    if (p._injury) {
-      score *= (INJURY_DISCOUNT[p._injury] || 1);
+    const proj = Number(p.proj_pts) || 0;
+    let injuryMult = 1.0;
+    let injuryLabel = null;
+    if (p._injury_prob != null && p._injury_prob >= 0 && p._injury_prob <= 1) {
+      injuryMult = p._injury_prob;
+      injuryLabel = `${(p._injury_prob * 100).toFixed(0)}% play prob`;
+    } else if (p._injury && INJURY_STATUS_FALLBACK[p._injury] != null) {
+      injuryMult = INJURY_STATUS_FALLBACK[p._injury];
+      injuryLabel = p._injury;
     }
     return {
-      total: score,
-      rank_component: 50 * (rankPart / 100),
-      proj_component: 30 * (projPart / 20),
-      injury_mult: INJURY_DISCOUNT[p._injury] || 1,
+      total: proj * injuryMult,
+      proj,
+      injuryMult,
+      injuryLabel,
     };
   };
 
@@ -2323,7 +2503,6 @@ Confidence = (top score − 2nd score) / top score × 100</pre>
       return;
     }
 
-    // Compute scores
     const scored = picks.map(p => ({ p, s: computeSsScore(p) }))
       .sort((a, b) => b.s.total - a.s.total);
 
@@ -2333,7 +2512,7 @@ Confidence = (top score − 2nd score) / top score × 100</pre>
           <div class="ss-card ${i === 0 ? 'ss-card-start' : ''}">
             <div class="ss-card-badge">${i === 0 ? '✓ START' : 'SIT'}</div>
             <div class="ss-card-name">${esc(x.p.name)}
-              ${x.p._injury ? `<span class="trade-injury">${esc(x.p._injury)}</span>` : ''}
+              ${x.s.injuryLabel ? `<span class="trade-injury">${esc(x.s.injuryLabel)}</span>` : ''}
             </div>
             <div class="ss-card-meta">
               <span class="${_pillClass(x.p.pos)}">${esc(x.p.pos)}</span>
@@ -2342,7 +2521,7 @@ Confidence = (top score − 2nd score) / top score × 100</pre>
             </div>
             <div class="ss-card-stats">
               <div><span class="lbl">ECR</span><span class="val">${x.p.rank ?? '—'}</span></div>
-              <div><span class="lbl">Proj</span><span class="val">${x.p.proj_pts != null ? Math.round(x.p.proj_pts) : '—'}</span></div>
+              <div><span class="lbl">Proj</span><span class="val">${x.s.proj != null ? Math.round(x.s.proj) : '—'}</span></div>
               <div><span class="lbl">Score</span><span class="val gold">${x.s.total.toFixed(1)}</span></div>
             </div>
             <button class="ss-remove" data-idx="${picks.indexOf(x.p)}">✕</button>
@@ -2358,7 +2537,8 @@ Confidence = (top score − 2nd score) / top score × 100</pre>
 
     if (scored.length >= 2) {
       const top = scored[0], second = scored[1];
-      const confidence = Math.min(99, Math.max(50, ((top.s.total - second.s.total) / top.s.total) * 100 + 50));
+      const gap = top.s.total > 0 ? (top.s.total - second.s.total) / top.s.total : 0;
+      const confidence = Math.min(99, Math.max(50, gap * 100 + 50));
       verdictEl.innerHTML = `
         <div class="ss-verdict">
           <div class="ss-verdict-title">START <strong>${esc(top.p.name)}</strong></div>
@@ -2370,7 +2550,7 @@ Confidence = (top score − 2nd score) / top score × 100</pre>
   };
 
   attachPlayerSearch('ss-search', allPlayers, (p) => {
-    if (picks.length >= 4) picks.shift();  // cap at 4
+    if (picks.length >= 4) picks.shift();
     picks.push(p);
     repaint();
   });
