@@ -963,6 +963,101 @@ main { padding: 32px 0 60px; }
 }
 
 /* ============================================================
+   Dues page
+   ============================================================ */
+.dues-table .dues-row-paid td {
+  background: rgba(46, 125, 50, 0.06);
+}
+.dues-table .dues-row-owing td {
+  background: rgba(200, 53, 46, 0.04);
+}
+.dues-badge {
+  font-family: var(--f-sign);
+  letter-spacing: 2px;
+  font-size: 11px;
+  padding: 4px 10px;
+  display: inline-block;
+  white-space: nowrap;
+}
+.dues-badge.dues-paid {
+  background: #2E7D32;
+  color: var(--cream);
+}
+.dues-badge.dues-owing {
+  background: var(--red);
+  color: var(--cream);
+}
+.dues-summary {
+  background: var(--paper);
+  border: 2px solid var(--navy);
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  font-family: var(--f-body);
+  font-size: 14px;
+}
+.dues-summary strong {
+  font-family: var(--f-display);
+  font-size: 17px;
+}
+.dues-note {
+  font-family: var(--f-body);
+  font-size: 13px;
+  color: var(--brown);
+  padding: 10px 14px;
+  background: rgba(139, 90, 60, 0.08);
+  border-left: 4px solid var(--brown);
+  margin-top: 12px;
+}
+.dues-note code {
+  background: var(--paper);
+  padding: 2px 6px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--navy);
+  border: 1px solid var(--cream-2);
+}
+.dues-week {
+  font-family: var(--f-mono);
+  font-weight: 700;
+  color: var(--navy);
+}
+.dues-weekly-table td.team-cell,
+.dues-season-table td.team-cell {
+  padding-left: 8px;
+}
+.dues-records {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+.dues-record {
+  background: var(--paper);
+  border: 2px solid var(--navy);
+  box-shadow: 3px 3px 0 var(--gold);
+  padding: 12px 14px;
+}
+.dues-record-label {
+  font-family: var(--f-sign);
+  letter-spacing: 2px;
+  font-size: 11px;
+  color: var(--brown);
+  margin-bottom: 4px;
+}
+.dues-record-value {
+  font-family: var(--f-display);
+  font-size: 16px;
+  color: var(--navy);
+}
+.red { color: var(--red); font-weight: 700; }
+
+@media (max-width: 640px) {
+  .dues-records {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
    Discord widget
    ============================================================ */
 .discord-widget-shell {
