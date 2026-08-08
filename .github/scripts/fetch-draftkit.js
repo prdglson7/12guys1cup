@@ -88,16 +88,24 @@ async function fetchRanking(position, scoring) {
 
 async function fetchProjections(position, scoring) {
   const label = `[Proj ${position}/${scoring}]`;
+  // week=0 for season-long projections
   const url = `${FP_BASE}/nfl/${SEASON}/projections?position=${position}&scoring=${scoring}&week=0`;
   try {
     const data = await fetchJson(url);
     const players = (data.players || []).map(p => {
-      const stats = p.stats || {};
+      // FP returns stats as an ARRAY of stat objects, not a single object.
+      // Also the field names differ from the rankings endpoint —
+      // projections use `name` and `position_id` (no `player_` prefix).
+      const stats = Array.isArray(p.stats) ? (p.stats[0] || {}) : (p.stats || {});
+
+      // Points field varies by scoring — try scoring-specific first, fall back to generic
+      const pts = num(stats.points_ppr) ?? num(stats.points_half) ?? num(stats.points) ?? num(p.fantasy_pts);
+
       return {
-        player_id: p.player_id,
-        name: p.player_name,
-        pos: p.player_position_id,
-        pts: num(p.fantasy_pts || stats.fantasy_pts || stats.points),
+        player_id: p.fpid || p.player_id,
+        name: p.name || p.player_name,
+        pos: p.position_id || p.player_position_id,
+        pts,
         pass_yds: num(stats.pass_yds),
         pass_tds: num(stats.pass_tds),
         rush_yds: num(stats.rush_yds),
