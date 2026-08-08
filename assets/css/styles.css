@@ -963,6 +963,62 @@ main { padding: 32px 0 60px; }
 }
 
 /* ============================================================
+   Discord widget
+   ============================================================ */
+.discord-widget-shell {
+  background: #1e1e26;
+  border: 3px solid var(--navy);
+  box-shadow: 5px 5px 0 var(--gold);
+  overflow: hidden;
+  position: relative;
+}
+.discord-widget-shell iframe {
+  display: block;
+  width: 100%;
+  border: none;
+}
+.discord-invite-btn {
+  display: block;
+  background: #5865F2;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  font-family: var(--f-sign);
+  letter-spacing: 3px;
+  font-size: 14px;
+  text-decoration: none;
+  border-top: 2px solid var(--gold);
+}
+.discord-invite-btn:hover {
+  background: #4752C4;
+}
+.discord-setup {
+  background: var(--paper);
+  border: 2px dashed var(--brown);
+  padding: 20px;
+  text-align: center;
+}
+.discord-setup-title {
+  font-family: var(--f-display);
+  font-size: 18px;
+  color: var(--brown);
+  margin-bottom: 6px;
+}
+.discord-setup-body {
+  font-family: var(--f-body);
+  color: var(--brown);
+  font-size: 14px;
+}
+.discord-setup code {
+  background: rgba(30, 58, 95, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--navy);
+}
+
+/* ============================================================
    ESPN-style ticker (home page matchups)
    ============================================================ */
 .ticker-shell {
