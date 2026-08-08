@@ -74,5 +74,5 @@ window.Config = {
      To find: Discord → Server Settings → Widget → Enable Widget → copy Server ID.
      Leave as null to hide the widget on the home page. */
   DISCORD_SERVER_ID: 1535440994299023433,
-  DISCORD_INVITE_URL: https://discord.gg/6X57hpWx6,  // Optional: paste your permanent invite link (e.g. https://discord.gg/XXXX)
+  DISCORD_INVITE_URL: https://discord.gg/ng3aMrQHwm,  // Optional: paste your permanent invite link (e.g. https://discord.gg/XXXX)
 };
