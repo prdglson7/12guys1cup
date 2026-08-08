@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dues — 12 Guys 1 Cup</title>
+  <link rel="icon" href="assets/img/logo.jpg">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header id="site-header" class="site-header"></header>
+  <nav id="site-nav" class="site-nav"></nav>
+
+  <main class="wrap">
+    <section class="section" id="sec-payments">
+      <div class="section-head">
+        <h2>Payment status</h2>
+        <span class="meta" id="dues-meta">$150 per team</span>
+      </div>
+      <div id="dues-payments"></div>
+    </section>
+
+    <section class="section" id="sec-weekly">
+      <div class="section-head">
+        <h2>Weekly winners &amp; losers</h2>
+        <span class="meta">Low scorer owes $10</span>
+      </div>
+      <div id="dues-weekly"></div>
+    </section>
+
+    <section class="section" id="sec-season">
+      <div class="section-head">
+        <h2>Season leaders</h2>
+        <span class="meta">Points leader wins the penalty pot</span>
+      </div>
+      <div id="dues-season"></div>
+    </section>
+  </main>
+
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/sleeper.js"></script>
+  <script src="assets/js/news.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+  <script>
+    UI.renderChrome("dues.html");
+    Pages.renderDues();
+  </script>
+</body>
+</html>
