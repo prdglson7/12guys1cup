@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools — 12 Guys 1 Cup</title>
+  <link rel="icon" href="assets/img/logo.jpg">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header id="site-header" class="site-header"></header>
+  <nav id="site-nav" class="site-nav"></nav>
+
+  <main class="wrap">
+    <div class="tools-tabs">
+      <button class="tools-tab active" data-tab="trade">💱 Trade Analyzer</button>
+      <button class="tools-tab" data-tab="startsit">🪑 Start / Sit</button>
+    </div>
+
+    <section id="tools-trade" class="tools-panel active">
+      <div class="section-head">
+        <h2>Trade Analyzer</h2>
+        <span class="meta" id="trade-meta">Powered by FantasyPros HOF consensus</span>
+      </div>
+      <div id="trade-body"></div>
+    </section>
+
+    <section id="tools-startsit" class="tools-panel">
+      <div class="section-head">
+        <h2>Start / Sit</h2>
+        <span class="meta" id="ss-meta">Compare up to 4 players</span>
+      </div>
+      <div id="startsit-body"></div>
+    </section>
+  </main>
+
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/sleeper.js"></script>
+  <script src="assets/js/news.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+  <script>
+    UI.renderChrome("tools.html");
+    Pages.renderTools();
+  </script>
+</body>
+</html>
