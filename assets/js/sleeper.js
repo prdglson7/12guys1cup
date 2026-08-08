@@ -115,8 +115,46 @@ async function computePowerRankings(teams, currentWeek) {
     .sort((a, b) => b.power - a.power);
 }
 
+/* Load the slim Sleeper player DB (produced weekly by GH Actions).
+   Falls back to null if the file isn't there yet. */
+async function getSleeperPlayers() {
+  try {
+    const res = await fetch("assets/data/sleeper-players.json", { cache: "default" });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (_) { return null; }
+}
+
+/* Build enriched teams (via buildTeamMap) but also attach each team's
+   roster of player names, cross-referenced from the Sleeper players DB.
+   Returns the same Map but with `.roster_names` on each team. */
+async function buildTeamsWithRosters() {
+  const [users, rosters, sleeperPlayers] = await Promise.all([
+    getUsers(),
+    getRosters(),
+    getSleeperPlayers(),
+  ]);
+  const teams = buildTeamMap(users, rosters);
+  const dbPlayers = sleeperPlayers?.players || {};
+
+  // Match each roster's Sleeper player_ids to names
+  rosters.forEach(r => {
+    const team = teams.get(r.roster_id);
+    if (!team) return;
+    const names = [];
+    (r.players || []).forEach(pid => {
+      const p = dbPlayers[pid];
+      if (p && p.name) names.push({ name: p.name, pos: p.pos, team: p.team });
+    });
+    team.roster_names = names;
+  });
+
+  return teams;
+}
+
 window.Sleeper = {
   LEAGUE_ID, getState, getLeague, getUsers, getRosters,
   getMatchups, getTransactions, getWinnersBracket,
   getPlayers, buildTeamMap, computePowerRankings,
+  getSleeperPlayers, buildTeamsWithRosters,
 };
