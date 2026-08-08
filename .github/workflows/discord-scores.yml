@@ -1,0 +1,44 @@
+name: Discord — Live scores
+
+# Posts live matchup scoreboard to Discord #scores channel.
+# Runs during NFL game windows (Thu night, Sunday, Monday night — all UTC).
+# The script itself gates to in-season only, so out-of-season runs are cheap no-ops.
+
+on:
+  schedule:
+    # Thursday Night Football: 8pm ET (Fri 00:00 UTC) → 11:30pm ET (Fri 03:30 UTC)
+    - cron: "0,30 0-3 * * 5"
+    # Sunday early games: 1pm ET (Sun 17:00 UTC) → 4:30pm ET (Sun 20:30 UTC)
+    - cron: "0,30 17-20 * * 0"
+    # Sunday late games + SNF: 4:30pm ET (Sun 20:30 UTC) → 11:30pm ET (Mon 03:30 UTC)
+    - cron: "0,30 20-23 * * 0"
+    - cron: "0,30 0-3 * * 1"
+    # Monday Night Football: 8pm ET (Tue 00:00 UTC) → 11:30pm ET (Tue 03:30 UTC)
+    - cron: "0,30 0-3 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: discord-scores
+  cancel-in-progress: true
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Post scores to Discord
+        env:
+          DISCORD_SCORES_WEBHOOK: ${{ secrets.DISCORD_SCORES_WEBHOOK }}
+          SLEEPER_LEAGUE_ID: "1389753693590532096"
+        run: node .github/scripts/discord-scores.js
