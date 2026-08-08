@@ -2042,17 +2042,21 @@ async function renderTools() {
 
   const tradeBody = document.getElementById("trade-body");
   const ssBody = document.getElementById("startsit-body");
+  const finderBody = document.getElementById("finder-body");
   const tradeMeta = document.getElementById("trade-meta");
   const ssMeta = document.getElementById("ss-meta");
+  const finderMeta = document.getElementById("finder-meta");
 
   tradeBody.innerHTML = loading("Loading player database…");
   ssBody.innerHTML = loading("Loading player database…");
+  finderBody.innerHTML = loading("Loading rosters…");
 
   // Load player database from draftkit.json
   const dk = await getDraftKit();
   if (!dk || !dk.rankings || !dk.rankings.overall) {
     tradeBody.innerHTML = errBox("Draft Kit data unavailable — cannot load player database.");
     ssBody.innerHTML = errBox("Draft Kit data unavailable.");
+    finderBody.innerHTML = errBox("Draft Kit data unavailable.");
     return;
   }
 
@@ -2088,8 +2092,17 @@ async function renderTools() {
   tradeMeta.textContent = `${allPlayers.length} players • VBD-based • ${dk.scoring || 'PPR'} • updated ${fetched ? relTime(fetched.toISOString()) : 'recently'}`;
   ssMeta.textContent = `${allPlayers.length} players • ${dk.scoring || 'PPR'} • updated ${fetched ? relTime(fetched.toISOString()) : 'recently'}`;
 
+  // Load league rosters (best-effort — Trade Finder gracefully degrades)
+  let teamsWithRosters = null;
+  try {
+    teamsWithRosters = await window.Sleeper.buildTeamsWithRosters();
+  } catch (e) {
+    console.log('Could not load rosters:', e.message);
+  }
+
   renderTradeAnalyzer(allPlayers, baselines, tradeBody);
   renderStartSit(allPlayers, ssBody);
+  renderTradeFinder(allPlayers, baselines, teamsWithRosters, finderBody, finderMeta);
 }
 
 /* ---------- Player search dropdown (shared) ---------- */
@@ -2555,6 +2568,275 @@ Both come from live Sleeper matchup data (in-season only).</pre>
     repaint();
   });
   repaint();
+}
+
+/* ---------- Trade Finder ---------- */
+
+/* Match a Sleeper roster entry to FP player data by normalized name.
+   Returns the FP player object (with _injury attached), or null. */
+function matchFpPlayer(rosterEntry, fpPlayers) {
+  if (!rosterEntry?.name) return null;
+  const normName = normalizeName(rosterEntry.name);
+  return fpPlayers.find(p => normalizeName(p.name) === normName) || null;
+}
+
+/* Analyze a team's positional strength using VBD.
+   Returns { totalByPos, starterValue, roster } for the team. */
+function analyzeTeamStrength(rosterNames, fpPlayers, baselines) {
+  // Starting lineup composition for 12-team full PPR
+  const STARTERS = { QB: 1, RB: 2, WR: 3, TE: 1, FLEX: 1, K: 1, DST: 1 };
+
+  const roster = [];
+  rosterNames.forEach(entry => {
+    const fp = matchFpPlayer(entry, fpPlayers);
+    if (fp) roster.push(fp);
+  });
+
+  // Group by position, sort by rank
+  const byPos = { QB: [], RB: [], WR: [], TE: [], K: [], DST: [] };
+  roster.forEach(p => {
+    if (byPos[p.pos]) byPos[p.pos].push(p);
+  });
+  Object.keys(byPos).forEach(pos => {
+    byPos[pos].sort((a, b) => (Number(a.rank) || 999) - (Number(b.rank) || 999));
+  });
+
+  // Starter value: sum of top-N VORP at each position
+  const starterValue = {};
+  ['QB', 'RB', 'WR', 'TE', 'K', 'DST'].forEach(pos => {
+    const n = STARTERS[pos] || 1;
+    const starters = byPos[pos].slice(0, n);
+    starterValue[pos] = starters.reduce((s, p) => s + computePlayerValue(p, baselines).value, 0);
+  });
+
+  // Bench depth (players 2-4 at RB/WR/TE, for flex/injury insurance)
+  const depthValue = {};
+  ['RB', 'WR', 'TE'].forEach(pos => {
+    const bench = byPos[pos].slice(STARTERS[pos] || 1, (STARTERS[pos] || 1) + 3);
+    depthValue[pos] = bench.reduce((s, p) => s + computePlayerValue(p, baselines).value, 0);
+  });
+
+  return { byPos, starterValue, depthValue, roster };
+}
+
+/* Find trades between myTeam and otherTeam.
+   Returns array of { give, get, fairness, myGain, theirGain, verdict } sorted by mutual improvement. */
+function findTradesBetweenTeams(myTeam, otherTeam, myAnalysis, otherAnalysis, baselines) {
+  const trades = [];
+  const POSITIONS_TO_TRADE = ['QB', 'RB', 'WR', 'TE'];
+
+  // For each of MY weak positions, look at THEIR strength there
+  POSITIONS_TO_TRADE.forEach(myWeakPos => {
+    const myStarters = myAnalysis.byPos[myWeakPos].slice(0, myWeakPos === 'RB' || myWeakPos === 'WR' ? 3 : 2);
+    if (!myStarters.length) return;
+    const myWeakestStarter = myStarters[myStarters.length - 1]; // My WORST starter at this position
+    if (!myWeakestStarter) return;
+    const myWeakestVal = computePlayerValue(myWeakestStarter, baselines).value;
+
+    // Their surplus at this position — players they don't NEED as starters
+    const theirBenchStrength = (otherAnalysis.byPos[myWeakPos] || []).slice(myWeakPos === 'RB' || myWeakPos === 'WR' ? 2 : 1, 5);
+
+    theirBenchStrength.forEach(theirPlayer => {
+      const theirVal = computePlayerValue(theirPlayer, baselines).value;
+      // Only useful if their surplus > my weakest starter
+      if (theirVal <= myWeakestVal * 1.1) return;
+
+      // What do I give up? Find a position where I'M strong and they're weak
+      POSITIONS_TO_TRADE.forEach(myStrongPos => {
+        if (myStrongPos === myWeakPos) return;
+        const mySurplus = (myAnalysis.byPos[myStrongPos] || []).slice(myStrongPos === 'RB' || myStrongPos === 'WR' ? 2 : 1, 5);
+
+        mySurplus.forEach(myPlayer => {
+          const myPlayerVal = computePlayerValue(myPlayer, baselines).value;
+          const theirWeakestStarter = (otherAnalysis.byPos[myStrongPos] || [])[myStrongPos === 'RB' || myStrongPos === 'WR' ? 2 : 1];
+          // Only useful if my surplus > their weakest starter at that position
+          if (!theirWeakestStarter) return;
+          const theirWeakestVal = computePlayerValue(theirWeakestStarter, baselines).value;
+          if (myPlayerVal <= theirWeakestVal * 1.1) return;
+
+          // Fairness check
+          const diff = Math.abs(myPlayerVal - theirVal);
+          const higher = Math.max(myPlayerVal, theirVal, 0.01);
+          const fairness = Math.max(0, Math.min(100, Math.round(100 - (diff / higher * 100))));
+
+          // Only include reasonably fair trades
+          if (fairness < 75) return;
+
+          // Compute mutual improvement
+          const myImprovementPos = theirVal - myWeakestVal;        // I gain by upgrading my weak spot
+          const myImprovementLoss = -(myPlayerVal - myPlayerVal * 0.7);  // I lose bench depth at strong position
+          const myGain = myImprovementPos + myImprovementLoss;
+
+          const theirImprovementPos = myPlayerVal - theirWeakestVal;
+          const theirImprovementLoss = -(theirVal - theirVal * 0.7);
+          const theirGain = theirImprovementPos + theirImprovementLoss;
+
+          // Both must benefit
+          if (myGain < 5 || theirGain < 5) return;
+
+          trades.push({
+            give: myPlayer,
+            get: theirPlayer,
+            fairness,
+            myGain,
+            theirGain,
+            myWeakPos,
+            myStrongPos,
+            mutualBenefit: myGain + theirGain,
+          });
+        });
+      });
+    });
+  });
+
+  return trades.sort((a, b) => b.mutualBenefit - a.mutualBenefit);
+}
+
+function renderTradeFinder(allPlayers, baselines, teams, container, metaEl) {
+  if (!teams || !teams.size) {
+    container.innerHTML = errBox("Roster data unavailable. Trade Finder needs Sleeper players DB — trigger 'Update Sleeper players DB' workflow first.");
+    return;
+  }
+
+  const teamList = Array.from(teams.values());
+  const teamsWithRosters = teamList.filter(t => t.roster_names && t.roster_names.length > 0);
+
+  if (metaEl) {
+    metaEl.textContent = `${teamsWithRosters.length} rosters loaded • VBD analysis`;
+  }
+
+  if (!teamsWithRosters.length) {
+    container.innerHTML = empty("No rosters loaded yet. If you just joined the league mid-week this can happen. Trigger 'Update Sleeper players DB' workflow and refresh.");
+    return;
+  }
+
+  // Sort teams alphabetically by name for the dropdown
+  const sortedTeams = [...teamsWithRosters].sort((a, b) => (a.team_name || '').localeCompare(b.team_name || ''));
+  const defaultTeamId = sortedTeams[0].roster_id;
+
+  container.innerHTML = `
+    <div class="finder-controls">
+      <label for="finder-team-select">Your team:</label>
+      <select id="finder-team-select">
+        ${sortedTeams.map(t => `<option value="${t.roster_id}">${esc(t.team_name)}</option>`).join('')}
+      </select>
+    </div>
+
+    <div id="finder-analysis"></div>
+    <div id="finder-trades"></div>`;
+
+  const paint = () => {
+    const select = document.getElementById('finder-team-select');
+    const analysisEl = document.getElementById('finder-analysis');
+    const tradesEl = document.getElementById('finder-trades');
+
+    const myTeamId = Number(select.value);
+    const myTeam = teams.get(myTeamId);
+    if (!myTeam || !myTeam.roster_names) {
+      analysisEl.innerHTML = empty("No roster for this team.");
+      tradesEl.innerHTML = '';
+      return;
+    }
+
+    const myAnalysis = analyzeTeamStrength(myTeam.roster_names, allPlayers, baselines);
+
+    // Show positional strength
+    analysisEl.innerHTML = `
+      <div class="finder-strength">
+        <h3>${esc(myTeam.team_name)} — Positional Strength</h3>
+        <div class="finder-strength-grid">
+          ${['QB', 'RB', 'WR', 'TE', 'K', 'DST'].map(pos => {
+            const val = myAnalysis.starterValue[pos] || 0;
+            const players = (myAnalysis.byPos[pos] || []).slice(0, pos === 'RB' || pos === 'WR' ? 3 : 1);
+            return `
+              <div class="finder-strength-pos">
+                <div class="finder-strength-label">
+                  <span class="${_pillClass(pos)}">${pos}</span>
+                  <span class="finder-strength-val">${val.toFixed(0)}</span>
+                </div>
+                <div class="finder-strength-players">
+                  ${players.map(p => `<div>${esc(p.name)} <span class="dim">(${p.rank || '—'})</span></div>`).join('') || '<div class="dim">No starters</div>'}
+                </div>
+              </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+
+    // Find trades against every other team
+    tradesEl.innerHTML = loading("Scanning trades…");
+    setTimeout(() => {
+      const allTrades = [];
+      teamsWithRosters.forEach(other => {
+        if (other.roster_id === myTeamId) return;
+        const otherAnalysis = analyzeTeamStrength(other.roster_names, allPlayers, baselines);
+        const trades = findTradesBetweenTeams(myTeam, other, myAnalysis, otherAnalysis, baselines);
+        trades.forEach(t => t.otherTeam = other);
+        allTrades.push(...trades);
+      });
+
+      const topTrades = allTrades
+        .sort((a, b) => b.mutualBenefit - a.mutualBenefit)
+        .slice(0, 12);
+
+      if (!topTrades.length) {
+        tradesEl.innerHTML = empty("No mutual-benefit trades found. Your roster is either well-balanced or others don't have complementary needs.");
+        return;
+      }
+
+      tradesEl.innerHTML = `
+        <h3 class="finder-trades-title">Suggested trades (top ${topTrades.length}):</h3>
+        <div class="finder-trades-list">
+          ${topTrades.map(t => {
+            const giveV = computePlayerValue(t.give, baselines);
+            const getV = computePlayerValue(t.get, baselines);
+            return `
+              <div class="finder-trade">
+                <div class="finder-trade-partner">
+                  <span class="finder-vs-team">Trade with ${esc(t.otherTeam.team_name)}</span>
+                  <span class="finder-fairness fair-${Math.floor(t.fairness / 10) * 10}">${t.fairness}/100 fair</span>
+                </div>
+                <div class="finder-trade-body">
+                  <div class="finder-trade-side finder-give">
+                    <div class="finder-trade-side-label">You give</div>
+                    <div class="finder-trade-player">
+                      <div class="finder-trade-name">${esc(t.give.name)}</div>
+                      <div class="finder-trade-meta">
+                        <span class="${_pillClass(t.give.pos)}">${esc(t.give.pos)}</span>
+                        <span>ECR #${t.give.rank || '—'}</span>
+                        <span class="finder-val">VORP ${giveV.value.toFixed(1)}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="finder-trade-arrow">⇄</div>
+                  <div class="finder-trade-side finder-get">
+                    <div class="finder-trade-side-label">You get</div>
+                    <div class="finder-trade-player">
+                      <div class="finder-trade-name">${esc(t.get.name)}</div>
+                      <div class="finder-trade-meta">
+                        <span class="${_pillClass(t.get.pos)}">${esc(t.get.pos)}</span>
+                        <span>ECR #${t.get.rank || '—'}</span>
+                        <span class="finder-val">VORP ${getV.value.toFixed(1)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="finder-trade-benefit">
+                  <span>Your gain: <strong class="fair-winner-gain">+${t.myGain.toFixed(1)}</strong> at ${t.myWeakPos}</span>
+                  <span class="dim">•</span>
+                  <span>Their gain: <strong>+${t.theirGain.toFixed(1)}</strong> at ${t.myStrongPos}</span>
+                </div>
+              </div>`;
+          }).join('')}
+        </div>
+        <p class="finder-note">
+          Trades ranked by mutual benefit (sum of both teams' improvement). Only shows trades with fairness ≥ 75/100
+          where <strong>both</strong> teams improve their weakest starting position.
+        </p>`;
+    }, 50);
+  };
+
+  document.getElementById('finder-team-select').addEventListener('change', paint);
+  paint();
 }
 
 window.Pages = {
