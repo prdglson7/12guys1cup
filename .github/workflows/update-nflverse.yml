@@ -57,4 +57,11 @@ jobs:
             exit 0
           fi
           git commit -m "Update nflverse data [skip ci]"
-          git push
+          # Retry loop for concurrent-push races
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            echo "Retry $i after concurrent push…"
+            sleep 5
+          done
+          echo "Failed to push after 3 attempts."
+          exit 1
