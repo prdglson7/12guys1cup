@@ -375,6 +375,52 @@ def fetch_player_ids():
     return {"player_count": len(result), "players": result}
 
 # ------------------------------------------------------------------
+# 7. NFL schedules (for playoff SoS + matchup lookups)
+# ------------------------------------------------------------------
+
+def fetch_schedules():
+    """Fetch NFL schedules for current + prior season (for playoff SoS)."""
+    log("Fetching NFL schedules…")
+    schedule_lookup = {}  # {season: {team: {week: opp}}}
+
+    for season in [CURRENT_SEASON, CURRENT_SEASON - 1]:
+        try:
+            df = nfl.import_schedules([season])
+            if df is None or df.empty:
+                log(f"  {season}: no data")
+                continue
+
+            season_lookup = {}
+            game_count = 0
+            for _, row in df.iterrows():
+                wk = int_or_none(row.get("week"))
+                home = row.get("home_team")
+                away = row.get("away_team")
+                if not wk or not home or not away:
+                    continue
+                season_lookup.setdefault(home, {})[str(wk)] = away
+                season_lookup.setdefault(away, {})[str(wk)] = home
+                game_count += 1
+
+            schedule_lookup[str(season)] = season_lookup
+            log(f"  {season}: {game_count} games, {len(season_lookup)} teams")
+        except Exception as e:
+            log(f"  {season}: {e}")
+
+    # Playoff weeks in fantasy = weeks 15, 16, 17 (semis/finals varies by league)
+    playoff_opps = {}  # {team: [opp_wk15, opp_wk16, opp_wk17]}
+    current_key = str(CURRENT_SEASON)
+    if current_key in schedule_lookup:
+        for team, weeks in schedule_lookup[current_key].items():
+            playoff_opps[team] = [weeks.get(str(w)) for w in [15, 16, 17]]
+
+    return {
+        "seasons_available": list(schedule_lookup.keys()),
+        "schedule": schedule_lookup,
+        "playoff_opponents": playoff_opps,
+    }
+
+# ------------------------------------------------------------------
 # main
 # ------------------------------------------------------------------
 
@@ -407,6 +453,10 @@ def main():
     ids = safe(fetch_player_ids, "player_ids") or {"players": {}}
     write_json(ids, "player-ids.json")
 
+    # 7. Schedules (for playoff SoS)
+    sched = safe(fetch_schedules, "schedules") or {"seasons_available": [], "schedule": {}, "playoff_opponents": {}}
+    write_json(sched, "schedules.json")
+
     # Manifest
     manifest = {
         "fetched_at": started.isoformat() + "Z",
@@ -419,6 +469,7 @@ def main():
             "xfp.json":          {"season": xfp.get("season"), "player_count": len(xfp.get("players", {}))},
             "depth-charts.json": {"season": depth.get("season"), "week": depth.get("week")},
             "player-ids.json":   {"player_count": ids.get("player_count", 0)},
+            "schedules.json":    {"seasons": sched.get("seasons_available", [])},
         },
     }
     write_json(manifest, "_manifest.json")
