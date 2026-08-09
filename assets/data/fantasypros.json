@@ -2,8 +2,26 @@
   "sport": "NFL",
   "title": "Fantasy Player News",
   "description": "Breaking Fantasy Football player news along with the impact for fantasy managers",
-  "count": 49,
+  "count": 48,
   "items": [
+    {
+      "id": 601310,
+      "created": "2026-08-09 00:27:37",
+      "created_formated": "Sun, Aug 9th 12:27am UTC",
+      "author": "Ari Koslow",
+      "player_id": 15487,
+      "team_id": "WAS",
+      "title": "Laremy Tunsil (torn triceps) to undergo surgery, miss majority of season",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Injury"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/601310/laremy-tunsil-torn-triceps-to-undergo-surgery-miss-majority-season.php",
+      "desc": "Commanders LT Laremy Tunsil suffered a torn triceps that will likely require surgery and will force him to miss at least a significant portion of the regular season.",
+      "impact": "Tunsil suffered the injury in practice on Saturday during 1-on-1 pass-rush drills. It is a brutal break for Jayden Daniels and the Commanders offensive line and offense. "
+    },
     {
       "id": 601273,
       "created": "2026-08-08 21:12:03",
@@ -198,24 +216,6 @@
       "link": "https://www.fantasypros.com/nfl/news/601257/zay-flowers-quad-contusion-considered-day-to-day.php",
       "desc": "Zay Flowers suffered a left quad contusion at Saturday's practice and is now viewed as day-to-day.",
       "impact": "Flowers limped off the practice field under his own power on Saturday, and it looks like he avoided any serious injury following a collision. The 25-year-old is fresh off the best season of his career and a 4-year extension with Baltimore."
-    },
-    {
-      "id": 601255,
-      "created": "2026-08-08 16:59:06",
-      "created_formated": "Sat, Aug 8th 4:59pm UTC",
-      "author": "Diego Sandoval",
-      "player_id": 15487,
-      "team_id": "WAS",
-      "title": "Laremy Tunsil (shoulder, neck) to undergo tests",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/601255/laremy-tunsil-shoulder-neck-to-undergo-tests.php",
-      "desc": "Laremy Tunsil is set to have his apparent shoulder or neck injury evaluated.",
-      "impact": "Tunsil left Saturday's practice early after being shaken up in a 1-on-1 drill. The injury originally appeared to be a stinger, but more information should be made available in the coming days."
     },
     {
       "id": 601190,
@@ -839,27 +839,10 @@
       "link": "https://www.fantasypros.com/nfl/news/601106/zach-davidson-works-out-dolphins.php",
       "desc": "The Dolphins hosted TE Zach Davidson for a workout on Friday. ",
       "impact": "Davidson was one of five tight ends to workout for Miami. He has appeared in three games in his career. "
-    },
-    {
-      "id": 601105,
-      "created": "2026-08-07 23:19:27",
-      "created_formated": "Fri, Aug 7th 11:19pm UTC",
-      "author": "Ari Koslow",
-      "player_id": 23137,
-      "team_id": "FA",
-      "title": "Baylor Cupp works out for Dolphins ",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/601105/baylor-cupp-works-out-dolphins.php",
-      "desc": "The Dolphins hosted TE Baylor Cupp for a workout on Friday. ",
-      "impact": "Cupp was one of five tight ends to workout for Miami. He has appeared in one career game in the NFL. "
     }
   ],
   "public_api_limited": true,
   "tier": "premium",
-  "fetched_at": "2026-08-08T23:22:19Z",
+  "fetched_at": "2026-08-09T01:13:47Z",
   "source_url": "https://api.fantasypros.com/public/v2/json/nfl/news?limit=50"
 }
