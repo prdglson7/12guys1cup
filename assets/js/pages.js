@@ -1960,7 +1960,91 @@ async function renderDues() {
 /* ============================================================
    TOOLS — Trade Analyzer + Start/Sit
    Statistically unbiased algorithm using Value Based Drafting (VBD)
+   Phase 2 additions: xFP regression, snap trends, playoff SoS
    ============================================================ */
+
+/* ---------- nflverse data loader (Phase 1 pipeline output) ---------- */
+
+async function loadNflverseData() {
+  const files = ['xfp', 'snap-counts', 'def-vs-pos', 'schedules'];
+  const results = {};
+  await Promise.all(files.map(async (f) => {
+    try {
+      const res = await fetch(`assets/data/nflverse/${f}.json`, { cache: 'default' });
+      results[f] = res.ok ? await res.json() : null;
+    } catch (_) {
+      results[f] = null;
+    }
+  }));
+
+  // Build fast lookup maps by normalized name
+  const xfpByName = new Map();
+  if (results['xfp']?.players) {
+    for (const p of Object.values(results['xfp'].players)) {
+      if (p.name) xfpByName.set(normalizeName(p.name), p);
+    }
+  }
+
+  const snapByName = new Map();
+  if (results['snap-counts']?.players) {
+    for (const p of Object.values(results['snap-counts'].players)) {
+      if (p.name) snapByName.set(normalizeName(p.name), p);
+    }
+  }
+
+  return {
+    xfp: xfpByName,
+    snaps: snapByName,
+    defVsPos: results['def-vs-pos']?.defenses || {},
+    playoffOpps: results['schedules']?.playoff_opponents || {},
+    available: (xfpByName.size > 0 || snapByName.size > 0),
+    xfpSeason: results['xfp']?.season,
+    snapSeason: results['snap-counts']?.season,
+    defSeason: results['def-vs-pos']?.season,
+  };
+}
+
+/* Enrich an FP player with nflverse signals for value adjustments. */
+function enrichPlayer(player, nflverse) {
+  if (!nflverse) return;
+  const key = normalizeName(player.name);
+
+  // xFP regression signal
+  const xfp = nflverse.xfp.get(key);
+  if (xfp && (xfp.total_xfp || 0) > 30 && (xfp.total_actual || 0) > 30) {
+    player._xfp_gap = xfp.gap;
+    player._xfp_total = xfp.total_xfp;
+    player._actual_total = xfp.total_actual;
+  }
+
+  // Snap trend — average delta of last 3 weeks with data
+  const snaps = nflverse.snaps.get(key);
+  if (snaps?.weeks?.length) {
+    const withPct = snaps.weeks.filter(w => w.off_pct != null);
+    if (withPct.length >= 3) {
+      const recent = withPct.slice(-3);
+      const older = withPct.slice(0, -3);
+      if (older.length) {
+        const recentAvg = recent.reduce((s, w) => s + (w.off_pct || 0), 0) / recent.length;
+        const olderAvg = older.reduce((s, w) => s + (w.off_pct || 0), 0) / older.length;
+        player._snap_trend = recentAvg - olderAvg;
+        player._snap_recent = recentAvg;
+      }
+    }
+  }
+
+  // Playoff SoS — average opponent DEF vs POS rank in weeks 15-17
+  if (player.team && nflverse.playoffOpps[player.team]) {
+    const opps = nflverse.playoffOpps[player.team].filter(Boolean);
+    const ranks = opps
+      .map(opp => nflverse.defVsPos[opp]?.[player.pos]?.rank)
+      .filter(r => r != null);
+    if (ranks.length) {
+      player._playoff_avg_rank = ranks.reduce((s, r) => s + r, 0) / ranks.length;
+      player._playoff_opps = opps;
+    }
+  }
+}
 
 /* Baseline ranks for 12-team full PPR — the last "startable" player
    at each position (used to compute Points Above Replacement). */
@@ -2001,7 +2085,8 @@ function computeBaselines(rankings) {
   return baselines;
 }
 
-/** VBD-based player value: (Projected − Baseline) × Injury Probability. */
+/** VBD-based player value with Phase 2 enhancements:
+    (Projected − Baseline) × Injury × Snap Trend × Regression × Playoff SoS */
 function computePlayerValue(player, baselines) {
   const proj = Number(player.proj_pts) || 0;
   const baseline = baselines[player.pos] || 0;
@@ -2021,10 +2106,54 @@ function computePlayerValue(player, baselines) {
     injuryLabel = player._injury;
   }
 
+  // === Phase 2 enhancements (from nflverse data) ===
+
+  // 1. Snap Trend adjustment (usage signal for ROS)
+  //    +20% snap trend → +10% value; -20% trend → -10% value; clamped ±15%
+  let snapMult = 1.0;
+  let snapLabel = null;
+  if (player._snap_trend != null && Math.abs(player._snap_trend) > 0.05) {
+    const adj = Math.max(-0.15, Math.min(0.15, player._snap_trend * 0.5));
+    snapMult = 1.0 + adj;
+    const pct = (player._snap_trend * 100).toFixed(0);
+    snapLabel = player._snap_trend > 0 ? `snap ↑${pct}%` : `snap ↓${pct}%`;
+  }
+
+  // 2. Regression (xFP) adjustment
+  //    Actual >> expected = lucky (discount), Actual << expected = unlucky (boost)
+  //    Only kicks in when |gap| > 15 points (real signal, not noise)
+  let regressionMult = 1.0;
+  let regressionLabel = null;
+  if (player._xfp_gap != null && Math.abs(player._xfp_gap) > 15) {
+    const adj = Math.max(-0.15, Math.min(0.15, -player._xfp_gap / 200));
+    regressionMult = 1.0 + adj;
+    regressionLabel = player._xfp_gap > 0
+      ? `+${player._xfp_gap.toFixed(0)} vs xFP (regress ↓)`
+      : `${player._xfp_gap.toFixed(0)} vs xFP (regress ↑)`;
+  }
+
+  // 3. Playoff SoS adjustment
+  //    Avg opponent DEF rank 1-32 in weeks 15-17.
+  //    1 = toughest defense (bad matchup), 32 = softest (good matchup)
+  //    Neutral = 16.5. Every rank point off neutral = 0.6% value adjustment.
+  let playoffMult = 1.0;
+  let playoffLabel = null;
+  if (player._playoff_avg_rank != null) {
+    const adj = (player._playoff_avg_rank - 16.5) / 100;  // ±0.155 max
+    playoffMult = 1.0 + adj;
+    playoffLabel = `playoff SoS ${player._playoff_avg_rank.toFixed(0)}/32`;
+  }
+
+  const value = baseValue * injuryMult * snapMult * regressionMult * playoffMult;
+
   return {
-    value: baseValue * injuryMult,
+    value,
     proj, baseline, par, baseValue,
     injuryMult, injuryLabel,
+    snapMult, snapLabel,
+    regressionMult, regressionLabel,
+    playoffMult, playoffLabel,
+    hasEnhancements: !!(snapLabel || regressionLabel || playoffLabel),
   };
 }
 
@@ -2088,8 +2217,18 @@ async function renderTools() {
     p._injury_prob = inj?.prob != null ? inj.prob : null;
   });
 
+  // Load nflverse data + enrich each player (Phase 2)
+  const nflverse = await loadNflverseData();
+  if (nflverse.available) {
+    allPlayers.forEach(p => enrichPlayer(p, nflverse));
+    console.log(`nflverse enrichment applied — xFP: ${nflverse.xfp.size}, snaps: ${nflverse.snaps.size}, def: ${Object.keys(nflverse.defVsPos).length}`);
+  } else {
+    console.log('nflverse data unavailable — run Update nflverse data workflow first');
+  }
+
   const fetched = dk.fetched_at ? new Date(dk.fetched_at) : null;
-  tradeMeta.textContent = `${allPlayers.length} players • VBD-based • ${dk.scoring || 'PPR'} • updated ${fetched ? relTime(fetched.toISOString()) : 'recently'}`;
+  const enhancedNote = nflverse.available ? ' • Enhanced with nflverse' : '';
+  tradeMeta.textContent = `${allPlayers.length} players • VBD${enhancedNote} • ${dk.scoring || 'PPR'} • updated ${fetched ? relTime(fetched.toISOString()) : 'recently'}`;
   ssMeta.textContent = `${allPlayers.length} players • ${dk.scoring || 'PPR'} • updated ${fetched ? relTime(fetched.toISOString()) : 'recently'}`;
 
   // Load league rosters (best-effort — Trade Finder gracefully degrades)
@@ -2194,11 +2333,16 @@ function renderTradeAnalyzer(allPlayers, baselines, container) {
       Show me the math ▼
     </button>
     <div id="trade-math" class="tools-math hidden">
-      <h4>Value Based Drafting (VBD) with consolidation adjustment</h4>
-      <pre class="tools-formula">Adjusted Value = Raw VORP ± Consolidation Adjustment
+      <h4>Enhanced VBD Trade Analyzer — Phase 2</h4>
+      <pre class="tools-formula">Adjusted Value = Raw VORP
+              × Injury Prob
+              × Snap Trend
+              × Regression
+              × Playoff SoS
+              ± Consolidation Adjustment
 
 ━━━ STEP 1: RAW VORP PER PLAYER ━━━
-VORP = (Projected Points − Position Baseline) × Injury Probability
+VORP = Projected Points − Position Baseline
 
 ━━━ POSITION BASELINE ━━━
 Projected points of the LAST STARTABLE player at each position:
@@ -2212,31 +2356,43 @@ Projected points of the LAST STARTABLE player at each position:
   DST        DST12            ${(baselines.DST || 0).toFixed(1)}
 
 Computed from actual FP data every fetch — no hardcoded values.
-Positional scarcity is captured automatically (elite RBs get big
-numbers, deep QBs get small ones).
 
-━━━ INJURY PROBABILITY ━━━
+━━━ STEP 2: INJURY PROBABILITY ━━━
 FantasyPros' published probability_of_playing (0-100%).
 Fallback if unpublished:
   Questionable × 0.80    Doubtful × 0.35
   Out/IR/Sus  × 0.05    Probable × 0.95
 
-━━━ STEP 2: CONSOLIDATION ADJUSTMENT ━━━
-Trading 3-for-1 is NOT equal even if raw VORP totals match.
-The team receiving 3 players must drop 2 existing rostered
-players. The team giving 3 frees 2 spots for waiver adds.
+━━━ STEP 3: SNAP TREND (nflverse) ━━━
+Compares each player's recent 3-week snap % to earlier season avg.
+Rising usage → boost value. Declining usage → discount value.
+Formula: 1.0 + (trend_delta × 0.5), clipped ±15%
+Only kicks in when |delta| > 5%.
 
+━━━ STEP 4: REGRESSION (xFP, nflverse) ━━━
+Compares each player's actual season fantasy points to their
+Expected Fantasy Points (from ff_opportunity data). Big gap =
+they got lucky/unlucky, expect regression.
+
+Formula: 1.0 + (-gap / 200), clipped ±15%
+Only kicks in when |gap| > 15 points.
+
+  Player scoring 20+ pts more than expected → -10% (regress ↓)
+  Player scoring 20+ pts less than expected → +10% (regress ↑)
+
+━━━ STEP 5: PLAYOFF SoS (nflverse) ━━━
+Averages the player's DEF vs POS rank from their team's
+opponents in weeks 15, 16, 17.
+  1 = toughest matchup (bad) → -15% value
+  32 = softest matchup (good) → +15% value
+Neutral = rank 16.5.
+
+━━━ STEP 6: CONSOLIDATION PENALTY ━━━
+Trading 3-for-1 is NOT equal even with same raw VORP.
   Drop penalty:   +10 VORP per extra player received
-                  (= value of avg droppable bench player)
   Waiver gain:    −3 VORP per freed spot
-                  (= value of avg waiver-wire pickup)
 
-Example: A gives 1 (VORP 180), B gives 3 (VORP 180)
-  Team A: adjusted = 180 + (2 × 10) = 200  (must drop 2)
-  Team B: adjusted = 180 − (2 × 3)  = 174  (frees 2 spots)
-  Verdict: Team B wins by 13% — consolidation is real.
-
-━━━ STEP 3: FAIRNESS SCORE (0-100) ━━━
+━━━ STEP 7: FAIRNESS SCORE (0-100) ━━━
 Fairness = 100 − (|diff| ÷ higher_side × 100)
 
   95-100  PERFECTLY BALANCED
@@ -2247,10 +2403,12 @@ Fairness = 100 − (|diff| ÷ higher_side × 100)
   30-50   UNFAIR
    0-30   ROBBERY 🚨
 
-━━━ BELOW-REPLACEMENT FLOOR ━━━
-Bench players below baseline get minimum value (5% of
-projection or 2 points, whichever is higher). They still
-have bye-week / injury-insurance utility.</pre>
+━━━ NOTE ON PHASE 2 SIGNALS ━━━
+The snap trend, regression, and playoff SoS multipliers only
+kick in when nflverse data is available AND has meaningful
+signal. Below-noise-threshold signals default to 1.0 (no
+adjustment). Multipliers are visible on player cards when
+active — no hidden adjustments.</pre>
     </div>`;
 
   const toggle = document.getElementById('trade-toggle-math');
@@ -2274,8 +2432,22 @@ have bye-week / injury-insurance utility.</pre>
       listEl.innerHTML = team.map((p, i) => {
         const v = computePlayerValue(p, baselines);
         total += v.value;
+        // Build tooltip breakdown
+        const bits = [`Proj ${v.proj.toFixed(1)} − Baseline ${v.baseline.toFixed(1)} = PAR ${v.par.toFixed(1)}`];
+        if (v.injuryLabel) bits.push(`× ${v.injuryMult.toFixed(2)} (${v.injuryLabel})`);
+        if (v.snapLabel) bits.push(`× ${v.snapMult.toFixed(2)} (${v.snapLabel})`);
+        if (v.regressionLabel) bits.push(`× ${v.regressionMult.toFixed(2)} (${v.regressionLabel})`);
+        if (v.playoffLabel) bits.push(`× ${v.playoffMult.toFixed(2)} (${v.playoffLabel})`);
+        const tooltip = bits.join(' ');
+
+        // Enhancement chips shown inline
+        const enhancementChips = [];
+        if (v.snapLabel) enhancementChips.push(`<span class="chip chip-snap">${esc(v.snapLabel)}</span>`);
+        if (v.regressionLabel) enhancementChips.push(`<span class="chip chip-regression">${esc(v.regressionLabel)}</span>`);
+        if (v.playoffLabel) enhancementChips.push(`<span class="chip chip-playoff">${esc(v.playoffLabel)}</span>`);
+
         return `
-          <div class="trade-player" title="Proj ${v.proj.toFixed(1)} − Baseline ${v.baseline.toFixed(1)} = PAR ${v.par.toFixed(1)}${v.injuryLabel ? ' × ' + v.injuryMult.toFixed(2) + ' (' + v.injuryLabel + ')' : ''}">
+          <div class="trade-player" title="${esc(tooltip)}">
             <div class="trade-player-info">
               <div class="trade-player-name">${esc(p.name)}
                 ${v.injuryLabel ? `<span class="trade-injury">${esc(v.injuryLabel)}</span>` : ''}
@@ -2285,6 +2457,7 @@ have bye-week / injury-insurance utility.</pre>
                 <span class="trade-team">${esc(p.team || '')}</span>
                 <span class="trade-rank">ECR #${p.rank || '—'}</span>
               </div>
+              ${enhancementChips.length ? `<div class="trade-player-chips">${enhancementChips.join('')}</div>` : ''}
             </div>
             <div class="trade-player-value">${v.value.toFixed(1)}</div>
             <button class="trade-remove" data-side="${side}" data-idx="${i}" aria-label="Remove">✕</button>
