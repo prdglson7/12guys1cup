@@ -2102,6 +2102,15 @@ const VBD_BASELINE_RANKS = {
   DST: 12,
 };
 
+/* Custom baseline overrides — used INSTEAD of the computed baseline
+   for any position listed here. Comment out (or delete) a line to
+   fall back to the auto-computed value from actual projections. */
+const CUSTOM_BASELINES = {
+  RB: 175.0,
+  WR: 196.6,
+  TE: 157.5,
+};
+
 /* Fallback injury discount used only if FP hasn't published a play probability. */
 const INJURY_STATUS_FALLBACK = {
   'Out': 0.05, 'IR': 0.05, 'PUP': 0.10, 'Sus': 0.05,
@@ -2127,6 +2136,11 @@ function computeBaselines(rankings) {
   const baselines = {};
   const overall = rankings?.overall || [];
   Object.entries(VBD_BASELINE_RANKS).forEach(([pos, rank]) => {
+    // Custom override wins if provided
+    if (CUSTOM_BASELINES[pos] != null) {
+      baselines[pos] = CUSTOM_BASELINES[pos];
+      return;
+    }
     const positional = overall
       .filter(p => p.pos === pos)
       .map(p => Number(p.proj_pts))
