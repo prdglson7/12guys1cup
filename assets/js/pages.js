@@ -3495,12 +3495,420 @@ async function renderWaiver() {
   paint();
 }
 
+/* ============================================================
+   WALL OF SHAME + DONKEY OF THE WEEK + COACH OF THE WEEK (Phase 6)
+   ============================================================ */
+
+/* Extract starting slot counts from league.roster_positions.
+   Filters out BN/IR/TAXI. Returns {QB: 1, RB: 2, WR: 3, TE: 1, FLEX: 1, K: 1, DEF: 1} shape. */
+function extractStartingSlots(rosterPositions) {
+  const slots = {};
+  (rosterPositions || []).forEach(pos => {
+    if (['BN', 'IR', 'TAXI', 'RES'].includes(pos)) return;
+    const key = (pos === 'DST') ? 'DEF' : pos;
+    slots[key] = (slots[key] || 0) + 1;
+  });
+  return slots;
+}
+
+/* Whether a player's primary position is eligible for a given slot type. */
+function slotEligible(pos, slotType) {
+  if (slotType === 'FLEX') return ['RB', 'WR', 'TE'].includes(pos);
+  if (slotType === 'SUPER_FLEX') return ['QB', 'RB', 'WR', 'TE'].includes(pos);
+  if (slotType === 'REC_FLEX' || slotType === 'WRRB_FLEX') return ['RB', 'WR'].includes(pos);
+  if (slotType === 'DEF') return pos === 'DEF' || pos === 'DST';
+  return pos === slotType;
+}
+
+/* Compute the highest-scoring legal lineup from a matchup's full roster.
+   Greedy fill: exclusive slots first, then FLEX. */
+function computeOptimalLineup(matchup, playerPosMap, startingSlots) {
+  const players = (matchup.players || []).map(pid => ({
+    id: pid,
+    pos: playerPosMap[pid] || 'UNK',
+    points: Number(matchup.players_points?.[pid] || 0),
+  }));
+  players.sort((a, b) => b.points - a.points);
+
+  const usedIds = new Set();
+  const lineup = [];
+  // Fill exclusive positions first — FLEX / SUPER_FLEX last
+  const order = ['QB', 'K', 'DEF', 'RB', 'WR', 'TE', 'REC_FLEX', 'WRRB_FLEX', 'FLEX', 'SUPER_FLEX'];
+  for (const slotType of order) {
+    const count = startingSlots[slotType] || 0;
+    for (let i = 0; i < count; i++) {
+      const player = players.find(p => !usedIds.has(p.id) && slotEligible(p.pos, slotType));
+      if (player) {
+        lineup.push({ ...player, slot: slotType });
+        usedIds.add(player.id);
+      }
+    }
+  }
+  return {
+    lineup,
+    total: lineup.reduce((s, p) => s + p.points, 0),
+  };
+}
+
+/* Find the single biggest missed swap: a bench player who outscored a starter
+   at the same primary position. Returns null if no positive swap exists. */
+function findBiggestMissedSwap(matchup, playerPosMap) {
+  const starters = matchup.starters || [];
+  const players = matchup.players || [];
+  const points = matchup.players_points || {};
+  const bench = players.filter(id => !starters.includes(id));
+
+  let biggest = null;
+  for (const starterId of starters) {
+    const starterPos = playerPosMap[starterId];
+    const starterPts = Number(points[starterId] || 0);
+    for (const benchId of bench) {
+      const benchPos = playerPosMap[benchId];
+      const benchPts = Number(points[benchId] || 0);
+      // Exact position match (simple + defensible)
+      if (starterPos !== benchPos) continue;
+      const gain = benchPts - starterPts;
+      if (!biggest || gain > biggest.gain) {
+        biggest = {
+          gain,
+          benched_id: benchId, benched_pos: benchPos, benched_pts: benchPts,
+          starter_id: starterId, starter_pos: starterPos, starter_pts: starterPts,
+        };
+      }
+    }
+  }
+  return biggest && biggest.gain > 0 ? biggest : null;
+}
+
+/* Analyze a single week: identify donkey, coach, lowest scorer. */
+function analyzeWeek(matchups, playerPosMap, startingSlots) {
+  // Group into head-to-head pairs by matchup_id
+  const pairs = new Map();
+  (matchups || []).forEach(m => {
+    if (m.matchup_id == null) return;
+    if (!pairs.has(m.matchup_id)) pairs.set(m.matchup_id, []);
+    pairs.get(m.matchup_id).push(m);
+  });
+
+  const teamResults = [];
+  const donkeyCandidates = [];
+  const coachCandidates = [];
+
+  for (const pair of pairs.values()) {
+    if (pair.length !== 2) continue;
+    const [a, b] = pair;
+    const ptsA = Number(a.points || 0);
+    const ptsB = Number(b.points || 0);
+    teamResults.push({ roster_id: a.roster_id, points: ptsA });
+    teamResults.push({ roster_id: b.roster_id, points: ptsB });
+
+    const optA = computeOptimalLineup(a, playerPosMap, startingSlots);
+    const optB = computeOptimalLineup(b, playerPosMap, startingSlots);
+    const missedA = Math.max(0, optA.total - ptsA);
+    const missedB = Math.max(0, optB.total - ptsB);
+    const marginA = ptsB - ptsA;   // positive if A lost
+    const marginB = -marginA;
+
+    // Donkey: LOST + could have WON with optimal lineup
+    if (ptsA < ptsB && missedA >= marginA && ptsB > 0) {
+      donkeyCandidates.push({
+        roster_id: a.roster_id, actual: ptsA, optimal: optA.total,
+        missed: missedA, margin: marginA, opp_score: ptsB, opp_roster_id: b.roster_id,
+        swap: findBiggestMissedSwap(a, playerPosMap),
+      });
+    }
+    if (ptsB < ptsA && missedB >= marginB && ptsA > 0) {
+      donkeyCandidates.push({
+        roster_id: b.roster_id, actual: ptsB, optimal: optB.total,
+        missed: missedB, margin: marginB, opp_score: ptsA, opp_roster_id: a.roster_id,
+        swap: findBiggestMissedSwap(b, playerPosMap),
+      });
+    }
+
+    // Coach of Week candidates — winners with high efficiency
+    if (ptsA > ptsB && ptsA > 0) {
+      coachCandidates.push({
+        roster_id: a.roster_id, actual: ptsA, optimal: optA.total,
+        efficiency: optA.total > 0 ? ptsA / optA.total : 0,
+        margin: ptsA - ptsB,
+      });
+    }
+    if (ptsB > ptsA && ptsB > 0) {
+      coachCandidates.push({
+        roster_id: b.roster_id, actual: ptsB, optimal: optB.total,
+        efficiency: optB.total > 0 ? ptsB / optB.total : 0,
+        margin: ptsB - ptsA,
+      });
+    }
+  }
+
+  if (!teamResults.length) return null;
+  teamResults.sort((a, b) => a.points - b.points);
+  const lowest = teamResults[0];
+
+  donkeyCandidates.sort((a, b) => b.missed - a.missed);
+  const donkey = donkeyCandidates[0] || null;
+
+  coachCandidates.sort((a, b) => b.efficiency - a.efficiency);
+  const coach = coachCandidates[0] || null;
+
+  return { donkey, coach, lowest, teamResults };
+}
+
+/* ---------- render ---------- */
+
+async function renderShame() {
+  const metaEl = document.getElementById("shame-meta");
+  const bodyEl = document.getElementById("shame-body");
+  bodyEl.innerHTML = loading("Loading matchup history…");
+
+  const [state, users, rosters, sleeperPlayers, league] = await Promise.all([
+    window.Sleeper.getState(),
+    window.Sleeper.getUsers(),
+    window.Sleeper.getRosters(),
+    window.Sleeper.getSleeperPlayers(),
+    window.Sleeper.getLeague(),
+  ]);
+
+  const teams = window.Sleeper.buildTeamMap(users, rosters);
+  const currentWeek = state?.week || 0;
+  const startingSlots = extractStartingSlots(league?.roster_positions);
+
+  // Build position lookup from Sleeper players DB
+  const playerPos = {};
+  const playerName = {};
+  Object.entries(sleeperPlayers?.players || {}).forEach(([id, p]) => {
+    playerPos[id] = p.pos;
+    playerName[id] = p.name;
+  });
+
+  if (currentWeek < 1) {
+    metaEl.textContent = 'Offseason';
+    bodyEl.innerHTML = `
+      <div class="shame-empty">
+        <div class="shame-empty-icon">🐴</div>
+        <h3>Wall of Shame populates once games play</h3>
+        <p>Every Tuesday morning after MNF, the tool identifies:</p>
+        <ul>
+          <li><strong>🐴 Donkey of the Week</strong> — team that lost by less than the points they left on their bench</li>
+          <li><strong>💀 Wall of Shame entry</strong> — lowest scorer in the league that week</li>
+          <li><strong>🏆 Coach of the Week</strong> — winner with the highest lineup efficiency</li>
+        </ul>
+        <p><em>Standings, season leaders, and weekly history all populate automatically as games play. Check back after Week 1 (Sept 7 games).</em></p>
+      </div>`;
+    return;
+  }
+
+  // Fetch matchups for all completed weeks in parallel
+  const weeks = Array.from({ length: currentWeek }, (_, i) => i + 1);
+  const allMatchups = await Promise.all(
+    weeks.map(w => window.Sleeper.getMatchups(w).catch(() => null))
+  );
+
+  // Analyze each week that has scoring
+  const weeklyAnalyses = [];
+  weeks.forEach((week, idx) => {
+    const m = allMatchups[idx];
+    if (!m?.length) return;
+    if (m.every(x => (x.points || 0) === 0)) return;
+    const a = analyzeWeek(m, playerPos, startingSlots);
+    if (a) weeklyAnalyses.push({ week, ...a });
+  });
+
+  if (!weeklyAnalyses.length) {
+    metaEl.textContent = `Week ${currentWeek}`;
+    bodyEl.innerHTML = empty("No completed weeks with scoring yet.");
+    return;
+  }
+
+  metaEl.textContent = `${weeklyAnalyses.length} week${weeklyAnalyses.length !== 1 ? 's' : ''} analyzed`;
+
+  // Season aggregates
+  const donkeyCount = new Map();
+  const shameCount = new Map();
+  const coachCount = new Map();
+  const seasonPoints = new Map();
+  for (const wa of weeklyAnalyses) {
+    if (wa.donkey) donkeyCount.set(wa.donkey.roster_id, (donkeyCount.get(wa.donkey.roster_id) || 0) + 1);
+    if (wa.lowest) shameCount.set(wa.lowest.roster_id, (shameCount.get(wa.lowest.roster_id) || 0) + 1);
+    if (wa.coach) coachCount.set(wa.coach.roster_id, (coachCount.get(wa.coach.roster_id) || 0) + 1);
+    for (const r of wa.teamResults) seasonPoints.set(r.roster_id, (seasonPoints.get(r.roster_id) || 0) + r.points);
+  }
+
+  const teamName = (rid) => teams.get(rid)?.team_name || `Roster ${rid}`;
+  const teamAvatar = (rid) => avatarUrl(teams.get(rid));
+
+  // Most recent week's donkey/coach/lowest
+  const latest = weeklyAnalyses[weeklyAnalyses.length - 1];
+
+  // Season leaders
+  const seasonDonkey = Array.from(donkeyCount.entries()).sort((a, b) => b[1] - a[1])[0];
+  const seasonShame = Array.from(shameCount.entries()).sort((a, b) => b[1] - a[1])[0];
+  const seasonPointsSorted = Array.from(seasonPoints.entries()).sort((a, b) => a[1] - b[1]);   // ascending = worst first
+  const seasonLowestTotal = seasonPointsSorted[0];
+
+  // ------- render -------
+  bodyEl.innerHTML = `
+    <div class="shame-week-header">Week ${latest.week} Awards</div>
+    <div class="shame-top-cards">
+      ${latest.donkey ? donkeyCardHtml(latest.donkey, latest.week, teams, playerName) : ''}
+      ${latest.coach ? coachCardHtml(latest.coach, latest.week, teams) : ''}
+      ${latest.lowest ? lowestCardHtml(latest.lowest, latest.week, teams) : ''}
+    </div>
+
+    <section class="shame-section">
+      <div class="shame-section-head">
+        <h3>💀 Season Wall of Shame Standings</h3>
+      </div>
+      <table class="stats-table shame-standings">
+        <thead>
+          <tr>
+            <th>Team</th>
+            <th class="num">🐴 Donkey wks</th>
+            <th class="num">💀 Low-score wks</th>
+            <th class="num">🏆 Coach wks</th>
+            <th class="num">Season pts</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${Array.from(teams.values()).sort((a, b) => {
+            // Sort by donkey count desc, then shame count desc, then season points asc
+            const dA = donkeyCount.get(a.roster_id) || 0;
+            const dB = donkeyCount.get(b.roster_id) || 0;
+            if (dA !== dB) return dB - dA;
+            const sA = shameCount.get(a.roster_id) || 0;
+            const sB = shameCount.get(b.roster_id) || 0;
+            if (sA !== sB) return sB - sA;
+            return (seasonPoints.get(a.roster_id) || 0) - (seasonPoints.get(b.roster_id) || 0);
+          }).map(t => {
+            const d = donkeyCount.get(t.roster_id) || 0;
+            const s = shameCount.get(t.roster_id) || 0;
+            const c = coachCount.get(t.roster_id) || 0;
+            const p = seasonPoints.get(t.roster_id) || 0;
+            const isSeasonDonkey = seasonDonkey && t.roster_id === seasonDonkey[0] && d > 0;
+            return `
+              <tr class="${isSeasonDonkey ? 'shame-season-donkey' : ''}">
+                <td>
+                  <div class="team-cell">
+                    <img class="avatar-sm" src="${esc(avatarUrl(t))}" alt="" onerror="this.src='assets/img/logo.jpg'">
+                    ${esc(t.team_name)}
+                    ${isSeasonDonkey ? '<span class="shame-badge">SEASON DONKEY</span>' : ''}
+                  </div>
+                </td>
+                <td class="num">${d || '—'}</td>
+                <td class="num">${s || '—'}</td>
+                <td class="num">${c || '—'}</td>
+                <td class="num">${p ? p.toFixed(1) : '—'}</td>
+              </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+      ${seasonLowestTotal ? `
+        <div class="shame-season-lowest">
+          🥴 Season points floor: <strong>${esc(teamName(seasonLowestTotal[0]))}</strong> — ${seasonLowestTotal[1].toFixed(1)} pts
+        </div>` : ''}
+    </section>
+
+    <section class="shame-section">
+      <div class="shame-section-head">
+        <h3>📅 Weekly History</h3>
+      </div>
+      <div class="shame-weeks">
+        ${weeklyAnalyses.slice().reverse().map(wa => `
+          <div class="shame-week-card">
+            <div class="shame-week-title">Week ${wa.week}</div>
+            <div class="shame-week-body">
+              <div class="shame-week-line">
+                <span class="shame-week-lbl">🐴 Donkey:</span>
+                <span>${wa.donkey ? esc(teamName(wa.donkey.roster_id)) + ` (missed ${wa.donkey.missed.toFixed(1)})` : '<em class="dim">nobody qualified</em>'}</span>
+              </div>
+              <div class="shame-week-line">
+                <span class="shame-week-lbl">💀 Lowest:</span>
+                <span>${wa.lowest ? esc(teamName(wa.lowest.roster_id)) + ` (${wa.lowest.points.toFixed(1)})` : '—'}</span>
+              </div>
+              <div class="shame-week-line">
+                <span class="shame-week-lbl">🏆 Coach:</span>
+                <span>${wa.coach ? esc(teamName(wa.coach.roster_id)) + ` (${(wa.coach.efficiency*100).toFixed(0)}%)` : '—'}</span>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </section>`;
+
+  // Helper renderers for top cards
+  function donkeyCardHtml(d, week, teams, playerName) {
+    const swap = d.swap;
+    const wouldveWon = d.missed >= d.margin;
+    return `
+      <div class="shame-card shame-donkey">
+        <div class="shame-card-tag">🐴 DONKEY OF WEEK ${week}</div>
+        <div class="shame-card-team">
+          <img class="avatar-sm" src="${esc(teamAvatar(d.roster_id))}" alt="" onerror="this.src='assets/img/logo.jpg'">
+          ${esc(teamName(d.roster_id))}
+        </div>
+        <div class="shame-card-stats">
+          <div><span class="lbl">Actual</span><span class="val">${d.actual.toFixed(1)}</span></div>
+          <div><span class="lbl">Optimal</span><span class="val gold">${d.optimal.toFixed(1)}</span></div>
+          <div><span class="lbl">Missed</span><span class="val red">${d.missed.toFixed(1)}</span></div>
+          <div><span class="lbl">Lost by</span><span class="val">${d.margin.toFixed(1)}</span></div>
+        </div>
+        ${swap ? `
+          <div class="shame-card-swap">
+            Left <strong>${esc(playerName[swap.benched_id] || 'bench player')}</strong>
+            (${swap.benched_pts.toFixed(1)} pts) on the bench —
+            started <strong>${esc(playerName[swap.starter_id] || 'a starter')}</strong>
+            (${swap.starter_pts.toFixed(1)} pts) at ${swap.starter_pos}.
+            Swap gain of <strong class="red">${swap.gain.toFixed(1)}</strong> was
+            more than the loss margin.
+          </div>` : ''}
+        ${wouldveWon ? `<div class="shame-card-verdict">Would have won by ${(d.missed - d.margin).toFixed(1)} with the optimal lineup. Congratulations, you dumbass.</div>` : ''}
+      </div>`;
+  }
+
+  function coachCardHtml(c, week, teams) {
+    return `
+      <div class="shame-card shame-coach">
+        <div class="shame-card-tag">🏆 COACH OF WEEK ${week}</div>
+        <div class="shame-card-team">
+          <img class="avatar-sm" src="${esc(teamAvatar(c.roster_id))}" alt="" onerror="this.src='assets/img/logo.jpg'">
+          ${esc(teamName(c.roster_id))}
+        </div>
+        <div class="shame-card-stats">
+          <div><span class="lbl">Scored</span><span class="val gold">${c.actual.toFixed(1)}</span></div>
+          <div><span class="lbl">Optimal</span><span class="val">${c.optimal.toFixed(1)}</span></div>
+          <div><span class="lbl">Efficiency</span><span class="val gold">${(c.efficiency*100).toFixed(0)}%</span></div>
+          <div><span class="lbl">Won by</span><span class="val">${c.margin.toFixed(1)}</span></div>
+        </div>
+        <div class="shame-card-verdict">
+          Nearly optimal lineup + a W. Take a bow.
+        </div>
+      </div>`;
+  }
+
+  function lowestCardHtml(l, week, teams) {
+    return `
+      <div class="shame-card shame-lowest">
+        <div class="shame-card-tag">💀 LOWEST SCORER — WEEK ${week}</div>
+        <div class="shame-card-team">
+          <img class="avatar-sm" src="${esc(teamAvatar(l.roster_id))}" alt="" onerror="this.src='assets/img/logo.jpg'">
+          ${esc(teamName(l.roster_id))}
+        </div>
+        <div class="shame-card-stats">
+          <div><span class="lbl">Points</span><span class="val red">${l.points.toFixed(1)}</span></div>
+        </div>
+        <div class="shame-card-verdict">
+          Wall of Shame entry secured. Season shame count: ${shameCount.get(l.roster_id) || 1}.
+        </div>
+      </div>`;
+  }
+}
+
 window.Pages = {
   renderHome, renderMatchups, renderStandings, renderNews,
   renderTransactions, renderHistory,
   renderWire, renderTrending, renderInsiders,
   renderInjuries, renderInjuriesWidget,
-  renderDraftKit, renderDues, renderTools, renderWaiver,
+  renderDraftKit, renderDues, renderTools, renderWaiver, renderShame,
 };
 
 })();
