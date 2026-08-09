@@ -2117,11 +2117,15 @@ function normalizeName(name) {
     .trim();
 }
 
-/** Compute VBD baseline projections from actual ranked players. */
+/** Compute VBD baseline projections from actual ranked players.
+    Reads from rankings.overall filtered by position (per-position
+    arrays aren't produced by fetch-draftkit.js). */
 function computeBaselines(rankings) {
   const baselines = {};
+  const overall = rankings?.overall || [];
   Object.entries(VBD_BASELINE_RANKS).forEach(([pos, rank]) => {
-    const positional = (rankings[pos] || [])
+    const positional = overall
+      .filter(p => p.pos === pos)
       .map(p => Number(p.proj_pts))
       .filter(n => n != null && !isNaN(n) && n > 0)
       .sort((a, b) => b - a);
