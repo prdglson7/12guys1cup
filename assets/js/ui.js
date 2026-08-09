@@ -10,11 +10,11 @@ const NAV = [
   { href: "draft-kit.html",    label: "Draft Kit" },
   { href: "tools.html",        label: "Tools" },
   { href: "waiver.html",       label: "Waivers" },
-  { href: "shame.html",        label: "Shame" },
   { href: "injuries.html",     label: "Injuries" },
   { href: "news.html",         label: "News" },
   { href: "transactions.html", label: "Moves" },
-  { href: "history.html",      label: "History" },
+  { href: "shame.html",        label: "Studs & Duds" },
+  { href: "history.html",      label: "The Cup" },
 ];
 
 function renderChrome(activePage) {
@@ -40,8 +40,7 @@ function renderChrome(activePage) {
 
   if (footer) footer.innerHTML = `
     <div class="wrap">
-      12 GUYS 1 CUP • Powered by <a href="https://sleeper.com" target="_blank" rel="noopener">Sleeper</a>
-      &amp; <a href="https://www.espn.com/nfl" target="_blank" rel="noopener">ESPN</a>
+      12 GUYS 1 CUP
     </div>`;
 
   // Scroll-to-top button — appears after scrolling 400px, smooth-scrolls on click
