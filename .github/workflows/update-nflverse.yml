@@ -1,0 +1,61 @@
+name: Update nflverse data
+
+# Fetches nflverse (nfl_data_py) datasets weekly for Advanced Start/Sit,
+# Waiver Wire snap trends, DEF vs POS matchups, xFP regression signals,
+# depth charts, and historical context.
+#
+# Runs Tuesday 21:00 UTC (~4pm ET) — after Monday Night Football data drops.
+# Also triggerable manually via workflow_dispatch.
+
+on:
+  schedule:
+    - cron: "0 21 * * 2"    # Tuesday 4pm ET
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/update-nflverse.yml"
+      - ".github/scripts/fetch-nflverse.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-nflverse
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install nfl-data-py pandas pyarrow requests
+
+      - name: Fetch nflverse data
+        env:
+          NFL_SEASON: '2026'
+        run: python .github/scripts/fetch-nflverse.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/data/nflverse/
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Update nflverse data [skip ci]"
+          git push
