@@ -1966,7 +1966,7 @@ async function renderDues() {
 /* ---------- nflverse data loader (Phase 1 pipeline output) ---------- */
 
 async function loadNflverseData() {
-  const files = ['xfp', 'snap-counts', 'def-vs-pos', 'schedules'];
+  const files = ['xfp', 'snap-counts', 'def-vs-pos', 'schedules', 'weekly-stats'];
   const results = {};
   await Promise.all(files.map(async (f) => {
     try {
@@ -1992,11 +1992,41 @@ async function loadNflverseData() {
     }
   }
 
+  // Also build a target-share / usage index from weekly-stats (WR/TE/RB usage signal)
+  const usageByName = new Map();
+  if (results['weekly-stats']?.players) {
+    for (const p of Object.values(results['weekly-stats'].players)) {
+      if (!p.name || !p.weeks?.length) continue;
+      // Recent 3 weeks vs season avg target share
+      const withShare = p.weeks.filter(w => w.tgt_share != null);
+      if (withShare.length >= 3) {
+        const recent = withShare.slice(-3);
+        const recentAvg = recent.reduce((s, w) => s + (w.tgt_share || 0), 0) / recent.length;
+        const seasonAvg = withShare.reduce((s, w) => s + (w.tgt_share || 0), 0) / withShare.length;
+        usageByName.set(normalizeName(p.name), {
+          recent_tgt_share: recentAvg,
+          season_tgt_share: seasonAvg,
+          tgt_share_delta: recentAvg - seasonAvg,
+        });
+      }
+    }
+  }
+
+  // Season used for game context lookup: prefer current, fall back to prior
+  const gameCtx = results['schedules']?.game_context || {};
+  const availableSeasons = Object.keys(gameCtx);
+  const contextSeason = availableSeasons.length
+    ? availableSeasons.sort().slice(-1)[0]
+    : null;
+
   return {
     xfp: xfpByName,
     snaps: snapByName,
+    usage: usageByName,
     defVsPos: results['def-vs-pos']?.defenses || {},
     playoffOpps: results['schedules']?.playoff_opponents || {},
+    gameContext: contextSeason ? gameCtx[contextSeason] : {},
+    contextSeason,
     available: (xfpByName.size > 0 || snapByName.size > 0),
     xfpSeason: results['xfp']?.season,
     snapSeason: results['snap-counts']?.season,
@@ -2240,7 +2270,7 @@ async function renderTools() {
   }
 
   renderTradeAnalyzer(allPlayers, baselines, tradeBody);
-  renderStartSit(allPlayers, ssBody);
+  renderStartSit(allPlayers, ssBody, nflverse);
   renderTradeFinder(allPlayers, baselines, teamsWithRosters, finderBody, finderMeta);
 }
 
@@ -2599,15 +2629,104 @@ active — no hidden adjustments.</pre>
   repaint();
 }
 
-/* ---------- Start / Sit ---------- */
-function renderStartSit(allPlayers, container) {
+/* ---------- Start / Sit (Phase 3 — Advanced) ---------- */
+
+/* Compute weekly matchup rating (1-5 stars) and adjustment multiplier
+   from opponent DEF vs POS rank + game script (Vegas spread). */
+function computeMatchupRating(player, nflverse, week) {
+  const result = {
+    opp: null, defRank: null, spread: null, total: null,
+    roof: null, temp: null, wind: null, home: null,
+    matchupMult: 1.0, gameScriptMult: 1.0, weatherMult: 1.0,
+    stars: 3, matchupLabel: null, weatherWarning: null,
+  };
+
+  if (!player.team || !nflverse?.gameContext) return result;
+
+  // Look up this player's game for the given week
+  const teamCtx = nflverse.gameContext[player.team];
+  if (!teamCtx) return result;
+  const game = teamCtx[String(week)];
+  if (!game) return result;
+
+  result.opp = game.opp;
+  result.spread = game.spread;
+  result.total = game.total;
+  result.roof = game.roof;
+  result.temp = game.temp;
+  result.wind = game.wind;
+  result.home = game.home;
+
+  // Matchup: opponent's DEF vs POS rank (1 = best D, 32 = worst D)
+  const defRank = nflverse.defVsPos[game.opp]?.[player.pos]?.rank;
+  if (defRank != null) {
+    result.defRank = defRank;
+    // rank 1 = -15% (toughest), rank 32 = +15% (softest), linear
+    result.matchupMult = 1.0 + ((defRank - 16.5) / 100);
+    result.matchupLabel = `vs ${game.opp} DEF #${defRank}/32 ${player.pos}`;
+  }
+
+  // Game script from Vegas: positive spread = team favored
+  // RBs benefit from being favored (grinding out clock);
+  // WRs benefit slightly from underdog game script (garbage-time targets);
+  // QBs/TEs neutral to slight favor for being favored (script projected higher)
+  if (game.spread != null && Math.abs(game.spread) >= 3) {
+    const favored = game.spread > 0;
+    if (player.pos === 'RB') {
+      result.gameScriptMult = favored ? 1.05 : 0.95;
+    } else if (player.pos === 'WR') {
+      result.gameScriptMult = favored ? 1.0 : 1.03;
+    } else if (player.pos === 'QB') {
+      result.gameScriptMult = favored ? 1.03 : 0.98;
+    } else {
+      result.gameScriptMult = 1.0;
+    }
+  }
+
+  // Weather (outdoor games only) — wind matters more than temp
+  if (game.roof === 'outdoors' || game.roof === 'open') {
+    if (game.wind != null && game.wind >= 20) {
+      // High wind hurts QB/WR/TE most, less RB
+      const isPassing = player.pos === 'QB' || player.pos === 'WR' || player.pos === 'TE';
+      result.weatherMult = isPassing ? 0.88 : 0.95;
+      result.weatherWarning = `🌬 ${game.wind.toFixed(0)}mph wind`;
+    } else if (game.temp != null && game.temp < 20) {
+      const isPassing = player.pos === 'QB' || player.pos === 'WR' || player.pos === 'TE';
+      result.weatherMult = isPassing ? 0.94 : 0.97;
+      result.weatherWarning = `🥶 ${game.temp.toFixed(0)}°F`;
+    }
+  }
+
+  // Convert combined multiplier to star rating
+  const combined = result.matchupMult * result.gameScriptMult * result.weatherMult;
+  if (combined >= 1.10) result.stars = 5;
+  else if (combined >= 1.04) result.stars = 4;
+  else if (combined >= 0.96) result.stars = 3;
+  else if (combined >= 0.90) result.stars = 2;
+  else result.stars = 1;
+
+  return result;
+}
+
+function renderStartSit(allPlayers, container, nflverse) {
   let picks = [];
+  let previewWeek = 1;   // offseason default
 
   container.innerHTML = `
     <div class="ss-notice">
-      <strong>Foundation build.</strong> Right now uses season-long projected points × injury probability
-      (both from FantasyPros HOF). In-season, this expands to weekly projections and recent-form trend
-      once game data flows through.
+      <strong>Advanced Start/Sit.</strong> Uses FantasyPros projections + injury probability,
+      layered with nflverse signals: real DEF vs POS matchup, snap trends, target share,
+      xFP regression, Vegas game script, and weather.
+      ${!nflverse.available ? '<br><em>⚠ nflverse data not yet loaded — run the Update nflverse data workflow first.</em>' : ''}
+    </div>
+
+    <div class="ss-controls">
+      <label for="ss-week-select">Week to analyze:</label>
+      <select id="ss-week-select">
+        ${Array.from({ length: 18 }, (_, i) => i + 1).map(w => `
+          <option value="${w}"${w === previewWeek ? ' selected' : ''}>Week ${w}</option>
+        `).join('')}
+      </select>
     </div>
 
     <div class="ss-search-row">
@@ -2621,36 +2740,56 @@ function renderStartSit(allPlayers, container) {
       Show me the math ▼
     </button>
     <div id="ss-math" class="tools-math hidden">
-      <h4>Statistically unbiased Start/Sit</h4>
-      <pre class="tools-formula">Score = Projected Points × Injury Probability
+      <h4>Advanced Start/Sit — Phase 3</h4>
+      <pre class="tools-formula">Score = Projected Points
+      × Injury Probability
+      × Matchup Factor
+      × Game Script Factor
+      × Weather Factor
+      × Snap Trend Factor
+      × Regression Factor
 
-━━━ PROJECTED POINTS ━━━
-From FantasyPros HOF. Currently season-long — Week 1 onward
-we switch to WEEKLY projections which factor in the specific
-matchup, home/away, and Vegas game script.
+━━━ MATCHUP (DEF vs POS) ━━━
+Opponent's rank against this position (1 = best D, 32 = worst D).
+  rank 1  → 0.85× (toughest)
+  rank 32 → 1.15× (softest)
+Linear scale.
 
-━━━ INJURY PROBABILITY ━━━
-FP's published probability_of_playing (0-100%). If missing,
-falls back to status-based estimate:
-  Questionable × 0.80    Doubtful × 0.35
-  Out/IR/Sus  × 0.05    Probable × 0.95
+━━━ GAME SCRIPT (Vegas) ━━━
+Uses Vegas spread. Kicks in when |spread| >= 3 points.
+  RB favored by 3+  → 1.05× (grinding clock)
+  RB underdog 3+    → 0.95× (abandoned rush)
+  WR underdog 3+    → 1.03× (garbage-time targets)
+  QB favored 3+     → 1.03× (implied higher scoring)
+
+━━━ WEATHER (outdoor only) ━━━
+  Wind >= 20 mph → 0.88× passing / 0.95× rushing
+  Temp < 20°F    → 0.94× passing / 0.97× rushing
+Indoor / dome games → 1.0×
+
+━━━ SNAP TREND ━━━
+Recent 3-week avg vs earlier weeks (from nflverse).
+  ±5% or less  → 1.0× (no signal)
+  Snap rising  → up to 1.15×
+  Snap falling → down to 0.85×
+
+━━━ REGRESSION (xFP) ━━━
+Compares actual FP to expected FP (opportunity-based).
+Only kicks in when gap > 15 points.
+  Overperforming → discount (expect decline)
+  Underperforming → boost (expect improvement)
+
+━━━ STAR RATING ━━━
+Combined matchup × game script × weather → 1-5 stars:
+  ≥ 1.10 → ★★★★★
+  ≥ 1.04 → ★★★★
+  ≥ 0.96 → ★★★
+  ≥ 0.90 → ★★
+  < 0.90 → ★
 
 ━━━ CONFIDENCE ━━━
-Gap between top score and runner-up, as a percentage of the top.
-Bigger gap = higher confidence. A 30% gap = ~80% confidence.
-
-━━━ IN-SEASON EXPANSIONS (Week 1+) ━━━
-Score = Weekly Projected Points × Injury Prob × Trend Factor
-        × Matchup Factor
-
-Trend factor:   (last-3 avg / season avg per game), clipped
-                to [0.7, 1.3] so hot/cold streaks matter but
-                don't dominate.
-
-Matchup factor: 1.0 + (0.15 × (DEF-vs-POS rank - 16.5) / 16)
-                Weak defenses give up to +15% bonus.
-
-Both come from live Sleeper matchup data (in-season only).</pre>
+Gap between top and second score, as a % of top.
+Bigger gap = higher confidence.</pre>
     </div>`;
 
   const toggle = document.getElementById('ss-toggle-math');
@@ -2660,8 +2799,16 @@ Both come from live Sleeper matchup data (in-season only).</pre>
     toggle.textContent = hidden ? 'Show me the math ▼' : 'Hide the math ▲';
   });
 
+  const weekSelect = document.getElementById('ss-week-select');
+  weekSelect.addEventListener('change', () => {
+    previewWeek = Number(weekSelect.value);
+    repaint();
+  });
+
   const computeSsScore = (p) => {
     const proj = Number(p.proj_pts) || 0;
+
+    // Injury
     let injuryMult = 1.0;
     let injuryLabel = null;
     if (p._injury_prob != null && p._injury_prob >= 0 && p._injury_prob <= 1) {
@@ -2671,15 +2818,59 @@ Both come from live Sleeper matchup data (in-season only).</pre>
       injuryMult = INJURY_STATUS_FALLBACK[p._injury];
       injuryLabel = p._injury;
     }
+
+    // Matchup rating (this week)
+    const matchup = computeMatchupRating(p, nflverse, previewWeek);
+
+    // Snap trend
+    let snapMult = 1.0, snapLabel = null;
+    if (p._snap_trend != null && Math.abs(p._snap_trend) > 0.05) {
+      snapMult = Math.max(0.85, Math.min(1.15, 1.0 + p._snap_trend * 0.5));
+      snapLabel = p._snap_trend > 0
+        ? `↑ ${(p._snap_trend * 100).toFixed(0)}%`
+        : `↓ ${(p._snap_trend * 100).toFixed(0)}%`;
+    }
+
+    // Regression (xFP gap)
+    let regressionMult = 1.0, regressionLabel = null;
+    if (p._xfp_gap != null && Math.abs(p._xfp_gap) > 15) {
+      const adj = Math.max(-0.15, Math.min(0.15, -p._xfp_gap / 200));
+      regressionMult = 1.0 + adj;
+      regressionLabel = p._xfp_gap > 0 ? 'regress ↓' : 'regress ↑';
+    }
+
+    // Target share (WR/TE only — for context, not scoring)
+    let tgtShareLabel = null;
+    if (['WR', 'TE'].includes(p.pos)) {
+      const usage = nflverse?.usage?.get(normalizeName(p.name));
+      if (usage && usage.recent_tgt_share > 0) {
+        tgtShareLabel = `${(usage.recent_tgt_share * 100).toFixed(0)}% tgts`;
+        if (usage.tgt_share_delta > 0.05) tgtShareLabel += ' ↑';
+        else if (usage.tgt_share_delta < -0.05) tgtShareLabel += ' ↓';
+      }
+    }
+
+    const total = proj
+      * injuryMult
+      * matchup.matchupMult
+      * matchup.gameScriptMult
+      * matchup.weatherMult
+      * snapMult
+      * regressionMult;
+
     return {
-      total: proj * injuryMult,
-      proj,
-      injuryMult,
-      injuryLabel,
+      total, proj,
+      injuryMult, injuryLabel,
+      matchup,
+      snapMult, snapLabel,
+      regressionMult, regressionLabel,
+      tgtShareLabel,
     };
   };
 
-  const repaint = () => {
+  const stars = (n) => '★'.repeat(n) + '☆'.repeat(5 - n);
+
+  function repaint() {
     const picksEl = document.getElementById('ss-picks');
     const verdictEl = document.getElementById('ss-verdict');
 
@@ -2705,6 +2896,27 @@ Both come from live Sleeper matchup data (in-season only).</pre>
               <span>${esc(x.p.team || '')}</span>
               ${x.p.bye ? `<span>BYE ${esc(x.p.bye)}</span>` : ''}
             </div>
+
+            ${x.s.matchup.opp ? `
+              <div class="ss-matchup">
+                <div class="ss-matchup-line">
+                  <span class="ss-stars">${stars(x.s.matchup.stars)}</span>
+                  <span class="ss-opp">${x.s.matchup.home ? 'vs' : '@'} ${esc(x.s.matchup.opp)}</span>
+                  ${x.s.matchup.defRank != null ? `<span class="ss-def-rank">D#${x.s.matchup.defRank}</span>` : ''}
+                </div>
+                <div class="ss-matchup-details">
+                  ${x.s.matchup.spread != null ? `<span>${x.s.matchup.spread > 0 ? '−' + x.s.matchup.spread.toFixed(1) + ' fav' : '+' + Math.abs(x.s.matchup.spread).toFixed(1) + ' dog'}</span>` : ''}
+                  ${x.s.matchup.total != null ? `<span>O/U ${x.s.matchup.total.toFixed(1)}</span>` : ''}
+                  ${x.s.matchup.weatherWarning ? `<span class="ss-weather-warn">${esc(x.s.matchup.weatherWarning)}</span>` : ''}
+                </div>
+              </div>` : ''}
+
+            <div class="ss-signals">
+              ${x.s.tgtShareLabel ? `<span class="chip chip-tgt">${esc(x.s.tgtShareLabel)}</span>` : ''}
+              ${x.s.snapLabel ? `<span class="chip chip-snap">snap ${esc(x.s.snapLabel)}</span>` : ''}
+              ${x.s.regressionLabel ? `<span class="chip chip-regression">${esc(x.s.regressionLabel)}</span>` : ''}
+            </div>
+
             <div class="ss-card-stats">
               <div><span class="lbl">ECR</span><span class="val">${x.p.rank ?? '—'}</span></div>
               <div><span class="lbl">Proj</span><span class="val">${x.s.proj != null ? Math.round(x.s.proj) : '—'}</span></div>
@@ -2728,12 +2940,12 @@ Both come from live Sleeper matchup data (in-season only).</pre>
       verdictEl.innerHTML = `
         <div class="ss-verdict">
           <div class="ss-verdict-title">START <strong>${esc(top.p.name)}</strong></div>
-          <div class="ss-verdict-conf">${confidence.toFixed(0)}% confidence</div>
+          <div class="ss-verdict-conf">${confidence.toFixed(0)}% confidence • Week ${previewWeek}</div>
         </div>`;
     } else {
       verdictEl.innerHTML = '<div class="ss-empty">Add one more player to see a verdict</div>';
     }
-  };
+  }
 
   attachPlayerSearch('ss-search', allPlayers, (p) => {
     if (picks.length >= 4) picks.shift();
