@@ -1128,6 +1128,23 @@ main { padding: 32px 0 60px; }
   font-size: 11px;
   margin-top: 3px;
 }
+.trade-player-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 5px;
+}
+.chip {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  padding: 2px 6px;
+  border: 1px solid;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.chip-snap { border-color: #2E7D32; color: #1B5220; background: rgba(46, 125, 50, 0.08); }
+.chip-regression { border-color: var(--gold-dark); color: #7a5a1a; background: rgba(232, 184, 74, 0.15); }
+.chip-playoff { border-color: var(--navy); color: var(--navy); background: rgba(46, 61, 89, 0.08); }
 .trade-team {
   font-family: var(--f-mono);
   color: var(--brown);
