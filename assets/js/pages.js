@@ -2051,6 +2051,13 @@ function enrichPlayer(player, nflverse) {
   const snaps = nflverse.snaps.get(key);
   if (snaps?.weeks?.length) {
     const withPct = snaps.weeks.filter(w => w.off_pct != null);
+    if (withPct.length >= 1) {
+      // Latest week snapshot (used by Waiver Wire snap risers)
+      const latest = withPct[withPct.length - 1];
+      player._latest_snap_pct = latest.off_pct;
+      player._latest_snap_delta = latest.off_pct_delta;
+      player._latest_snap_week = latest.week;
+    }
     if (withPct.length >= 3) {
       const recent = withPct.slice(-3);
       const older = withPct.slice(0, -3);
@@ -2073,6 +2080,14 @@ function enrichPlayer(player, nflverse) {
       player._playoff_avg_rank = ranks.reduce((s, r) => s + r, 0) / ranks.length;
       player._playoff_opps = opps;
     }
+  }
+
+  // Target share (WR/TE/RB) from weekly-stats
+  const usage = nflverse.usage.get(key);
+  if (usage) {
+    player._recent_tgt_share = usage.recent_tgt_share;
+    player._season_tgt_share = usage.season_tgt_share;
+    player._tgt_share_delta = usage.tgt_share_delta;
   }
 }
 
@@ -3224,12 +3239,268 @@ function renderTradeFinder(allPlayers, baselines, teams, container, metaEl) {
   paint();
 }
 
+/* ============================================================
+   WAIVER WIRE (Phase 5) — league-wide, no personalization
+   ============================================================ */
+
+async function renderWaiver() {
+  const metaEl = document.getElementById("waiver-meta");
+  const controlsEl = document.getElementById("waiver-controls");
+  const bodyEl = document.getElementById("waiver-body");
+  bodyEl.innerHTML = loading("Loading players + rosters + nflverse data…");
+
+  // Load everything
+  const dk = await getDraftKit();
+  if (!dk?.rankings?.overall) {
+    bodyEl.innerHTML = errBox("Draft Kit unavailable.");
+    return;
+  }
+
+  const allPlayers = dk.rankings.overall.filter(p => p.name && p.pos);
+  const baselines = computeBaselines(dk.rankings);
+
+  // Injuries
+  const injuries = await getFantasyProsInjuries();
+  const injuryByName = new Map();
+  (injuries.injuries || []).forEach(inj => {
+    if (!inj.name) return;
+    const prob = inj.probability_of_playing != null && inj.probability_of_playing !== ''
+      ? parseFloat(inj.probability_of_playing) : null;
+    injuryByName.set(normalizeName(inj.name), {
+      status: inj.status || null,
+      prob: (prob != null && !isNaN(prob)) ? prob : null,
+    });
+  });
+  allPlayers.forEach(p => {
+    const inj = injuryByName.get(normalizeName(p.name));
+    p._injury = inj?.status || null;
+    p._injury_prob = inj?.prob != null ? inj.prob : null;
+  });
+
+  // nflverse enrichment
+  const nflverse = await loadNflverseData();
+  if (nflverse.available) {
+    allPlayers.forEach(p => enrichPlayer(p, nflverse));
+  }
+
+  // League roster lookup (which players are owned)
+  let teams = null;
+  try {
+    teams = await window.Sleeper.buildTeamsWithRosters();
+  } catch (_) {}
+
+  const rosteredNames = new Set();
+  const ownerByName = new Map();
+  if (teams) {
+    for (const t of teams.values()) {
+      (t.roster_names || []).forEach(entry => {
+        const key = normalizeName(entry.name);
+        rosteredNames.add(key);
+        ownerByName.set(key, t.team_name);
+      });
+    }
+  }
+  allPlayers.forEach(p => {
+    const key = normalizeName(p.name);
+    p._available = !rosteredNames.has(key);
+    p._owner = ownerByName.get(key) || null;
+  });
+
+  const avail = allPlayers.filter(p => p._available).length;
+  const isOffseason = !teams || rosteredNames.size === 0;
+  metaEl.textContent = isOffseason
+    ? `Offseason mode — showing all fantasy-relevant players (${allPlayers.length}). Availability activates once your league drafts.`
+    : `${avail} of ${allPlayers.length} players available in your league • Updated ${dk.fetched_at ? relTime(dk.fetched_at) : 'recently'}`;
+
+  // Controls
+  let positionFilter = 'ALL';
+  let availableOnly = !isOffseason;   // default ON in-season, OFF offseason
+
+  controlsEl.innerHTML = `
+    <div class="waiver-pos-tabs">
+      ${['ALL', 'QB', 'RB', 'WR', 'TE'].map(pos => `
+        <button class="waiver-pos-tab ${pos === positionFilter ? 'active' : ''}" data-pos="${pos}">${pos}</button>
+      `).join('')}
+    </div>
+    <label class="waiver-toggle">
+      <input type="checkbox" id="waiver-avail-only" ${availableOnly ? 'checked' : ''}${isOffseason ? ' disabled' : ''}>
+      Only show available players
+    </label>`;
+
+  const paint = () => {
+    // Filter based on controls
+    const filtered = allPlayers.filter(p => {
+      if (positionFilter !== 'ALL' && p.pos !== positionFilter) return false;
+      if (availableOnly && !p._available) return false;
+      return true;
+    });
+
+    bodyEl.innerHTML = `
+      <section class="waiver-section">
+        <div class="waiver-section-head">
+          <h3>🚀 Snap Count Risers</h3>
+          <span class="waiver-section-note">Top jumpers in offensive snap % this week</span>
+        </div>
+        <div class="waiver-cards" id="waiver-snap-risers"></div>
+      </section>
+
+      <section class="waiver-section">
+        <div class="waiver-section-head">
+          <h3>🎯 Target Share Explosions</h3>
+          <span class="waiver-section-note">WRs/TEs seeing routes and volume spike</span>
+        </div>
+        <div class="waiver-cards" id="waiver-target-share"></div>
+      </section>
+
+      <section class="waiver-section">
+        <div class="waiver-section-head">
+          <h3>⚡ Positive Regression Candidates</h3>
+          <span class="waiver-section-note">Underperforming their expected fantasy points — expect production to rise</span>
+        </div>
+        <div class="waiver-cards" id="waiver-positive-reg"></div>
+      </section>
+
+      <section class="waiver-section">
+        <div class="waiver-section-head">
+          <h3>📉 Negative Regression Candidates</h3>
+          <span class="waiver-section-note">Outperforming their expected — production likely to fall</span>
+        </div>
+        <div class="waiver-cards" id="waiver-negative-reg"></div>
+      </section>
+
+      <section class="waiver-section">
+        <div class="waiver-section-head">
+          <h3>📋 All Players (by ECR)</h3>
+          <span class="waiver-section-note">${filtered.length} shown • sorted by FantasyPros consensus rank</span>
+        </div>
+        <div class="waiver-list" id="waiver-all-list"></div>
+      </section>`;
+
+    // Populate sections
+    const cardHtml = (p, signalHtml) => {
+      const availBadge = p._available
+        ? '<span class="waiver-avail waiver-free">Available</span>'
+        : `<span class="waiver-avail waiver-owned">${esc(p._owner || 'Rostered')}</span>`;
+      return `
+        <div class="waiver-card">
+          <div class="waiver-card-top">
+            <div class="waiver-card-name">
+              ${esc(p.name)}
+              ${p._injury ? `<span class="trade-injury">${esc(p._injury)}</span>` : ''}
+            </div>
+            <div class="waiver-card-rank">ECR #${p.rank || '—'}</div>
+          </div>
+          <div class="waiver-card-meta">
+            <span class="${_pillClass(p.pos)}">${esc(p.pos)}</span>
+            <span>${esc(p.team || '')}</span>
+            ${availBadge}
+          </div>
+          ${signalHtml ? `<div class="waiver-card-signal">${signalHtml}</div>` : ''}
+        </div>`;
+    };
+
+    // 1. Snap Risers — sort by latest snap delta
+    const snapRisers = filtered
+      .filter(p => p._latest_snap_delta != null && p._latest_snap_delta > 0.10)
+      .sort((a, b) => b._latest_snap_delta - a._latest_snap_delta)
+      .slice(0, 15);
+    document.getElementById('waiver-snap-risers').innerHTML = snapRisers.length
+      ? snapRisers.map(p => cardHtml(p,
+          `<strong>+${(p._latest_snap_delta * 100).toFixed(0)}%</strong> snap share (now ${(p._latest_snap_pct * 100).toFixed(0)}%) week ${p._latest_snap_week}`
+        )).join('')
+      : '<div class="waiver-empty">No snap risers yet — populates once games play.</div>';
+
+    // 2. Target Share Explosions — WR/TE with delta > 5%
+    const tgtShare = filtered
+      .filter(p => ['WR', 'TE'].includes(p.pos) && p._tgt_share_delta != null && p._tgt_share_delta > 0.05)
+      .sort((a, b) => b._tgt_share_delta - a._tgt_share_delta)
+      .slice(0, 12);
+    document.getElementById('waiver-target-share').innerHTML = tgtShare.length
+      ? tgtShare.map(p => cardHtml(p,
+          `<strong>+${(p._tgt_share_delta * 100).toFixed(0)}%</strong> targets (now ${(p._recent_tgt_share * 100).toFixed(0)}% of team)`
+        )).join('')
+      : '<div class="waiver-empty">No target share explosions yet — populates once games play.</div>';
+
+    // 3. Positive Regression — negative xFP gap
+    const positive = filtered
+      .filter(p => p._xfp_gap != null && p._xfp_gap < -10)
+      .sort((a, b) => a._xfp_gap - b._xfp_gap)
+      .slice(0, 12);
+    document.getElementById('waiver-positive-reg').innerHTML = positive.length
+      ? positive.map(p => cardHtml(p,
+          `<strong>${p._xfp_gap.toFixed(0)}</strong> pts below expected — production should rise`
+        )).join('')
+      : '<div class="waiver-empty">No positive regression candidates — populates with xFP data in-season.</div>';
+
+    // 4. Negative Regression — positive xFP gap
+    const negative = filtered
+      .filter(p => p._xfp_gap != null && p._xfp_gap > 10)
+      .sort((a, b) => b._xfp_gap - a._xfp_gap)
+      .slice(0, 12);
+    document.getElementById('waiver-negative-reg').innerHTML = negative.length
+      ? negative.map(p => cardHtml(p,
+          `<strong>+${p._xfp_gap.toFixed(0)}</strong> pts above expected — production likely to fall`
+        )).join('')
+      : '<div class="waiver-empty">No negative regression candidates — populates with xFP data in-season.</div>';
+
+    // 5. All Players list — sorted by ECR, capped to first 100
+    const sorted = filtered.sort((a, b) => (Number(a.rank) || 999) - (Number(b.rank) || 999)).slice(0, 100);
+    document.getElementById('waiver-all-list').innerHTML = sorted.length
+      ? sorted.map(p => {
+          const chips = [];
+          if (p._latest_snap_delta != null && p._latest_snap_delta > 0.10) chips.push(`<span class="chip chip-snap">snap ↑${(p._latest_snap_delta*100).toFixed(0)}%</span>`);
+          if (p._tgt_share_delta != null && p._tgt_share_delta > 0.05) chips.push(`<span class="chip chip-tgt">tgt ↑${(p._tgt_share_delta*100).toFixed(0)}%</span>`);
+          if (p._xfp_gap != null && Math.abs(p._xfp_gap) > 10) {
+            chips.push(`<span class="chip chip-regression">${p._xfp_gap > 0 ? 'regress ↓' : 'regress ↑'}</span>`);
+          }
+          const availBadge = p._available
+            ? '<span class="waiver-avail waiver-free">Available</span>'
+            : `<span class="waiver-avail waiver-owned" title="${esc(p._owner || '')}">Rostered</span>`;
+          return `
+            <div class="waiver-row">
+              <div class="waiver-row-rank">${p.rank || '—'}</div>
+              <div class="waiver-row-main">
+                <div class="waiver-row-name">${esc(p.name)}
+                  ${p._injury ? `<span class="trade-injury">${esc(p._injury)}</span>` : ''}
+                </div>
+                <div class="waiver-row-meta">
+                  <span class="${_pillClass(p.pos)}">${esc(p.pos)}</span>
+                  <span>${esc(p.team || '')}</span>
+                  ${p.bye ? `<span>Bye ${esc(String(p.bye))}</span>` : ''}
+                </div>
+                ${chips.length ? `<div class="waiver-row-chips">${chips.join('')}</div>` : ''}
+              </div>
+              <div class="waiver-row-avail">${availBadge}</div>
+            </div>`;
+        }).join('')
+      : '<div class="waiver-empty">No players match current filters.</div>';
+  };
+
+  // Wire controls
+  controlsEl.querySelectorAll('.waiver-pos-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      positionFilter = btn.dataset.pos;
+      controlsEl.querySelectorAll('.waiver-pos-tab').forEach(b => b.classList.toggle('active', b === btn));
+      paint();
+    });
+  });
+  const availCheckbox = document.getElementById('waiver-avail-only');
+  if (availCheckbox) {
+    availCheckbox.addEventListener('change', () => {
+      availableOnly = availCheckbox.checked;
+      paint();
+    });
+  }
+
+  paint();
+}
+
 window.Pages = {
   renderHome, renderMatchups, renderStandings, renderNews,
   renderTransactions, renderHistory,
   renderWire, renderTrending, renderInsiders,
   renderInjuries, renderInjuriesWidget,
-  renderDraftKit, renderDues, renderTools,
+  renderDraftKit, renderDues, renderTools, renderWaiver,
 };
 
 })();
