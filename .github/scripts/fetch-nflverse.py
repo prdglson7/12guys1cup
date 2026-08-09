@@ -379,9 +379,10 @@ def fetch_player_ids():
 # ------------------------------------------------------------------
 
 def fetch_schedules():
-    """Fetch NFL schedules for current + prior season (for playoff SoS)."""
+    """Fetch NFL schedules for current + prior season (for playoff SoS + game context)."""
     log("Fetching NFL schedules…")
-    schedule_lookup = {}  # {season: {team: {week: opp}}}
+    schedule_lookup = {}   # {season: {team: {week: opp}}}
+    game_context = {}      # {season: {team: {week: {spread, total, roof, temp, wind, home}}}}
 
     for season in [CURRENT_SEASON, CURRENT_SEASON - 1]:
         try:
@@ -391,6 +392,7 @@ def fetch_schedules():
                 continue
 
             season_lookup = {}
+            season_ctx = {}
             game_count = 0
             for _, row in df.iterrows():
                 wk = int_or_none(row.get("week"))
@@ -398,17 +400,49 @@ def fetch_schedules():
                 away = row.get("away_team")
                 if not wk or not home or not away:
                     continue
+
                 season_lookup.setdefault(home, {})[str(wk)] = away
                 season_lookup.setdefault(away, {})[str(wk)] = home
+
+                # Game context: Vegas + weather
+                spread = num_or_none(row.get("spread_line"))   # from HOME perspective; negative = home favored
+                total = num_or_none(row.get("total_line"))
+                roof = row.get("roof") or ""
+                temp = num_or_none(row.get("temp"))
+                wind = num_or_none(row.get("wind"))
+
+                # Team perspective: spread is home team's line; away team's implied spread = -spread
+                if spread is not None:
+                    season_ctx.setdefault(home, {})[str(wk)] = {
+                        "opp": away, "home": True,
+                        "spread": -spread if spread else 0,  # positive = this team favored
+                        "total": total, "roof": roof, "temp": temp, "wind": wind,
+                    }
+                    season_ctx.setdefault(away, {})[str(wk)] = {
+                        "opp": home, "home": False,
+                        "spread": spread if spread else 0,
+                        "total": total, "roof": roof, "temp": temp, "wind": wind,
+                    }
+                else:
+                    season_ctx.setdefault(home, {})[str(wk)] = {
+                        "opp": away, "home": True, "spread": None, "total": total,
+                        "roof": roof, "temp": temp, "wind": wind,
+                    }
+                    season_ctx.setdefault(away, {})[str(wk)] = {
+                        "opp": home, "home": False, "spread": None, "total": total,
+                        "roof": roof, "temp": temp, "wind": wind,
+                    }
+
                 game_count += 1
 
             schedule_lookup[str(season)] = season_lookup
+            game_context[str(season)] = season_ctx
             log(f"  {season}: {game_count} games, {len(season_lookup)} teams")
         except Exception as e:
             log(f"  {season}: {e}")
 
-    # Playoff weeks in fantasy = weeks 15, 16, 17 (semis/finals varies by league)
-    playoff_opps = {}  # {team: [opp_wk15, opp_wk16, opp_wk17]}
+    # Playoff opponents for the current season (weeks 15-17)
+    playoff_opps = {}
     current_key = str(CURRENT_SEASON)
     if current_key in schedule_lookup:
         for team, weeks in schedule_lookup[current_key].items():
@@ -418,6 +452,7 @@ def fetch_schedules():
         "seasons_available": list(schedule_lookup.keys()),
         "schedule": schedule_lookup,
         "playoff_opponents": playoff_opps,
+        "game_context": game_context,
     }
 
 # ------------------------------------------------------------------
