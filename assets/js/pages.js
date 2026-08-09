@@ -2119,7 +2119,10 @@ function normalizeName(name) {
 
 /** Compute VBD baseline projections from actual ranked players.
     Reads from rankings.overall filtered by position (per-position
-    arrays aren't produced by fetch-draftkit.js). */
+    arrays aren't produced by fetch-draftkit.js).
+    If we don't have enough projected players to hit the target rank,
+    fall back to the LAST player with a projection so we still get a
+    meaningful baseline. */
 function computeBaselines(rankings) {
   const baselines = {};
   const overall = rankings?.overall || [];
@@ -2129,7 +2132,8 @@ function computeBaselines(rankings) {
       .map(p => Number(p.proj_pts))
       .filter(n => n != null && !isNaN(n) && n > 0)
       .sort((a, b) => b - a);
-    baselines[pos] = positional[rank - 1] || 0;
+    // Prefer the requested rank, fall back to the deepest player with data
+    baselines[pos] = positional[rank - 1] ?? positional[positional.length - 1] ?? 0;
   });
   return baselines;
 }
