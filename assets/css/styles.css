@@ -1775,7 +1775,7 @@ main { padding: 32px 0 60px; }
 }
 
 /* ============================================================
-   Wall of Shame + Donkey + Coach of Week (Phase 6)
+   Studs & Duds — Ceremonial (Concept 3)
    ============================================================ */
 .shame-empty {
   background: var(--paper);
@@ -1786,11 +1786,19 @@ main { padding: 32px 0 60px; }
   max-width: 640px;
   margin: 0 auto;
 }
-.shame-empty-icon { font-size: 48px; margin-bottom: 10px; }
+.shame-empty-scroll {
+  font-family: var(--f-display);
+  font-size: 32px;
+  color: var(--gold-dark);
+  letter-spacing: 16px;
+  padding-left: 16px;
+  margin-bottom: 8px;
+}
 .shame-empty h3 {
   font-family: var(--f-display);
   color: var(--navy);
   margin: 0 0 12px 0;
+  font-style: italic;
 }
 .shame-empty ul {
   text-align: left;
@@ -1806,103 +1814,215 @@ main { padding: 32px 0 60px; }
   line-height: 1.4;
 }
 
-.shame-week-header {
-  font-family: var(--f-display);
-  font-size: 24px;
-  color: var(--navy);
-  margin-bottom: 12px;
-  padding-bottom: 4px;
-  border-bottom: 3px double var(--navy);
-}
-.shame-top-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 14px;
-  margin-bottom: 24px;
-}
-.shame-card {
-  background: var(--paper);
-  border: 3px solid var(--navy);
-  padding: 14px 16px;
-  position: relative;
-}
-.shame-donkey {
-  border-color: var(--red-dark);
-  box-shadow: 5px 5px 0 var(--red);
-  background: linear-gradient(180deg, rgba(200, 53, 46, 0.10), var(--paper) 60%);
-}
-.shame-coach {
-  border-color: var(--gold-dark);
-  box-shadow: 5px 5px 0 var(--gold);
-  background: linear-gradient(180deg, rgba(232, 184, 74, 0.15), var(--paper) 60%);
-}
-.shame-lowest {
-  border-color: var(--brown);
-  box-shadow: 5px 5px 0 var(--brown);
-  background: linear-gradient(180deg, rgba(139, 90, 60, 0.10), var(--paper) 60%);
-}
-.shame-card-tag {
-  font-family: var(--f-sign);
-  letter-spacing: 3px;
-  font-size: 11px;
-  color: var(--brown);
-  margin-bottom: 8px;
-}
-.shame-donkey .shame-card-tag { color: var(--red-dark); }
-.shame-coach .shame-card-tag { color: var(--gold-dark); }
-.shame-card-team {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--f-display);
-  font-size: 22px;
-  color: var(--navy);
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-  border-bottom: 2px dashed var(--brown);
-}
-.shame-card-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-  gap: 6px;
-  margin-bottom: 10px;
-}
-.shame-card-stats > div { text-align: center; }
-.shame-card-stats .lbl {
-  display: block;
-  font-family: var(--f-sign);
-  font-size: 9px;
-  letter-spacing: 1.5px;
-  color: var(--brown);
-}
-.shame-card-stats .val {
-  display: block;
-  font-family: var(--f-mono);
-  font-weight: 700;
-  font-size: 16px;
-  color: var(--navy);
-}
-.shame-card-stats .val.gold { color: var(--gold-dark); }
-.shame-card-stats .val.red { color: var(--red); }
-.shame-card-swap {
-  background: rgba(200, 53, 46, 0.06);
-  border-left: 4px solid var(--red);
-  padding: 8px 10px;
+.shame-page-subtitle {
   font-family: var(--f-body);
-  font-size: 13px;
-  color: var(--navy);
-  line-height: 1.4;
-  margin-bottom: 8px;
+  font-style: italic;
+  text-align: center;
+  color: var(--brown);
+  margin: 0 0 24px 0;
+  font-size: 14px;
 }
-.shame-card-verdict {
+
+.section-marker {
+  font-family: var(--f-sign);
+  letter-spacing: 4px;
+  text-align: center;
+  color: var(--brown);
+  font-size: 12px;
+  margin: 36px 0 18px;
+  padding: 8px 0;
+  border-top: 1px solid var(--cream-2);
+  border-bottom: 1px solid var(--cream-2);
+}
+
+/* ===== STUD — HIS GRACE (Ceremony) ===== */
+.ceremony {
+  background: var(--paper);
+  border: 6px double var(--gold-dark);
+  padding: 32px 40px;
+  text-align: center;
+  background: radial-gradient(ellipse at top, rgba(232, 184, 74, 0.15) 0%, var(--paper) 70%);
+  margin-bottom: 20px;
+}
+.ceremony-scroll-top,
+.ceremony-scroll-bot {
+  font-family: var(--f-display);
+  color: var(--gold-dark);
+  font-size: 32px;
+  letter-spacing: 20px;
+  padding-left: 20px;
+}
+.ceremony-scroll-bot { transform: scaleY(-1); }
+.ceremony-preamble {
   font-family: var(--f-body);
   font-style: italic;
   color: var(--brown);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 8px 0 20px;
+}
+.ceremony-title {
+  font-family: var(--f-sign);
+  letter-spacing: 4px;
+  color: var(--gold-dark);
   font-size: 13px;
-  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.ceremony-name {
+  font-family: var(--f-display);
+  font-size: 36px;
+  color: var(--navy);
+  letter-spacing: 2px;
+  display: inline-block;
+  padding: 14px 40px;
+  border-top: 1px solid var(--gold-dark);
+  border-bottom: 1px solid var(--gold-dark);
+  margin: 8px 0 12px;
+}
+.ceremony-manager {
+  font-family: var(--f-body);
+  font-style: italic;
+  color: var(--brown);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.ceremony-body {
+  font-family: var(--f-body);
+  font-style: italic;
+  color: var(--navy);
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 20px auto;
+  max-width: 560px;
+}
+.ceremony-title-inline {
+  background: var(--gold-dark);
+  color: var(--paper);
+  padding: 2px 8px;
+  font-style: normal;
+  font-weight: 400;
+}
+.ceremony-stats {
+  display: inline-flex;
+  gap: 40px;
+  margin: 20px 0 8px;
+  font-family: var(--f-mono);
+  color: var(--navy);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.ceremony-stats > span { text-align: center; }
+.ceremony-stats > span strong { display: block; font-size: 22px; color: var(--gold-dark); margin-top: 2px; }
+.ceremony-stats > span em {
+  display: block;
+  font-family: var(--f-sign);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--brown);
+  font-style: normal;
+}
+.ceremony-seal {
+  margin-top: 24px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--brown);
+  letter-spacing: 1px;
 }
 
-.shame-section { margin-bottom: 28px; }
+/* ===== DUDS — THE DONKEY & THE PEASANT (Punishment) ===== */
+.punishment {
+  background: linear-gradient(180deg, rgba(200, 53, 46, 0.10), var(--paper) 60%);
+  border: 4px solid var(--red-dark);
+  padding: 28px 32px;
+  text-align: center;
+  margin-top: 20px;
+}
+.punishment-preamble {
+  font-family: var(--f-sign);
+  letter-spacing: 6px;
+  color: var(--red-dark);
+  font-size: 13px;
+  padding: 8px 30px;
+  border-top: 2px solid var(--red-dark);
+  border-bottom: 2px solid var(--red-dark);
+  margin-bottom: 20px;
+  display: inline-block;
+}
+.punishment-title {
+  font-family: var(--f-sign);
+  letter-spacing: 4px;
+  color: var(--red);
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.punishment-name {
+  font-family: var(--f-display);
+  font-size: 32px;
+  color: var(--red-dark);
+  letter-spacing: 2px;
+  text-decoration: line-through;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 2px;
+  margin: 8px 0 4px;
+}
+.punishment-manager {
+  font-family: var(--f-body);
+  font-style: italic;
+  color: var(--brown);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.punishment-body {
+  font-family: var(--f-body);
+  font-style: italic;
+  color: var(--navy);
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 580px;
+  margin: 16px auto;
+}
+.punishment-body strong {
+  background: var(--red);
+  color: var(--cream);
+  padding: 2px 8px;
+  font-style: normal;
+  font-family: var(--f-body);
+  font-weight: 400;
+}
+.punishment-body em {
+  color: var(--red-dark);
+  font-weight: 700;
+}
+.punishment-stats {
+  display: inline-flex;
+  gap: 30px;
+  margin: 12px 0;
+  font-family: var(--f-mono);
+  color: var(--navy);
+  font-size: 13px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.punishment-stats > span { text-align: center; }
+.punishment-stats > span strong { display: block; font-size: 20px; color: var(--red-dark); margin-top: 2px; }
+.punishment-stats > span em {
+  display: block;
+  font-family: var(--f-sign);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--brown);
+  font-style: normal;
+}
+.punishment-seal {
+  margin-top: 20px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--brown);
+  letter-spacing: 1px;
+}
+
+/* Season standings + weekly history — unchanged from before */
+.shame-section { margin-bottom: 28px; margin-top: 40px; }
 .shame-section-head {
   border-bottom: 3px double var(--navy);
   padding-bottom: 6px;
@@ -1944,7 +2064,7 @@ main { padding: 32px 0 60px; }
 .shame-week-card {
   background: var(--paper);
   border: 2px solid var(--navy);
-  border-left: 5px solid var(--red);
+  border-left: 5px solid var(--gold-dark);
   padding: 10px 12px;
 }
 .shame-week-title {
@@ -1971,8 +2091,14 @@ main { padding: 32px 0 60px; }
   color: var(--brown);
   font-weight: 700;
   min-width: 78px;
+  font-style: italic;
 }
 .shame-week-line em { color: var(--brown); font-size: 11px; }
+
+@media (max-width: 640px) {
+  .ceremony, .punishment { padding: 20px 16px; }
+  .ceremony-name, .punishment-name { font-size: 24px; padding: 10px 20px; }
+}
 
 /* ============================================================
    Waiver Wire (Phase 5)
