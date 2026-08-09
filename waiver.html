@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waivers — 12 Guys 1 Cup</title>
+  <link rel="icon" href="assets/img/logo.jpg">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header id="site-header" class="site-header"></header>
+  <nav id="site-nav" class="site-nav"></nav>
+
+  <main class="wrap">
+    <div class="section-head">
+      <h2>Advanced Waiver Wire</h2>
+      <span class="meta" id="waiver-meta">Loading…</span>
+    </div>
+
+    <div id="waiver-controls" class="waiver-controls"></div>
+    <div id="waiver-body"></div>
+  </main>
+
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/sleeper.js"></script>
+  <script src="assets/js/news.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+  <script>
+    UI.renderChrome("waiver.html");
+    Pages.renderWaiver();
+  </script>
+</body>
+</html>
