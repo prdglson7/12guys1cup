@@ -2,8 +2,43 @@
   "sport": "NFL",
   "title": "Fantasy Player News",
   "description": "Breaking Fantasy Football player news along with the impact for fantasy managers",
-  "count": 49,
+  "count": 50,
   "items": [
+    {
+      "id": 601644,
+      "created": "2026-08-10 21:22:17",
+      "created_formated": "Mon, Aug 10th 9:22pm UTC",
+      "author": "Ari Koslow",
+      "player_id": 25409,
+      "team_id": "NYG",
+      "title": "Malik Nabers (knee) progressing, not cleared for team drills yet",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Injury"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/601644/malik-nabers-knee-progressing-not-cleared-team-drills-yet.php",
+      "desc": "Malik Nabers continues to make progress, but he still wasn't participating in team drills on Monday. ",
+      "impact": "Stapleton notes that Nabers \"looked to be opening up during his rehab work early and then with the training staff on opposite field as team drills went on.\" He was able to participate in position drills with the quarterbacks again as he continues to make progress. "
+    },
+    {
+      "id": 601643,
+      "created": "2026-08-10 20:50:22",
+      "created_formated": "Mon, Aug 10th 8:50pm UTC",
+      "author": "Ari Koslow",
+      "player_id": 18200,
+      "team_id": "DAL",
+      "title": "Quinnen Williams signs three-year extension with Cowboys ",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/601643/quinnen-williams-signs-three-year-extension-with-cowboys.php",
+      "desc": "The Cowboys and DL Quinnen Williams have agreed to terms on a three-year, $105.9M extension.",
+      "impact": "The deal makes Williams one of the highest paid defensive lineman in the NFL. He was acquired in a trade from the Jets last season. "
+    },
     {
       "id": 601614,
       "created": "2026-08-10 18:49:08",
@@ -843,27 +878,10 @@
       "link": "https://www.fantasypros.com/nfl/news/601493/luther-burden-iii-groin-expected-to-miss-about-one-month.php",
       "desc": "Matt Zenitz of CBS Sports reports that the Bears are expecting Luther Burden III to miss about a month.",
       "impact": "The Bears are hopeful Burden will be back and available for Chicago's season opener against the Panthers. It originally seemed like he may only miss a week or two, but now this is pushing him to being sidelined right until Week 1. Fantasy managers with drafts coming up in redraft leagues will want to be cautious with Burden. "
-    },
-    {
-      "id": 601491,
-      "created": "2026-08-10 00:47:38",
-      "created_formated": "Mon, Aug 10th 12:47am UTC",
-      "author": "Ari Koslow",
-      "player_id": 18287,
-      "team_id": "FA",
-      "title": "Trevon Diggs works out for Lions ",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/601491/trevon-diggs-works-out-lions.php",
-      "desc": "The Lions worked out free agent CB Trevon Diggs this weekend. ",
-      "impact": "Diggs appeared in eight games with the Cowboys and one game for the Packers last season. It is unclear if he is drawing interest from any other team. "
     }
   ],
   "public_api_limited": true,
   "tier": "premium",
-  "fetched_at": "2026-08-10T20:35:23Z",
+  "fetched_at": "2026-08-10T21:35:25Z",
   "source_url": "https://api.fantasypros.com/public/v2/json/nfl/news?limit=50"
 }
