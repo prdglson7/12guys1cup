@@ -2,8 +2,61 @@
   "sport": "NFL",
   "title": "Fantasy Player News",
   "description": "Breaking Fantasy Football player news along with the impact for fantasy managers",
-  "count": 47,
+  "count": 48,
   "items": [
+    {
+      "id": 601612,
+      "created": "2026-08-10 17:27:11",
+      "created_formated": "Mon, Aug 10th 5:27pm UTC",
+      "author": "Ari Koslow",
+      "player_id": 19790,
+      "team_id": "DEN",
+      "title": "Jaylen Waddle (muscle strain) not practicing Monday ",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Injury"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/601612/jaylen-waddle-muscle-strain-not-practicing-monday.php",
+      "desc": "Jaylen Waddle remained absent from practice on Monday. ",
+      "impact": "Waddle went down in practice last week. Broncos coach Sean Payton said he expects him to return to practice this week. "
+    },
+    {
+      "id": 601611,
+      "created": "2026-08-10 17:21:56",
+      "created_formated": "Mon, Aug 10th 5:21pm UTC",
+      "author": "Ari Koslow",
+      "player_id": 27339,
+      "team_id": "CLE",
+      "title": "Denzel Boston to practice with first-team offense",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/601611/denzel-boston-to-practice-with-first-team.php",
+      "desc": "Browns coach Todd Monken said rookie WR Denzel Boston will move into first-team offense.",
+      "impact": "Boston continues to show out early on in training camp. He is slated to compete for an immediate starting role.  "
+    },
+    {
+      "id": 601610,
+      "created": "2026-08-10 17:17:28",
+      "created_formated": "Mon, Aug 10th 5:17pm UTC",
+      "author": "Ari Koslow",
+      "player_id": 18231,
+      "team_id": "ATL",
+      "title": "Jawaan Taylor expected to return to practice Monday ",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Injury"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/601610/jawaan-taylor-expected-to-return-to-practice-monday.php",
+      "desc": "Falcons coach Kevin Stefanski said he expects Jawaan Taylor to return to practice on Monday. ",
+      "impact": "Taylor opened training camp on the PUP list. He has been cleared to return to practice. "
+    },
     {
       "id": 601600,
       "created": "2026-08-10 16:10:26",
@@ -788,46 +841,10 @@
       "link": "https://www.fantasypros.com/nfl/news/601458/joshua-dobbs-signs-1-year-deal-with-lions.php",
       "desc": "Joshua Dobbs is signing a 1-year, $1.425 million contract with the Detroit Lions.",
       "impact": "Dobbs will likely slide into the backup quarterback role in Detroit after Teddy Bridgewater announced he would be stepping away from the team. Dobbs was in New England for four games last season."
-    },
-    {
-      "id": 601442,
-      "created": "2026-08-09 18:20:43",
-      "created_formated": "Sun, Aug 9th 6:20pm UTC",
-      "author": "Ari Koslow",
-      "player_id": 24706,
-      "team_id": "IND",
-      "title": "Josh Downs (groin) could return to practice Tuesday ",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/601442/josh-downs-groin-could-return-to-practice-tuesday.php",
-      "desc": "Colts coach Shane Steichen said Josh Downs could potentially return for Tuesday's joint practice at New England.",
-      "impact": "Downs missed a second straight practice on Sunday, but Steichen clarified that it is not considered serious. He could be back on the field as soon as Tuesday. "
-    },
-    {
-      "id": 601438,
-      "created": "2026-08-09 17:40:22",
-      "created_formated": "Sun, Aug 9th 5:40pm UTC",
-      "author": "Ari Koslow",
-      "player_id": 23141,
-      "team_id": "CAR",
-      "title": "Haynes King (hamstring) will not play Saturday ",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/601438/haynes-king-hamstring-will-not-play-saturday.php",
-      "desc": "Panthers coach Dave Canales said Haynes King will not play on Saturday against the Bills. ",
-      "impact": "Canales reiterated that King strained his hamstring on his winning touchdown run in the Hall of Fame game. He is considered week-to-week. "
     }
   ],
   "public_api_limited": true,
   "tier": "premium",
-  "fetched_at": "2026-08-10T16:47:57Z",
+  "fetched_at": "2026-08-10T17:46:10Z",
   "source_url": "https://api.fantasypros.com/public/v2/json/nfl/news?limit=50"
 }
