@@ -2,8 +2,61 @@
   "sport": "NFL",
   "title": "Fantasy Player News",
   "description": "Breaking Fantasy Football player news along with the impact for fantasy managers",
-  "count": 46,
+  "count": 47,
   "items": [
+    {
+      "id": 601600,
+      "created": "2026-08-10 16:10:26",
+      "created_formated": "Mon, Aug 10th 4:10pm UTC",
+      "author": "Ari Koslow",
+      "player_id": 23019,
+      "team_id": "KC",
+      "title": "Xavier Worthy (shoulder) returns to practice Monday ",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Injury"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/601600/xavier-worthy-shoulder-returns-to-practice-monday.php",
+      "desc": "Xavier Worthy was back practicing at Chiefs training camp on Monday. ",
+      "impact": "Worthy missed time during practice last week. The Chiefs had their full wide receiver room on the field on Monday. "
+    },
+    {
+      "id": 601599,
+      "created": "2026-08-10 16:07:32",
+      "created_formated": "Mon, Aug 10th 4:07pm UTC",
+      "author": "Ari Koslow",
+      "player_id": 28132,
+      "team_id": "CHI",
+      "title": "Zavion Thomas (knee) considered day-to-day ",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Injury"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/601599/zavion-thomas-knee-considered-day-to-day.php",
+      "desc": "Zavion Thomas is day-to-day with soreness in his knee. ",
+      "impact": "Thomas left Sunday's game early with the injury. He isn't expected to miss much time. "
+    },
+    {
+      "id": 601597,
+      "created": "2026-08-10 15:55:05",
+      "created_formated": "Mon, Aug 10th 3:55pm UTC",
+      "author": "Ari Koslow",
+      "player_id": 25361,
+      "team_id": "HOU",
+      "title": "Tank Dell takes part in full team drills Monday ",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/601597/tank-dell-takes-part-full-team-drills-monday.php",
+      "desc": "Tank Dell took part in full team drills on Monday. ",
+      "impact": "It is another step in the right direction for Dell as he works his way back from back-to-back season-ending injuries. He remains hopeful to be good to go for the start of the season. "
+    },
     {
       "id": 601596,
       "created": "2026-08-10 15:42:31",
@@ -720,24 +773,6 @@
       "impact": "Diggs appeared in eight games with the Cowboys and one game for the Packers last season. It is unclear if he is drawing interest from any other team. "
     },
     {
-      "id": 601468,
-      "created": "2026-08-09 21:22:16",
-      "created_formated": "Sun, Aug 9th 9:22pm UTC",
-      "author": "Ari Koslow",
-      "player_id": 28132,
-      "team_id": "CHI",
-      "title": "Zavion Thomas leaves practice early Sunday ",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/601468/zavion-thomas-leaves-practice-early-sunday.php",
-      "desc": "Bears rookie WR Zavion Thomas left Sunday's practice early with an apparent knee injury. ",
-      "impact": "Hope notes that Thomas \"briefly grabbed his knee and then walked off with a slight limp.\" Thomas was a third-round pick for Chicago this year. "
-    },
-    {
       "id": 601458,
       "created": "2026-08-09 19:39:46",
       "created_formated": "Sun, Aug 9th 7:39pm UTC",
@@ -789,28 +824,10 @@
       "link": "https://www.fantasypros.com/nfl/news/601438/haynes-king-hamstring-will-not-play-saturday.php",
       "desc": "Panthers coach Dave Canales said Haynes King will not play on Saturday against the Bills. ",
       "impact": "Canales reiterated that King strained his hamstring on his winning touchdown run in the Hall of Fame game. He is considered week-to-week. "
-    },
-    {
-      "id": 601435,
-      "created": "2026-08-09 17:27:15",
-      "created_formated": "Sun, Aug 9th 5:27pm UTC",
-      "author": "Ari Koslow",
-      "player_id": 22916,
-      "team_id": "BAL",
-      "title": "Zay Flowers (quad) not expected to be sidelined long",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/601435/zay-flowers-quad-not-expected-to-be-sidelined-long.php",
-      "desc": "Ravens coach Jesse Minter told reporters on Sunday that Zay Flowers won't be sidelined very long.",
-      "impact": "Flowers suffered a quad contusion during practice on Saturday. \"I feel really good about where that's at,\" Minter said. \"It may take a couple days. It may take one day, three days. I feel good that he'll be back out there being Zay pretty soon.\""
     }
   ],
   "public_api_limited": true,
   "tier": "premium",
-  "fetched_at": "2026-08-10T15:54:31Z",
+  "fetched_at": "2026-08-10T16:47:57Z",
   "source_url": "https://api.fantasypros.com/public/v2/json/nfl/news?limit=50"
 }
