@@ -2,8 +2,26 @@
   "sport": "NFL",
   "title": "Fantasy Player News",
   "description": "Breaking Fantasy Football player news along with the impact for fantasy managers",
-  "count": 48,
+  "count": 49,
   "items": [
+    {
+      "id": 601614,
+      "created": "2026-08-10 18:49:08",
+      "created_formated": "Mon, Aug 10th 6:49pm UTC",
+      "author": "Garrett Ball",
+      "player_id": 16393,
+      "team_id": "SF",
+      "title": "Christian McCaffrey sitting out Monday practice",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Injury"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/601614/christian-mccaffrey-sitting-out-monday-practice.php",
+      "desc": "Christian McCaffrey is sitting out the 49ers practice on Monday due to \"tightness.\"",
+      "impact": "This is certainly not great news for fantasy managers who are relying on McCaffrey, and for 49ers fans who have already seen plenty of their stars go down. Of course, no reporting has said McCaffrey is missing any more time, but the fact that he's already experiencing some muscle tightness is concerning."
+    },
     {
       "id": 601613,
       "created": "2026-08-10 17:57:43",
@@ -846,6 +864,6 @@
   ],
   "public_api_limited": true,
   "tier": "premium",
-  "fetched_at": "2026-08-10T18:48:03Z",
+  "fetched_at": "2026-08-10T19:51:26Z",
   "source_url": "https://api.fantasypros.com/public/v2/json/nfl/news?limit=50"
 }
