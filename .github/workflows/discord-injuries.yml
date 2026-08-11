@@ -1,11 +1,15 @@
 name: Discord — Injury alerts
 
 # Posts new + changed injury statuses to Discord #injuries channel.
-# Runs hourly. Deduplicates via discord-state.json (per-player status tracking).
+# Deduplicates via discord-state.json (per-player status tracking).
+#
+# DISABLED — auto-schedule turned off because Readybot.io Premium now
+# handles injury news posting to Discord. Can still be run manually via
+# workflow_dispatch. To re-enable auto-run, uncomment the schedule line.
 
 on:
-  schedule:
-    - cron: "15 * * * *"
+  # schedule:
+  #   - cron: "10 * * * *"   # 10 min past the hour (after fantasypros feed refresh at :00)
   workflow_dispatch:
 
 permissions:
