@@ -1,13 +1,18 @@
 name: Update FantasyPros feed
 
-# Fetches NFL news + injuries from FantasyPros HOF every hour.
-# 2 endpoints × 24 runs/day = 48 API calls/day.
-# HOF rate limit supports this easily.
+# Fetches NFL news + injuries from FantasyPros HOF every 30 min.
+# 2 endpoints × 48 runs/day = 96 API calls/day.
+# HOF rate limit (500/day) supports this with ~80% headroom for
+# Draft Kit workflow + manual runs.
 
 on:
   schedule:
-    - cron: "0 * * * *"        # every hour on the hour
+    - cron: "*/30 * * * *"     # every 30 minutes
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/update-fantasypros.yml"
   push:
     branches: [main]
     paths:
