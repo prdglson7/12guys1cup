@@ -9,7 +9,7 @@ name: Update Wire feed
 
 on:
   schedule:
-    - cron: "*/15 * * * *"   # every 15 minutes
+    - cron: "*/5 * * * *"    # every 5 minutes
   workflow_dispatch:
   push:
     branches: [main]
@@ -28,7 +28,7 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
 
       - name: Install rss-parser
         run: npm install --no-save rss-parser@3.13.0
