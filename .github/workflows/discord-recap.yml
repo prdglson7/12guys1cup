@@ -1,6 +1,8 @@
 name: Discord — Weekly recap
 
-# Posts the week's recap + standings to #recap every Tuesday morning after MNF.
+# Posts the week's recap + standings to #recap every Tuesday morning after MNF,
+# then posts the Council of Twelve Guys and One Cup ceremonies (Studs & Duds)
+# to #studs-and-duds.
 # 8am ET Tuesday = 12:00 UTC Tuesday (during DST) / 13:00 UTC (standard time).
 # We run at 13:00 UTC to be safe post-MNF regardless of DST.
 
@@ -10,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: discord-recap
@@ -19,7 +21,7 @@ concurrency:
 jobs:
   post:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,3 +36,27 @@ jobs:
           DISCORD_RECAP_WEBHOOK: ${{ secrets.DISCORD_RECAP_WEBHOOK }}
           SLEEPER_LEAGUE_ID: "1389753693590532096"
         run: node .github/scripts/discord-recap.js
+
+      - name: Post Studs & Duds Council ceremonies to Discord
+        env:
+          DISCORD_SHAME_WEBHOOK: ${{ secrets.DISCORD_SHAME_WEBHOOK }}
+          SLEEPER_LEAGUE_ID: "1389753693590532096"
+        run: node .github/scripts/discord-shame.js
+
+      - name: Commit shame state if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/data/discord-state.json
+          if git diff --cached --quiet; then
+            echo "No state changes to commit."
+            exit 0
+          fi
+          git commit -m "Update Studs & Duds state [skip ci]"
+          # Retry on concurrent push
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            echo "Retry $i after concurrent push…"
+            sleep 5
+          done
+          exit 1
