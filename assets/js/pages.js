@@ -1512,11 +1512,6 @@ function renderDraftBoard(rows) {
 async function renderDraftKit() {
   const rankingsEl  = document.getElementById("dk-rankings");
   const controlsEl  = document.getElementById("dk-controls");
-  const adpEl       = document.getElementById("dk-adp");
-  const sleepersEl  = document.getElementById("dk-sleepers");
-  const bustsEl     = document.getElementById("dk-busts");
-  const handcuffsEl = document.getElementById("dk-handcuffs");
-  const quicknavEl  = document.getElementById("dk-quicknav");
   const metaEl      = document.getElementById("dk-meta");
   if (rankingsEl) rankingsEl.innerHTML = loading("Loading Draft Kit…");
 
@@ -1525,399 +1520,237 @@ async function renderDraftKit() {
     if (!dk?.rankings?.overall) throw new Error("Draft Kit data not loaded.");
 
     const overall = dk.rankings.overall;
-
-    // Compute VBD baselines from actual data using league roster structure
     const baselines = computeBaselines(dk.rankings);
 
-    // Compute custom VBD for every player
     const withVbd = overall
       .filter(p => p.name && p.pos)
       .map(p => {
         const proj = Number(p.proj_pts) || 0;
         const base = baselines[p.pos] || 0;
-        const vbd = proj > 0 ? proj - base : 0;
-        return { ...p, _vbd: vbd, _proj: proj, _base: base };
+        return { ...p, _vbd: proj > 0 ? proj - base : 0, _proj: proj, _base: base };
       });
 
-    // Sort by VBD descending for overall rankings
-    const vbdSorted = [...withVbd].sort((a, b) => b._vbd - a._vbd);
-
-    // Top 200 overall (excluding K & DST)
-    const top200 = vbdSorted.filter(p => !['K', 'DST'].includes(p.pos)).slice(0, 200);
-
-    // Positional lists (sorted by VBD within position)
-    const positional = {};
+    const byPos = {};
     ['QB', 'RB', 'WR', 'TE', 'K', 'DST'].forEach(pos => {
-      positional[pos] = vbdSorted.filter(p => p.pos === pos);
+      byPos[pos] = [...withVbd].filter(p => p.pos === pos).sort((a, b) => b._vbd - a._vbd);
     });
 
-    // Meta
+    const top200 = [...withVbd]
+      .filter(p => !['K', 'DST'].includes(p.pos))
+      .sort((a, b) => b._vbd - a._vbd)
+      .slice(0, 200);
+
     const fetched = dk.fetched_at ? new Date(dk.fetched_at) : null;
     if (metaEl) {
-      metaEl.textContent = `${withVbd.length} players • Custom VBD for your league (1QB/2RB/2WR/1TE/1FLEX) • Full PPR • updated ${fetched ? relTime(fetched.toISOString()) : 'recently'}`;
+      metaEl.textContent = `${withVbd.length} players • Full PPR • 1QB/2RB/2WR/1TE/1FLEX • updated ${fetched ? relTime(fetched.toISOString()) : 'recently'}`;
     }
 
-    // Quick nav
-    if (quicknavEl) {
-      quicknavEl.innerHTML = [
-        { id: 'sec-rankings',   label: 'Rankings' },
-        { id: 'sec-sleepers',   label: 'Sleepers' },
-        { id: 'sec-busts',      label: 'Busts' },
-        { id: 'sec-handcuffs',  label: 'Handcuffs' },
-        { id: 'sec-values',     label: 'Values' },
-      ].map(l => `<a href="#${l.id}" class="dk-nav-link">${l.label}</a>`).join("");
-    }
-
-    // ========== CUSTOM RANKINGS (main section) ==========
-    const tabs = ['Top 200', 'QB', 'RB', 'WR', 'TE', 'K', 'DST'];
-    let activeTab = 'Top 200';
-    let searchTerm = '';
-
-    const getActiveRows = () => {
-      let rows;
-      if (activeTab === 'Top 200') {
-        rows = top200;
-      } else {
-        rows = positional[activeTab] || [];
-      }
-      if (searchTerm) {
-        const t = searchTerm.toLowerCase();
-        rows = rows.filter(r => (r.name || '').toLowerCase().includes(t));
-      }
-      return rows;
-    };
-
-    const tabCount = (tab) => {
-      if (tab === 'Top 200') return 200;
-      return (positional[tab] || []).length;
-    };
-
-    // CSV download helper
     const downloadCsv = (rows, filename) => {
-      const headers = ['Rank', 'Player', 'Pos', 'Team', 'Bye', 'ECR', 'Proj Pts', 'VBD', 'Baseline', 'ADP'];
+      const headers = ['Rank', 'Player', 'Pos', 'Team', 'Bye', 'Tier', 'Proj Pts', 'ADP'];
       const csvRows = [headers.join(',')];
       rows.forEach((r, i) => {
         csvRows.push([
           i + 1,
           `"${(r.name || '').replace(/"/g, '""')}"`,
-          r.pos || '',
-          r.team || '',
-          r.bye || '',
-          r.rank || '',
+          r.pos || '', r.team || '', r.bye || '', r.tier || '',
           r._proj != null ? r._proj.toFixed(1) : '',
-          r._vbd != null ? r._vbd.toFixed(1) : '',
-          r._base != null ? r._base.toFixed(1) : '',
           r.adp || '',
         ].join(','));
       });
       const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
+      a.href = url; a.download = filename; a.click();
       URL.revokeObjectURL(url);
     };
 
+    const posColors = { QB: 'cs-qb', RB: 'cs-rb', WR: 'cs-wr', TE: 'cs-te', K: 'cs-k', DST: 'cs-dst' };
+    const posLabels = { QB: 'Quarterbacks', RB: 'Running Backs', WR: 'Wide Receivers', TE: 'Tight Ends', K: 'Kickers', DST: 'Defenses' };
+    const tierClasses = ['', 'cs-t1', 'cs-t2', 'cs-t3', 'cs-t4', 'cs-t5', 'cs-t6', 'cs-t7', 'cs-t8', 'cs-t9', 'cs-t10', 'cs-t11', 'cs-t12'];
+
+    const fmtAdp = (adp) => {
+      if (adp == null || adp === '') return '—';
+      const n = Number(adp);
+      if (isNaN(n) || n <= 0) return '—';
+      const round = Math.ceil(n / 12);
+      const pick = ((n - 1) % 12) + 1;
+      return `${round}.${String(pick).padStart(2, '0')}`;
+    };
+
+    const buildPosColumn = (pos) => {
+      const players = byPos[pos] || [];
+      let lastTier = null;
+      let rows = '';
+      players.forEach((p, i) => {
+        const tier = p.tier || null;
+        if (tier && tier !== lastTier) {
+          const tc = tierClasses[Math.min(tier, tierClasses.length - 1)] || 'cs-t4';
+          rows += `<div class="cs-tier ${tc}">Tier ${tier}</div>`;
+          lastTier = tier;
+        }
+        rows += `
+          <div class="cs-player">
+            <span class="cs-rank">${i + 1}</span>
+            <span class="cs-name">${esc(p.name)} <span class="cs-team">${esc(p.team || '')}</span></span>
+            <span class="cs-bye">${p.bye || '—'}</span>
+            <span class="cs-adp">${fmtAdp(p.adp)}</span>
+          </div>`;
+      });
+      return `
+        <div class="cs-col">
+          <div class="cs-pos-header ${posColors[pos]}">${posLabels[pos]}</div>
+          <div class="cs-subheader"><span>#</span><span>Player</span><span>Bye</span><span>ADP</span></div>
+          ${rows}
+        </div>`;
+    };
+
+    const buildTop200 = () => {
+      const cols = [
+        { label: '1 – 50',    start: 0,   end: 50 },
+        { label: '51 – 100',  start: 50,  end: 100 },
+        { label: '101 – 150', start: 100, end: 150 },
+        { label: '151 – 200', start: 150, end: 200 },
+      ];
+      return cols.map(col => {
+        const slice = top200.slice(col.start, col.end);
+        return `
+          <div class="cs-200-col">
+            <div class="cs-200-col-header">${col.label}</div>
+            ${slice.map((p, i) => `
+              <div class="cs-200-row">
+                <span class="cs-200-rank">${col.start + i + 1}</span>
+                <span class="cs-200-name">${esc(p.name)} <span class="cs-team">${esc(p.team || '')}</span></span>
+                <span class="cs-200-pos ${posColors[p.pos]}">${esc(p.pos)}</span>
+                <span class="cs-200-bye">${p.bye || '—'}</span>
+                <span class="cs-200-adp">${fmtAdp(p.adp)}</span>
+              </div>`).join('')}
+          </div>`;
+      }).join('');
+    };
+
+    const views = ['Cheat Sheet', 'Top 200', 'K', 'DST'];
+    let activeView = 'Cheat Sheet';
+
     const paintRankings = () => {
-      const rows = getActiveRows();
       controlsEl.innerHTML = `
         <div class="dk-tabs">
-          ${tabs.map(tab => `
-            <button class="dk-tab ${tab === activeTab ? 'active' : ''} ${tab !== 'Top 200' ? 'dk-tab-' + tab.toLowerCase() : ''}" data-tab="${tab}">
-              <span class="dk-tab-label">${tab}</span>
-              <span class="dk-tab-count">${tabCount(tab)}</span>
+          ${views.map(v => `
+            <button class="dk-tab ${v === activeView ? 'active' : ''}" data-view="${v}">
+              <span class="dk-tab-label">${v}</span>
             </button>`).join("")}
         </div>
         <div class="dk-controls-row">
-          <div class="dk-search">
-            <input type="search" id="dk-search-input" placeholder="Search player name…" value="${esc(searchTerm)}" autocomplete="off">
-          </div>
           <button class="dk-csv-btn" id="dk-csv-download">Download CSV</button>
         </div>`;
 
-      // Baseline strip
-      const baselineHtml = `
-        <div class="dk-baseline-strip">
-          ${Object.entries(baselines).map(([pos, val]) =>
-            `<div class="dk-baseline-item">
-               <span class="${_pillClass(pos)}">${pos}</span>
-               <span class="dk-baseline-val">${val ? Math.round(val) : '—'}</span>
-             </div>`).join("")}
-        </div>
-        <p class="dk-note dk-baseline-note">
-          VBD = projected points − position baseline. Baselines auto-computed for your league's
-          roster (1QB/2RB/2WR/1TE/1FLEX): QB12, RB30, WR28, TE13, K12, DST12.
-        </p>`;
+      if (activeView === 'Cheat Sheet') {
+        rankingsEl.innerHTML = `
+          <div class="cs-sheet">
+            <div class="cs-header">
+              <div class="cs-header-left">
+                <div class="cs-title">Draft Cheat Sheet</div>
+                <div class="cs-subtitle">Positional Rankings with Tiers</div>
+              </div>
+              <div class="cs-header-right">
+                <div class="cs-league">12 GUYS 1 CUP</div>
+                Full PPR · 1QB/2RB/2WR/1TE/1FLEX<br>
+                Draft Day: Sept 6, 2026
+              </div>
+            </div>
+            <div class="cs-grid">
+              ${buildPosColumn('QB')}
+              ${buildPosColumn('RB')}
+              ${buildPosColumn('WR')}
+              ${buildPosColumn('TE')}
+            </div>
+            <div class="cs-footer">
+              <span>12guys1cup.com</span>
+              <span>Full PPR · 1QB/2RB/2WR/1TE/1FLEX(RB/WR/TE) · 12 Teams</span>
+              <span>Updated ${fetched ? fetched.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'recently'}</span>
+            </div>
+          </div>`;
 
-      rankingsEl.innerHTML = `
-        ${baselineHtml}
-        <div class="dk-rankings-table-wrap">
-          <table class="stats-table dk-rankings-table">
-            <thead>
-              <tr>
-                <th class="num">#</th>
-                <th>Player</th>
-                <th>Pos</th>
-                <th>Team</th>
-                <th class="num">Bye</th>
-                <th class="num">ECR</th>
-                <th class="num">Proj</th>
-                <th class="num">VBD</th>
-                <th class="num">ADP</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows.map((r, i) => `
-                <tr>
-                  <td class="num rank">${i + 1}</td>
-                  <td class="dk-row-name">${esc(r.name)}${r._injury ? ` <span class="trade-injury">${esc(r._injury)}</span>` : ''}</td>
-                  <td><span class="${_pillClass(r.pos)}">${esc(r.pos)}</span></td>
-                  <td>${esc(r.team || '')}</td>
-                  <td class="num">${r.bye || '—'}</td>
-                  <td class="num">${r.rank || '—'}</td>
-                  <td class="num">${r._proj ? r._proj.toFixed(1) : '—'}</td>
-                  <td class="num ${r._vbd > 0 ? 'gold' : ''}">${r._vbd != null ? r._vbd.toFixed(1) : '—'}</td>
-                  <td class="num">${r.adp || '—'}</td>
-                </tr>`).join("")}
-            </tbody>
-          </table>
-        </div>
-        <p class="dk-note">
-          ${rows.length} players shown. Rankings computed from FantasyPros projections
-          using your league's scoring settings (standard full PPR).
-        </p>`;
+      } else if (activeView === 'Top 200') {
+        rankingsEl.innerHTML = `
+          <div class="cs-sheet">
+            <div class="cs-header">
+              <div class="cs-header-left">
+                <div class="cs-title">Top 200 Overall</div>
+                <div class="cs-subtitle">Excludes K &amp; DST</div>
+              </div>
+              <div class="cs-header-right">
+                <div class="cs-league">12 GUYS 1 CUP</div>
+                Full PPR · 1QB/2RB/2WR/1TE/1FLEX
+              </div>
+            </div>
+            <div class="cs-200-grid">
+              ${buildTop200()}
+            </div>
+            <div class="cs-footer">
+              <span>12guys1cup.com</span>
+              <span>Top 200 Overall · Excludes K &amp; DST</span>
+              <span>Updated ${fetched ? fetched.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'recently'}</span>
+            </div>
+          </div>`;
 
-      // Wire tab clicks
+      } else if (activeView === 'K' || activeView === 'DST') {
+        const pos = activeView;
+        const players = byPos[pos] || [];
+        rankingsEl.innerHTML = `
+          <div class="cs-sheet">
+            <div class="cs-header">
+              <div class="cs-header-left">
+                <div class="cs-title">${posLabels[pos]} Rankings</div>
+                <div class="cs-subtitle">12 GUYS 1 CUP</div>
+              </div>
+              <div class="cs-header-right">
+                <div class="cs-league">12 GUYS 1 CUP</div>
+              </div>
+            </div>
+            <div class="cs-single-col">
+              <div class="cs-subheader cs-subheader-wide"><span>#</span><span>Player</span><span>Bye</span><span>Proj</span><span>ADP</span></div>
+              ${players.map((p, i) => `
+                <div class="cs-player cs-player-wide">
+                  <span class="cs-rank">${i + 1}</span>
+                  <span class="cs-name">${esc(p.name)} <span class="cs-team">${esc(p.team || '')}</span></span>
+                  <span class="cs-bye">${p.bye || '—'}</span>
+                  <span class="cs-adp">${p._proj ? p._proj.toFixed(0) : '—'}</span>
+                  <span class="cs-adp">${fmtAdp(p.adp)}</span>
+                </div>`).join('')}
+            </div>
+            <div class="cs-footer">
+              <span>12guys1cup.com</span>
+              <span>${posLabels[pos]}</span>
+              <span>Updated ${fetched ? fetched.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'recently'}</span>
+            </div>
+          </div>`;
+      }
+
       controlsEl.querySelectorAll('.dk-tab').forEach(btn => {
         btn.addEventListener('click', () => {
-          activeTab = btn.dataset.tab;
-          searchTerm = '';
+          activeView = btn.dataset.view;
           paintRankings();
         });
       });
 
-      // Wire search
-      const searchInput = document.getElementById('dk-search-input');
-      if (searchInput) {
-        let debounce;
-        searchInput.addEventListener('input', () => {
-          clearTimeout(debounce);
-          debounce = setTimeout(() => {
-            searchTerm = searchInput.value.trim();
-            paintRankings();
-          }, 150);
-        });
-        // Refocus after repaint
-        searchInput.focus();
-        searchInput.setSelectionRange(searchTerm.length, searchTerm.length);
-      }
-
-      // Wire CSV download
       const csvBtn = document.getElementById('dk-csv-download');
       if (csvBtn) {
         csvBtn.addEventListener('click', () => {
-          const filename = activeTab === 'Top 200'
-            ? '12guys1cup-top-200-rankings.csv'
-            : `12guys1cup-${activeTab.toLowerCase()}-rankings.csv`;
-          downloadCsv(getActiveRows(), filename);
+          if (activeView === 'Cheat Sheet') {
+            const all = ['QB','RB','WR','TE'].flatMap(pos =>
+              (byPos[pos] || []).map((p, i) => ({ ...p, _posRank: i + 1 }))
+            );
+            downloadCsv(all, '12guys1cup-positional-rankings.csv');
+          } else if (activeView === 'Top 200') {
+            downloadCsv(top200, '12guys1cup-top-200.csv');
+          } else {
+            downloadCsv(byPos[activeView] || [], `12guys1cup-${activeView.toLowerCase()}-rankings.csv`);
+          }
         });
       }
     };
 
     paintRankings();
-
-    // ========== SLEEPERS (CSV-driven, position tabs) ==========
-    const sleeperPositions = ["QB", "RB", "WR", "TE"];
-    let sleeperActivePos = "RB";
-
-    const paintSleepers = async () => {
-      sleepersEl.innerHTML = `
-        <div class="dk-sub-tabs">
-          ${sleeperPositions.map(p => `
-            <button class="dk-sub-tab ${p === sleeperActivePos ? 'active' : ''} dk-sub-tab-${p.toLowerCase()}" data-pos="${p}">
-              ${p}
-            </button>`).join("")}
-        </div>
-        <div id="dk-sleepers-body">${loading("Loading sleepers…")}</div>`;
-
-      sleepersEl.querySelectorAll(".dk-sub-tab").forEach(btn => {
-        btn.addEventListener("click", () => {
-          sleeperActivePos = btn.dataset.pos;
-          paintSleepers();
-        });
-      });
-
-      const body = document.getElementById("dk-sleepers-body");
-      const result = await getFpSleepers(sleeperActivePos);
-      if (!result.hasData) {
-        body.innerHTML = empty(`No ${sleeperActivePos} sleepers uploaded yet. Add ${'`'}sleepers-${sleeperActivePos.toLowerCase()}.csv${'`'} to assets/data/fp-csv/.`);
-        return;
-      }
-      body.innerHTML = `
-        <div class="dk-cards">
-          ${result.rows.map(r => `
-            <div class="dk-card dk-sleeper">
-              <div class="dk-rank">${r.rank ?? '—'}</div>
-              <div class="dk-info">
-                <div class="dk-name">${esc(r.name)}</div>
-                <div class="dk-meta">
-                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
-                  <span class="dk-team">${esc(r.team)}</span>
-                  ${r.bye ? `<span class="dk-bye">BYE ${esc(r.bye)}</span>` : ''}
-                  ${r.experts ? `<span class="dk-fp">${r.experts} expert${r.experts > 1 ? 's' : ''}</span>` : ''}
-                </div>
-              </div>
-              <div class="dk-stats">
-                <div class="dk-stat"><span class="lbl">ECR</span><span class="val">${r.ecr ?? '—'}</span></div>
-                <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${r.adp ?? '—'}</span></div>
-                ${r.tier ? `<div class="dk-stat"><span class="lbl">Tier</span><span class="val">${r.tier}</span></div>` : ''}
-              </div>
-            </div>`).join("")}
-        </div>
-        <p class="dk-note">
-          Consensus sleepers from FantasyPros HOF experts. Updated weekly via CSV upload.
-        </p>`;
-    };
-    paintSleepers();
-
-    // ========== BUSTS (CSV-driven, position tabs) ==========
-    let bustActivePos = "ALL";
-
-    const paintBusts = async () => {
-      const result = await getFpBusts();
-      if (!result.hasData) {
-        bustsEl.innerHTML = empty("No busts CSV uploaded yet. Add busts.csv to assets/data/fp-csv/.");
-        return;
-      }
-      const posesInData = Array.from(new Set(result.rows.map(r => r.pos)));
-      const bustPositions = ["ALL", ...["RB", "WR", "QB", "TE"].filter(p => posesInData.includes(p))];
-      if (bustActivePos !== "ALL" && !posesInData.includes(bustActivePos)) bustActivePos = "ALL";
-      const filtered = bustActivePos === "ALL" ? result.rows : result.rows.filter(r => r.pos === bustActivePos);
-
-      bustsEl.innerHTML = `
-        <div class="dk-sub-tabs">
-          ${bustPositions.map(p => `
-            <button class="dk-sub-tab ${p === bustActivePos ? 'active' : ''} ${p !== 'ALL' ? 'dk-sub-tab-' + p.toLowerCase() : ''}" data-pos="${p}">
-              ${p === "ALL" ? "All" : p}
-              <span class="dk-sub-tab-count">${p === "ALL" ? result.rows.length : result.rows.filter(r => r.pos === p).length}</span>
-            </button>`).join("")}
-        </div>
-        <div class="dk-cards">
-          ${filtered.map(r => `
-            <div class="dk-card dk-bust">
-              <div class="dk-rank">${r.rank ?? '—'}</div>
-              <div class="dk-info">
-                <div class="dk-name">${esc(r.name)}</div>
-                <div class="dk-meta">
-                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
-                  <span class="dk-team">${esc(r.team)}</span>
-                </div>
-              </div>
-              <div class="dk-stats">
-                <div class="dk-stat"><span class="lbl">Rank</span><span class="val">${r.rank ?? '—'}</span></div>
-                <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${r.adp ?? '—'}</span></div>
-                <div class="dk-stat"><span class="lbl">vs ADP</span><span class="val down">${r.delta != null ? r.delta : '—'}</span></div>
-              </div>
-            </div>`).join("")}
-        </div>
-        <p class="dk-note">
-          Consensus busts from FantasyPros HOF experts. "vs ADP" shows how many spots later
-          they're ranked than where they're being drafted.
-        </p>`;
-
-      bustsEl.querySelectorAll(".dk-sub-tab").forEach(btn => {
-        btn.addEventListener("click", () => {
-          bustActivePos = btn.dataset.pos;
-          paintBusts();
-        });
-      });
-    };
-    paintBusts();
-
-    // ========== RB HANDCUFFS (CSV-driven) ==========
-    const paintHandcuffs = async () => {
-      const result = await getFpHandcuffs();
-      if (!result.hasData) {
-        handcuffsEl.innerHTML = empty("No handcuffs CSV uploaded yet. Add handcuffs.csv to assets/data/fp-csv/.");
-        return;
-      }
-      handcuffsEl.innerHTML = `
-        <div class="dk-handcuff-list">
-          ${result.rows.map(p => `
-            <div class="dk-handcuff-pair">
-              <div class="dk-card dk-handcuff-starter">
-                <div class="dk-rank">${p.starter_ecr ?? '—'}</div>
-                <div class="dk-info">
-                  <div class="dk-name">${esc(p.starter_name)}</div>
-                  <div class="dk-meta">
-                    <span class="${_pillClass('RB')}">RB</span>
-                    <span class="dk-team">${esc(p.team)}</span>
-                  </div>
-                </div>
-                <div class="dk-hc-role">Starter</div>
-              </div>
-              <div class="dk-handcuff-arrow">→</div>
-              <div class="dk-card dk-handcuff-backup">
-                <div class="dk-rank">${p.handcuff_ecr ?? '—'}</div>
-                <div class="dk-info">
-                  <div class="dk-name">${esc(p.handcuff_name)}</div>
-                  <div class="dk-meta">
-                    <span class="${_pillClass('RB')}">RB</span>
-                    <span class="dk-team">${esc(p.team)}</span>
-                    ${p.handcuff_adp_text ? `<span class="dk-fp">${esc(p.handcuff_adp_text)}</span>` : ''}
-                  </div>
-                </div>
-                <div class="dk-hc-role">Handcuff</div>
-              </div>
-            </div>`).join("")}
-        </div>
-        <p class="dk-note">
-          All 32 teams — projected starter paired with their handcuff. ADP shows the draft round
-          where the handcuff typically goes.
-        </p>`;
-    };
-    paintHandcuffs();
-
-    // ========== VALUE PICKS ==========
-    const withAdp = overall
-      .map(r => ({ ...r, _adp: toNum(r.adp), _rank: toNum(r.rank) }))
-      .filter(r => r._adp != null && r._rank != null);
-    const valuePicks = withAdp
-      .map(r => ({ ...r, value: Math.round(r._adp) - r._rank }))
-      .filter(r => r.value >= 5)
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 20);
-
-    if (valuePicks.length) {
-      adpEl.innerHTML = `
-        <div class="dk-cards">
-          ${valuePicks.map(r => `
-            <div class="dk-card dk-value">
-              <div class="dk-rank">${r.rank}</div>
-              <div class="dk-info">
-                <div class="dk-name">${esc(r.name)}</div>
-                <div class="dk-meta">
-                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
-                  <span class="dk-team">${esc(r.team)}</span>
-                  ${r.bye ? `<span class="dk-bye">BYE ${esc(r.bye)}</span>` : ''}
-                  <span class="dk-fp">ADP ${toFix(r.adp)} <span class="rank-delta up">+${r.value}</span></span>
-                </div>
-              </div>
-              <div class="dk-stats">
-                <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${r.proj_pts != null ? Math.round(toNum(r.proj_pts)) : '—'}</span></div>
-                <div class="dk-stat"><span class="lbl">Tier</span><span class="val">${r.tier ?? '—'}</span></div>
-                <div class="dk-stat"><span class="lbl">Owned</span><span class="val">${r.owned_avg != null ? Math.round(toNum(r.owned_avg)) + '%' : '—'}</span></div>
-              </div>
-            </div>`).join("")}
-        </div>
-        <p class="dk-note">
-          Drafted later than they're ranked. Green +N shows how many spots later they go on average.
-        </p>`;
-    } else {
-      adpEl.innerHTML = empty("No significant value picks right now.");
-    }
-
   } catch (e) {
     if (rankingsEl) rankingsEl.innerHTML = errBox(e.message);
   }
