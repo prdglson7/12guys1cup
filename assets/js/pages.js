@@ -1611,110 +1611,12 @@ async function renderDraftKit() {
       }).join('');
     };
 
-    /* Download styled .xls matching the site's look + FFBallers side-by-side layout.
-       Excel reads HTML tables natively — colors, bold, layout all preserved. */
-    const downloadCsv = (view) => {
-      const now = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-      const navy='#1E3A5F',gld='#E8B84A',crm='#FDF6E3',brn='#8B5A3C';
-      const phx={QB:'#B8386B',RB:'#2E7D32',WR:'#1565C0',TE:'#E65100',K:'#5E35B1',DST:'#455A64'};
-
-      let h=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><style>
-body{font-family:Calibri,Arial,sans-serif;margin:0}
-.ttl{background:${navy};color:${gld};font-size:18px;font-weight:700;padding:10px 16px;letter-spacing:2px}
-.sub{background:${navy};color:${crm};font-size:11px;padding:0 16px 8px}
-.ftr{background:${navy};color:${crm};font-size:9px;padding:6px 16px}
-table{border-collapse:collapse;width:100%;background:${crm}}
-td{padding:2px 6px;font-size:11px;border-bottom:1px solid #E5D5A8;vertical-align:middle}
-.ph{color:#fff;font-weight:700;font-size:13px;text-align:center;padding:6px;letter-spacing:2px}
-.ch{background:rgba(30,58,95,0.1);font-weight:700;font-size:9px;color:${brn};text-transform:uppercase;padding:3px 6px;border-bottom:2px solid ${navy}}
-.tr{background:${navy};color:${gld};font-weight:700;font-size:10px;text-align:center;padding:4px;letter-spacing:2px}
-.rk{font-weight:700;color:${navy};text-align:center;width:24px}
-.nm{font-weight:700;color:${navy};white-space:nowrap}
-.tm{font-weight:400;color:${brn};font-size:9px}
-.by{text-align:center;color:${brn};width:30px}
-.ap{text-align:center;font-weight:700;color:${navy};width:36px}
-.g{width:8px;background:#fff;border:none}
-.pq{background:#B8386B;color:#fff;font-weight:700;font-size:9px;text-align:center;padding:1px 4px}
-.pr{background:#2E7D32;color:#fff;font-weight:700;font-size:9px;text-align:center;padding:1px 4px}
-.pw{background:#1565C0;color:#fff;font-weight:700;font-size:9px;text-align:center;padding:1px 4px}
-.pt{background:#E65100;color:#fff;font-weight:700;font-size:9px;text-align:center;padding:1px 4px}
-tr:nth-child(even) td{background:rgba(30,58,95,0.03)}
-</style></head><body>`;
-
-      if(view==='positional'){
-        const poss=['QB','RB','WR','TE'];
-        const ls=poss.map(p=>byPos[p]||[]);
-        const mx=Math.max(...ls.map(l=>l.length));
-
-        // Get tiers from tiersAdp
-        const tByP={};
-        poss.forEach(pos=>{tByP[pos]=[];(byPos[pos]||[]).forEach(p=>{
-          const ov=tiersAdp.get((p.name||'').toLowerCase().trim());
-          tByP[pos].push(ov?.tier||null);
-        });});
-
-        h+=`<div class="ttl">DRAFT CHEAT SHEET</div>`;
-        h+=`<div class="sub">12 GUYS 1 CUP \u00b7 Full PPR \u00b7 1QB/2RB/2WR/1TE/1FLEX \u00b7 ${now}</div>`;
-        h+=`<table>`;
-
-        // Position headers
-        h+=`<tr>`;
-        poss.forEach((pos,pi)=>{
-          if(pi>0) h+=`<td class="g"></td>`;
-          h+=`<td colspan="4" class="ph" style="background:${phx[pos]}">${posLabels[pos]}</td>`;
-        });
-        h+=`</tr><tr>`;
-        poss.forEach((pos,pi)=>{
-          if(pi>0) h+=`<td class="g"></td>`;
-          h+=`<td class="ch">#</td><td class="ch">Player</td><td class="ch" style="text-align:center">Bye</td><td class="ch" style="text-align:center">ADP</td>`;
-        });
-        h+=`</tr>`;
-
-        // Rows with tier breaks
-        const tt=poss.map(()=>null);
-        for(let i=0;i<mx;i++){
-          let needT=false;
-          poss.forEach((pos,pi)=>{const t=tByP[pos][i];if(t&&t!==tt[pi])needT=true;});
-          if(needT){
-            h+=`<tr>`;
-            poss.forEach((pos,pi)=>{
-              if(pi>0) h+=`<td class="g"></td>`;
-              const t=tByP[pos][i];
-              if(t&&t!==tt[pi]){tt[pi]=t;h+=`<td colspan="4" class="tr">TIER ${t}</td>`;}
-              else h+=`<td colspan="4" style="border:none"></td>`;
-            });
-            h+=`</tr>`;
-          }
-          h+=`<tr>`;
-          poss.forEach((pos,pi)=>{
-            if(pi>0) h+=`<td class="g"></td>`;
-            const p=ls[pi][i];
-            if(p) h+=`<td class="rk">${i+1}</td><td class="nm">${esc(p.name)} <span class="tm">${esc(p.team||'')}</span></td><td class="by">${p.bye||'\u2014'}</td><td class="ap">${fmtAdp(p._adp)}</td>`;
-            else h+=`<td colspan="4"></td>`;
-          });
-          h+=`</tr>`;
-        }
-        h+=`</table>`;
-        h+=`<div class="ftr">12guys1cup.com \u00b7 Full PPR \u00b7 12 Teams \u00b7 Updated ${now}</div>`;
-      } else {
-        h+=`<div class="ttl">TOP 200 OVERALL</div>`;
-        h+=`<div class="sub">12 GUYS 1 CUP \u00b7 Excludes K & DST \u00b7 ${now}</div>`;
-        h+=`<table><tr><td class="ch">#</td><td class="ch">Player</td><td class="ch">Pos</td><td class="ch" style="text-align:center">Bye</td><td class="ch" style="text-align:center">ADP</td></tr>`;
-        top200.forEach((p,i)=>{
-          const pc=(p.pos||'').toLowerCase();
-          h+=`<tr><td class="rk">${i+1}</td><td class="nm">${esc(p.name)} <span class="tm">${esc(p.team||'')}</span></td><td class="p${pc[0]||'r'}">${esc(p.pos)}</td><td class="by">${p.bye||'\u2014'}</td><td class="ap">${fmtAdp(p._adp)}</td></tr>`;
-        });
-        h+=`</table>`;
-        h+=`<div class="ftr">12guys1cup.com \u00b7 Top 200 \u00b7 Updated ${now}</div>`;
-      }
-      h+=`</body></html>`;
-      const blob=new Blob([h],{type:'application/vnd.ms-excel'});
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement('a');
-      a.href=url;
-      a.download=view==='positional'?'12guys1cup-cheat-sheet.xls':'12guys1cup-top-200.xls';
+    /* Download the pre-built xlsx cheat sheet */
+    const downloadSheet = () => {
+      const a = document.createElement('a');
+      a.href = 'assets/data/12guys1cup-cheat-sheet.xlsx';
+      a.download = '12guys1cup-cheat-sheet.xlsx';
       a.click();
-      URL.revokeObjectURL(url);
     };
 
     // ===== TABS + RENDER =====
@@ -1779,17 +1681,7 @@ tr:nth-child(even) td{background:rgba(30,58,95,0.03)}
       });
 
       document.getElementById('dk-csv-download')?.addEventListener('click', () => {
-        if (activeView === 'Cheat Sheet') downloadCsv('positional');
-        else if (activeView === 'Top 200') downloadCsv('top200');
-        else {
-          const players = byPos[activeView] || [];
-          const rows = ['Rank,Player,Pos,Team,Bye,Proj,ADP'];
-          players.forEach((r,i) => rows.push([i+1,'"'+(r.name||'').replace(/"/g,'""')+'"',r.pos||'',r.team||'',r.bye||'',r._proj?r._proj.toFixed(1):'',r._adp||''].join(',')));
-          const blob = new Blob([rows.join('\n')],{type:'text/csv'});
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a'); a.href=url; a.download=`12guys1cup-${activeView.toLowerCase()}-rankings.csv`; a.click();
-          URL.revokeObjectURL(url);
-        }
+        downloadSheet();
       });
     };
 
