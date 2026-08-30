@@ -1510,52 +1510,75 @@ function renderDraftBoard(rows) {
 }
 
 async function renderDraftKit() {
-  const boardEl     = document.getElementById("dk-board");
+  const rankingsEl  = document.getElementById("dk-rankings");
   const controlsEl  = document.getElementById("dk-controls");
   const adpEl       = document.getElementById("dk-adp");
   const sleepersEl  = document.getElementById("dk-sleepers");
   const bustsEl     = document.getElementById("dk-busts");
-  const vbdEl       = document.getElementById("dk-vbd");
   const handcuffsEl = document.getElementById("dk-handcuffs");
   const quicknavEl  = document.getElementById("dk-quicknav");
   const metaEl      = document.getElementById("dk-meta");
-  if (boardEl) boardEl.innerHTML = loading("Loading Draft Kit…");
+  if (rankingsEl) rankingsEl.innerHTML = loading("Loading Draft Kit…");
 
   try {
     const dk = await getDraftKit();
-    const positions = ["overall", "QB", "RB", "WR", "TE", "K", "DST"];
+    if (!dk?.rankings?.overall) throw new Error("Draft Kit data not loaded.");
 
-    // Meta line
+    const overall = dk.rankings.overall;
+
+    // Compute VBD baselines from actual data using league roster structure
+    const baselines = computeBaselines(dk.rankings);
+
+    // Compute custom VBD for every player
+    const withVbd = overall
+      .filter(p => p.name && p.pos)
+      .map(p => {
+        const proj = Number(p.proj_pts) || 0;
+        const base = baselines[p.pos] || 0;
+        const vbd = proj > 0 ? proj - base : 0;
+        return { ...p, _vbd: vbd, _proj: proj, _base: base };
+      });
+
+    // Sort by VBD descending for overall rankings
+    const vbdSorted = [...withVbd].sort((a, b) => b._vbd - a._vbd);
+
+    // Top 200 overall (excluding K & DST)
+    const top200 = vbdSorted.filter(p => !['K', 'DST'].includes(p.pos)).slice(0, 200);
+
+    // Positional lists (sorted by VBD within position)
+    const positional = {};
+    ['QB', 'RB', 'WR', 'TE', 'K', 'DST'].forEach(pos => {
+      positional[pos] = vbdSorted.filter(p => p.pos === pos);
+    });
+
+    // Meta
     const fetched = dk.fetched_at ? new Date(dk.fetched_at) : null;
-    const totalPlayers = (dk._summary && dk._summary.overall) || 0;
     if (metaEl) {
-      metaEl.textContent = `${totalPlayers} players ranked${fetched ? ' • updated ' + relTime(fetched.toISOString()) : ''} • FantasyPros HOF • ${dk.scoring || 'PPR'}`;
+      metaEl.textContent = `${withVbd.length} players • Custom VBD for your league (1QB/2RB/2WR/1TE/1FLEX) • Full PPR • updated ${fetched ? relTime(fetched.toISOString()) : 'recently'}`;
     }
 
-    // Quick nav — sticky anchor bar
+    // Quick nav
     if (quicknavEl) {
-      const links = [
-        { id: 'sec-board',     label: 'Board' },
-        { id: 'sec-vbd',       label: 'VBD' },
-        { id: 'sec-sleepers',  label: 'Sleepers' },
-        { id: 'sec-busts',     label: 'Busts' },
-        { id: 'sec-handcuffs', label: 'Handcuffs' },
-        { id: 'sec-values',    label: 'Values' },
-      ];
-      quicknavEl.innerHTML = links.map(l =>
-        `<a href="#${l.id}" class="dk-nav-link">${l.label}</a>`
-      ).join("");
+      quicknavEl.innerHTML = [
+        { id: 'sec-rankings',   label: 'Rankings' },
+        { id: 'sec-sleepers',   label: 'Sleepers' },
+        { id: 'sec-busts',      label: 'Busts' },
+        { id: 'sec-handcuffs',  label: 'Handcuffs' },
+        { id: 'sec-values',     label: 'Values' },
+      ].map(l => `<a href="#${l.id}" class="dk-nav-link">${l.label}</a>`).join("");
     }
 
-    // ========== BOARD (position tabs + tiers) ==========
-    let activePos = "overall";
-    let searchTerm = "";
+    // ========== CUSTOM RANKINGS (main section) ==========
+    const tabs = ['Top 200', 'QB', 'RB', 'WR', 'TE', 'K', 'DST'];
+    let activeTab = 'Top 200';
+    let searchTerm = '';
 
-    const buildRows = () => {
-      let rows = (dk.rankings && dk.rankings[activePos]) || [];
-      // "All" tab excludes K and DST (skill positions only)
-      if (activePos === "overall") {
-        rows = rows.filter(r => r.pos && !["K", "DST"].includes(r.pos));
+    const getActiveRows = () => {
+      let rows;
+      if (activeTab === 'Top 200') {
+        rows = top200;
+      } else {
+        rows = positional[activeTab] || [];
       }
       if (searchTerm) {
         const t = searchTerm.toLowerCase();
@@ -1564,87 +1587,57 @@ async function renderDraftKit() {
       return rows;
     };
 
-    const posCount = (pos) => {
-      if (!dk.rankings || !dk.rankings[pos]) return 0;
-      if (pos === "overall") {
-        return dk.rankings[pos].filter(r => r.pos && !["K", "DST"].includes(r.pos)).length;
-      }
-      return dk.rankings[pos].length;
+    const tabCount = (tab) => {
+      if (tab === 'Top 200') return 200;
+      return (positional[tab] || []).length;
     };
 
-    controlsEl.innerHTML = `
-      <div class="dk-tabs">
-        ${positions.map(pos => `
-          <button class="dk-tab ${pos === activePos ? 'active' : ''} dk-tab-${pos.toLowerCase()}" data-pos="${pos}">
-            <span class="dk-tab-label">${pos === "overall" ? "All" : pos}</span>
-            <span class="dk-tab-count">${posCount(pos)}</span>
-          </button>`).join("")}
-      </div>
-      <div class="dk-search">
-        <input type="search" id="dk-search-input" placeholder="Search player name…" autocomplete="off">
-      </div>`;
-
-    const paintBoard = () => {
-      boardEl.innerHTML = renderDraftBoard(buildRows());
-    };
-
-    controlsEl.querySelectorAll(".dk-tab").forEach(btn => {
-      btn.addEventListener("click", () => {
-        activePos = btn.dataset.pos;
-        controlsEl.querySelectorAll(".dk-tab").forEach(b => b.classList.toggle("active", b === btn));
-        paintBoard();
+    // CSV download helper
+    const downloadCsv = (rows, filename) => {
+      const headers = ['Rank', 'Player', 'Pos', 'Team', 'Bye', 'ECR', 'Proj Pts', 'VBD', 'Baseline', 'ADP'];
+      const csvRows = [headers.join(',')];
+      rows.forEach((r, i) => {
+        csvRows.push([
+          i + 1,
+          `"${(r.name || '').replace(/"/g, '""')}"`,
+          r.pos || '',
+          r.team || '',
+          r.bye || '',
+          r.rank || '',
+          r._proj != null ? r._proj.toFixed(1) : '',
+          r._vbd != null ? r._vbd.toFixed(1) : '',
+          r._base != null ? r._base.toFixed(1) : '',
+          r.adp || '',
+        ].join(','));
       });
-    });
-
-    const searchInput = document.getElementById("dk-search-input");
-    if (searchInput) {
-      let debounce;
-      searchInput.addEventListener("input", () => {
-        clearTimeout(debounce);
-        debounce = setTimeout(() => {
-          searchTerm = searchInput.value.trim();
-          paintBoard();
-        }, 150);
-      });
-    }
-
-    paintBoard();
-
-    // ========== VBD (Value Based Drafting) ==========
-    // Baselines for 12-team full PPR:
-    //   QB=QB12, RB=RB30 (incl flex), WR=WR36 (incl flex), TE=TE12, K=K12, DST=DST12
-    const BASELINES = { QB: 12, RB: 30, WR: 36, TE: 12, K: 12, DST: 12 };
-
-    const getBaselineProj = (pos) => {
-      const arr = (dk.rankings[pos] || [])
-        .map(p => toNum(p.proj_pts))
-        .filter(n => n != null)
-        .sort((a, b) => b - a);
-      const idx = (BASELINES[pos] || 12) - 1;
-      return arr[idx] != null ? arr[idx] : (arr.length ? arr[arr.length - 1] : 0);
+      const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
     };
 
-    const baselines = {
-      QB:  getBaselineProj("QB"),
-      RB:  getBaselineProj("RB"),
-      WR:  getBaselineProj("WR"),
-      TE:  getBaselineProj("TE"),
-      K:   getBaselineProj("K"),
-      DST: getBaselineProj("DST"),
-    };
+    const paintRankings = () => {
+      const rows = getActiveRows();
+      controlsEl.innerHTML = `
+        <div class="dk-tabs">
+          ${tabs.map(tab => `
+            <button class="dk-tab ${tab === activeTab ? 'active' : ''} ${tab !== 'Top 200' ? 'dk-tab-' + tab.toLowerCase() : ''}" data-tab="${tab}">
+              <span class="dk-tab-label">${tab}</span>
+              <span class="dk-tab-count">${tabCount(tab)}</span>
+            </button>`).join("")}
+        </div>
+        <div class="dk-controls-row">
+          <div class="dk-search">
+            <input type="search" id="dk-search-input" placeholder="Search player name…" value="${esc(searchTerm)}" autocomplete="off">
+          </div>
+          <button class="dk-csv-btn" id="dk-csv-download">Download CSV</button>
+        </div>`;
 
-    const vbdRows = (dk.rankings.overall || [])
-      .map(r => {
-        const pts = toNum(r.proj_pts);
-        const base = baselines[r.pos] || 0;
-        return { ...r, _vbd: (pts != null && base != null) ? pts - base : null, _proj: pts };
-      })
-      .filter(r => r._vbd != null)
-      .sort((a, b) => b._vbd - a._vbd)
-      .slice(0, 100);
-
-    if (vbdRows.length) {
-      vbdEl.innerHTML = `
+      // Baseline strip
+      const baselineHtml = `
         <div class="dk-baseline-strip">
           ${Object.entries(baselines).map(([pos, val]) =>
             `<div class="dk-baseline-item">
@@ -1653,34 +1646,86 @@ async function renderDraftKit() {
              </div>`).join("")}
         </div>
         <p class="dk-note dk-baseline-note">
-          VBD = projected points − position baseline. Baselines above are the projected points
-          of the last startable player at each position in a 12-team full-PPR league
-          (QB12, RB30, WR36, TE12, K12, DST12).
-        </p>
-        <div class="dk-cards">
-          ${vbdRows.slice(0, 60).map((r, i) => `
-            <div class="dk-card dk-vbd-card">
-              <div class="dk-rank dk-vbd-rank">${i + 1}</div>
-              <div class="dk-info">
-                <div class="dk-name">${esc(r.name)}</div>
-                <div class="dk-meta">
-                  <span class="${_pillClass(r.pos)}">${esc(r.pos)}</span>
-                  <span class="dk-team">${esc(r.team)}</span>
-                  ${r.bye ? `<span class="dk-bye">BYE ${esc(r.bye)}</span>` : ''}
-                  <span class="dk-fp">ECR ${r.rank ?? '—'}</span>
-                </div>
-              </div>
-              <div class="dk-stats">
-                <div class="dk-stat"><span class="lbl">VBD</span><span class="val gold">${Math.round(r._vbd)}</span></div>
-                <div class="dk-stat"><span class="lbl">Proj</span><span class="val proj">${r._proj != null ? Math.round(r._proj) : '—'}</span></div>
-                <div class="dk-stat"><span class="lbl">Base</span><span class="val">${Math.round(baselines[r.pos] || 0)}</span></div>
-                <div class="dk-stat"><span class="lbl">ADP</span><span class="val">${toFix(r.adp)}</span></div>
-              </div>
-            </div>`).join("")}
-        </div>`;
-    } else {
-      vbdEl.innerHTML = empty("VBD needs projection data. If this stays empty, check the workflow logs.");
-    }
+          VBD = projected points − position baseline. Baselines auto-computed for your league's
+          roster (1QB/2RB/2WR/1TE/1FLEX): QB12, RB30, WR28, TE13, K12, DST12.
+        </p>`;
+
+      rankingsEl.innerHTML = `
+        ${baselineHtml}
+        <div class="dk-rankings-table-wrap">
+          <table class="stats-table dk-rankings-table">
+            <thead>
+              <tr>
+                <th class="num">#</th>
+                <th>Player</th>
+                <th>Pos</th>
+                <th>Team</th>
+                <th class="num">Bye</th>
+                <th class="num">ECR</th>
+                <th class="num">Proj</th>
+                <th class="num">VBD</th>
+                <th class="num">ADP</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map((r, i) => `
+                <tr>
+                  <td class="num rank">${i + 1}</td>
+                  <td class="dk-row-name">${esc(r.name)}${r._injury ? ` <span class="trade-injury">${esc(r._injury)}</span>` : ''}</td>
+                  <td><span class="${_pillClass(r.pos)}">${esc(r.pos)}</span></td>
+                  <td>${esc(r.team || '')}</td>
+                  <td class="num">${r.bye || '—'}</td>
+                  <td class="num">${r.rank || '—'}</td>
+                  <td class="num">${r._proj ? r._proj.toFixed(1) : '—'}</td>
+                  <td class="num ${r._vbd > 0 ? 'gold' : ''}">${r._vbd != null ? r._vbd.toFixed(1) : '—'}</td>
+                  <td class="num">${r.adp || '—'}</td>
+                </tr>`).join("")}
+            </tbody>
+          </table>
+        </div>
+        <p class="dk-note">
+          ${rows.length} players shown. Rankings computed from FantasyPros projections
+          using your league's scoring settings (standard full PPR).
+        </p>`;
+
+      // Wire tab clicks
+      controlsEl.querySelectorAll('.dk-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeTab = btn.dataset.tab;
+          searchTerm = '';
+          paintRankings();
+        });
+      });
+
+      // Wire search
+      const searchInput = document.getElementById('dk-search-input');
+      if (searchInput) {
+        let debounce;
+        searchInput.addEventListener('input', () => {
+          clearTimeout(debounce);
+          debounce = setTimeout(() => {
+            searchTerm = searchInput.value.trim();
+            paintRankings();
+          }, 150);
+        });
+        // Refocus after repaint
+        searchInput.focus();
+        searchInput.setSelectionRange(searchTerm.length, searchTerm.length);
+      }
+
+      // Wire CSV download
+      const csvBtn = document.getElementById('dk-csv-download');
+      if (csvBtn) {
+        csvBtn.addEventListener('click', () => {
+          const filename = activeTab === 'Top 200'
+            ? '12guys1cup-top-200-rankings.csv'
+            : `12guys1cup-${activeTab.toLowerCase()}-rankings.csv`;
+          downloadCsv(getActiveRows(), filename);
+        });
+      }
+    };
+
+    paintRankings();
 
     // ========== SLEEPERS (CSV-driven, position tabs) ==========
     const sleeperPositions = ["QB", "RB", "WR", "TE"];
@@ -1745,16 +1790,10 @@ async function renderDraftKit() {
         bustsEl.innerHTML = empty("No busts CSV uploaded yet. Add busts.csv to assets/data/fp-csv/.");
         return;
       }
-      // Get unique positions present in the data
       const posesInData = Array.from(new Set(result.rows.map(r => r.pos)));
       const bustPositions = ["ALL", ...["RB", "WR", "QB", "TE"].filter(p => posesInData.includes(p))];
-      // If active pos no longer in data, reset to ALL
-      if (bustActivePos !== "ALL" && !posesInData.includes(bustActivePos)) {
-        bustActivePos = "ALL";
-      }
-      const filtered = bustActivePos === "ALL"
-        ? result.rows
-        : result.rows.filter(r => r.pos === bustActivePos);
+      if (bustActivePos !== "ALL" && !posesInData.includes(bustActivePos)) bustActivePos = "ALL";
+      const filtered = bustActivePos === "ALL" ? result.rows : result.rows.filter(r => r.pos === bustActivePos);
 
       bustsEl.innerHTML = `
         <div class="dk-sub-tabs">
@@ -1784,7 +1823,7 @@ async function renderDraftKit() {
         </div>
         <p class="dk-note">
           Consensus busts from FantasyPros HOF experts. "vs ADP" shows how many spots later
-          they're ranked than where they're being drafted — big red negative = getting drafted way too early.
+          they're ranked than where they're being drafted.
         </p>`;
 
       bustsEl.querySelectorAll(".dk-sub-tab").forEach(btn => {
@@ -1840,8 +1879,8 @@ async function renderDraftKit() {
     };
     paintHandcuffs();
 
-    // ========== VALUE PICKS (kept from before) ==========
-    const withAdp = (dk.rankings.overall || [])
+    // ========== VALUE PICKS ==========
+    const withAdp = overall
       .map(r => ({ ...r, _adp: toNum(r.adp), _rank: toNum(r.rank) }))
       .filter(r => r._adp != null && r._rank != null);
     const valuePicks = withAdp
@@ -1880,7 +1919,7 @@ async function renderDraftKit() {
     }
 
   } catch (e) {
-    if (boardEl) boardEl.innerHTML = errBox(e.message);
+    if (rankingsEl) rankingsEl.innerHTML = errBox(e.message);
   }
 }
 
@@ -2090,25 +2129,27 @@ function enrichPlayer(player, nflverse) {
   }
 }
 
-/* Baseline ranks for 12-team full PPR — the last "startable" player
-   at each position (used to compute Points Above Replacement). */
+/* Baseline ranks for 12-team full PPR (1QB/2RB/2WR/1TE/1FLEX/1K/1DEF)
+   = the last "startable" player at each position.
+   FLEX (RB/WR/TE) splits ~60% RB / 35% WR / 5% TE historically. */
 const VBD_BASELINE_RANKS = {
-  QB: 12,   // 12 teams × 1 QB starter
-  RB: 30,   // 12 × 2 RB + flex share
-  WR: 36,   // 12 × 3 WR/flex slots
-  TE: 12,   // 12 × 1 TE
-  K:  12,
+  QB:  12,   // 12 teams × 1 QB
+  RB:  30,   // 12×2 = 24 fixed + ~6 FLEX RBs
+  WR:  28,   // 12×2 = 24 fixed + ~4 FLEX WRs
+  TE:  13,   // 12×1 = 12 fixed + ~1 FLEX TE
+  K:   12,
   DST: 12,
 };
 
-/* Custom baseline overrides — used INSTEAD of the computed baseline
-   for any position listed here. Comment out (or delete) a line to
-   fall back to the auto-computed value from actual projections. */
+/* Custom baseline overrides — uncomment any position to override
+   the auto-computed value from actual projections.
 const CUSTOM_BASELINES = {
-  RB: 175.0,
-  WR: 196.6,
-  TE: 157.5,
+  // RB: 175.0,
+  // WR: 196.6,
+  // TE: 157.5,
 };
+*/
+const CUSTOM_BASELINES = {};
 
 /* Fallback injury discount used only if FP hasn't published a play probability. */
 const INJURY_STATUS_FALLBACK = {
