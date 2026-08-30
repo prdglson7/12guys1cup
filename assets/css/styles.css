@@ -2662,6 +2662,280 @@ main { padding: 32px 0 60px; }
 }
 
 /* ============================================================
+   Draft Kit — Cheat Sheet Layout
+   ============================================================ */
+
+.cs-sheet {
+  background: var(--paper);
+  position: relative;
+  overflow: hidden;
+  border: 3px solid var(--gold-dark);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.cs-sheet::before {
+  content: '12 GUYS 1 CUP';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-family: var(--f-sign);
+  font-size: 100px;
+  font-weight: 700;
+  color: rgba(30, 58, 95, 0.04);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
+  letter-spacing: 16px;
+}
+
+.cs-header {
+  background: linear-gradient(135deg, var(--navy) 0%, #2a4f7a 100%);
+  color: var(--gold);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.cs-title {
+  font-family: var(--f-sign);
+  font-size: 22px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+.cs-subtitle {
+  font-family: var(--f-body);
+  font-size: 12px;
+  color: var(--cream);
+  letter-spacing: 2px;
+  margin-top: 4px;
+  opacity: 0.8;
+}
+.cs-header-right {
+  text-align: right;
+  font-size: 11px;
+  color: var(--cream);
+  opacity: 0.7;
+}
+.cs-league {
+  font-family: var(--f-sign);
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  opacity: 1;
+}
+
+.cs-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.cs-col { border-right: 1px solid var(--cream-2); }
+.cs-col:last-child { border-right: none; }
+
+.cs-pos-header {
+  text-align: center;
+  padding: 8px;
+  font-family: var(--f-sign);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+.cs-qb  { background: #B8386B; }
+.cs-rb  { background: #2E7D32; }
+.cs-wr  { background: #1565C0; }
+.cs-te  { background: #E65100; }
+.cs-k   { background: #5E35B1; }
+.cs-dst { background: #455A64; }
+
+.cs-subheader {
+  display: grid;
+  grid-template-columns: 28px 1fr 32px 42px;
+  gap: 4px;
+  padding: 4px 6px;
+  background: rgba(30, 58, 95, 0.08);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--brown);
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--navy);
+}
+.cs-subheader span:nth-child(3),
+.cs-subheader span:nth-child(4) { text-align: center; }
+
+.cs-tier {
+  background: var(--navy);
+  color: var(--gold);
+  font-family: var(--f-sign);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-align: center;
+  padding: 4px 8px;
+  text-transform: uppercase;
+}
+.cs-t1 { background: linear-gradient(90deg, #1a472a, #2E7D32); }
+.cs-t2 { background: linear-gradient(90deg, #1E3A5F, #2a5f8f); }
+.cs-t3 { background: linear-gradient(90deg, #5a3a1e, var(--brown)); }
+.cs-t4 { background: linear-gradient(90deg, #4a1a1a, var(--red)); }
+.cs-t5 { background: linear-gradient(90deg, #3d1a5c, #6A1B9A); }
+.cs-t6 { background: #37474F; }
+.cs-t7 { background: #455A64; }
+.cs-t8 { background: #546E7A; }
+.cs-t9 { background: #607D8B; }
+.cs-t10, .cs-t11, .cs-t12 { background: #78909C; }
+
+.cs-player {
+  display: grid;
+  grid-template-columns: 28px 1fr 32px 42px;
+  gap: 4px;
+  padding: 3px 6px;
+  font-size: 12px;
+  line-height: 1.3;
+  border-bottom: 1px solid rgba(30, 58, 95, 0.06);
+  align-items: center;
+}
+.cs-player:nth-child(even) { background: rgba(30, 58, 95, 0.03); }
+.cs-player:hover { background: rgba(232, 184, 74, 0.12); }
+
+.cs-player-wide {
+  grid-template-columns: 28px 1fr 32px 42px 42px;
+}
+
+.cs-rank {
+  font-family: var(--f-sign);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--navy);
+  text-align: center;
+}
+.cs-name {
+  font-weight: 700;
+  color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cs-team {
+  font-weight: 400;
+  color: var(--brown);
+  font-size: 10px;
+}
+.cs-bye {
+  text-align: center;
+  font-size: 11px;
+  color: var(--brown);
+}
+.cs-adp {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.cs-footer {
+  background: var(--navy);
+  color: var(--cream);
+  padding: 8px 20px;
+  font-size: 10px;
+  display: flex;
+  justify-content: space-between;
+  opacity: 0.7;
+  position: relative;
+  z-index: 1;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Top 200 4-column grid */
+.cs-200-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  position: relative;
+  z-index: 1;
+}
+.cs-200-col { border-right: 1px solid var(--cream-2); }
+.cs-200-col:last-child { border-right: none; }
+.cs-200-col-header {
+  text-align: center;
+  padding: 6px;
+  font-family: var(--f-sign);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 2px;
+  background: var(--navy);
+  color: var(--gold);
+}
+.cs-200-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 26px 28px 38px;
+  gap: 3px;
+  padding: 2px 5px;
+  font-size: 11px;
+  line-height: 1.2;
+  border-bottom: 1px solid rgba(30, 58, 95, 0.06);
+  align-items: center;
+}
+.cs-200-row:nth-child(even) { background: rgba(30, 58, 95, 0.03); }
+.cs-200-row:hover { background: rgba(232, 184, 74, 0.12); }
+.cs-200-rank {
+  font-family: var(--f-sign);
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--navy);
+  text-align: center;
+}
+.cs-200-name {
+  font-weight: 700;
+  color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+}
+.cs-200-pos {
+  text-align: center;
+  font-weight: 700;
+  font-size: 9px;
+  padding: 1px 3px;
+  color: white;
+  border-radius: 2px;
+}
+.cs-200-bye { text-align: center; font-size: 10px; color: var(--brown); }
+.cs-200-adp { text-align: center; font-size: 10px; font-weight: 700; color: var(--navy); }
+
+/* Single column view (K, DST) */
+.cs-single-col {
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.cs-single-col .cs-subheader {
+  grid-template-columns: 28px 1fr 32px 42px 42px;
+}
+
+@media (max-width: 768px) {
+  .cs-grid, .cs-200-grid { grid-template-columns: 1fr 1fr; }
+  .cs-sheet::before { font-size: 50px; }
+}
+@media (max-width: 480px) {
+  .cs-grid, .cs-200-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
    Draft Kit — Custom Rankings + CSV download
    ============================================================ */
 
