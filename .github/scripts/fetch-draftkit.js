@@ -133,9 +133,9 @@ async function fetchAdp() {
       name: p.player_name || p.name,
       pos: p.player_position_id || p.position_id,
       team: p.player_team_id || p.team_id,
-      adp: num(p.rank_adp || p.rank),
-      adp_low: num(p.rank_adp_low),
-      adp_high: num(p.rank_adp_high),
+      adp: num(p.rank_adp || p.adp || p.rank_ave || p.overall_adp || p.rank),
+      adp_low: num(p.rank_adp_low || p.adp_low),
+      adp_high: num(p.rank_adp_high || p.adp_high),
     }));
     console.log(`${label} ✓ ${players.length} players`);
     return { ok: true, players };
