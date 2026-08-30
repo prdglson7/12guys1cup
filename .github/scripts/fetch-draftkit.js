@@ -147,21 +147,34 @@ async function fetchAdp() {
 
 async function main() {
   const started = Date.now();
+  const delay = (ms) => new Promise(r => setTimeout(r, ms));
 
-  // Fire everything in parallel
-  const [qb, rb, wr, te, k, dst, projQb, projRb, projWr, projTe, adp] = await Promise.all([
+  // Batch 1: Rankings (6 calls)
+  const [qb, rb, wr, te, k, dst] = await Promise.all([
     fetchRanking('QB',  SCORING),
     fetchRanking('RB',  SCORING),
     fetchRanking('WR',  SCORING),
     fetchRanking('TE',  SCORING),
     fetchRanking('K',   'STD'),
     fetchRanking('DST', 'STD'),
+  ]);
+
+  // Wait 3 seconds before next batch to avoid FP rate limit (429)
+  await delay(3000);
+
+  // Batch 2: Projections (4 calls)
+  const [projQb, projRb, projWr, projTe] = await Promise.all([
     fetchProjections('QB', SCORING),
     fetchProjections('RB', SCORING),
     fetchProjections('WR', SCORING),
     fetchProjections('TE', SCORING),
-    fetchAdp(),
   ]);
+
+  // Wait 3 seconds before ADP call
+  await delay(3000);
+
+  // Batch 3: ADP (1 call)
+  const adp = await fetchAdp();
 
   // Merge projections and ADP into rankings by player name
   const projByName = new Map();
