@@ -1509,26 +1509,20 @@ function renderDraftBoard(rows) {
     </div>`).join("");
 }
 
-/* Auto-compute tiers from projection gaps.
-   Finds natural breakpoints where the gap between consecutive players
-   exceeds 1.5x the median gap for that position. */
-function computeTiers(players) {
-  if (!players.length) return;
-  const pts = players.map(p => p._proj || 0);
-  const gaps = [];
-  for (let i = 1; i < pts.length; i++) gaps.push(pts[i - 1] - pts[i]);
-  if (!gaps.length) { players.forEach(p => p._tier = 1); return; }
-
-  // Median gap
-  const sorted = [...gaps].sort((a, b) => a - b);
-  const median = sorted[Math.floor(sorted.length / 2)] || 1;
-  const threshold = Math.max(median * 1.5, 3); // At least 3 pts gap for a tier break
-
-  let tier = 1;
-  players[0]._tier = tier;
-  for (let i = 1; i < players.length; i++) {
-    if (gaps[i - 1] > threshold) tier++;
-    players[i]._tier = tier;
+/* Load FFBallers tier + ADP overrides from tiers-adp.json.
+   These take precedence over FP's tier (always null) and ADP data. */
+async function loadTiersAdp() {
+  try {
+    const res = await fetch('assets/data/tiers-adp.json', { cache: 'default' });
+    if (!res.ok) return new Map();
+    const data = await res.json();
+    const map = new Map();
+    for (const [key, val] of Object.entries(data)) {
+      map.set(key, val);
+    }
+    return map;
+  } catch (_) {
+    return new Map();
   }
 }
 
@@ -1539,7 +1533,7 @@ async function renderDraftKit() {
   if (rankingsEl) rankingsEl.innerHTML = loading("Loading Draft Kit…");
 
   try {
-    const dk = await getDraftKit();
+    const [dk, tiersAdp] = await Promise.all([getDraftKit(), loadTiersAdp()]);
     if (!dk?.rankings?.overall) throw new Error("Draft Kit data not loaded.");
 
     const overall = dk.rankings.overall;
@@ -1550,13 +1544,21 @@ async function renderDraftKit() {
       .map(p => {
         const proj = Number(p.proj_pts) || 0;
         const base = baselines[p.pos] || 0;
-        return { ...p, _vbd: proj > 0 ? proj - base : 0, _proj: proj, _base: base };
+        const key = (p.name || '').toLowerCase().trim();
+        const override = tiersAdp.get(key);
+        return {
+          ...p,
+          _vbd: proj > 0 ? proj - base : 0,
+          _proj: proj,
+          _base: base,
+          _tier: override?.tier || p.tier || null,
+          _adp: override?.adp || p.adp || null,
+        };
       });
 
     const byPos = {};
     ['QB', 'RB', 'WR', 'TE', 'K', 'DST'].forEach(pos => {
       byPos[pos] = [...withVbd].filter(p => p.pos === pos).sort((a, b) => b._vbd - a._vbd);
-      computeTiers(byPos[pos]); // Auto-assign tiers based on projection gaps
     });
 
     const top200 = [...withVbd]
@@ -1625,7 +1627,7 @@ async function renderDraftKit() {
               html += `<div class="tier" style="background:${bg}">Tier ${p._tier}</div>`;
               lastTier = p._tier;
             }
-            html += `<div class="row"><span class="rk">${i+1}</span><span class="nm">${esc(p.name)} <span class="tm">${esc(p.team||'')}</span></span><span class="by">${p.bye||'—'}</span><span class="adp">${fmtAdp(p.adp)}</span></div>`;
+            html += `<div class="row"><span class="rk">${i+1}</span><span class="nm">${esc(p.name)} <span class="tm">${esc(p.team||'')}</span></span><span class="by">${p.bye||'—'}</span><span class="adp">${fmtAdp(p._adp)}</span></div>`;
           });
           html += `</div>`;
         });
@@ -1638,7 +1640,7 @@ async function renderDraftKit() {
           const slice = top200.slice(s, e);
           html += `<div class="col"><div class="c200hd">${label}</div>`;
           slice.forEach((p, i) => {
-            html += `<div class="r200"><span class="rk">${s+i+1}</span><span class="nm">${esc(p.name)} <span class="tm">${esc(p.team||'')}</span></span><span class="pill" style="background:${posColorHex[p.pos]||'#455A64'}">${esc(p.pos)}</span><span class="by">${p.bye||'—'}</span><span class="adp">${fmtAdp(p.adp)}</span></div>`;
+            html += `<div class="r200"><span class="rk">${s+i+1}</span><span class="nm">${esc(p.name)} <span class="tm">${esc(p.team||'')}</span></span><span class="pill" style="background:${posColorHex[p.pos]||'#455A64'}">${esc(p.pos)}</span><span class="by">${p.bye||'—'}</span><span class="adp">${fmtAdp(p._adp)}</span></div>`;
           });
           html += `</div>`;
         });
@@ -1660,9 +1662,13 @@ async function renderDraftKit() {
     const tierClasses = ['', 'cs-t1', 'cs-t2', 'cs-t3', 'cs-t4', 'cs-t5', 'cs-t6', 'cs-t7', 'cs-t8', 'cs-t9', 'cs-t10', 'cs-t11', 'cs-t12'];
 
     const fmtAdp = (adp) => {
-      if (adp == null || adp === '') return '—';
-      const n = Number(adp);
-      if (isNaN(n) || n <= 0) return '—';
+      if (adp == null || adp === '' || adp === '—') return '—';
+      // If already in round.pick format (contains a dot), return as-is
+      const s = String(adp).trim();
+      if (s.includes('.') && s.length <= 5) return s;
+      // If numeric overall pick, convert to round.pick for 12-team
+      const n = Number(s);
+      if (isNaN(n) || n <= 0) return s || '—';
       const round = Math.ceil(n / 12);
       const pick = ((n - 1) % 12) + 1;
       return `${round}.${String(pick).padStart(2, '0')}`;
@@ -1684,7 +1690,7 @@ async function renderDraftKit() {
             <span class="cs-rank">${i + 1}</span>
             <span class="cs-name">${esc(p.name)} <span class="cs-team">${esc(p.team || '')}</span></span>
             <span class="cs-bye">${p.bye || '—'}</span>
-            <span class="cs-adp">${fmtAdp(p.adp)}</span>
+            <span class="cs-adp">${fmtAdp(p._adp)}</span>
           </div>`;
       });
       return `
@@ -1713,7 +1719,7 @@ async function renderDraftKit() {
                 <span class="cs-200-name">${esc(p.name)} <span class="cs-team">${esc(p.team || '')}</span></span>
                 <span class="cs-200-pos ${posColors[p.pos]}">${esc(p.pos)}</span>
                 <span class="cs-200-bye">${p.bye || '—'}</span>
-                <span class="cs-200-adp">${fmtAdp(p.adp)}</span>
+                <span class="cs-200-adp">${fmtAdp(p._adp)}</span>
               </div>`).join('')}
           </div>`;
       }).join('');
@@ -1806,7 +1812,7 @@ async function renderDraftKit() {
                   <span class="cs-name">${esc(p.name)} <span class="cs-team">${esc(p.team || '')}</span></span>
                   <span class="cs-bye">${p.bye || '—'}</span>
                   <span class="cs-adp">${p._proj ? p._proj.toFixed(0) : '—'}</span>
-                  <span class="cs-adp">${fmtAdp(p.adp)}</span>
+                  <span class="cs-adp">${fmtAdp(p._adp)}</span>
                 </div>`).join('')}
             </div>
             <div class="cs-footer">
@@ -1837,7 +1843,7 @@ async function renderDraftKit() {
             const headers = ['Rank', 'Player', 'Pos', 'Team', 'Bye', 'Proj Pts', 'ADP'];
             const csvRows = [headers.join(',')];
             players.forEach((r, i) => {
-              csvRows.push([i+1, `"${(r.name||'').replace(/"/g,'""')}"`, r.pos||'', r.team||'', r.bye||'', r._proj?r._proj.toFixed(1):'', r.adp||''].join(','));
+              csvRows.push([i+1, `"${(r.name||'').replace(/"/g,'""')}"`, r.pos||'', r.team||'', r.bye||'', r._proj?r._proj.toFixed(1):'', r._adp||''].join(','));
             });
             const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
