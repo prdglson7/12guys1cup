@@ -15,6 +15,8 @@ from openpyxl.utils import get_column_letter
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 TIERS_FILE = os.path.join(REPO_ROOT, 'assets', 'data', 'tiers-adp.json')
+POOL_FILE = os.path.join(REPO_ROOT, 'assets', 'data', 'top200-pool.json')
+DRAFTKIT_FILE = os.path.join(REPO_ROOT, 'assets', 'data', 'draftkit.json')
 OUTPUT = os.path.join(REPO_ROOT, 'assets', 'data', '12guys1cup-cheat-sheet.xlsx')
 
 if not os.path.exists(TIERS_FILE):
@@ -185,19 +187,48 @@ ws.freeze_panes = "A6"
 ws2 = wb.create_sheet("Top 200")
 ws2.sheet_properties.tabColor = navy
 
-# Build overall ranking from the LG# field — players with no LG# go to end
-all_players = []
-for pos in ['QB', 'RB', 'WR', 'TE']:
-    for p in by_pos[pos]:
-        all_players.append(p)
+# Load the FFBallers 200-player pool + FP projections for sorting
+pool = []
+if os.path.exists(POOL_FILE):
+    with open(POOL_FILE) as f:
+        pool = json.load(f)
+    print(f'  Pool: {len(pool)} FFBallers players loaded')
 
-# Sort by position rank within FFBallers data (parse order approximates this)
-# Use a simple interleave: rank all players by their FFBallers-assigned LG rank if available
-# Since tiers-adp.json doesn't have LG#, we'll interleave by tier + position order
-# Approximation: sort by tier first, then by position parse order
-all_players.sort(key=lambda p: (p.get('tier', 99), positions.index(p['pos']) if p['pos'] in positions else 99))
+fp_by_name = {}
+if os.path.exists(DRAFTKIT_FILE):
+    with open(DRAFTKIT_FILE) as f:
+        dk = json.load(f)
+    for p in dk.get('rankings', {}).get('overall', []):
+        if p.get('name'):
+            fp_by_name[p['name'].lower().strip()] = p
+    print(f'  FP projections: {len(fp_by_name)} players matched')
 
-top200 = all_players[:200]
+# Match pool against FP projections, sort by projected points
+if pool:
+    top200 = []
+    for pp in pool:
+        key = pp['name'].lower().strip()
+        fp = fp_by_name.get(key, {})
+        proj = 0
+        try: proj = float(fp.get('proj_pts', 0) or 0)
+        except: proj = 0
+        ov = tiers_raw.get(key, {})
+        top200.append({
+            'name': pp['name'], 'team': pp.get('team',''),
+            'pos': pp.get('pos',''), 'bye': pp.get('bye',''),
+            'adp': ov.get('adp',''), 'proj': proj,
+        })
+    top200.sort(key=lambda x: -x['proj'])
+    no_proj = sum(1 for p in top200 if p['proj'] == 0)
+    if no_proj: print(f'  Warning: {no_proj} pool players had no FP projection')
+else:
+    # Fallback: interleave from tiers-adp.json
+    all_players = []
+    for pos in ['QB', 'RB', 'WR', 'TE']:
+        for p in by_pos[pos]:
+            all_players.append(p)
+    all_players.sort(key=lambda p: (p.get('tier', 99), positions.index(p['pos']) if p['pos'] in positions else 99))
+    top200 = all_players[:200]
 
 ws2.merge_cells("A1:E1")
 ws2["A1"].value = "12 GUYS 1 CUP — TOP 200 OVERALL"
