@@ -2662,6 +2662,54 @@ main { padding: 32px 0 60px; }
 }
 
 /* ============================================================
+   Draft Kit — Custom Rankings + CSV download
+   ============================================================ */
+
+.dk-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.dk-csv-btn {
+  background: var(--navy);
+  color: var(--gold);
+  font-family: var(--f-sign);
+  letter-spacing: 2px;
+  font-size: 11px;
+  border: 2px solid var(--navy);
+  padding: 8px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.dk-csv-btn:hover { background: var(--gold-dark); color: var(--navy); }
+
+.dk-rankings-table-wrap {
+  overflow-x: auto;
+  margin-top: 12px;
+}
+.dk-rankings-table {
+  width: 100%;
+  font-size: 13px;
+}
+.dk-rankings-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.dk-rankings-table td.rank {
+  font-weight: 700;
+  color: var(--brown);
+}
+.dk-row-name {
+  font-family: var(--f-display);
+  color: var(--navy);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* ============================================================
    Draft Kit — magazine-style board with tier bands + cards
    ============================================================ */
 
