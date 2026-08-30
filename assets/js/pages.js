@@ -1511,25 +1511,22 @@ function renderDraftBoard(rows) {
 
 /* Load FFBallers tier + ADP overrides from tiers-adp.json.
    These take precedence over FP's tier (always null) and ADP data. */
+/* Load FFBallers ADP data from tiers-adp.json */
 async function loadTiersAdp() {
   try {
     const res = await fetch('assets/data/tiers-adp.json', { cache: 'default' });
     if (!res.ok) return new Map();
     const data = await res.json();
     const map = new Map();
-    for (const [key, val] of Object.entries(data)) {
-      map.set(key, val);
-    }
+    for (const [key, val] of Object.entries(data)) map.set(key, val);
     return map;
-  } catch (_) {
-    return new Map();
-  }
+  } catch (_) { return new Map(); }
 }
 
 async function renderDraftKit() {
-  const rankingsEl  = document.getElementById("dk-rankings");
-  const controlsEl  = document.getElementById("dk-controls");
-  const metaEl      = document.getElementById("dk-meta");
+  const rankingsEl = document.getElementById("dk-rankings");
+  const controlsEl = document.getElementById("dk-controls");
+  const metaEl     = document.getElementById("dk-meta");
   if (rankingsEl) rankingsEl.innerHTML = loading("Loading Draft Kit…");
 
   try {
@@ -1539,134 +1536,38 @@ async function renderDraftKit() {
     const overall = dk.rankings.overall;
     const baselines = computeBaselines(dk.rankings);
 
-    const withVbd = overall
-      .filter(p => p.name && p.pos)
-      .map(p => {
-        const proj = Number(p.proj_pts) || 0;
-        const base = baselines[p.pos] || 0;
-        const key = (p.name || '').toLowerCase().trim();
-        const override = tiersAdp.get(key);
-        return {
-          ...p,
-          _vbd: proj > 0 ? proj - base : 0,
-          _proj: proj,
-          _base: base,
-          _tier: override?.tier || p.tier || null,
-          _adp: override?.adp || p.adp || null,
-        };
-      });
+    // Enrich with VBD + FFBallers ADP
+    const withVbd = overall.filter(p => p.name && p.pos).map(p => {
+      const proj = Number(p.proj_pts) || 0;
+      const base = baselines[p.pos] || 0;
+      const key = (p.name || '').toLowerCase().trim();
+      const ov = tiersAdp.get(key);
+      return { ...p, _vbd: proj > 0 ? proj - base : 0, _proj: proj, _adp: ov?.adp || p.adp || null };
+    });
 
+    // Positional lists sorted by VBD
     const byPos = {};
-    ['QB', 'RB', 'WR', 'TE', 'K', 'DST'].forEach(pos => {
+    ['QB','RB','WR','TE','K','DST'].forEach(pos => {
       byPos[pos] = [...withVbd].filter(p => p.pos === pos).sort((a, b) => b._vbd - a._vbd);
     });
 
-    const top200 = [...withVbd]
-      .filter(p => !['K', 'DST'].includes(p.pos))
-      .sort((a, b) => b._vbd - a._vbd)
-      .slice(0, 200);
+    // Top 200 excluding K/DST
+    const top200 = [...withVbd].filter(p => !['K','DST'].includes(p.pos)).sort((a, b) => b._vbd - a._vbd).slice(0, 200);
 
     const fetched = dk.fetched_at ? new Date(dk.fetched_at) : null;
     if (metaEl) {
       metaEl.textContent = `${withVbd.length} players • Full PPR • 1QB/2RB/2WR/1TE/1FLEX • updated ${fetched ? relTime(fetched.toISOString()) : 'recently'}`;
     }
 
-    /* Generate a styled HTML file for download that looks like the mockup.
-       Opens in any browser, printable, and Excel can import it too. */
-    const downloadStyledSheet = (view) => {
-      const posColorHex = { QB: '#B8386B', RB: '#2E7D32', WR: '#1565C0', TE: '#E65100', K: '#5E35B1', DST: '#455A64' };
-      const tierBgColors = ['', '#1a472a', '#1E3A5F', '#5a3a1e', '#4a1a1a', '#3d1a5c', '#37474F', '#455A64', '#546E7A', '#607D8B', '#78909C', '#78909C', '#78909C'];
-      const now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-      const styles = `
-        <style>
-          @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto+Condensed:wght@400;700&display=swap');
-          * { margin:0; padding:0; box-sizing:border-box; }
-          body { background:#1E3A5F; font-family:'Roboto Condensed',Arial,sans-serif; padding:20px; }
-          .sheet { max-width:1200px; margin:0 auto; background:#FDF6E3; border:3px solid #B58B1F; position:relative; overflow:hidden; }
-          .sheet::before { content:'12 GUYS 1 CUP'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-30deg); font-family:'Oswald',sans-serif; font-size:100px; font-weight:700; color:rgba(30,58,95,0.04); white-space:nowrap; pointer-events:none; z-index:0; letter-spacing:16px; }
-          .hdr { background:linear-gradient(135deg,#1E3A5F,#2a4f7a); color:#E8B84A; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; position:relative; z-index:1; }
-          .hdr h1 { font-family:'Oswald',sans-serif; font-size:22px; letter-spacing:4px; text-transform:uppercase; }
-          .hdr .sub { font-size:12px; color:#F2E7C9; letter-spacing:2px; margin-top:4px; opacity:.8; }
-          .hdr .rt { text-align:right; font-size:11px; color:#F2E7C9; }
-          .hdr .lg { font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:2px; color:#E8B84A; }
-          .grid { display:grid; grid-template-columns:repeat(4,1fr); position:relative; z-index:1; }
-          .col { border-right:1px solid #E5D5A8; } .col:last-child { border-right:none; }
-          .pos-hd { text-align:center; padding:8px; font-family:'Oswald',sans-serif; font-weight:700; font-size:14px; letter-spacing:3px; text-transform:uppercase; color:#fff; }
-          .subhd { display:grid; grid-template-columns:28px 1fr 32px 42px; gap:4px; padding:4px 6px; background:rgba(30,58,95,.08); font-size:9px; font-weight:700; letter-spacing:1px; color:#8B5A3C; text-transform:uppercase; border-bottom:2px solid #1E3A5F; }
-          .subhd span:nth-child(3),.subhd span:nth-child(4) { text-align:center; }
-          .tier { background:#1E3A5F; color:#E8B84A; font-family:'Oswald',sans-serif; font-weight:700; font-size:11px; letter-spacing:3px; text-align:center; padding:4px 8px; text-transform:uppercase; }
-          .row { display:grid; grid-template-columns:28px 1fr 32px 42px; gap:4px; padding:3px 6px; font-size:12px; line-height:1.3; border-bottom:1px solid rgba(30,58,95,.06); align-items:center; }
-          .row:nth-child(even) { background:rgba(30,58,95,.03); }
-          .rk { font-family:'Oswald',sans-serif; font-weight:700; font-size:13px; color:#1E3A5F; text-align:center; }
-          .nm { font-weight:700; color:#1E3A5F; } .nm .tm { font-weight:400; color:#8B5A3C; font-size:10px; }
-          .by,.adp { text-align:center; font-size:11px; color:#8B5A3C; } .adp { font-weight:700; color:#1E3A5F; }
-          .ftr { background:#1E3A5F; color:#F2E7C9; padding:8px 20px; font-size:10px; display:flex; justify-content:space-between; opacity:.7; position:relative; z-index:1; }
-          .grid200 { display:grid; grid-template-columns:repeat(4,1fr); position:relative; z-index:1; }
-          .c200hd { text-align:center; padding:6px; font-family:'Oswald',sans-serif; font-weight:700; font-size:11px; letter-spacing:2px; background:#1E3A5F; color:#E8B84A; }
-          .r200 { display:grid; grid-template-columns:28px 1fr 26px 28px 38px; gap:3px; padding:2px 5px; font-size:11px; border-bottom:1px solid rgba(30,58,95,.06); align-items:center; }
-          .r200:nth-child(even) { background:rgba(30,58,95,.03); }
-          .r200 .rk { font-size:12px; } .r200 .nm { font-size:11px; }
-          .pill { text-align:center; font-weight:700; font-size:9px; padding:1px 3px; color:#fff; border-radius:2px; }
-          @media print { body { background:#fff; padding:0; } .sheet { border:none; box-shadow:none; } }
-        </style>`;
-
-      let html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>12guys1cup Draft Cheat Sheet</title>${styles}</head><body>`;
-
-      if (view === 'positional') {
-        html += `<div class="sheet"><div class="hdr"><div><h1>Draft Cheat Sheet</h1><div class="sub">Positional Rankings with Tiers</div></div><div class="rt"><div class="lg">12 GUYS 1 CUP</div>Full PPR · 1QB/2RB/2WR/1TE/1FLEX<br>Draft Day: Sept 6, 2026</div></div>`;
-        html += `<div class="grid">`;
-        ['QB', 'RB', 'WR', 'TE'].forEach(pos => {
-          const players = byPos[pos] || [];
-          html += `<div class="col"><div class="pos-hd" style="background:${posColorHex[pos]}">${posLabels[pos]}</div>`;
-          html += `<div class="subhd"><span>#</span><span>Player</span><span>Bye</span><span>ADP</span></div>`;
-          let lastTier = null;
-          players.forEach((p, i) => {
-            if (p._tier && p._tier !== lastTier) {
-              const bg = tierBgColors[Math.min(p._tier, tierBgColors.length - 1)] || '#1E3A5F';
-              html += `<div class="tier" style="background:${bg}">Tier ${p._tier}</div>`;
-              lastTier = p._tier;
-            }
-            html += `<div class="row"><span class="rk">${i+1}</span><span class="nm">${esc(p.name)} <span class="tm">${esc(p.team||'')}</span></span><span class="by">${p.bye||'—'}</span><span class="adp">${fmtAdp(p._adp)}</span></div>`;
-          });
-          html += `</div>`;
-        });
-        html += `</div><div class="ftr"><span>12guys1cup.com</span><span>Full PPR · 1QB/2RB/2WR/1TE/1FLEX(RB/WR/TE) · 12 Teams</span><span>Updated ${now}</span></div></div>`;
-
-      } else {
-        html += `<div class="sheet"><div class="hdr"><div><h1>Top 200 Overall</h1><div class="sub">Excludes K &amp; DST</div></div><div class="rt"><div class="lg">12 GUYS 1 CUP</div>Full PPR · 1QB/2RB/2WR/1TE/1FLEX</div></div>`;
-        html += `<div class="grid200">`;
-        [[0,50,'1 – 50'],[50,100,'51 – 100'],[100,150,'101 – 150'],[150,200,'151 – 200']].forEach(([s,e,label]) => {
-          const slice = top200.slice(s, e);
-          html += `<div class="col"><div class="c200hd">${label}</div>`;
-          slice.forEach((p, i) => {
-            html += `<div class="r200"><span class="rk">${s+i+1}</span><span class="nm">${esc(p.name)} <span class="tm">${esc(p.team||'')}</span></span><span class="pill" style="background:${posColorHex[p.pos]||'#455A64'}">${esc(p.pos)}</span><span class="by">${p.bye||'—'}</span><span class="adp">${fmtAdp(p._adp)}</span></div>`;
-          });
-          html += `</div>`;
-        });
-        html += `</div><div class="ftr"><span>12guys1cup.com</span><span>Top 200 Overall · Excludes K &amp; DST</span><span>Updated ${now}</span></div></div>`;
-      }
-
-      html += `</body></html>`;
-      const blob = new Blob([html], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = view === 'positional' ? '12guys1cup-cheat-sheet.html' : '12guys1cup-top-200.html';
-      a.click();
-      URL.revokeObjectURL(url);
-    };
-
-    const posColors = { QB: 'cs-qb', RB: 'cs-rb', WR: 'cs-wr', TE: 'cs-te', K: 'cs-k', DST: 'cs-dst' };
-    const posLabels = { QB: 'Quarterbacks', RB: 'Running Backs', WR: 'Wide Receivers', TE: 'Tight Ends', K: 'Kickers', DST: 'Defenses' };
-    const tierClasses = ['', 'cs-t1', 'cs-t2', 'cs-t3', 'cs-t4', 'cs-t5', 'cs-t6', 'cs-t7', 'cs-t8', 'cs-t9', 'cs-t10', 'cs-t11', 'cs-t12'];
+    const posColors = { QB:'cs-qb', RB:'cs-rb', WR:'cs-wr', TE:'cs-te', K:'cs-k', DST:'cs-dst' };
+    const posLabels = { QB:'Quarterbacks', RB:'Running Backs', WR:'Wide Receivers', TE:'Tight Ends', K:'Kickers', DST:'Defenses' };
+    const posHex    = { QB:'#B8386B', RB:'#2E7D32', WR:'#1565C0', TE:'#E65100', K:'#5E35B1', DST:'#455A64' };
 
     const fmtAdp = (adp) => {
       if (adp == null || adp === '' || adp === '—') return '—';
-      // If already in round.pick format (contains a dot), return as-is
       const s = String(adp).trim();
+      if (s === '-' || s === 'None') return '—';
       if (s.includes('.') && s.length <= 5) return s;
-      // If numeric overall pick, convert to round.pick for 12-team
       const n = Number(s);
       if (isNaN(n) || n <= 0) return s || '—';
       const round = Math.ceil(n / 12);
@@ -1674,48 +1575,33 @@ async function renderDraftKit() {
       return `${round}.${String(pick).padStart(2, '0')}`;
     };
 
+    // ===== Positional column builder =====
     const buildPosColumn = (pos) => {
       const players = byPos[pos] || [];
-      let lastTier = null;
-      let rows = '';
-      players.forEach((p, i) => {
-        const tier = p._tier || null;
-        if (tier && tier !== lastTier) {
-          const tc = tierClasses[Math.min(tier, tierClasses.length - 1)] || 'cs-t4';
-          rows += `<div class="cs-tier ${tc}">Tier ${tier}</div>`;
-          lastTier = tier;
-        }
-        rows += `
-          <div class="cs-player">
-            <span class="cs-rank">${i + 1}</span>
-            <span class="cs-name">${esc(p.name)} <span class="cs-team">${esc(p.team || '')}</span></span>
-            <span class="cs-bye">${p.bye || '—'}</span>
-            <span class="cs-adp">${fmtAdp(p._adp)}</span>
-          </div>`;
-      });
       return `
         <div class="cs-col">
           <div class="cs-pos-header ${posColors[pos]}">${posLabels[pos]}</div>
           <div class="cs-subheader"><span>#</span><span>Player</span><span>Bye</span><span>ADP</span></div>
-          ${rows}
+          ${players.map((p, i) => `
+            <div class="cs-player">
+              <span class="cs-rank">${i + 1}</span>
+              <span class="cs-name">${esc(p.name)} <span class="cs-team">${esc(p.team || '')}</span></span>
+              <span class="cs-bye">${p.bye || '—'}</span>
+              <span class="cs-adp">${fmtAdp(p._adp)}</span>
+            </div>`).join('')}
         </div>`;
     };
 
+    // ===== Top 200 builder =====
     const buildTop200 = () => {
-      const cols = [
-        { label: '1 – 50',    start: 0,   end: 50 },
-        { label: '51 – 100',  start: 50,  end: 100 },
-        { label: '101 – 150', start: 100, end: 150 },
-        { label: '151 – 200', start: 150, end: 200 },
-      ];
-      return cols.map(col => {
-        const slice = top200.slice(col.start, col.end);
+      return [[0,50,'1 – 50'],[50,100,'51 – 100'],[100,150,'101 – 150'],[150,200,'151 – 200']].map(([s,e,label]) => {
+        const slice = top200.slice(s, e);
         return `
           <div class="cs-200-col">
-            <div class="cs-200-col-header">${col.label}</div>
+            <div class="cs-200-col-header">${label}</div>
             ${slice.map((p, i) => `
               <div class="cs-200-row">
-                <span class="cs-200-rank">${col.start + i + 1}</span>
+                <span class="cs-200-rank">${s + i + 1}</span>
                 <span class="cs-200-name">${esc(p.name)} <span class="cs-team">${esc(p.team || '')}</span></span>
                 <span class="cs-200-pos ${posColors[p.pos]}">${esc(p.pos)}</span>
                 <span class="cs-200-bye">${p.bye || '—'}</span>
@@ -1725,16 +1611,42 @@ async function renderDraftKit() {
       }).join('');
     };
 
+    // ===== CSV download builder =====
+    const downloadCsv = (view) => {
+      const rows = [];
+      if (view === 'positional') {
+        ['QB','RB','WR','TE'].forEach(pos => {
+          rows.push([posLabels[pos]]);
+          rows.push(['Rank','Player','Team','Bye','ADP']);
+          (byPos[pos] || []).forEach((p, i) => {
+            rows.push([i+1, (p.name||''), (p.team||''), (p.bye||''), fmtAdp(p._adp)]);
+          });
+          rows.push([]);
+        });
+      } else {
+        rows.push(['Rank','Player','Pos','Team','Bye','ADP']);
+        top200.forEach((p, i) => {
+          rows.push([i+1, (p.name||''), (p.pos||''), (p.team||''), (p.bye||''), fmtAdp(p._adp)]);
+        });
+      }
+      const csv = rows.map(r => r.map(c => (typeof c === 'string' && (c.includes(',') || c.includes('"'))) ? '"' + c.replace(/"/g,'""') + '"' : c).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = view === 'positional' ? '12guys1cup-cheat-sheet.csv' : '12guys1cup-top-200.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    // ===== TABS + RENDER =====
     const views = ['Cheat Sheet', 'Top 200', 'K', 'DST'];
     let activeView = 'Cheat Sheet';
 
     const paintRankings = () => {
       controlsEl.innerHTML = `
         <div class="dk-tabs">
-          ${views.map(v => `
-            <button class="dk-tab ${v === activeView ? 'active' : ''}" data-view="${v}">
-              <span class="dk-tab-label">${v}</span>
-            </button>`).join("")}
+          ${views.map(v => `<button class="dk-tab ${v === activeView ? 'active' : ''}" data-view="${v}"><span class="dk-tab-label">${v}</span></button>`).join("")}
         </div>
         <div class="dk-controls-row">
           <button class="dk-csv-btn" id="dk-csv-download">Download CSV</button>
@@ -1744,65 +1656,30 @@ async function renderDraftKit() {
         rankingsEl.innerHTML = `
           <div class="cs-sheet">
             <div class="cs-header">
-              <div class="cs-header-left">
-                <div class="cs-title">Draft Cheat Sheet</div>
-                <div class="cs-subtitle">Positional Rankings with Tiers</div>
-              </div>
-              <div class="cs-header-right">
-                <div class="cs-league">12 GUYS 1 CUP</div>
-                Full PPR · 1QB/2RB/2WR/1TE/1FLEX<br>
-                Draft Day: Sept 6, 2026
-              </div>
+              <div class="cs-header-left"><div class="cs-title">Draft Cheat Sheet</div><div class="cs-subtitle">Positional Rankings</div></div>
+              <div class="cs-header-right"><div class="cs-league">12 GUYS 1 CUP</div>Full PPR · 1QB/2RB/2WR/1TE/1FLEX<br>Draft Day: Sept 6, 2026</div>
             </div>
-            <div class="cs-grid">
-              ${buildPosColumn('QB')}
-              ${buildPosColumn('RB')}
-              ${buildPosColumn('WR')}
-              ${buildPosColumn('TE')}
-            </div>
-            <div class="cs-footer">
-              <span>12guys1cup.com</span>
-              <span>Full PPR · 1QB/2RB/2WR/1TE/1FLEX(RB/WR/TE) · 12 Teams</span>
-              <span>Updated ${fetched ? fetched.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'recently'}</span>
-            </div>
+            <div class="cs-grid">${buildPosColumn('QB')}${buildPosColumn('RB')}${buildPosColumn('WR')}${buildPosColumn('TE')}</div>
+            <div class="cs-footer"><span>12guys1cup.com</span><span>Full PPR · 1QB/2RB/2WR/1TE/1FLEX(RB/WR/TE) · 12 Teams</span><span>Updated ${fetched ? fetched.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'recently'}</span></div>
           </div>`;
-
       } else if (activeView === 'Top 200') {
         rankingsEl.innerHTML = `
           <div class="cs-sheet">
             <div class="cs-header">
-              <div class="cs-header-left">
-                <div class="cs-title">Top 200 Overall</div>
-                <div class="cs-subtitle">Excludes K &amp; DST</div>
-              </div>
-              <div class="cs-header-right">
-                <div class="cs-league">12 GUYS 1 CUP</div>
-                Full PPR · 1QB/2RB/2WR/1TE/1FLEX
-              </div>
+              <div class="cs-header-left"><div class="cs-title">Top 200 Overall</div><div class="cs-subtitle">Excludes K &amp; DST</div></div>
+              <div class="cs-header-right"><div class="cs-league">12 GUYS 1 CUP</div>Full PPR · 1QB/2RB/2WR/1TE/1FLEX</div>
             </div>
-            <div class="cs-200-grid">
-              ${buildTop200()}
-            </div>
-            <div class="cs-footer">
-              <span>12guys1cup.com</span>
-              <span>Top 200 Overall · Excludes K &amp; DST</span>
-              <span>Updated ${fetched ? fetched.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'recently'}</span>
-            </div>
+            <div class="cs-200-grid">${buildTop200()}</div>
+            <div class="cs-footer"><span>12guys1cup.com</span><span>Top 200 Overall · Excludes K &amp; DST</span><span>Updated ${fetched ? fetched.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'recently'}</span></div>
           </div>`;
-
-      } else if (activeView === 'K' || activeView === 'DST') {
+      } else {
         const pos = activeView;
         const players = byPos[pos] || [];
         rankingsEl.innerHTML = `
           <div class="cs-sheet">
             <div class="cs-header">
-              <div class="cs-header-left">
-                <div class="cs-title">${posLabels[pos]} Rankings</div>
-                <div class="cs-subtitle">12 GUYS 1 CUP</div>
-              </div>
-              <div class="cs-header-right">
-                <div class="cs-league">12 GUYS 1 CUP</div>
-              </div>
+              <div class="cs-header-left"><div class="cs-title">${posLabels[pos]} Rankings</div><div class="cs-subtitle">12 GUYS 1 CUP</div></div>
+              <div class="cs-header-right"><div class="cs-league">12 GUYS 1 CUP</div></div>
             </div>
             <div class="cs-single-col">
               <div class="cs-subheader cs-subheader-wide"><span>#</span><span>Player</span><span>Bye</span><span>Proj</span><span>ADP</span></div>
@@ -1815,44 +1692,27 @@ async function renderDraftKit() {
                   <span class="cs-adp">${fmtAdp(p._adp)}</span>
                 </div>`).join('')}
             </div>
-            <div class="cs-footer">
-              <span>12guys1cup.com</span>
-              <span>${posLabels[pos]}</span>
-              <span>Updated ${fetched ? fetched.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'recently'}</span>
-            </div>
+            <div class="cs-footer"><span>12guys1cup.com</span><span>${posLabels[pos]}</span><span>Updated ${fetched ? fetched.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'recently'}</span></div>
           </div>`;
       }
 
       controlsEl.querySelectorAll('.dk-tab').forEach(btn => {
-        btn.addEventListener('click', () => {
-          activeView = btn.dataset.view;
-          paintRankings();
-        });
+        btn.addEventListener('click', () => { activeView = btn.dataset.view; paintRankings(); });
       });
 
-      const csvBtn = document.getElementById('dk-csv-download');
-      if (csvBtn) {
-        csvBtn.addEventListener('click', () => {
-          if (activeView === 'Cheat Sheet') {
-            downloadStyledSheet('positional');
-          } else if (activeView === 'Top 200') {
-            downloadStyledSheet('top200');
-          } else {
-            // K/DST — simple CSV is fine for these
-            const players = byPos[activeView] || [];
-            const headers = ['Rank', 'Player', 'Pos', 'Team', 'Bye', 'Proj Pts', 'ADP'];
-            const csvRows = [headers.join(',')];
-            players.forEach((r, i) => {
-              csvRows.push([i+1, `"${(r.name||'').replace(/"/g,'""')}"`, r.pos||'', r.team||'', r.bye||'', r._proj?r._proj.toFixed(1):'', r._adp||''].join(','));
-            });
-            const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = `12guys1cup-${activeView.toLowerCase()}-rankings.csv`; a.click();
-            URL.revokeObjectURL(url);
-          }
-        });
-      }
+      document.getElementById('dk-csv-download')?.addEventListener('click', () => {
+        if (activeView === 'Cheat Sheet') downloadCsv('positional');
+        else if (activeView === 'Top 200') downloadCsv('top200');
+        else {
+          const players = byPos[activeView] || [];
+          const rows = ['Rank,Player,Pos,Team,Bye,Proj,ADP'];
+          players.forEach((r,i) => rows.push([i+1,'"'+(r.name||'').replace(/"/g,'""')+'"',r.pos||'',r.team||'',r.bye||'',r._proj?r._proj.toFixed(1):'',r._adp||''].join(',')));
+          const blob = new Blob([rows.join('\n')],{type:'text/csv'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a'); a.href=url; a.download=`12guys1cup-${activeView.toLowerCase()}-rankings.csv`; a.click();
+          URL.revokeObjectURL(url);
+        }
+      });
     };
 
     paintRankings();
@@ -1860,6 +1720,7 @@ async function renderDraftKit() {
     if (rankingsEl) rankingsEl.innerHTML = errBox(e.message);
   }
 }
+
 
 
 /* ---------- DUES ---------- */
