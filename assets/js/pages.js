@@ -1542,13 +1542,13 @@ async function renderDraftKit() {
       const base = baselines[p.pos] || 0;
       const key = (p.name || '').toLowerCase().trim();
       const ov = tiersAdp.get(key);
-      return { ...p, _vbd: proj > 0 ? proj - base : 0, _proj: proj, _adp: ov?.adp || p.adp || null };
+      return { ...p, _vbd: proj > 0 ? proj - base : -9999, _proj: proj, _adp: ov?.adp || p.adp || null };
     });
 
-    // Positional lists sorted by VBD
+    // Positional lists sorted by projected points (not VBD)
     const byPos = {};
     ['QB','RB','WR','TE','K','DST'].forEach(pos => {
-      byPos[pos] = [...withVbd].filter(p => p.pos === pos).sort((a, b) => b._vbd - a._vbd);
+      byPos[pos] = [...withVbd].filter(p => p.pos === pos).sort((a, b) => b._proj - a._proj);
     });
 
     // Top 200 excluding K/DST
