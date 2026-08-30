@@ -1530,13 +1530,23 @@ async function renderDraftKit() {
   if (rankingsEl) rankingsEl.innerHTML = loading("Loading Draft Kit…");
 
   try {
-    const [dk, tiersAdp] = await Promise.all([getDraftKit(), loadTiersAdp()]);
+    const [dk, tiersAdp, top200Pool] = await Promise.all([
+      getDraftKit(),
+      loadTiersAdp(),
+      fetch('assets/data/top200-pool.json').then(r => r.ok ? r.json() : []).catch(() => []),
+    ]);
     if (!dk?.rankings?.overall) throw new Error("Draft Kit data not loaded.");
 
     const overall = dk.rankings.overall;
     const baselines = computeBaselines(dk.rankings);
 
-    // Enrich with VBD + FFBallers ADP
+    // Build lookup: name → FP projection data
+    const fpByName = new Map();
+    overall.filter(p => p.name && p.pos).forEach(p => {
+      fpByName.set((p.name || '').toLowerCase().trim(), p);
+    });
+
+    // Enrich all FP players with VBD + FFBallers ADP
     const withVbd = overall.filter(p => p.name && p.pos).map(p => {
       const proj = Number(p.proj_pts) || 0;
       const base = baselines[p.pos] || 0;
@@ -1545,14 +1555,36 @@ async function renderDraftKit() {
       return { ...p, _vbd: proj > 0 ? proj - base : -9999, _proj: proj, _adp: ov?.adp || p.adp || null };
     });
 
-    // Positional lists sorted by projected points (not VBD)
+    // Positional lists sorted by projected points
     const byPos = {};
     ['QB','RB','WR','TE','K','DST'].forEach(pos => {
       byPos[pos] = [...withVbd].filter(p => p.pos === pos).sort((a, b) => b._proj - a._proj);
     });
 
-    // Top 200 excluding K/DST
-    const top200 = [...withVbd].filter(p => !['K','DST'].includes(p.pos)).sort((a, b) => b._vbd - a._vbd).slice(0, 200);
+    // Top 200: use FFBallers pool, match against FP projections, sort by projected pts
+    let top200;
+    if (top200Pool.length) {
+      top200 = top200Pool.map(poolP => {
+        const key = (poolP.name || '').toLowerCase().trim();
+        const fp = fpByName.get(key);
+        const ov = tiersAdp.get(key);
+        const proj = fp ? (Number(fp.proj_pts) || 0) : 0;
+        const base = fp ? (baselines[poolP.pos] || 0) : 0;
+        return {
+          name: poolP.name,
+          pos: poolP.pos,
+          team: poolP.team,
+          bye: poolP.bye,
+          _proj: proj,
+          _vbd: proj > 0 ? proj - base : -9999,
+          _adp: ov?.adp || (fp ? fp.adp : null) || null,
+          _ffb_rank: poolP.ffb_rank,
+        };
+      }).sort((a, b) => b._proj - a._proj);
+    } else {
+      // Fallback if pool file not loaded
+      top200 = [...withVbd].filter(p => !['K','DST'].includes(p.pos)).sort((a, b) => b._proj - a._proj).slice(0, 200);
+    }
 
     const fetched = dk.fetched_at ? new Date(dk.fetched_at) : null;
     if (metaEl) {
