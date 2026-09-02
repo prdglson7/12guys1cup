@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Draft Room — 12 Guys 1 Cup</title>
+<link rel="icon" href="assets/img/logo.jpg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto+Condensed:wght@400;600;700&display=swap');
+:root{--navy:#1E3A5F;--navy2:#2a5080;--gold:#E8B84A;--gold-dk:#B58B1F;--cream:#FDF6E3;--red:#C8352E;--grn:#2E7D32;--blu:#1565C0;--org:#E65100;--pnk:#B8386B;--brn:#8B5A3C;--gry:#607D8B}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0f1f2f;font-family:'Roboto Condensed',sans-serif;color:#fff;overflow:hidden;height:100vh}
+
+/* PASSWORD */
+.pw{position:fixed;inset:0;z-index:1000;background:var(--navy);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+.pw h1{font-family:'Oswald',sans-serif;font-size:32px;color:var(--gold);letter-spacing:6px}
+.pw .sub{color:var(--cream);opacity:.6;font-size:13px;letter-spacing:2px}
+.pw input{padding:10px 16px;font-size:16px;border:2px solid var(--gold);background:rgba(255,255,255,.05);color:#fff;text-align:center;font-family:'Roboto Condensed',sans-serif;width:240px}
+.pw input:focus{outline:none;border-color:#fff}
+.pw button{padding:10px 32px;background:var(--gold);color:var(--navy);font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:3px;border:none;cursor:pointer}
+.pw .err{color:var(--red);font-size:12px;height:16px}
+
+/* HEADER */
+.hd{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:8px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--gold);flex-shrink:0}
+.hd-title{font-family:'Oswald',sans-serif;font-size:18px;color:var(--gold);letter-spacing:4px}
+.hd-info{font-size:11px;color:var(--cream);opacity:.8;margin-top:2px}
+.hd-r{display:flex;gap:10px;align-items:center}
+.hd-r label{font-size:11px;color:var(--cream);opacity:.7}
+.hd-r select{padding:4px 8px;background:rgba(255,255,255,.1);color:#fff;border:1px solid var(--gold);font-family:'Roboto Condensed',sans-serif;font-size:12px}
+.hd-clock{background:var(--gold);color:var(--navy);padding:5px 14px;font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:2px;white-space:nowrap}
+.hd-undo{padding:5px 12px;background:transparent;border:1px solid rgba(255,255,255,.3);color:var(--cream);font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;cursor:pointer}
+.hd-undo:hover{border-color:var(--gold);color:var(--gold)}
+.hd-reset{padding:5px 12px;background:transparent;border:1px solid var(--red);color:var(--red);font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;cursor:pointer}
+
+/* LAYOUT */
+.lay{display:grid;grid-template-columns:1fr 290px;height:calc(100vh - 48px)}
+
+/* BOARD */
+.ba{overflow:auto;padding:8px}
+.bd{display:grid;grid-template-columns:36px repeat(12,1fr);gap:1px;background:rgba(255,255,255,.03);font-size:10px}
+.bd-corner{background:var(--navy);padding:3px;text-align:center;font-family:'Oswald',sans-serif;font-size:9px;color:var(--gold)}
+.bd-team{background:var(--navy);padding:5px 3px;text-align:center;font-family:'Oswald',sans-serif;font-size:9px;color:var(--gold);letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd-team.mine{background:var(--gold-dk);color:#fff;font-size:10px}
+.bd-rnd{background:var(--navy);padding:3px;text-align:center;font-family:'Oswald',sans-serif;font-size:11px;color:var(--gold)}
+.bd-cell{background:rgba(253,246,227,.03);padding:2px;text-align:center;cursor:pointer;transition:background .12s;min-height:34px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.bd-cell:hover{background:rgba(232,184,74,.12)}
+.bd-cell.mine{background:rgba(232,184,74,.06);border:1px solid rgba(232,184,74,.25)}
+.bd-cell.cur{background:rgba(232,184,74,.2);animation:pulse 1.5s infinite}
+.bd-cell.picked .pn{font-weight:700;font-size:10px;line-height:1.1;color:#fff}
+.bd-cell.picked .pp{font-size:7px;font-weight:700;padding:0 3px;color:#fff;border-radius:2px;margin-top:1px;display:inline-block}
+@keyframes pulse{0%,100%{box-shadow:inset 0 0 0 0 rgba(232,184,74,.4)}50%{box-shadow:inset 0 0 8px 0 rgba(232,184,74,.15)}}
+
+/* SIDEBAR */
+.sb{background:var(--navy);border-left:2px solid var(--gold-dk);display:flex;flex-direction:column;overflow:hidden}
+.sb-tabs{display:flex;border-bottom:2px solid var(--gold-dk);flex-shrink:0}
+.sb-tab{flex:1;padding:7px;text-align:center;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--cream);opacity:.4;cursor:pointer;background:transparent;border:none;border-bottom:2px solid transparent}
+.sb-tab.on{opacity:1;color:var(--gold);border-bottom-color:var(--gold)}
+.sb-body{flex:1;overflow-y:auto;padding:6px}
+.sb-panel{display:none}.sb-panel.on{display:block}
+
+/* ROSTER */
+.rs{display:flex;align-items:center;gap:5px;padding:3px 5px;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px}
+.rs-lbl{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:1px;width:32px;text-align:center;padding:2px 3px;color:#fff;border-radius:2px}
+.rs-empty{color:rgba(255,255,255,.15);font-style:italic;font-size:11px}
+.rs-name{color:#fff;font-weight:600;font-size:11px}
+.rs-sep{padding:4px 6px;font-family:'Oswald',sans-serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-top:4px;border-top:1px solid rgba(255,255,255,.08)}
+
+/* AVAILABLE */
+.av-search{padding:5px;border-bottom:1px solid rgba(255,255,255,.08)}
+.av-search input{width:100%;padding:5px 7px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font-family:'Roboto Condensed',sans-serif;font-size:12px}
+.av-filters{display:flex;gap:1px;padding:3px 5px;flex-wrap:wrap}
+.av-flt{padding:2px 7px;font-size:9px;font-weight:700;border:none;cursor:pointer;color:#fff;opacity:.35;background:transparent;font-family:'Oswald',sans-serif;letter-spacing:1px}
+.av-flt.on{opacity:1}
+.av-row{display:flex;align-items:center;gap:5px;padding:2px 5px;font-size:11px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.02)}
+.av-row:hover{background:rgba(232,184,74,.08)}
+.av-row.drafted{opacity:.25;text-decoration:line-through;pointer-events:none}
+.av-row.tgt{border-left:3px solid var(--grn)}
+.av-row.avd{border-left:3px solid var(--red)}
+.av-rk{width:20px;text-align:right;color:var(--brn);font-size:10px}
+.av-nm{flex:1;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av-mt{font-size:9px;color:rgba(255,255,255,.35);white-space:nowrap}
+
+/* TARGETS/AVOIDS */
+.tl-hdr{display:flex;justify-content:space-between;align-items:center;padding:5px 7px;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px}
+.tl-hdr.tgt{color:var(--grn);border-bottom:2px solid var(--grn)}
+.tl-hdr.avd{color:var(--red);border-bottom:2px solid var(--red)}
+.tl-pos{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1px;color:var(--gold);padding:3px 7px;margin-top:4px;border-bottom:1px solid rgba(232,184,74,.15)}
+.tl-row{display:flex;align-items:center;gap:5px;padding:2px 7px;font-size:11px}
+.tl-row.drafted{text-decoration:line-through;opacity:.25}
+.tl-x{width:16px;height:16px;border:none;background:transparent;color:rgba(255,255,255,.25);cursor:pointer;font-size:14px;line-height:1;padding:0}
+.tl-x:hover{color:var(--red)}
+.tl-add{display:flex;gap:3px;padding:3px 7px}
+.tl-add input{flex:1;padding:3px 6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:11px;font-family:'Roboto Condensed',sans-serif}
+.tl-add button{padding:3px 10px;background:var(--gold);color:var(--navy);border:none;font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:1px;cursor:pointer}
+.tl-auto{display:flex;gap:3px;padding:0 7px 6px}
+.tl-auto-results{position:absolute;background:var(--navy);border:1px solid var(--gold);max-height:150px;overflow-y:auto;z-index:100;width:200px}
+.tl-auto-item{padding:4px 8px;font-size:11px;cursor:pointer}
+.tl-auto-item:hover{background:rgba(232,184,74,.15)}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:500}
+.modal-bg.on{display:flex}
+.modal{background:var(--navy);border:2px solid var(--gold);padding:16px;width:380px;max-height:70vh;display:flex;flex-direction:column}
+.modal h3{font-family:'Oswald',sans-serif;color:var(--gold);font-size:14px;letter-spacing:2px;margin-bottom:10px}
+.modal input{width:100%;padding:7px 10px;margin-bottom:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:14px;font-family:'Roboto Condensed',sans-serif}
+.modal input:focus{outline:none;border-color:var(--gold)}
+.modal-list{flex:1;overflow-y:auto;max-height:300px}
+.modal-p{display:flex;align-items:center;gap:8px;padding:5px 7px;cursor:pointer;font-size:13px;border-bottom:1px solid rgba(255,255,255,.05)}
+.modal-p:hover{background:rgba(232,184,74,.12)}
+.modal-p.drafted{opacity:.2;pointer-events:none;text-decoration:line-through}
+.modal-cancel{margin-top:10px;padding:7px;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--cream);cursor:pointer;font-family:'Oswald',sans-serif;letter-spacing:2px;font-size:11px;text-align:center}
+
+.pp{font-size:8px;font-weight:700;padding:1px 4px;color:#fff;border-radius:2px;display:inline-block}
+.p-qb{background:var(--pnk)}.p-rb{background:var(--grn)}.p-wr{background:var(--blu)}.p-te{background:var(--org)}.p-k{background:#5E35B1}.p-dst{background:var(--gry)}
+</style>
+</head>
+<body>
+
+<div class="pw" id="pw">
+  <h1>DRAFT ROOM</h1>
+  <div class="sub">12 GUYS 1 CUP</div>
+  <input type="password" id="pw-in" placeholder="Enter password" autofocus>
+  <button id="pw-btn">ENTER</button>
+  <div class="err" id="pw-err"></div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="hd">
+    <div>
+      <div class="hd-title">DRAFT ROOM</div>
+      <div class="hd-info" id="hd-info">Loading teams…</div>
+    </div>
+    <div class="hd-r">
+      <label>Your pick: <select id="sel-pos"></select></label>
+      <div class="hd-clock" id="hd-clock">—</div>
+      <button class="hd-undo" id="btn-undo">UNDO</button>
+      <button class="hd-reset" id="btn-reset">RESET</button>
+    </div>
+  </div>
+  <div class="lay">
+    <div class="ba" id="board-area"></div>
+    <div class="sb">
+      <div class="sb-tabs">
+        <button class="sb-tab on" data-tab="roster">MY ROSTER</button>
+        <button class="sb-tab" data-tab="avail">AVAILABLE</button>
+        <button class="sb-tab" data-tab="lists">TARGETS</button>
+      </div>
+      <div class="sb-body">
+        <div class="sb-panel on" id="p-roster"></div>
+        <div class="sb-panel" id="p-avail"></div>
+        <div class="sb-panel" id="p-lists"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal"><div class="modal">
+  <h3 id="modal-title">Select Player</h3>
+  <input id="modal-search" placeholder="Search player…" autocomplete="off">
+  <div class="modal-list" id="modal-list"></div>
+  <button class="modal-cancel" id="modal-cancel">CANCEL</button>
+</div></div>
+
+<script>
+const LEAGUE_ID = '1389753693590532096';
+const ROUNDS = 14;
+const TEAMS = 12;
+const TOTAL_PICKS = ROUNDS * TEAMS;
+const ROSTER_SLOTS = ['QB','RB','RB','WR','WR','TE','FLEX','K','DEF','BN','BN','BN','BN','BN'];
+const SLOT_LABELS = ['QB','RB1','RB2','WR1','WR2','TE','FLX','K','DST','BN','BN','BN','BN','BN'];
+const SLOT_COLORS = ['p-qb','p-rb','p-rb','p-wr','p-wr','p-te','','p-k','p-dst','','','','',''];
+const LS = (k) => { try { return JSON.parse(localStorage.getItem('dr_'+k)); } catch(_) { return null; } };
+const SS = (k,v) => { try { localStorage.setItem('dr_'+k, JSON.stringify(v)); } catch(_) {} };
+
+let players = [];       // all players from draftkit.json
+let teamNames = [];     // 12 team names from Sleeper
+let myPos = LS('myPos') || 1;  // 1-indexed draft position
+let picks = LS('picks') || [];  // array of {round,col,player} in order
+let targets = LS('targets') || {};  // {QB:[],RB:[],WR:[],TE:[]}
+let avoids = LS('avoids') || {};
+let modalCb = null;
+
+// ══════ PASSWORD ══════
+document.getElementById('pw-btn').addEventListener('click', tryPw);
+document.getElementById('pw-in').addEventListener('keydown', e => { if (e.key==='Enter') tryPw(); });
+function tryPw() {
+  if (document.getElementById('pw-in').value === '12Guys1Cup') {
+    document.getElementById('pw').style.display = 'none';
+    document.getElementById('app').style.display = '';
+    init();
+  } else {
+    document.getElementById('pw-err').textContent = 'Wrong password.';
+  }
+}
+
+// ══════ INIT ══════
+async function init() {
+  // Load teams from Sleeper
+  try {
+    const [rosters, users] = await Promise.all([
+      fetch(`https://api.sleeper.app/v1/league/${LEAGUE_ID}/rosters`).then(r=>r.json()),
+      fetch(`https://api.sleeper.app/v1/league/${LEAGUE_ID}/users`).then(r=>r.json()),
+    ]);
+    const userMap = new Map(users.map(u => [u.user_id, u]));
+    teamNames = rosters.sort((a,b) => a.roster_id - b.roster_id).map(r => {
+      const u = userMap.get(r.owner_id) || {};
+      return (u.metadata && u.metadata.team_name) || u.display_name || `Team ${r.roster_id}`;
+    });
+  } catch(_) {
+    teamNames = Array.from({length:12}, (_,i) => `Team ${i+1}`);
+  }
+
+  // Load players
+  try {
+    const dk = await fetch('assets/data/draftkit.json').then(r=>r.json());
+    const ta = await fetch('assets/data/tiers-adp.json').then(r=>r.json()).catch(()=>({}));
+    players = (dk.rankings?.overall || []).filter(p => p.name && p.pos).map((p,i) => {
+      const key = (p.name||'').toLowerCase().trim();
+      const ov = ta[key];
+      return {
+        name: p.name, pos: p.pos, team: p.team||'', bye: p.bye||'',
+        proj: Number(p.proj_pts)||0, rank: p.rank||i+1,
+        adp: ov?.adp || p.adp || '',
+      };
+    }).sort((a,b) => b.proj - a.proj);
+  } catch(_) { players = []; }
+
+  // Pre-populate targets/avoids if empty
+  if (!targets.QB) {
+    targets = {QB:[],RB:[],WR:[],TE:[]};
+    avoids = {QB:[],RB:[],WR:[],TE:[]};
+    // Auto-populate: players where ADP (as overall pick) > rank by 10+ = target
+    players.forEach(p => {
+      if (!['QB','RB','WR','TE'].includes(p.pos)) return;
+      const adpStr = String(p.adp||'');
+      if (!adpStr || adpStr === '—') return;
+      let adpOverall;
+      if (adpStr.includes('.')) {
+        const [rd,pk] = adpStr.split('.');
+        adpOverall = (parseInt(rd)-1)*12 + parseInt(pk);
+      } else {
+        adpOverall = parseInt(adpStr);
+      }
+      if (isNaN(adpOverall)) return;
+      const rank = Number(p.rank)||999;
+      if (adpOverall - rank >= 12) targets[p.pos].push(p.name);
+      else if (rank - adpOverall >= 12) avoids[p.pos].push(p.name);
+    });
+    // Cap at 8 per position
+    Object.keys(targets).forEach(k => targets[k] = targets[k].slice(0,8));
+    Object.keys(avoids).forEach(k => avoids[k] = avoids[k].slice(0,8));
+    SS('targets', targets);
+    SS('avoids', avoids);
+  }
+
+  // Draft position selector
+  const sel = document.getElementById('sel-pos');
+  for (let i = 1; i <= 12; i++) {
+    const o = document.createElement('option');
+    o.value = i; o.textContent = ordinal(i);
+    if (i === myPos) o.selected = true;
+    sel.appendChild(o);
+  }
+  sel.addEventListener('change', () => { myPos = parseInt(sel.value); SS('myPos', myPos); render(); });
+
+  // Sidebar tabs
+  document.querySelectorAll('.sb-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sb-tab').forEach(b => b.classList.remove('on'));
+      document.querySelectorAll('.sb-panel').forEach(p => p.classList.remove('on'));
+      btn.classList.add('on');
+      document.getElementById('p-'+btn.dataset.tab).classList.add('on');
+    });
+  });
+
+  // Undo / Reset
+  document.getElementById('btn-undo').addEventListener('click', () => {
+    if (picks.length) { picks.pop(); SS('picks', picks); render(); }
+  });
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    if (confirm('Reset entire draft? This cannot be undone.')) {
+      picks = []; SS('picks', picks); render();
+    }
+  });
+
+  // Modal cancel
+  document.getElementById('modal-cancel').addEventListener('click', closeModal);
+
+  render();
+}
+
+// ══════ SNAKE HELPERS ══════
+function pickToCell(pickIndex) {
+  // pickIndex 0-based → {round (0-based), col (0-based team column)}
+  const round = Math.floor(pickIndex / TEAMS);
+  const posInRound = pickIndex % TEAMS;
+  const col = (round % 2 === 0) ? posInRound : (TEAMS - 1 - posInRound);
+  return { round, col };
+}
+function cellToPick(round, col) {
+  const posInRound = (round % 2 === 0) ? col : (TEAMS - 1 - col);
+  return round * TEAMS + posInRound;
+}
+function isMyCell(round, col) {
+  return col === (myPos - 1);
+}
+function ordinal(n) {
+  const s = ['th','st','nd','rd'];
+  const v = n % 100;
+  return n + (s[(v-20)%10] || s[v] || s[0]);
+}
+
+// ══════ DRAFTED SET ══════
+function draftedNames() {
+  const s = new Set();
+  picks.forEach(pk => s.add(pk.player.name.toLowerCase()));
+  return s;
+}
+
+// ══════ RENDER ══════
+function render() {
+  renderBoard();
+  renderRoster();
+  renderAvailable();
+  renderLists();
+  renderHeader();
+}
+
+function renderHeader() {
+  const nextIdx = picks.length;
+  const info = document.getElementById('hd-info');
+  const clock = document.getElementById('hd-clock');
+  if (nextIdx >= TOTAL_PICKS) {
+    info.textContent = 'Draft complete! All 168 picks made.';
+    clock.textContent = 'DONE';
+    return;
+  }
+  const { round, col } = pickToCell(nextIdx);
+  const myCol = myPos - 1;
+  const overall = nextIdx + 1;
+  // Picks until my turn
+  let picksUntilMe = 0;
+  for (let i = nextIdx; i < TOTAL_PICKS; i++) {
+    const c = pickToCell(i);
+    if (c.col === myCol) break;
+    picksUntilMe++;
+  }
+  const teamOnClock = teamNames[col] || `Team ${col+1}`;
+  if (col === myCol) {
+    info.textContent = `Round ${round+1} · Pick ${overall} · YOU'RE ON THE CLOCK`;
+    clock.textContent = `YOUR PICK!`;
+    clock.style.background = '#2E7D32';
+  } else {
+    info.textContent = `Round ${round+1} · Pick ${overall} · ${picksUntilMe} pick${picksUntilMe!==1?'s':''} until you're up`;
+    clock.textContent = `ON CLOCK: ${teamOnClock}`;
+    clock.style.background = 'var(--gold)';
+  }
+}
+
+function renderBoard() {
+  const area = document.getElementById('board-area');
+  const draftedSet = draftedNames();
+  const nextIdx = picks.length;
+  const nextCell = nextIdx < TOTAL_PICKS ? pickToCell(nextIdx) : null;
+  const myCol = myPos - 1;
+
+  // Build picks lookup: `${round}-${col}` → player
+  const pickMap = new Map();
+  picks.forEach(pk => {
+    pickMap.set(`${pk.round}-${pk.col}`, pk.player);
+  });
+
+  let html = `<div class="bd">`;
+  // Header row
+  html += `<div class="bd-corner">RD</div>`;
+  for (let c = 0; c < TEAMS; c++) {
+    const name = teamNames[c] || `Team ${c+1}`;
+    const cls = c === myCol ? 'bd-team mine' : 'bd-team';
+    const display = c === myCol ? `★ ${name}` : name;
+    html += `<div class="${cls}" title="${name}">${display}</div>`;
+  }
+
+  // Rounds
+  for (let r = 0; r < ROUNDS; r++) {
+    html += `<div class="bd-rnd">${r+1}</div>`;
+    for (let c = 0; c < TEAMS; c++) {
+      const player = pickMap.get(`${r}-${c}`);
+      const isCur = nextCell && nextCell.round === r && nextCell.col === c;
+      const isMine = c === myCol;
+      let cls = 'bd-cell';
+      if (isMine) cls += ' mine';
+      if (isCur) cls += ' cur';
+      if (player) {
+        cls += ' picked';
+        const posClass = 'p-' + (player.pos||'').toLowerCase();
+        html += `<div class="${cls}"><span class="pn">${shortName(player.name)}</span><span class="pp ${posClass}">${player.pos}</span></div>`;
+      } else {
+        const pickIdx = cellToPick(r, c);
+        html += `<div class="${cls}" data-round="${r}" data-col="${c}" onclick="onCellClick(${r},${c})"></div>`;
+      }
+    }
+  }
+  html += `</div>`;
+  area.innerHTML = html;
+}
+
+function shortName(name) {
+  if (!name) return '';
+  const parts = name.split(' ');
+  if (parts.length <= 1) return name;
+  // "Ja'Marr Chase" → "J. Chase"
+  return parts[0][0] + '. ' + parts.slice(1).join(' ');
+}
+
+function renderRoster() {
+  const el = document.getElementById('p-roster');
+  const myPicks = picks.filter(pk => pk.col === myPos - 1).map(pk => pk.player);
+  // Auto-assign to roster slots
+  const slots = ROSTER_SLOTS.map(() => null);
+  const assigned = new Set();
+
+  // Assign starters first (not BN)
+  myPicks.forEach(p => {
+    for (let i = 0; i < slots.length; i++) {
+      if (slots[i] || assigned.has(p.name)) continue;
+      const slot = ROSTER_SLOTS[i];
+      if (slot === 'BN') continue;
+      if (slot === p.pos || (slot === 'FLEX' && ['RB','WR','TE'].includes(p.pos)) || (slot === 'DEF' && (p.pos === 'DST' || p.pos === 'DEF'))) {
+        slots[i] = p; assigned.add(p.name); break;
+      }
+    }
+  });
+  // Remaining to bench
+  myPicks.forEach(p => {
+    if (assigned.has(p.name)) return;
+    for (let i = 0; i < slots.length; i++) {
+      if (slots[i]) continue;
+      if (ROSTER_SLOTS[i] === 'BN') {
+        slots[i] = p; assigned.add(p.name); break;
+      }
+    }
+  });
+
+  let html = '';
+  for (let i = 0; i < slots.length; i++) {
+    if (i === 9) html += `<div class="rs-sep">BENCH</div>`;
+    const lbl = SLOT_LABELS[i];
+    const clr = SLOT_COLORS[i] || '';
+    const bgStyle = clr ? '' : (i >= 9 ? 'background:rgba(255,255,255,.08)' : 'background:var(--brn)');
+    const p = slots[i];
+    html += `<div class="rs"><span class="rs-lbl ${clr}" style="${bgStyle}">${lbl}</span>`;
+    if (p) {
+      const posC = 'p-'+(p.pos||'').toLowerCase();
+      html += `<span class="rs-name">${p.name}</span> <span class="pp ${posC}" style="font-size:7px;margin-left:4px">${p.pos}</span> <span style="font-size:9px;opacity:.4;margin-left:auto">${p.team}</span>`;
+    } else {
+      html += `<span class="rs-empty">empty</span>`;
+    }
+    html += `</div>`;
+  }
+  el.innerHTML = html;
+}
+
+function renderAvailable() {
+  const el = document.getElementById('p-avail');
+  const drafted = draftedNames();
+  const tgtSet = new Set();
+  const avdSet = new Set();
+  Object.values(targets).flat().forEach(n => tgtSet.add(n.toLowerCase()));
+  Object.values(avoids).flat().forEach(n => avdSet.add(n.toLowerCase()));
+
+  let html = `<div class="av-search"><input id="av-q" placeholder="Search player…" autocomplete="off"></div>`;
+  html += `<div class="av-filters">
+    <button class="av-flt on" data-f="ALL">ALL</button>
+    <button class="av-flt" data-f="QB">QB</button>
+    <button class="av-flt" data-f="RB">RB</button>
+    <button class="av-flt" data-f="WR">WR</button>
+    <button class="av-flt" data-f="TE">TE</button>
+    <button class="av-flt" data-f="K">K</button>
+    <button class="av-flt" data-f="DST">DST</button>
+  </div>`;
+  html += `<div id="av-list"></div>`;
+  el.innerHTML = html;
+
+  const paintList = () => {
+    const q = (document.getElementById('av-q')?.value || '').toLowerCase();
+    const f = el.querySelector('.av-flt.on')?.dataset.f || 'ALL';
+    const list = document.getElementById('av-list');
+    let filtered = players;
+    if (f !== 'ALL') filtered = filtered.filter(p => p.pos === f);
+    if (q) filtered = filtered.filter(p => p.name.toLowerCase().includes(q));
+    filtered = filtered.slice(0, 150);
+
+    list.innerHTML = filtered.map((p, i) => {
+      const key = p.name.toLowerCase();
+      const d = drafted.has(key);
+      const t = tgtSet.has(key);
+      const a = avdSet.has(key);
+      let cls = 'av-row';
+      if (d) cls += ' drafted';
+      if (t) cls += ' tgt';
+      if (a) cls += ' avd';
+      const posC = 'p-'+(p.pos||'').toLowerCase();
+      return `<div class="${cls}"><span class="av-rk">${i+1}</span><span class="pp ${posC}">${p.pos}</span><span class="av-nm">${p.name}</span><span class="av-mt">${p.team} ${p.adp ? '· '+p.adp : ''}</span></div>`;
+    }).join('');
+  };
+
+  el.querySelector('#av-q')?.addEventListener('input', paintList);
+  el.querySelectorAll('.av-flt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      el.querySelectorAll('.av-flt').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      paintList();
+    });
+  });
+  paintList();
+}
+
+function renderLists() {
+  const el = document.getElementById('p-lists');
+  const drafted = draftedNames();
+  const posOrder = ['QB','RB','WR','TE'];
+
+  let html = '';
+  // TARGETS
+  html += `<div class="tl-hdr tgt">TARGETS</div>`;
+  posOrder.forEach(pos => {
+    const list = targets[pos] || [];
+    if (!list.length) return;
+    html += `<div class="tl-pos">${pos}</div>`;
+    list.forEach((name, i) => {
+      const d = drafted.has(name.toLowerCase());
+      const p = players.find(pl => pl.name.toLowerCase() === name.toLowerCase());
+      const posC = 'p-'+(pos).toLowerCase();
+      html += `<div class="tl-row${d?' drafted':''}"><span class="pp ${posC}" style="font-size:7px">${pos}</span><span style="flex:1">${name}</span><span style="font-size:9px;opacity:.35">${p?p.team:''} ${p?.adp?'· '+p.adp:''}</span><button class="tl-x" onclick="removeList('targets','${pos}',${i})">×</button></div>`;
+    });
+  });
+  html += `<div class="tl-add"><input id="tgt-input" placeholder="Add target…" autocomplete="off"><select id="tgt-pos">${posOrder.map(p=>`<option>${p}</option>`).join('')}</select><button onclick="addToList('targets')">ADD</button></div>`;
+
+  html += `<div style="height:12px"></div>`;
+
+  // AVOIDS
+  html += `<div class="tl-hdr avd">AVOID</div>`;
+  posOrder.forEach(pos => {
+    const list = avoids[pos] || [];
+    if (!list.length) return;
+    html += `<div class="tl-pos">${pos}</div>`;
+    list.forEach((name, i) => {
+      const d = drafted.has(name.toLowerCase());
+      const p = players.find(pl => pl.name.toLowerCase() === name.toLowerCase());
+      const posC = 'p-'+(pos).toLowerCase();
+      html += `<div class="tl-row${d?' drafted':''}"><span class="pp ${posC}" style="font-size:7px">${pos}</span><span style="flex:1">${name}</span><span style="font-size:9px;opacity:.35">${p?p.team:''} ${p?.adp?'· '+p.adp:''}</span><button class="tl-x" onclick="removeList('avoids','${pos}',${i})">×</button></div>`;
+    });
+  });
+  html += `<div class="tl-add"><input id="avd-input" placeholder="Add player to avoid…" autocomplete="off"><select id="avd-pos">${posOrder.map(p=>`<option>${p}</option>`).join('')}</select><button onclick="addToList('avoids')">ADD</button></div>`;
+
+  el.innerHTML = html;
+}
+
+// ══════ LIST MANAGEMENT ══════
+window.removeList = function(which, pos, idx) {
+  const list = which === 'targets' ? targets : avoids;
+  list[pos].splice(idx, 1);
+  SS(which, list);
+  renderLists();
+  renderAvailable();
+};
+
+window.addToList = function(which) {
+  const inputId = which === 'targets' ? 'tgt-input' : 'avd-input';
+  const posId = which === 'targets' ? 'tgt-pos' : 'avd-pos';
+  const input = document.getElementById(inputId);
+  const pos = document.getElementById(posId).value;
+  const name = input.value.trim();
+  if (!name) return;
+  // Find closest match
+  const match = players.find(p => p.name.toLowerCase() === name.toLowerCase() && p.pos === pos)
+    || players.find(p => p.name.toLowerCase().includes(name.toLowerCase()) && p.pos === pos);
+  const finalName = match ? match.name : name;
+  const list = which === 'targets' ? targets : avoids;
+  if (!list[pos]) list[pos] = [];
+  if (list[pos].includes(finalName)) return;
+  list[pos].push(finalName);
+  SS(which, list);
+  input.value = '';
+  renderLists();
+  renderAvailable();
+};
+
+// ══════ CELL CLICK → MODAL ══════
+window.onCellClick = function(round, col) {
+  // Only allow clicking the NEXT pick in sequence
+  const expectedIdx = picks.length;
+  const expected = pickToCell(expectedIdx);
+  if (round !== expected.round || col !== expected.col) {
+    // Allow clicking — they might know the order. But warn if out of sequence.
+    // Actually, let them click any empty cell — more flexible for live drafts
+  }
+  openModal(round, col);
+};
+
+function openModal(round, col) {
+  const modal = document.getElementById('modal');
+  const search = document.getElementById('modal-search');
+  const list = document.getElementById('modal-list');
+  const title = document.getElementById('modal-title');
+  const teamName = teamNames[col] || `Team ${col+1}`;
+  const pickNum = cellToPick(round, col) + 1;
+  title.textContent = `Round ${round+1}, Pick ${pickNum} — ${teamName}`;
+  search.value = '';
+  modal.classList.add('on');
+  search.focus();
+
+  const drafted = draftedNames();
+
+  const paintResults = () => {
+    const q = search.value.toLowerCase();
+    let filtered = players;
+    if (q) filtered = filtered.filter(p => p.name.toLowerCase().includes(q));
+    filtered = filtered.slice(0, 80);
+    list.innerHTML = filtered.map(p => {
+      const d = drafted.has(p.name.toLowerCase());
+      const posC = 'p-'+(p.pos||'').toLowerCase();
+      return `<div class="modal-p${d?' drafted':''}" data-name="${p.name.replace(/"/g,'&quot;')}"><span class="pp ${posC}">${p.pos}</span><span style="flex:1;font-weight:600">${p.name}</span><span style="font-size:10px;opacity:.4">${p.team} ${p.adp?'· ADP '+p.adp:''}</span></div>`;
+    }).join('');
+
+    list.querySelectorAll('.modal-p:not(.drafted)').forEach(el => {
+      el.addEventListener('click', () => {
+        const name = el.dataset.name;
+        const player = players.find(p => p.name === name);
+        if (player) {
+          picks.push({ round, col, player: { name: player.name, pos: player.pos, team: player.team } });
+          SS('picks', picks);
+          closeModal();
+          render();
+        }
+      });
+    });
+  };
+
+  search.addEventListener('input', paintResults);
+  paintResults();
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('on');
+}
+
+// ══════ BOOT ══════
+// Check if already authenticated this session
+if (LS('auth')) {
+  document.getElementById('pw').style.display = 'none';
+  document.getElementById('app').style.display = '';
+  init();
+}
+document.getElementById('pw-btn').addEventListener('click', () => { SS('auth', true); });
+</script>
+</body>
+</html>
