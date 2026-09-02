@@ -106,7 +106,7 @@ body{background:#0f1f2f;font-family:'Roboto Condensed',sans-serif;color:#fff;ove
 .modal input:focus{outline:none;border-color:var(--gold)}
 .modal-list{flex:1;overflow-y:auto;max-height:300px}
 .modal-p{display:flex;align-items:center;gap:8px;padding:5px 7px;cursor:pointer;font-size:13px;border-bottom:1px solid rgba(255,255,255,.05)}
-.modal-p:hover{background:rgba(232,184,74,.12)}
+.modal-p:hover{background:rgba(232,184,74,.12);outline:1px solid var(--gold)}
 .modal-p.drafted{opacity:.2;pointer-events:none;text-decoration:line-through}
 .modal-cancel{margin-top:10px;padding:7px;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--cream);cursor:pointer;font-family:'Oswald',sans-serif;letter-spacing:2px;font-size:11px;text-align:center}
 
@@ -156,7 +156,17 @@ body{background:#0f1f2f;font-family:'Roboto Condensed',sans-serif;color:#fff;ove
 
 <div class="modal-bg" id="modal"><div class="modal">
   <h3 id="modal-title">Select Player</h3>
-  <input id="modal-search" placeholder="Search player…" autocomplete="off">
+  <input id="modal-search" placeholder="Filter by name…" autocomplete="off">
+  <div class="modal-filters" style="display:flex;gap:2px;padding:4px 0;flex-wrap:wrap">
+    <button class="av-flt on" data-mf="ALL" style="font-size:10px">ALL</button>
+    <button class="av-flt" data-mf="QB" style="font-size:10px">QB</button>
+    <button class="av-flt" data-mf="RB" style="font-size:10px">RB</button>
+    <button class="av-flt" data-mf="WR" style="font-size:10px">WR</button>
+    <button class="av-flt" data-mf="TE" style="font-size:10px">TE</button>
+    <button class="av-flt" data-mf="K" style="font-size:10px">K</button>
+    <button class="av-flt" data-mf="DST" style="font-size:10px">DST</button>
+  </div>
+  <p style="font-size:10px;opacity:.4;margin-bottom:6px">Double-click a player to draft them</p>
   <div class="modal-list" id="modal-list"></div>
   <button class="modal-cancel" id="modal-cancel">CANCEL</button>
 </div></div>
@@ -261,7 +271,14 @@ async function init() {
     if (i === myPos) o.selected = true;
     sel.appendChild(o);
   }
-  sel.addEventListener('change', () => { myPos = parseInt(sel.value); SS('myPos', myPos); render(); });
+  sel.addEventListener('change', () => { 
+    myPos = parseInt(sel.value); 
+    SS('myPos', myPos); 
+    render(); 
+    // Scroll to your column
+    const myCell = document.querySelector('.bd-team.mine');
+    if (myCell) myCell.scrollIntoView({ inline: 'center', behavior: 'smooth' });
+  });
 
   // Sidebar tabs
   document.querySelectorAll('.sb-tab').forEach(btn => {
@@ -611,12 +628,25 @@ function openModal(round, col) {
   search.focus();
 
   const drafted = draftedNames();
+  let posFilter = 'ALL';
+
+  // Wire position filter buttons
+  modal.querySelectorAll('[data-mf]').forEach(btn => {
+    btn.classList.toggle('on', btn.dataset.mf === 'ALL');
+    btn.addEventListener('click', () => {
+      modal.querySelectorAll('[data-mf]').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      posFilter = btn.dataset.mf;
+      paintResults();
+    });
+  });
 
   const paintResults = () => {
     const q = search.value.toLowerCase();
     let filtered = players;
+    if (posFilter !== 'ALL') filtered = filtered.filter(p => p.pos === posFilter);
     if (q) filtered = filtered.filter(p => p.name.toLowerCase().includes(q));
-    filtered = filtered.slice(0, 80);
+    filtered = filtered.slice(0, 100);
     list.innerHTML = filtered.map(p => {
       const d = drafted.has(p.name.toLowerCase());
       const posC = 'p-'+(p.pos||'').toLowerCase();
@@ -624,7 +654,7 @@ function openModal(round, col) {
     }).join('');
 
     list.querySelectorAll('.modal-p:not(.drafted)').forEach(el => {
-      el.addEventListener('click', () => {
+      el.addEventListener('dblclick', () => {
         const name = el.dataset.name;
         const player = players.find(p => p.name === name);
         if (player) {
