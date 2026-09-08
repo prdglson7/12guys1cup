@@ -7,7 +7,7 @@ const NAV = [
   { href: "matchups.html",     label: "Matchups" },
   { href: "standings.html",    label: "Standings" },
   { href: "dues.html",         label: "Dues" },
-  { href: "draft-kit.html",    label: "Draft Kit" },
+  // Draft Kit removed — season started. Page still exists for direct access if needed.
   { href: "tools.html",        label: "Tools" },
   { href: "waiver.html",       label: "Waivers" },
   { href: "injuries.html",     label: "Injuries" },
