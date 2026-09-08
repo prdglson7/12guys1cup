@@ -116,15 +116,15 @@ async function renderHome() {
         };
         const tickerItem = (a, b) => {
           const st = stateLabel(a, b);
-          const aName = esc(a?.team?.name || "TBD");
-          const bName = esc(b?.team?.name || "TBD");
+          const aName = esc(a?.team_name || a?.display_name || "TBD");
+          const bName = esc(b?.team_name || b?.display_name || "TBD");
           const aScore = (Number(a?.points) || 0).toFixed(1);
           const bScore = (Number(b?.points) || 0).toFixed(1);
-          const aAvatar = a?.team?.avatar
-            ? `<img class="ticker-avatar" src="${esc(avatarUrl(a.team.avatar))}" alt="">`
+          const aAvatar = a?.avatar
+            ? `<img class="ticker-avatar" src="${esc(avatarUrl(a.avatar))}" alt="">`
             : `<div class="ticker-avatar-blank">${esc(aName[0] || "?")}</div>`;
-          const bAvatar = b?.team?.avatar
-            ? `<img class="ticker-avatar" src="${esc(avatarUrl(b.team.avatar))}" alt="">`
+          const bAvatar = b?.avatar
+            ? `<img class="ticker-avatar" src="${esc(avatarUrl(b.avatar))}" alt="">`
             : `<div class="ticker-avatar-blank">${esc(bName[0] || "?")}</div>`;
           return `
             <div class="ticker-game ${st.cls}">
