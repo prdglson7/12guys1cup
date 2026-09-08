@@ -3532,3 +3532,155 @@ main { padding: 32px 0 60px; }
 @media (prefers-reduced-motion: reduce) {
   .spinner { animation: none; }
 }
+
+/* ═══ NEW: Trade Analyzer Team Selector + Lineup Verdict ═══ */
+.trade-team-select {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; background: rgba(30,58,95,0.05);
+  border-radius: 6px; margin-bottom: 14px; font-size: 13px;
+}
+.trade-team-select label { font-weight: 600; color: var(--navy); }
+.trade-team-select select {
+  padding: 5px 10px; border: 1px solid var(--gold);
+  background: #fff; font-family: inherit; font-size: 13px;
+}
+.trade-week-info {
+  margin-left: auto; padding: 4px 10px; background: var(--navy); color: var(--gold);
+  border-radius: 4px; font-family: 'Oswald', sans-serif; font-size: 11px; letter-spacing: 1px;
+}
+.trade-lineup-verdict { margin: 16px 0; }
+.lv-panel {
+  border: 2px solid; border-radius: 8px; padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(30,58,95,0.03), rgba(232,184,74,0.03));
+}
+.lv-accept { border-color: #2E7D32; background: linear-gradient(135deg, rgba(46,125,50,0.08), rgba(46,125,50,0.02)); }
+.lv-lean-accept { border-color: #66BB6A; }
+.lv-fair { border-color: #E8B84A; }
+.lv-lean-reject { border-color: #EF5350; }
+.lv-reject { border-color: #C8352E; background: linear-gradient(135deg, rgba(200,53,46,0.08), rgba(200,53,46,0.02)); }
+.lv-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(30,58,95,0.1);
+}
+.lv-tier { display: flex; align-items: center; gap: 10px; }
+.lv-icon { font-size: 24px; font-weight: 700; }
+.lv-tier-text {
+  font-family: 'Oswald', sans-serif; font-size: 18px; letter-spacing: 2px;
+  color: var(--navy); text-transform: uppercase;
+}
+.lv-mode {
+  font-family: 'Oswald', sans-serif; font-size: 10px; letter-spacing: 2px;
+  color: var(--brown); background: rgba(139,90,60,0.1); padding: 4px 10px; border-radius: 3px;
+}
+.lv-numbers {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 10px;
+}
+.lv-metric {
+  padding: 8px 12px; background: rgba(30,58,95,0.04); border-radius: 4px;
+}
+.lv-metric-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--brown); margin-bottom: 4px; font-weight: 600;
+}
+.lv-metric-value {
+  font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; color: var(--navy);
+}
+.lv-pos-row { font-size: 12px; margin-bottom: 8px; color: var(--brown); }
+.lv-pos-change {
+  display: inline-block; padding: 2px 6px; margin: 0 3px; border-radius: 3px;
+  font-family: 'Oswald', sans-serif; font-size: 11px;
+}
+.lv-pos-add { background: rgba(46,125,50,0.15); color: #2E7D32; }
+.lv-pos-lose { background: rgba(200,53,46,0.15); color: #C8352E; }
+.lv-modifiers { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+.lv-mod {
+  padding: 6px 10px; font-size: 12px; border-radius: 4px;
+  background: rgba(232,184,74,0.1); border-left: 3px solid var(--gold);
+}
+.lv-mod-playoff-only, .lv-mod-bye-conflict, .lv-mod-rebuilder-caution { border-left-color: #EF5350; background: rgba(239,83,80,0.08); }
+.lv-mod-consistent, .lv-mod-contender-boost { border-left-color: #2E7D32; background: rgba(46,125,50,0.08); }
+
+/* ═══ NEW: Trade Finder Diagnosis + Proposals ═══ */
+.finder-mode-badge {
+  font-family: 'Oswald', sans-serif; font-size: 11px; letter-spacing: 2px;
+  padding: 4px 12px; border-radius: 4px;
+}
+.finder-mode-win-now { background: #2E7D32; color: #fff; }
+.finder-mode-balanced { background: var(--gold); color: var(--navy); }
+.finder-mode-sell-now { background: #C8352E; color: #fff; }
+
+.finder-diag-panel {
+  background: rgba(30,58,95,0.03); border-left: 4px solid var(--gold);
+  padding: 12px 16px; margin: 12px 0; border-radius: 4px;
+}
+.finder-diag-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+}
+.finder-diag-header h3 { margin: 0; color: var(--navy); font-size: 16px; }
+.finder-diag-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+}
+.finder-diag-col h4 {
+  font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 2px;
+  color: var(--brown); margin: 0 0 8px 0; text-transform: uppercase;
+}
+.finder-diag-item {
+  display: flex; align-items: center; gap: 8px; padding: 6px 8px;
+  margin-bottom: 4px; font-size: 12px; border-radius: 3px;
+}
+.finder-weak { background: rgba(200,53,46,0.06); }
+.finder-surplus { background: rgba(46,125,50,0.06); }
+.finder-diag-gap {
+  font-family: 'Oswald', sans-serif; font-size: 11px;
+  font-weight: 700; color: var(--brown);
+}
+.finder-diag-detail { flex: 1; color: var(--navy); font-size: 11px; }
+.finder-diag-none { color: rgba(30,58,95,0.4); font-style: italic; font-size: 12px; }
+
+.finder-tp-card {
+  background: #fff; border: 1px solid rgba(30,58,95,0.15); border-radius: 6px;
+  padding: 12px 16px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.finder-tp-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(30,58,95,0.08); margin-bottom: 10px;
+}
+.finder-tp-partner { font-weight: 700; color: var(--navy); font-size: 13px; }
+.finder-tp-type {
+  font-family: 'Oswald', sans-serif; font-size: 10px; letter-spacing: 2px;
+  color: var(--gold); background: var(--navy); padding: 3px 8px; border-radius: 3px;
+}
+.finder-tp-body {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  gap: 12px; align-items: center; margin-bottom: 10px;
+}
+.finder-tp-side { min-width: 0; }
+.finder-tp-label {
+  font-family: 'Oswald', sans-serif; font-size: 10px; letter-spacing: 2px;
+  color: var(--brown); margin-bottom: 6px;
+}
+.finder-tp-player {
+  display: flex; align-items: center; gap: 6px; padding: 4px 6px;
+  margin-bottom: 3px; background: rgba(30,58,95,0.03); border-radius: 3px; font-size: 12px;
+}
+.finder-tp-name { font-weight: 600; color: var(--navy); }
+.finder-tp-team { color: var(--brown); font-size: 10px; }
+.finder-tp-arrow {
+  font-size: 24px; color: var(--gold); font-weight: 700;
+}
+.finder-tp-benefit {
+  display: flex; gap: 20px; padding: 8px 10px; background: rgba(46,125,50,0.06);
+  border-radius: 4px; font-size: 12px;
+}
+.finder-tp-plus { color: #2E7D32; font-weight: 700; }
+.finder-tp-rationale {
+  margin-top: 8px; padding: 6px 10px; background: rgba(232,184,74,0.08);
+  border-left: 3px solid var(--gold); font-size: 12px; color: var(--brown); font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .finder-diag-grid { grid-template-columns: 1fr; }
+  .finder-tp-body { grid-template-columns: 1fr; }
+  .finder-tp-arrow { text-align: center; }
+  .lv-numbers { grid-template-columns: 1fr; }
+}
