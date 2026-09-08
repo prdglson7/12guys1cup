@@ -1976,8 +1976,24 @@ function normalizeName(name) {
 function computeBaselines(rankings) {
   const baselines = {};
   const overall = rankings?.overall || [];
+
+  // Fallback: if proj_pts is null but proj_stats exist, compute it (full PPR scoring)
+  overall.forEach(p => {
+    if (p.proj_pts == null && p.proj_stats) {
+      const s = p.proj_stats;
+      p.proj_pts = (
+        (Number(s.pass_yds) || 0) * 0.04 +
+        (Number(s.pass_tds) || 0) * 4 +
+        (Number(s.rush_yds) || 0) * 0.1 +
+        (Number(s.rush_tds) || 0) * 6 +
+        (Number(s.rec) || 0) * 1 +
+        (Number(s.rec_yds) || 0) * 0.1 +
+        (Number(s.rec_tds) || 0) * 6
+      ) || null;
+    }
+  });
+
   Object.entries(VBD_BASELINE_RANKS).forEach(([pos, rank]) => {
-    // Custom override wins if provided
     if (CUSTOM_BASELINES[pos] != null) {
       baselines[pos] = CUSTOM_BASELINES[pos];
       return;
@@ -1987,15 +2003,29 @@ function computeBaselines(rankings) {
       .map(p => Number(p.proj_pts))
       .filter(n => n != null && !isNaN(n) && n > 0)
       .sort((a, b) => b - a);
-    // Prefer the requested rank, fall back to the deepest player with data
     baselines[pos] = positional[rank - 1] ?? positional[positional.length - 1] ?? 0;
   });
+  console.log('Baselines computed:', baselines);
+  console.log('Players with proj_pts > 0:', overall.filter(p => Number(p.proj_pts) > 0).length, '/', overall.length);
   return baselines;
 }
 
 /** VBD-based player value with Phase 2 enhancements:
     (Projected − Baseline) × Injury × Snap Trend × Regression × Playoff SoS */
 function computePlayerValue(player, baselines) {
+  // Fallback: compute proj_pts from stats if missing
+  if (player.proj_pts == null && player.proj_stats) {
+    const s = player.proj_stats;
+    player.proj_pts = (
+      (Number(s.pass_yds) || 0) * 0.04 +
+      (Number(s.pass_tds) || 0) * 4 +
+      (Number(s.rush_yds) || 0) * 0.1 +
+      (Number(s.rush_tds) || 0) * 6 +
+      (Number(s.rec) || 0) * 1 +
+      (Number(s.rec_yds) || 0) * 0.1 +
+      (Number(s.rec_tds) || 0) * 6
+    ) || null;
+  }
   const proj = Number(player.proj_pts) || 0;
   const baseline = baselines[player.pos] || 0;
   const par = proj - baseline;   // Points Above Replacement
