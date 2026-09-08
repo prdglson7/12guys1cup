@@ -1973,6 +1973,611 @@ function normalizeName(name) {
     If we don't have enough projected players to hit the target rank,
     fall back to the LAST player with a projection so we still get a
     meaningful baseline. */
+/* ═══════════════════════════════════════════════════════════════════
+   NEW TRADE LOGIC ENGINE (approved 2026-09-08)
+
+   Provides lineup-simulation-based trade analysis for both the
+   Trade Analyzer and Trade Finder. Replaces the old raw-VORP math
+   with a "which lineup scores more?" model.
+
+   Key concepts:
+   - PlayerROSV: rest-of-season value = weekly_proj × games_remaining × availability
+   - LineupSim: for each remaining week, pick optimal starters from roster,
+     sum projected points, weight by playoff importance
+   - Verdict: net weighted point gain across all remaining weeks
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* League config — adjust once here, not scattered through code */
+const LEAGUE = {
+  ROSTER_SLOTS: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DST: 1 },
+  FLEX_POSITIONS: ['RB', 'WR', 'TE'],
+  TOTAL_WEEKS: 17,
+  PLAYOFF_START: 15,        // Weeks 15-17 = fantasy playoffs
+  QUARTER_START: 13,        // Weeks 13-14 = must-win to clinch
+  SEASON_TYPE: 'ppr',
+};
+
+/* Playoff week weighting (per approved logic) */
+const PLAYOFF_WEIGHTS = {
+  regular:      1.0,   // Weeks 1-12
+  quarterfinal: 1.5,   // Weeks 13-14
+  playoff:      2.0,   // Weeks 15-17
+};
+
+/* Contender detection thresholds — auto-set trade mode */
+const CONTENDER_TIERS = {
+  contender:  { max_rank: 4, mode: 'win-now'      }, // Top 4 → trade future for now
+  middle:     { max_rank: 8, mode: 'balanced'     }, // 5-8 → balanced upgrades
+  rebuilder:  { max_rank: 12, mode: 'sell-now'    }, // 9-12 → sell veterans for upside
+};
+
+/* Get current NFL week (best-effort: use current date, fall back to 1) */
+function getCurrentWeek() {
+  // 2026 NFL season Week 1 starts Sept 10, 2026 (Wednesday of TNF)
+  const seasonStart = new Date('2026-09-10');
+  const now = new Date();
+  const diffDays = Math.floor((now - seasonStart) / (1000 * 60 * 60 * 24));
+  if (diffDays < 0) return 1;
+  const week = Math.floor(diffDays / 7) + 1;
+  return Math.min(Math.max(week, 1), LEAGUE.TOTAL_WEEKS);
+}
+
+/* Week weight based on playoff schedule */
+function getWeekWeight(week) {
+  if (week >= LEAGUE.PLAYOFF_START) return PLAYOFF_WEIGHTS.playoff;
+  if (week >= LEAGUE.QUARTER_START) return PLAYOFF_WEIGHTS.quarterfinal;
+  return PLAYOFF_WEIGHTS.regular;
+}
+
+/* Weekly projected points for a player.
+   Uses weekly_proj if available, falls back to season/17. */
+function playerWeeklyProj(player) {
+  if (player.weekly_proj != null && !isNaN(player.weekly_proj)) {
+    return Number(player.weekly_proj);
+  }
+  const season = Number(player.proj_pts) || 0;
+  return season / LEAGUE.TOTAL_WEEKS;
+}
+
+/* Availability factor (0-1). Uses FP probability_of_playing or status fallback. */
+function playerAvailability(player) {
+  if (player._injury_prob != null && player._injury_prob >= 0 && player._injury_prob <= 1) {
+    return player._injury_prob;
+  }
+  const status = player._injury;
+  if (!status) return 1.0;
+  const fallback = { 'Questionable': 0.80, 'Doubtful': 0.35, 'Out': 0.05, 'IR': 0.0, 'Suspended': 0.0, 'Probable': 0.95 };
+  return fallback[status] != null ? fallback[status] : 1.0;
+}
+
+/* Player bye week (from FP data). Returns week number or null. */
+function playerBye(player) {
+  const bye = Number(player.bye);
+  return (bye >= 1 && bye <= LEAGUE.TOTAL_WEEKS) ? bye : null;
+}
+
+/* Matchup modifier for a player in a given week.
+   Uses nflverse defVsPos if available. Capped at ±10%.
+   Returns 1.0 if data unavailable. */
+function matchupModifier(player, week, nflverse) {
+  if (!nflverse || !nflverse.available || !nflverse.defVsPos) return 1.0;
+  // We don't have per-week opponent schedules, so use season-avg matchup as proxy
+  // A proper implementation would need weekly opponent data
+  return 1.0; // Placeholder — real matchup data requires schedule integration
+}
+
+/* Rest-of-Season Value for a player from currentWeek onward.
+   Includes matchup modifier and playoff week weighting.
+   Returns object with weeklyValues array and totals. */
+function computePlayerROSV(player, currentWeek, nflverse, options = {}) {
+  const usePlayoffWeighting = options.playoffWeighting !== false; // default true
+  const weeklyProj = playerWeeklyProj(player);
+  const availability = playerAvailability(player);
+  const bye = playerBye(player);
+
+  const weeklyValues = [];
+  let regularTotal = 0;
+  let playoffTotal = 0;
+  let weightedTotal = 0;
+
+  for (let week = currentWeek; week <= LEAGUE.TOTAL_WEEKS; week++) {
+    if (bye === week) {
+      weeklyValues.push({ week, proj: 0, weight: getWeekWeight(week), reason: 'bye' });
+      continue;
+    }
+    const matchup = matchupModifier(player, week, nflverse);
+    const weekProj = weeklyProj * availability * matchup;
+    const weight = usePlayoffWeighting ? getWeekWeight(week) : 1.0;
+
+    weeklyValues.push({ week, proj: weekProj, weight });
+
+    if (week >= LEAGUE.PLAYOFF_START) playoffTotal += weekProj;
+    else regularTotal += weekProj;
+    weightedTotal += weekProj * weight;
+  }
+
+  return {
+    player,
+    weeklyValues,
+    regularTotal,
+    playoffTotal,
+    weightedTotal,
+    weeklyAvg: weeklyProj,
+  };
+}
+
+/* Build optimal starting lineup from a roster for a given week.
+   Returns { starters: {slot: player}, totalProj, benchProj }. */
+function buildOptimalLineup(roster, week, nflverse) {
+  // Filter out players on bye or fully unavailable
+  const available = roster.filter(p => {
+    const bye = playerBye(p);
+    if (bye === week) return false;
+    return true;
+  });
+
+  const starters = {};
+  const used = new Set();
+
+  // Fill fixed slots first (highest weekly proj wins)
+  Object.entries(LEAGUE.ROSTER_SLOTS).forEach(([slot, count]) => {
+    if (slot === 'FLEX') return; // FLEX filled last
+
+    const eligible = available
+      .filter(p => !used.has(p.name) && p.pos === slot.replace(/\d/g, ''))
+      .sort((a, b) => {
+        const aProj = playerWeeklyProj(a) * playerAvailability(a);
+        const bProj = playerWeeklyProj(b) * playerAvailability(b);
+        return bProj - aProj;
+      });
+
+    for (let i = 0; i < count && i < eligible.length; i++) {
+      const key = count > 1 ? `${slot}${i+1}` : slot;
+      starters[key] = eligible[i];
+      used.add(eligible[i].name);
+    }
+  });
+
+  // Fill FLEX slot from best remaining RB/WR/TE
+  const flexEligible = available
+    .filter(p => !used.has(p.name) && LEAGUE.FLEX_POSITIONS.includes(p.pos))
+    .sort((a, b) => {
+      const aProj = playerWeeklyProj(a) * playerAvailability(a);
+      const bProj = playerWeeklyProj(b) * playerAvailability(b);
+      return bProj - aProj;
+    });
+
+  if (flexEligible.length) {
+    starters.FLEX = flexEligible[0];
+    used.add(flexEligible[0].name);
+  }
+
+  const totalProj = Object.values(starters).reduce((s, p) =>
+    s + playerWeeklyProj(p) * playerAvailability(p), 0);
+
+  const bench = available.filter(p => !used.has(p.name));
+  const benchProj = bench.reduce((s, p) =>
+    s + playerWeeklyProj(p) * playerAvailability(p), 0);
+
+  return { starters, totalProj, benchProj, bench };
+}
+
+/* Simulate a full rest-of-season lineup for a roster.
+   Returns array of {week, weight, lineup, weeklyTotal} + grand totals. */
+function simulateLineups(roster, currentWeek, nflverse, options = {}) {
+  const usePlayoffWeighting = options.playoffWeighting !== false;
+  const weeks = [];
+  let unweightedTotal = 0;
+  let weightedTotal = 0;
+
+  for (let week = currentWeek; week <= LEAGUE.TOTAL_WEEKS; week++) {
+    const lineup = buildOptimalLineup(roster, week, nflverse);
+    const weight = usePlayoffWeighting ? getWeekWeight(week) : 1.0;
+
+    weeks.push({ week, weight, lineup, weeklyTotal: lineup.totalProj });
+    unweightedTotal += lineup.totalProj;
+    weightedTotal += lineup.totalProj * weight;
+  }
+
+  return { weeks, unweightedTotal, weightedTotal };
+}
+
+/* Check for bye week conflicts on the roster.
+   Returns array of { week, position, playerNames } for weeks where
+   2+ starters at same position share a bye. */
+function findByeConflicts(roster) {
+  const conflicts = [];
+  const byPos = { QB: [], RB: [], WR: [], TE: [] };
+  roster.forEach(p => {
+    if (byPos[p.pos]) byPos[p.pos].push(p);
+  });
+
+  Object.entries(byPos).forEach(([pos, players]) => {
+    const byWeek = new Map();
+    players.forEach(p => {
+      const bye = playerBye(p);
+      if (!bye) return;
+      if (!byWeek.has(bye)) byWeek.set(bye, []);
+      byWeek.get(bye).push(p.name);
+    });
+    byWeek.forEach((names, week) => {
+      if (names.length >= 2) {
+        conflicts.push({ week, position: pos, playerNames: names });
+      }
+    });
+  });
+
+  return conflicts;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   NEW TRADE ANALYZER
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Analyze a proposed trade using lineup simulation.
+   Returns comprehensive verdict object.
+
+   myRoster: array of my current player objects
+   playersOut: array of players I'd trade away
+   playersIn: array of players I'd receive
+   options: { playoffWeighting: bool, contenderMode: 'win-now'|'balanced'|'sell-now' }
+*/
+function analyzeTradeForTeam(myRoster, playersOut, playersIn, currentWeek, nflverse, options = {}) {
+  // Build "after trade" roster
+  const outNames = new Set(playersOut.map(p => p.name));
+  const afterRoster = [
+    ...myRoster.filter(p => !outNames.has(p.name)),
+    ...playersIn,
+  ];
+
+  // Simulate both lineups
+  const before = simulateLineups(myRoster, currentWeek, nflverse, options);
+  const after = simulateLineups(afterRoster, currentWeek, nflverse, options);
+
+  // Weekly comparison
+  const weeklyDiffs = before.weeks.map((bWeek, i) => {
+    const aWeek = after.weeks[i];
+    return {
+      week: bWeek.week,
+      weight: bWeek.weight,
+      before: bWeek.weeklyTotal,
+      after: aWeek.weeklyTotal,
+      diff: aWeek.weeklyTotal - bWeek.weeklyTotal,
+      weightedDiff: (aWeek.weeklyTotal - bWeek.weeklyTotal) * bWeek.weight,
+    };
+  });
+
+  const netGain = after.weightedTotal - before.weightedTotal;
+  const netGainUnweighted = after.unweightedTotal - before.unweightedTotal;
+  const playoffGain = weeklyDiffs
+    .filter(w => w.week >= LEAGUE.PLAYOFF_START)
+    .reduce((s, w) => s + w.diff, 0);
+  const regularGain = weeklyDiffs
+    .filter(w => w.week < LEAGUE.PLAYOFF_START)
+    .reduce((s, w) => s + w.diff, 0);
+
+  // Bye week conflict check on new roster
+  const newConflicts = findByeConflicts(afterRoster);
+  const oldConflicts = findByeConflicts(myRoster);
+  const addedConflicts = newConflicts.filter(nc =>
+    !oldConflicts.some(oc => oc.week === nc.week && oc.position === nc.position)
+  );
+
+  // Positional impact analysis
+  const posImpact = {};
+  ['QB', 'RB', 'WR', 'TE'].forEach(pos => {
+    const beforeCount = myRoster.filter(p => p.pos === pos).length;
+    const afterCount = afterRoster.filter(p => p.pos === pos).length;
+    posImpact[pos] = afterCount - beforeCount;
+  });
+
+  // Verdict tier calculation (per approved logic)
+  let tier;
+  if (netGain >= 15) tier = 'accept';
+  else if (netGain >= 5) tier = 'lean-accept';
+  else if (netGain >= -4) tier = 'fair';
+  else if (netGain >= -14) tier = 'lean-reject';
+  else tier = 'reject';
+
+  // Confidence modifiers
+  const modifiers = [];
+
+  // 1. Playoff-only gain check
+  if (playoffGain > 0 && regularGain < -3 && netGain > 0) {
+    modifiers.push({ type: 'playoff-only', text: 'Gain concentrated in playoffs — risky if you don\'t make them' });
+    // Downgrade one tier
+    if (tier === 'accept') tier = 'lean-accept';
+    else if (tier === 'lean-accept') tier = 'fair';
+  }
+
+  // 2. Consistent gain across all weeks (upgrade)
+  const positiveWeeks = weeklyDiffs.filter(w => w.diff > 0).length;
+  const totalWeeks = weeklyDiffs.length;
+  if (positiveWeeks / totalWeeks >= 0.8 && netGain > 0) {
+    modifiers.push({ type: 'consistent', text: `Gains value in ${positiveWeeks}/${totalWeeks} weeks — very consistent` });
+    // Upgrade one tier
+    if (tier === 'lean-accept') tier = 'accept';
+    else if (tier === 'fair' && netGain > 0) tier = 'lean-accept';
+  }
+
+  // 3. New bye conflict (downgrade)
+  if (addedConflicts.length > 0) {
+    const conf = addedConflicts[0];
+    modifiers.push({ type: 'bye-conflict', text: `Creates new bye conflict: ${conf.playerNames.length} ${conf.position}s on Week ${conf.week} bye` });
+    // Downgrade one tier
+    if (tier === 'accept') tier = 'lean-accept';
+    else if (tier === 'lean-accept') tier = 'fair';
+  }
+
+  // 4. Contender mode override
+  const contenderMode = options.contenderMode || 'balanced';
+  if (contenderMode === 'win-now' && playoffGain > regularGain) {
+    modifiers.push({ type: 'contender-boost', text: 'Win-now team: playoff gains matter most' });
+    if (tier === 'lean-accept') tier = 'accept';
+  } else if (contenderMode === 'sell-now' && regularGain > 0 && playoffGain < 0) {
+    modifiers.push({ type: 'rebuilder-caution', text: 'Rebuilding: hesitant to sell future for near-term wins' });
+    if (tier === 'accept') tier = 'lean-accept';
+  }
+
+  const verdictText = {
+    'accept': 'ACCEPT — Clear win',
+    'lean-accept': 'LEAN ACCEPT — Small win',
+    'fair': 'FAIR — Essentially a wash',
+    'lean-reject': 'LEAN REJECT — Small loss',
+    'reject': 'REJECT — Clear loss',
+  };
+
+  return {
+    tier,
+    verdictText: verdictText[tier],
+    netGain,
+    netGainUnweighted,
+    playoffGain,
+    regularGain,
+    weeklyDiffs,
+    posImpact,
+    addedConflicts,
+    modifiers,
+    beforeTotal: before.weightedTotal,
+    afterTotal: after.weightedTotal,
+    contenderMode,
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   NEW TRADE FINDER
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Diagnose team weaknesses and surpluses relative to league average.
+   Returns { weaknesses: [pos: gap%], surpluses: {starters: [], bench: []} }. */
+function diagnoseTeam(myRoster, allTeamRosters, currentWeek, nflverse) {
+  // Compute my starter score per position
+  const myStarters = {};
+  ['QB', 'RB', 'WR', 'TE'].forEach(pos => {
+    const count = LEAGUE.ROSTER_SLOTS[pos] || 1;
+    const players = myRoster
+      .filter(p => p.pos === pos)
+      .sort((a, b) => playerWeeklyProj(b) * playerAvailability(b) - playerWeeklyProj(a) * playerAvailability(a));
+    const topN = players.slice(0, count);
+    myStarters[pos] = {
+      score: topN.reduce((s, p) => s + playerWeeklyProj(p) * playerAvailability(p), 0),
+      players: topN,
+      benchAtPos: players.slice(count),
+    };
+  });
+
+  // Compute league average starter score at each position
+  const leagueAvg = {};
+  ['QB', 'RB', 'WR', 'TE'].forEach(pos => {
+    const count = LEAGUE.ROSTER_SLOTS[pos] || 1;
+    const scores = allTeamRosters.map(roster => {
+      const players = roster
+        .filter(p => p.pos === pos)
+        .sort((a, b) => playerWeeklyProj(b) * playerAvailability(b) - playerWeeklyProj(a) * playerAvailability(a));
+      return players.slice(0, count).reduce((s, p) =>
+        s + playerWeeklyProj(p) * playerAvailability(p), 0);
+    });
+    leagueAvg[pos] = scores.reduce((s, v) => s + v, 0) / (scores.length || 1);
+  });
+
+  // Weaknesses (below avg) and surpluses (bench with startable value)
+  const weaknesses = [];
+  const surpluses = [];
+
+  ['QB', 'RB', 'WR', 'TE'].forEach(pos => {
+    const mine = myStarters[pos].score;
+    const avg = leagueAvg[pos] || 0.01;
+    const gap = (mine - avg) / avg; // negative = weakness
+
+    if (gap < -0.08) {
+      weaknesses.push({
+        pos,
+        gapPct: gap,
+        myScore: mine,
+        avgScore: avg,
+        starters: myStarters[pos].players,
+      });
+    }
+
+    // Surplus: bench players with meaningful weekly value (5+ pts/wk)
+    const benchWithValue = myStarters[pos].benchAtPos.filter(p =>
+      playerWeeklyProj(p) * playerAvailability(p) >= 5);
+
+    if (benchWithValue.length > 0) {
+      surpluses.push({
+        pos,
+        gapPct: gap,
+        surplusPlayers: benchWithValue,
+        totalSurplusValue: benchWithValue.reduce((s, p) =>
+          s + playerWeeklyProj(p) * playerAvailability(p), 0),
+      });
+    }
+  });
+
+  // Sort weaknesses by severity (worst first)
+  weaknesses.sort((a, b) => a.gapPct - b.gapPct);
+  // Sort surpluses by value (most first)
+  surpluses.sort((a, b) => b.totalSurplusValue - a.totalSurplusValue);
+
+  return { weaknesses, surpluses, myStarters, leagueAvg };
+}
+
+/* Score compatibility between two teams for trades.
+   Higher = better mutual fit. */
+function scoreCompatibility(myDiag, theirDiag) {
+  let score = 0;
+  const matches = [];
+
+  // Does my surplus fill their weakness?
+  myDiag.surpluses.forEach(mySur => {
+    const theirWeak = theirDiag.weaknesses.find(w => w.pos === mySur.pos);
+    if (theirWeak) {
+      const matchScore = Math.abs(theirWeak.gapPct) * mySur.totalSurplusValue;
+      score += matchScore;
+      matches.push({
+        direction: 'i-give',
+        pos: mySur.pos,
+        theirNeed: Math.abs(theirWeak.gapPct),
+        mySupply: mySur.totalSurplusValue,
+      });
+    }
+  });
+
+  // Does their surplus fill my weakness?
+  theirDiag.surpluses.forEach(theirSur => {
+    const myWeak = myDiag.weaknesses.find(w => w.pos === theirSur.pos);
+    if (myWeak) {
+      const matchScore = Math.abs(myWeak.gapPct) * theirSur.totalSurplusValue;
+      score += matchScore;
+      matches.push({
+        direction: 'i-get',
+        pos: theirSur.pos,
+        myNeed: Math.abs(myWeak.gapPct),
+        theirSupply: theirSur.totalSurplusValue,
+      });
+    }
+  });
+
+  return { score, matches };
+}
+
+/* Generate specific 1-for-1 and 2-for-1 trade proposals between two teams.
+   Filters to trades where BOTH sides benefit (per lineup simulation). */
+function generateTradeProposals(myRoster, theirRoster, myDiag, theirDiag, currentWeek, nflverse, options = {}) {
+  const proposals = [];
+
+  // For each of my weaknesses that they can help with...
+  myDiag.weaknesses.forEach(myWeak => {
+    const theirSurAtPos = theirDiag.surpluses.find(s => s.pos === myWeak.pos);
+    if (!theirSurAtPos) return;
+
+    // For each of their surplus players at my weak position...
+    theirSurAtPos.surplusPlayers.forEach(getPlayer => {
+      // Also require: getPlayer must be a starter-worthy upgrade
+      const currentStarter = myWeak.starters[myWeak.starters.length - 1]; // my worst starter
+      if (!currentStarter) return;
+      const getValue = playerWeeklyProj(getPlayer) * playerAvailability(getPlayer);
+      const currentValue = playerWeeklyProj(currentStarter) * playerAvailability(currentStarter);
+      if (getValue <= currentValue * 1.05) return; // must be at least 5% upgrade
+
+      // Now find what I give — my surplus at THEIR weakness
+      theirDiag.weaknesses.forEach(theirWeak => {
+        const mySurAtPos = myDiag.surpluses.find(s => s.pos === theirWeak.pos);
+        if (!mySurAtPos) return;
+
+        // Try 1-for-1 first
+        mySurAtPos.surplusPlayers.forEach(givePlayer => {
+          const giveValue = playerWeeklyProj(givePlayer) * playerAvailability(givePlayer);
+
+          // Rough fairness check: values within 40%
+          if (Math.abs(giveValue - getValue) / Math.max(giveValue, getValue, 0.01) > 0.4) return;
+
+          // Simulate both sides
+          const myAnalysis = analyzeTradeForTeam(myRoster, [givePlayer], [getPlayer], currentWeek, nflverse, options);
+          const theirAnalysis = analyzeTradeForTeam(theirRoster, [getPlayer], [givePlayer], currentWeek, nflverse, options);
+
+          // Both must gain
+          if (myAnalysis.netGain > 3 && theirAnalysis.netGain > 3) {
+            proposals.push({
+              type: '1-for-1',
+              give: [givePlayer],
+              get: [getPlayer],
+              myGain: myAnalysis.netGain,
+              theirGain: theirAnalysis.netGain,
+              myAnalysis,
+              theirAnalysis,
+              rationale: `Fills my ${myWeak.pos} weakness. They upgrade ${theirWeak.pos}.`,
+            });
+          }
+        });
+
+        // Try 2-for-1: give two of my surplus for one of their better assets
+        // Only if the "get" player is significantly better than any single "give"
+        if (mySurAtPos.surplusPlayers.length >= 2) {
+          const give1 = mySurAtPos.surplusPlayers[0];
+          const give2 = mySurAtPos.surplusPlayers[1];
+          const totalGiveValue = playerWeeklyProj(give1) * playerAvailability(give1)
+                               + playerWeeklyProj(give2) * playerAvailability(give2);
+
+          if (Math.abs(totalGiveValue - getValue) / Math.max(totalGiveValue, getValue, 0.01) > 0.5) return;
+
+          // 2-for-1 requires the "get" to be a starter on their team currently
+          const theirStarters = theirDiag.myStarters[getPlayer.pos]?.players || [];
+          const isStarter = theirStarters.some(p => p.name === getPlayer.name);
+          if (!isStarter) return;
+
+          const myAnalysis = analyzeTradeForTeam(myRoster, [give1, give2], [getPlayer], currentWeek, nflverse, options);
+          const theirAnalysis = analyzeTradeForTeam(theirRoster, [getPlayer], [give1, give2], currentWeek, nflverse, options);
+
+          if (myAnalysis.netGain > 5 && theirAnalysis.netGain > 3) {
+            proposals.push({
+              type: '2-for-1',
+              give: [give1, give2],
+              get: [getPlayer],
+              myGain: myAnalysis.netGain,
+              theirGain: theirAnalysis.netGain,
+              myAnalysis,
+              theirAnalysis,
+              rationale: `Consolidate two bench pieces for a starter upgrade at ${myWeak.pos}.`,
+            });
+          }
+        }
+      });
+    });
+  });
+
+  // Deduplicate (same players) and sort by mutual benefit
+  const seen = new Set();
+  const unique = proposals.filter(p => {
+    const key = p.give.map(g => g.name).sort().join('|') + '::' + p.get.map(g => g.name).sort().join('|');
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  return unique.sort((a, b) => (b.myGain + b.theirGain) - (a.myGain + a.theirGain));
+}
+
+/* Auto-detect contender mode from team's projected standing.
+   Uses simple lineup-strength ranking against all teams. */
+function detectContenderMode(myRoster, allTeamRosters, currentWeek, nflverse) {
+  const scores = allTeamRosters.map((roster, i) => {
+    const sim = simulateLineups(roster, currentWeek, nflverse);
+    return { i, score: sim.weightedTotal };
+  }).sort((a, b) => b.score - a.score);
+
+  const myIdx = allTeamRosters.findIndex(r => r === myRoster);
+  const myRank = scores.findIndex(s => s.i === myIdx) + 1;
+
+  if (myRank <= CONTENDER_TIERS.contender.max_rank) return 'win-now';
+  if (myRank <= CONTENDER_TIERS.middle.max_rank) return 'balanced';
+  return 'sell-now';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   END NEW TRADE LOGIC ENGINE
+   ═══════════════════════════════════════════════════════════════════ */
+
 function computeBaselines(rankings) {
   const baselines = {};
   const overall = rankings?.overall || [];
@@ -2177,9 +2782,9 @@ async function renderTools() {
     console.log('Could not load rosters:', e.message);
   }
 
-  renderTradeAnalyzer(allPlayers, baselines, tradeBody);
+  renderTradeAnalyzer(allPlayers, baselines, tradeBody, teamsWithRosters, nflverse);
   renderStartSit(allPlayers, ssBody, nflverse);
-  renderTradeFinder(allPlayers, baselines, teamsWithRosters, finderBody, finderMeta);
+  renderTradeFinder(allPlayers, baselines, teamsWithRosters, finderBody, finderMeta, nflverse);
 }
 
 /* ---------- Player search dropdown (shared) ---------- */
@@ -2242,26 +2847,121 @@ function attachPlayerSearch(inputId, allPlayers, onPick) {
 }
 
 /* ---------- Trade Analyzer ---------- */
-function renderTradeAnalyzer(allPlayers, baselines, container) {
-  let teamA = [];
-  let teamB = [];
+/* Render the lineup-based trade verdict panel */
+function renderLineupVerdict(container, analysis, currentWeek) {
+  const tierColors = {
+    'accept':      { cls: 'lv-accept', icon: '✓✓', color: '#2E7D32' },
+    'lean-accept': { cls: 'lv-lean-accept', icon: '✓', color: '#66BB6A' },
+    'fair':        { cls: 'lv-fair', icon: '=', color: '#E8B84A' },
+    'lean-reject': { cls: 'lv-lean-reject', icon: '✗', color: '#EF5350' },
+    'reject':      { cls: 'lv-reject', icon: '✗✗', color: '#C8352E' },
+  };
+  const t = tierColors[analysis.tier] || tierColors.fair;
+
+  const modifierHtml = analysis.modifiers.length
+    ? `<div class="lv-modifiers">
+        ${analysis.modifiers.map(m => `<div class="lv-mod lv-mod-${m.type}">${esc(m.text)}</div>`).join('')}
+       </div>`
+    : '';
+
+  const posImpactHtml = Object.entries(analysis.posImpact)
+    .filter(([_, diff]) => diff !== 0)
+    .map(([pos, diff]) => {
+      const sign = diff > 0 ? '+' : '';
+      const cls = diff > 0 ? 'lv-pos-add' : 'lv-pos-lose';
+      return `<span class="lv-pos-change ${cls}">${pos} ${sign}${diff}</span>`;
+    })
+    .join('');
 
   container.innerHTML = `
+    <div class="lv-panel ${t.cls}">
+      <div class="lv-header">
+        <div class="lv-tier">
+          <span class="lv-icon" style="color:${t.color}">${t.icon}</span>
+          <span class="lv-tier-text">${esc(analysis.verdictText)}</span>
+        </div>
+        <div class="lv-mode">${analysis.contenderMode.toUpperCase().replace('-', ' ')}</div>
+      </div>
+      <div class="lv-numbers">
+        <div class="lv-metric">
+          <div class="lv-metric-label">Weighted net gain</div>
+          <div class="lv-metric-value" style="color:${t.color}">
+            ${analysis.netGain > 0 ? '+' : ''}${analysis.netGain.toFixed(1)} pts
+          </div>
+        </div>
+        <div class="lv-metric">
+          <div class="lv-metric-label">Regular season</div>
+          <div class="lv-metric-value">
+            ${analysis.regularGain > 0 ? '+' : ''}${analysis.regularGain.toFixed(1)} pts
+          </div>
+        </div>
+        <div class="lv-metric">
+          <div class="lv-metric-label">Playoffs (W15-17)</div>
+          <div class="lv-metric-value">
+            ${analysis.playoffGain > 0 ? '+' : ''}${analysis.playoffGain.toFixed(1)} pts
+          </div>
+        </div>
+      </div>
+      ${posImpactHtml ? `<div class="lv-pos-row">Position changes: ${posImpactHtml}</div>` : ''}
+      ${modifierHtml}
+    </div>`;
+}
+
+function renderTradeAnalyzer(allPlayers, baselines, container, teams, nflverse) {
+  let teamA = [];
+  let teamB = [];
+  let myTeamId = null;
+  let myRoster = null;
+  let allTeamRosters = [];
+  const currentWeek = getCurrentWeek();
+
+  // Build team roster lookup if teams available
+  if (teams && teams.size) {
+    const teamList = Array.from(teams.values()).filter(t => t.roster_names && t.roster_names.length);
+    allTeamRosters = teamList.map(t => {
+      const roster = [];
+      t.roster_names.forEach(entry => {
+        const fp = matchFpPlayer(entry, allPlayers);
+        if (fp) roster.push(fp);
+      });
+      return roster;
+    });
+    // Sort teams alphabetically
+    const sortedTeams = [...teamList].sort((a, b) => (a.team_name || '').localeCompare(b.team_name || ''));
+    myTeamId = sortedTeams[0]?.roster_id;
+  }
+
+  const teamSelectorHtml = teams && teams.size ? `
+    <div class="trade-team-select">
+      <label for="trade-my-team">Analyze from perspective of:</label>
+      <select id="trade-my-team">
+        ${Array.from(teams.values())
+          .filter(t => t.roster_names && t.roster_names.length)
+          .sort((a, b) => (a.team_name || '').localeCompare(b.team_name || ''))
+          .map(t => `<option value="${t.roster_id}">${esc(t.team_name)}</option>`).join('')}
+      </select>
+      <span class="trade-week-info">Week ${currentWeek} of ${LEAGUE.TOTAL_WEEKS}</span>
+    </div>` : '';
+
+  container.innerHTML = `
+    ${teamSelectorHtml}
     <div class="trade-grid">
       <div class="trade-side">
-        <h3 class="trade-side-title">Team A gives</h3>
+        <h3 class="trade-side-title">You give (Team A)</h3>
         ${playerSearchHtml('trade-a-search', 'Search player to add…')}
         <div id="trade-a-list" class="trade-list"></div>
         <div id="trade-a-total" class="trade-total"></div>
       </div>
       <div class="trade-vs">⇄</div>
       <div class="trade-side">
-        <h3 class="trade-side-title">Team B gives</h3>
+        <h3 class="trade-side-title">You get (Team B)</h3>
         ${playerSearchHtml('trade-b-search', 'Search player to add…')}
         <div id="trade-b-list" class="trade-list"></div>
         <div id="trade-b-total" class="trade-total"></div>
       </div>
     </div>
+
+    <div id="trade-lineup-verdict" class="trade-lineup-verdict" style="display:none"></div>
 
     <div id="trade-verdict" class="trade-verdict-empty">
       Add at least 1 player to each side to see the verdict
@@ -2530,7 +3230,37 @@ active — no hidden adjustments.</pre>
         </div>
       </div>
       ${consolidationDetail ? `<div class="fair-consolidation">${consolidationDetail}</div>` : ''}`;
+
+    // ═══ NEW: Lineup-based verdict (if roster available) ═══
+    const lineupVerdictEl = document.getElementById('trade-lineup-verdict');
+    if (myRoster && teamA.length && teamB.length) {
+      const contenderMode = detectContenderMode(myRoster, allTeamRosters, currentWeek, {});
+      const analysis = analyzeTradeForTeam(myRoster, teamA, teamB, currentWeek, {}, { contenderMode });
+      renderLineupVerdict(lineupVerdictEl, analysis, currentWeek);
+      lineupVerdictEl.style.display = '';
+    } else {
+      lineupVerdictEl.style.display = 'none';
+    }
   };
+
+  // Team selector handler
+  const teamSel = document.getElementById('trade-my-team');
+  if (teamSel) {
+    const updateMyTeam = () => {
+      myTeamId = Number(teamSel.value);
+      const team = teams.get(myTeamId);
+      if (team && team.roster_names) {
+        myRoster = [];
+        team.roster_names.forEach(entry => {
+          const fp = matchFpPlayer(entry, allPlayers);
+          if (fp) myRoster.push(fp);
+        });
+      }
+      repaint();
+    };
+    teamSel.addEventListener('change', updateMyTeam);
+    updateMyTeam();
+  }
 
   attachPlayerSearch('trade-a-search', allPlayers, (p) => { teamA.push(p); repaint(); });
   attachPlayerSearch('trade-b-search', allPlayers, (p) => { teamB.push(p); repaint(); });
@@ -2985,7 +3715,7 @@ function findTradesBetweenTeams(myTeam, otherTeam, myAnalysis, otherAnalysis, ba
   return trades.sort((a, b) => b.mutualBenefit - a.mutualBenefit);
 }
 
-function renderTradeFinder(allPlayers, baselines, teams, container, metaEl) {
+function renderTradeFinder(allPlayers, baselines, teams, container, metaEl, nflverse) {
   if (!teams || !teams.size) {
     container.innerHTML = errBox("Roster data unavailable. Trade Finder needs Sleeper players DB — trigger 'Update Sleeper players DB' workflow first.");
     return;
@@ -2995,17 +3725,29 @@ function renderTradeFinder(allPlayers, baselines, teams, container, metaEl) {
   const teamsWithRosters = teamList.filter(t => t.roster_names && t.roster_names.length > 0);
 
   if (metaEl) {
-    metaEl.textContent = `${teamsWithRosters.length} rosters loaded • VBD analysis`;
+    metaEl.textContent = `${teamsWithRosters.length} rosters • Lineup-simulation engine`;
   }
 
   if (!teamsWithRosters.length) {
-    container.innerHTML = empty("No rosters loaded yet. If you just joined the league mid-week this can happen. Trigger 'Update Sleeper players DB' workflow and refresh.");
+    container.innerHTML = empty("No rosters loaded yet. Trigger 'Update Sleeper players DB' workflow and refresh.");
     return;
   }
 
-  // Sort teams alphabetically by name for the dropdown
+  // Pre-build all team rosters as FP player arrays
+  const allRosters = teamsWithRosters.map(t => {
+    const roster = [];
+    t.roster_names.forEach(entry => {
+      const fp = matchFpPlayer(entry, allPlayers);
+      if (fp) roster.push(fp);
+    });
+    return { team: t, roster };
+  });
+
+  const currentWeek = getCurrentWeek();
+  const nflv = nflverse || { available: false };
+
+  // Sort teams alphabetically for dropdown
   const sortedTeams = [...teamsWithRosters].sort((a, b) => (a.team_name || '').localeCompare(b.team_name || ''));
-  const defaultTeamId = sortedTeams[0].roster_id;
 
   container.innerHTML = `
     <div class="finder-controls">
@@ -3013,6 +3755,14 @@ function renderTradeFinder(allPlayers, baselines, teams, container, metaEl) {
       <select id="finder-team-select">
         ${sortedTeams.map(t => `<option value="${t.roster_id}">${esc(t.team_name)}</option>`).join('')}
       </select>
+      <label for="finder-mode">Mode:</label>
+      <select id="finder-mode">
+        <option value="auto">Auto (based on standing)</option>
+        <option value="win-now">Win Now (playoff weight)</option>
+        <option value="balanced">Balanced</option>
+        <option value="sell-now">Rebuild (sell veterans)</option>
+      </select>
+      <span class="trade-week-info">Week ${currentWeek}</span>
     </div>
 
     <div id="finder-analysis"></div>
@@ -3020,116 +3770,161 @@ function renderTradeFinder(allPlayers, baselines, teams, container, metaEl) {
 
   const paint = () => {
     const select = document.getElementById('finder-team-select');
+    const modeSel = document.getElementById('finder-mode');
     const analysisEl = document.getElementById('finder-analysis');
     const tradesEl = document.getElementById('finder-trades');
 
     const myTeamId = Number(select.value);
-    const myTeam = teams.get(myTeamId);
-    if (!myTeam || !myTeam.roster_names) {
+    const myEntry = allRosters.find(r => r.team.roster_id === myTeamId);
+    if (!myEntry) {
       analysisEl.innerHTML = empty("No roster for this team.");
       tradesEl.innerHTML = '';
       return;
     }
 
-    const myAnalysis = analyzeTeamStrength(myTeam.roster_names, allPlayers, baselines);
+    const myRoster = myEntry.roster;
+    const otherRosters = allRosters.filter(r => r.team.roster_id !== myTeamId);
+    const allRosterArrays = allRosters.map(r => r.roster);
 
-    // Show positional strength
+    // Auto-detect contender mode or use user override
+    let contenderMode = modeSel.value;
+    if (contenderMode === 'auto') {
+      contenderMode = detectContenderMode(myRoster, allRosterArrays, currentWeek, nflv);
+    }
+
+    // Diagnose my team
+    const myDiag = diagnoseTeam(myRoster, allRosterArrays, currentWeek, nflv);
+
+    // Show diagnosis
+    const weaknessesHtml = myDiag.weaknesses.length
+      ? myDiag.weaknesses.map(w => `
+          <div class="finder-diag-item finder-weak">
+            <span class="${_pillClass(w.pos)}">${w.pos}</span>
+            <span class="finder-diag-gap">${(w.gapPct * 100).toFixed(0)}% below avg</span>
+            <span class="finder-diag-detail">Your starters: ${w.starters.map(p => esc(p.name)).join(', ')}</span>
+          </div>`).join('')
+      : '<div class="finder-diag-none">No significant weaknesses detected</div>';
+
+    const surplusesHtml = myDiag.surpluses.length
+      ? myDiag.surpluses.map(s => `
+          <div class="finder-diag-item finder-surplus">
+            <span class="${_pillClass(s.pos)}">${s.pos}</span>
+            <span class="finder-diag-gap">${s.surplusPlayers.length} bench player${s.surplusPlayers.length !== 1 ? 's' : ''}</span>
+            <span class="finder-diag-detail">${s.surplusPlayers.map(p => esc(p.name)).join(', ')}</span>
+          </div>`).join('')
+      : '<div class="finder-diag-none">No significant surplus depth</div>';
+
     analysisEl.innerHTML = `
-      <div class="finder-strength">
-        <h3>${esc(myTeam.team_name)} — Positional Strength</h3>
-        <div class="finder-strength-grid">
-          ${['QB', 'RB', 'WR', 'TE', 'K', 'DST'].map(pos => {
-            const val = myAnalysis.starterValue[pos] || 0;
-            const players = (myAnalysis.byPos[pos] || []).slice(0, pos === 'RB' || pos === 'WR' ? 3 : 1);
-            return `
-              <div class="finder-strength-pos">
-                <div class="finder-strength-label">
-                  <span class="${_pillClass(pos)}">${pos}</span>
-                  <span class="finder-strength-val">${val.toFixed(0)}</span>
-                </div>
-                <div class="finder-strength-players">
-                  ${players.map(p => `<div>${esc(p.name)} <span class="dim">(${p.rank || '—'})</span></div>`).join('') || '<div class="dim">No starters</div>'}
-                </div>
-              </div>`;
-          }).join('')}
+      <div class="finder-diag-panel">
+        <div class="finder-diag-header">
+          <h3>${esc(myEntry.team.team_name)}</h3>
+          <span class="finder-mode-badge finder-mode-${contenderMode}">${contenderMode.toUpperCase().replace('-', ' ')}</span>
+        </div>
+        <div class="finder-diag-grid">
+          <div class="finder-diag-col">
+            <h4>Weaknesses (target these)</h4>
+            ${weaknessesHtml}
+          </div>
+          <div class="finder-diag-col">
+            <h4>Surpluses (trade from these)</h4>
+            ${surplusesHtml}
+          </div>
         </div>
       </div>`;
 
-    // Find trades against every other team
-    tradesEl.innerHTML = loading("Scanning trades…");
+    // Generate trade proposals
+    tradesEl.innerHTML = loading("Scanning all 11 other teams for compatible trades…");
     setTimeout(() => {
-      const allTrades = [];
-      teamsWithRosters.forEach(other => {
-        if (other.roster_id === myTeamId) return;
-        const otherAnalysis = analyzeTeamStrength(other.roster_names, allPlayers, baselines);
-        const trades = findTradesBetweenTeams(myTeam, other, myAnalysis, otherAnalysis, baselines);
-        trades.forEach(t => t.otherTeam = other);
-        allTrades.push(...trades);
+      const allProposals = [];
+      otherRosters.forEach(other => {
+        const otherDiag = diagnoseTeam(other.roster, allRosterArrays, currentWeek, nflv);
+        const compat = scoreCompatibility(myDiag, otherDiag);
+        if (compat.score <= 0) return; // No compatibility
+
+        const proposals = generateTradeProposals(
+          myRoster, other.roster, myDiag, otherDiag,
+          currentWeek, nflv, { contenderMode }
+        );
+        proposals.forEach(p => {
+          p.otherTeam = other.team;
+          p.compatibility = compat.score;
+        });
+        allProposals.push(...proposals);
       });
 
-      const topTrades = allTrades
-        .sort((a, b) => b.mutualBenefit - a.mutualBenefit)
-        .slice(0, 12);
+      // Sort by (my gain × their gain) — mutual improvement
+      const ranked = allProposals
+        .sort((a, b) => (b.myGain * b.theirGain) - (a.myGain * a.theirGain))
+        .slice(0, 10);
 
-      if (!topTrades.length) {
-        tradesEl.innerHTML = empty("No mutual-benefit trades found. Your roster is either well-balanced or others don't have complementary needs.");
+      if (!ranked.length) {
+        tradesEl.innerHTML = empty(`No mutual-benefit trades found. Your roster is either well-balanced against the league, or no other team has complementary needs matching your surpluses.`);
         return;
       }
 
       tradesEl.innerHTML = `
-        <h3 class="finder-trades-title">Suggested trades (top ${topTrades.length}):</h3>
+        <h3 class="finder-trades-title">Top ${ranked.length} trade proposal${ranked.length !== 1 ? 's' : ''}</h3>
         <div class="finder-trades-list">
-          ${topTrades.map(t => {
-            const giveV = computePlayerValue(t.give, baselines);
-            const getV = computePlayerValue(t.get, baselines);
-            return `
-              <div class="finder-trade">
-                <div class="finder-trade-partner">
-                  <span class="finder-vs-team">Trade with ${esc(t.otherTeam.team_name)}</span>
-                  <span class="finder-fairness fair-${Math.floor(t.fairness / 10) * 10}">${t.fairness}/100 fair</span>
-                </div>
-                <div class="finder-trade-body">
-                  <div class="finder-trade-side finder-give">
-                    <div class="finder-trade-side-label">You give</div>
-                    <div class="finder-trade-player">
-                      <div class="finder-trade-name">${esc(t.give.name)}</div>
-                      <div class="finder-trade-meta">
-                        <span class="${_pillClass(t.give.pos)}">${esc(t.give.pos)}</span>
-                        <span>ECR #${t.give.rank || '—'}</span>
-                        <span class="finder-val">VORP ${giveV.value.toFixed(1)}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="finder-trade-arrow">⇄</div>
-                  <div class="finder-trade-side finder-get">
-                    <div class="finder-trade-side-label">You get</div>
-                    <div class="finder-trade-player">
-                      <div class="finder-trade-name">${esc(t.get.name)}</div>
-                      <div class="finder-trade-meta">
-                        <span class="${_pillClass(t.get.pos)}">${esc(t.get.pos)}</span>
-                        <span>ECR #${t.get.rank || '—'}</span>
-                        <span class="finder-val">VORP ${getV.value.toFixed(1)}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="finder-trade-benefit">
-                  <span>Your gain: <strong class="fair-winner-gain">+${t.myGain.toFixed(1)}</strong> at ${t.myWeakPos}</span>
-                  <span class="dim">•</span>
-                  <span>Their gain: <strong>+${t.theirGain.toFixed(1)}</strong> at ${t.myStrongPos}</span>
-                </div>
-              </div>`;
-          }).join('')}
+          ${ranked.map(p => renderTradeProposal(p)).join('')}
         </div>
         <p class="finder-note">
-          Trades ranked by mutual benefit (sum of both teams' improvement). Only shows trades with fairness ≥ 75/100
-          where <strong>both</strong> teams improve their weakest starting position.
+          Trades ranked by mutual benefit using lineup simulation. Only shows trades where <strong>both</strong>
+          teams' starting lineups improve by 3+ points/week weighted by playoff importance.
+          <br><br>
+          <strong>${contenderMode.toUpperCase().replace('-', ' ')}</strong> mode is active — this affects which trades are recommended.
+          Auto-detected based on your projected standing.
         </p>`;
-    }, 50);
+    }, 100);
   };
 
   document.getElementById('finder-team-select').addEventListener('change', paint);
+  document.getElementById('finder-mode').addEventListener('change', paint);
   paint();
+}
+
+/* Render a single trade proposal card */
+function renderTradeProposal(p) {
+  const giveHtml = p.give.map(pl => `
+    <div class="finder-tp-player">
+      <span class="${_pillClass(pl.pos)}">${esc(pl.pos)}</span>
+      <span class="finder-tp-name">${esc(pl.name)}</span>
+      <span class="finder-tp-team">${esc(pl.team || '')}</span>
+    </div>`).join('');
+
+  const getHtml = p.get.map(pl => `
+    <div class="finder-tp-player">
+      <span class="${_pillClass(pl.pos)}">${esc(pl.pos)}</span>
+      <span class="finder-tp-name">${esc(pl.name)}</span>
+      <span class="finder-tp-team">${esc(pl.team || '')}</span>
+    </div>`).join('');
+
+  return `
+    <div class="finder-tp-card">
+      <div class="finder-tp-header">
+        <span class="finder-tp-partner">with ${esc(p.otherTeam.team_name)}</span>
+        <span class="finder-tp-type">${p.type}</span>
+      </div>
+      <div class="finder-tp-body">
+        <div class="finder-tp-side">
+          <div class="finder-tp-label">You give</div>
+          ${giveHtml}
+        </div>
+        <div class="finder-tp-arrow">⇄</div>
+        <div class="finder-tp-side">
+          <div class="finder-tp-label">You get</div>
+          ${getHtml}
+        </div>
+      </div>
+      <div class="finder-tp-benefit">
+        <div class="finder-tp-gain">
+          Your gain: <strong class="finder-tp-plus">+${p.myGain.toFixed(1)}</strong> pts (weighted)
+        </div>
+        <div class="finder-tp-gain">
+          Their gain: <strong class="finder-tp-plus">+${p.theirGain.toFixed(1)}</strong> pts
+        </div>
+      </div>
+      <div class="finder-tp-rationale">${esc(p.rationale)}</div>
+    </div>`;
 }
 
 /* ============================================================
