@@ -159,16 +159,17 @@ async function main() {
     fetchRanking('DST', 'STD'),
   ]);
 
-  // Wait 3 seconds before next batch to avoid FP rate limit (429)
-  await delay(3000);
+  // Wait 5 seconds before projections to avoid FP rate limit (429)
+  await delay(5000);
 
-  // Batch 2: Projections (4 calls)
-  const [projQb, projRb, projWr, projTe] = await Promise.all([
-    fetchProjections('QB', SCORING),
-    fetchProjections('RB', SCORING),
-    fetchProjections('WR', SCORING),
-    fetchProjections('TE', SCORING),
-  ]);
+  // Batch 2: Projections — sequential with 2s gaps (FP rate limit is strict)
+  const projQb = await fetchProjections('QB', SCORING);
+  await delay(2000);
+  const projRb = await fetchProjections('RB', SCORING);
+  await delay(2000);
+  const projWr = await fetchProjections('WR', SCORING);
+  await delay(2000);
+  const projTe = await fetchProjections('TE', SCORING);
 
   // Wait 3 seconds before ADP call
   await delay(3000);
