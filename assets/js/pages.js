@@ -2258,8 +2258,8 @@ Projected points of the LAST STARTABLE player at each position:
   Position   Baseline Rank    ${'Current baseline (pts)'}
   QB         QB12             ${(baselines.QB || 0).toFixed(1)}
   RB         RB30             ${(baselines.RB || 0).toFixed(1)}
-  WR         WR36             ${(baselines.WR || 0).toFixed(1)}
-  TE         TE12             ${(baselines.TE || 0).toFixed(1)}
+  WR         WR28             ${(baselines.WR || 0).toFixed(1)}
+  TE         TE13             ${(baselines.TE || 0).toFixed(1)}
   K          K12              ${(baselines.K || 0).toFixed(1)}
   DST        DST12            ${(baselines.DST || 0).toFixed(1)}
 
@@ -2847,7 +2847,7 @@ function matchFpPlayer(rosterEntry, fpPlayers) {
    Returns { totalByPos, starterValue, roster } for the team. */
 function analyzeTeamStrength(rosterNames, fpPlayers, baselines) {
   // Starting lineup composition for 12-team full PPR
-  const STARTERS = { QB: 1, RB: 2, WR: 3, TE: 1, FLEX: 1, K: 1, DST: 1 };
+  const STARTERS = { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DST: 1 };
 
   const roster = [];
   rosterNames.forEach(entry => {
@@ -3363,7 +3363,7 @@ async function renderWaiver() {
    ============================================================ */
 
 /* Extract starting slot counts from league.roster_positions.
-   Filters out BN/IR/TAXI. Returns {QB: 1, RB: 2, WR: 3, TE: 1, FLEX: 1, K: 1, DEF: 1} shape. */
+   Filters out BN/IR/TAXI. Returns {QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1} shape. */
 function extractStartingSlots(rosterPositions) {
   const slots = {};
   (rosterPositions || []).forEach(pos => {
