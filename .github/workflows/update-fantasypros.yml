@@ -13,10 +13,6 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/update-fantasypros.yml"
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/update-fantasypros.yml"
 
 permissions:
   contents: write
