@@ -247,7 +247,7 @@ function buildEmbed(week, season, gameResults) {
       description: `Updated ${nowStr}\n${gameResults.length} games this week`,
       color: 0x1E3A5F, // navy
       fields,
-      footer: { text: '12guys1cup · Open-Meteo forecast · updates 30 min game days, 60 min other days' },
+      footer: { text: '12guys1cup · Open-Meteo forecast · checks every 30 min, posts when weather changes' },
       timestamp: now.toISOString(),
     }],
   };
