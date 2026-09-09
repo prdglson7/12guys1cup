@@ -1,0 +1,69 @@
+name: NFL Weather to Discord
+
+# Posts NFL weather forecast to Discord.
+# Schedule:
+#   - Every 30 min on game days (Thu, Sun, Mon during season)
+#   - Once daily at 9am CT (14:00 UTC) on non-game days (Tue, Wed, Fri, Sat)
+#
+# Dedupe: script checks payload hash against last posted — skips if unchanged.
+# Manual trigger: set FORCE_POST=true to bypass dedupe.
+
+on:
+  schedule:
+    # Every 30 min on Thursdays (game day)
+    - cron: "*/30 * * * 4"
+    # Every 30 min on Sundays (main game day)
+    - cron: "*/30 * * * 0"
+    # Every 30 min on Mondays (MNF)
+    - cron: "*/30 * * * 1"
+    # Once daily at 14:00 UTC (9am CT) on non-game days
+    - cron: "0 14 * * 2,3,5,6"
+  workflow_dispatch:
+    inputs:
+      force_post:
+        description: 'Force post even if no changes'
+        required: false
+        default: 'false'
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/update-weather.yml"
+      - ".github/scripts/discord-weather.js"
+      - ".github/data/nfl-stadiums.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-weather
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Post weather to Discord
+        env:
+          DISCORD_WEATHER_WEBHOOK: ${{ secrets.DISCORD_WEATHER_WEBHOOK }}
+          FORCE_POST: ${{ github.event.inputs.force_post || 'false' }}
+        run: node .github/scripts/discord-weather.js
+
+      - name: Commit state file if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/data/weather-state.json
+          if git diff --cached --quiet; then
+            echo "No state change."
+            exit 0
+          fi
+          git commit -m "Update weather state [skip ci]"
+          git push
