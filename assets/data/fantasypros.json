@@ -2,8 +2,26 @@
   "sport": "NFL",
   "title": "Fantasy Player News",
   "description": "Breaking Fantasy Football player news along with the impact for fantasy managers",
-  "count": 48,
+  "count": 47,
   "items": [
+    {
+      "id": 606861,
+      "created": "2026-09-10 05:27:42",
+      "created_formated": "Thu, Sep 10th 5:27am UTC",
+      "author": "Ari Koslow",
+      "player_id": 17236,
+      "team_id": "SEA",
+      "title": "Sam Darnold (hip) avoids fracture, to undergo MRI Thursday ",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Injury"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/606861/sam-darnold-hip-avoids-fracture-to-undergo-mri-thursday.php",
+      "desc": "Seahawks coach Mike Macdonald said the team got good initial news on Sam Darnold and they have ruled out a fracture.",
+      "impact": "Darnold was ruled out for the night in the opening drive on Wednesday. He is scheduled to undergo an MRI on Thursday."
+    },
     {
       "id": 606860,
       "created": "2026-09-10 02:42:13",
@@ -22,25 +40,6 @@
       "link": "https://www.fantasypros.com/nfl/news/606860/aj-brown-ankle-ruled-out-against-seattle.php",
       "desc": "A.J. Brown (ankle) has been ruled out for the rest of the Patriots game against Seattle.",
       "impact": "Brown went down in the second half after a Seattle DB landed on his ankle, and Brown went back to the locker room soon after for x-rays. The Patriots will lean on Romeo Doubs, Pop Douglas, and Hunter Henry in the passing game with him out."
-    },
-    {
-      "id": 606856,
-      "created": "2026-09-10 01:38:21",
-      "created_formated": "Thu, Sep 10th 1:38am UTC",
-      "author": "Garrett Ball",
-      "player_id": 17236,
-      "team_id": "SEA",
-      "title": "Sam Darnold (hip) ruled out for remainder of season opener",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury",
-        "Breaking"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/606856/sam-darnold-hip-ruled-out-remainder-season-opener.php",
-      "desc": "Sam Darnold (hip) has been ruled out for the remainder of the Seahawks contest against the Patriots on Wednesday.",
-      "impact": "The injury was serious enough for the team to hold Darnold out, but he was able to get off the field under his own power and jog back to the locker room, so it's hopefully not too serious. Drew Lock will handle duties in the short term, which certainly caps the ceiling of the offense."
     },
     {
       "id": 606826,
@@ -851,28 +850,10 @@
       "link": "https://www.fantasypros.com/nfl/news/606755/isaiah-davis-knee-full-participant-wednesday.php",
       "desc": "Isaiah Davis (knee) was a full participant at practice on Wednesday.",
       "impact": "Davis was a full participant for the Jets on Wednesday. He's still listed on the injury report due to a knee injury, but it shouldn't affect his availability for Week 1. He will continue to play a depth role in this backfield behind Breece Hall moving forward."
-    },
-    {
-      "id": 606753,
-      "created": "2026-09-09 20:21:58",
-      "created_formated": "Wed, Sep 9th 8:21pm UTC",
-      "author": "Leo Sells",
-      "player_id": 22982,
-      "team_id": "NYJ",
-      "title": "Breece Hall (groin) logs full practice Wednesday",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/606753/breece-hall-groin-logs-full-practice-wednesday.php",
-      "desc": "Breece Hall (groin) logged a full practice session on Wednesday.",
-      "impact": "As expected, Hall is pretty well over his groin injury at this point and was able to practice in a full capacity on Wednesday. He should be healthy for the foreseeable future and projects to be a high-quality fantasy asset for as long as he can remain on the field."
     }
   ],
   "public_api_limited": true,
   "tier": "premium",
-  "fetched_at": "2026-09-10T04:58:26Z",
+  "fetched_at": "2026-09-10T09:24:15Z",
   "source_url": "https://api.fantasypros.com/public/v2/json/nfl/news?limit=50"
 }
