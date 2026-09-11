@@ -3426,8 +3426,16 @@ Combined matchup × game script × weather → 1-5 stars:
   < 0.90 → ★
 
 ━━━ CONFIDENCE ━━━
-Gap between top and second score, as a % of top.
-Bigger gap = higher confidence.</pre>
+Based on the actual point gap between top and second player:
+  < 1.0 pt gap  → 🪙 COIN FLIP (statistical noise)
+  1-3 pt gap    → 55-64% confidence
+  3-8 pt gap    → 65-80% confidence
+  8+ pt gap     → 80-95% confidence
+
+━━━ BYE WEEK HANDLING ━━━
+If a player's bye week matches the analyzed week, they auto-sit
+(shown with 🏖 BYE badge, 50% opacity, score = 0).
+If all selected players are on bye, verdict says "pick from bench."</pre>
     </div>`;
 
   const toggle = document.getElementById('ss-toggle-math');
