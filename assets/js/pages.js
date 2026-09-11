@@ -3445,6 +3445,18 @@ Bigger gap = higher confidence.</pre>
 
   const computeSsScore = (p) => {
     const proj = Number(p.proj_pts) || 0;
+    const playerBye = Number(p.bye);
+
+    // BYE WEEK CHECK — if player is on bye this week, they score 0
+    if (playerBye && playerBye === previewWeek) {
+      return {
+        total: 0,
+        proj: proj,
+        isBye: true,
+        matchup: { opp: null, stars: 0 },
+        injuryLabel: `BYE Week ${playerBye}`,
+      };
+    }
 
     // Injury
     let injuryMult = 1.0;
@@ -3524,8 +3536,8 @@ Bigger gap = higher confidence.</pre>
     picksEl.innerHTML = `
       <div class="ss-list">
         ${scored.map((x, i) => `
-          <div class="ss-card ${i === 0 ? 'ss-card-start' : ''}">
-            <div class="ss-card-badge">${i === 0 ? '✓ START' : 'SIT'}</div>
+          <div class="ss-card ${x.s.isBye ? 'ss-card-bye' : (i === 0 ? 'ss-card-start' : '')}">
+            <div class="ss-card-badge">${x.s.isBye ? '🏖 BYE' : (i === 0 ? '✓ START' : 'SIT')}</div>
             <div class="ss-card-name">${esc(x.p.name)}
               ${x.s.injuryLabel ? `<span class="trade-injury">${esc(x.s.injuryLabel)}</span>` : ''}
             </div>
@@ -3573,13 +3585,51 @@ Bigger gap = higher confidence.</pre>
 
     if (scored.length >= 2) {
       const top = scored[0], second = scored[1];
+
+      // BYE WEEK OVERRIDE — if a player is on bye, they're an auto-sit
+      const byeCount = scored.filter(x => x.s.isBye).length;
+      if (byeCount > 0 && !top.s.isBye) {
+        const byeNames = scored.filter(x => x.s.isBye).map(x => esc(x.p.name)).join(', ');
+        verdictEl.innerHTML = `
+          <div class="ss-verdict">
+            <div class="ss-verdict-title">START <strong>${esc(top.p.name)}</strong></div>
+            <div class="ss-verdict-conf">Auto-decision • ${byeNames} on BYE Week ${previewWeek}</div>
+          </div>`;
+        return;
+      }
+      if (byeCount === scored.length) {
+        verdictEl.innerHTML = `
+          <div class="ss-verdict">
+            <div class="ss-verdict-title">⚠️ ALL PLAYERS ON BYE</div>
+            <div class="ss-verdict-conf">Every player selected is on BYE Week ${previewWeek}. Pick from your bench.</div>
+          </div>`;
+        return;
+      }
+
       const gap = top.s.total > 0 ? (top.s.total - second.s.total) / top.s.total : 0;
-      const confidence = Math.min(99, Math.max(50, gap * 100 + 50));
-      verdictEl.innerHTML = `
-        <div class="ss-verdict">
-          <div class="ss-verdict-title">START <strong>${esc(top.p.name)}</strong></div>
-          <div class="ss-verdict-conf">${confidence.toFixed(0)}% confidence • Week ${previewWeek}</div>
-        </div>`;
+      const pointGap = top.s.total - second.s.total;
+
+      // Coin flip when the scores are effectively identical
+      if (pointGap < 1.0) {
+        verdictEl.innerHTML = `
+          <div class="ss-verdict">
+            <div class="ss-verdict-title">🪙 COIN FLIP — <strong>${esc(top.p.name)}</strong> or <strong>${esc(second.p.name)}</strong></div>
+            <div class="ss-verdict-conf">Gap only ${pointGap.toFixed(1)} pts • Lean toward the one with the better matchup • Week ${previewWeek}</div>
+          </div>`;
+      } else {
+        // Real gap — compute confidence
+        // Small gap (1-3 pts) = low confidence, big gap = high confidence
+        let confidence;
+        if (pointGap < 3) confidence = 55 + pointGap * 3;      // 55-64%
+        else if (pointGap < 8) confidence = 65 + (pointGap - 3) * 3; // 65-80%
+        else confidence = Math.min(95, 80 + (pointGap - 8) * 1.5);   // 80-95%
+
+        verdictEl.innerHTML = `
+          <div class="ss-verdict">
+            <div class="ss-verdict-title">START <strong>${esc(top.p.name)}</strong></div>
+            <div class="ss-verdict-conf">${confidence.toFixed(0)}% confidence • ${pointGap.toFixed(1)} pt edge • Week ${previewWeek}</div>
+          </div>`;
+      }
     } else {
       verdictEl.innerHTML = '<div class="ss-empty">Add one more player to see a verdict</div>';
     }
