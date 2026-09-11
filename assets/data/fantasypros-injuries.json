@@ -1,6 +1,6 @@
 {
   "sport": "NFL",
-  "count": 370,
+  "count": 377,
   "injuries": [
     {
       "player_id": 19788,
@@ -19,7 +19,7 @@
       "practice_1": "Full",
       "practice_2": "Full",
       "practice_3": "DNP",
-      "practice_report_injury_type": "NIR",
+      "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
       "team_practice_3_submitted": true
@@ -37,14 +37,14 @@
       "rank": 16,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.95516",
+      "probability_of_playing": "1",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "ankle",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 18218,
@@ -53,7 +53,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NE",
       "position_id": "WR",
       "rank": 17,
@@ -105,14 +105,14 @@
       "rank": 29,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.94297",
+      "probability_of_playing": "0.99",
       "practice_1": "Limit",
       "practice_2": "Full",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Full",
+      "practice_report_injury_type": "hamstring",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 25403,
@@ -121,42 +121,42 @@
       "status": "Questionable",
       "injury_type": "Ankle",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "ARI",
       "position_id": "RB",
       "rank": 31,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.58771",
+      "probability_of_playing": "0.35098",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Limit",
       "practice_report_injury_type": "ankle",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 25409,
       "yahoo_id": "40899",
       "name": "Malik Nabers",
-      "status": "",
-      "injury_type": "",
+      "status": "Questionable",
+      "injury_type": "Knee",
       "comment": "",
-      "injury_update_date": null,
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "NYG",
       "position_id": "WR",
       "rank": 34,
-      "status_short": "",
+      "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.95604",
+      "probability_of_playing": "0.99",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 22955,
@@ -171,14 +171,14 @@
       "rank": 37,
       "status_short": "O",
       "ir_weeks": [],
-      "probability_of_playing": "0.05113",
+      "probability_of_playing": "0",
       "practice_1": "DNP",
       "practice_2": "DNP",
-      "practice_3": null,
+      "practice_3": "DNP",
       "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 19211,
@@ -237,13 +237,13 @@
       "rank": 47,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.93455",
+      "probability_of_playing": "0.92607",
       "practice_1": "Full",
-      "practice_2": null,
+      "practice_2": "Full",
       "practice_3": null,
       "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -259,11 +259,11 @@
       "rank": 64,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.75363",
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Limit",
       "practice_3": "Full",
-      "practice_report_injury_type": "groin",
+      "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
       "team_practice_3_submitted": true
@@ -281,14 +281,14 @@
       "rank": 65,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.66034",
+      "probability_of_playing": "0.49323",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Limit",
+      "practice_report_injury_type": "calf",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23791,
@@ -303,14 +303,14 @@
       "rank": 80,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.67275",
+      "probability_of_playing": "0.99",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Limit",
+      "practice_report_injury_type": "foot",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23065,
@@ -338,23 +338,23 @@
       "player_id": 18598,
       "yahoo_id": "32231",
       "name": "Jakobi Meyers",
-      "status": "Questionable",
-      "injury_type": "Thumb",
+      "status": "",
+      "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": null,
       "team_id": "JAC",
       "position_id": "WR",
       "rank": 90,
-      "status_short": "Q",
+      "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.77356",
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Limit",
       "practice_report_injury_type": "thumb",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26035,
@@ -394,11 +394,11 @@
       "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": "Full",
+      "practice_3": null,
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 16413,
@@ -413,13 +413,13 @@
       "rank": 108,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.84864",
+      "probability_of_playing": "0.93119",
       "practice_1": "Full",
-      "practice_2": null,
+      "practice_2": "Full",
       "practice_3": null,
       "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -435,13 +435,13 @@
       "rank": 116,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.91287",
+      "probability_of_playing": "0.92024",
       "practice_1": "Full",
-      "practice_2": null,
+      "practice_2": "Full",
       "practice_3": null,
       "practice_report_injury_type": "shoulder",
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -473,20 +473,20 @@
       "status": "Questionable",
       "injury_type": "Groin",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "WAS",
       "position_id": "RB",
       "rank": 131,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.66958",
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Limit",
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26335,
@@ -523,10 +523,10 @@
       "rank": 164,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.97",
+      "probability_of_playing": "1",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "groin",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
@@ -536,23 +536,23 @@
       "player_id": 25360,
       "yahoo_id": "40641",
       "name": "Keaton Mitchell",
-      "status": "Questionable",
-      "injury_type": "Hamstring",
+      "status": "",
+      "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": null,
       "team_id": "LAC",
       "position_id": "RB",
       "rank": 170,
-      "status_short": "Q",
+      "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.64954",
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "hamstring",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23152,
@@ -561,7 +561,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SEA",
       "position_id": "RB",
       "rank": 179,
@@ -624,23 +624,23 @@
       "player_id": 25419,
       "yahoo_id": "42701",
       "name": "Zachariah Branch",
-      "status": "Questionable",
-      "injury_type": "Hamstring",
+      "status": "",
+      "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": null,
       "team_id": "ATL",
       "position_id": "WR",
       "rank": 243,
-      "status_short": "Q",
+      "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.67275",
+      "probability_of_playing": "0.64717",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Full",
+      "practice_report_injury_type": "hamstring",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24333,
@@ -649,7 +649,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "DET",
       "position_id": "RB",
       "rank": 245,
@@ -663,6 +663,28 @@
       "practice_2": null,
       "practice_3": null,
       "practice_report_injury_type": null,
+      "team_practice_1_submitted": true,
+      "team_practice_2_submitted": true,
+      "team_practice_3_submitted": true
+    },
+    {
+      "player_id": 24205,
+      "yahoo_id": "34610",
+      "name": "Malik Davis",
+      "status": "",
+      "injury_type": "",
+      "comment": "",
+      "injury_update_date": null,
+      "team_id": "DAL",
+      "position_id": "RB",
+      "rank": 252,
+      "status_short": "",
+      "ir_weeks": [],
+      "probability_of_playing": "0",
+      "practice_1": "--",
+      "practice_2": "--",
+      "practice_3": "Limit",
+      "practice_report_injury_type": "hip",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
       "team_practice_3_submitted": true
@@ -689,7 +711,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23104,
@@ -707,11 +729,11 @@
       "probability_of_playing": "0.91908",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "--",
       "practice_report_injury_type": "shoulder",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 16447,
@@ -733,7 +755,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23144,
@@ -742,13 +764,13 @@
       "status": "Questionable",
       "injury_type": "Hamstring",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "PHI",
       "position_id": "TE",
       "rank": 272,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": null,
+      "probability_of_playing": "0.45711",
       "practice_1": "--",
       "practice_2": "--",
       "practice_3": "Limit",
@@ -777,7 +799,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 23679,
@@ -830,7 +852,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SF",
       "position_id": "WR",
       "rank": 290,
@@ -846,7 +868,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 23080,
@@ -861,13 +883,13 @@
       "rank": 293,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.89949",
+      "probability_of_playing": "0.91843",
       "practice_1": "Full",
-      "practice_2": null,
+      "practice_2": "Full",
       "practice_3": null,
       "practice_report_injury_type": "foot",
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -905,36 +927,36 @@
       "rank": 304,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.90407",
+      "probability_of_playing": "1",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28133,
       "yahoo_id": "42727",
       "name": "Brenen Thompson",
-      "status": "Questionable",
-      "injury_type": "Hip",
+      "status": "",
+      "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": null,
       "team_id": "LAC",
       "position_id": "WR",
       "rank": 305,
-      "status_short": "Q",
+      "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.70695",
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "hip",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 19198,
@@ -949,14 +971,14 @@
       "rank": 306,
       "status_short": "O",
       "ir_weeks": [],
-      "probability_of_playing": "0.53355",
+      "probability_of_playing": "0.05536",
       "practice_1": "--",
       "practice_2": "Limit",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "DNP",
+      "practice_report_injury_type": "abdomen",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 22973,
@@ -971,14 +993,14 @@
       "rank": 307,
       "status_short": "O",
       "ir_weeks": [],
-      "probability_of_playing": "0.88062",
+      "probability_of_playing": "0.88552",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Full",
+      "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27285,
@@ -987,20 +1009,20 @@
       "status": "Questionable",
       "injury_type": "Hip",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "JAC",
       "position_id": "RB",
       "rank": 316,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.65908",
+      "probability_of_playing": "0.25118",
       "practice_1": "DNP",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Limit",
       "practice_report_injury_type": "hip",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24367,
@@ -1022,7 +1044,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27993,
@@ -1119,20 +1141,20 @@
       "status": "Questionable",
       "injury_type": "Hamstring",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "BUF",
       "position_id": "RB",
       "rank": 332,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.2719",
+      "probability_of_playing": "0.1774",
       "practice_1": "DNP",
       "practice_2": "DNP",
-      "practice_3": null,
+      "practice_3": "Limit",
       "practice_report_injury_type": "hamstring",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 25977,
@@ -1147,10 +1169,10 @@
       "rank": 335,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.97",
+      "probability_of_playing": "1",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
@@ -1185,7 +1207,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "ARI",
       "position_id": "RB",
       "rank": 352,
@@ -1201,7 +1223,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 25393,
@@ -1210,7 +1232,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CAR",
       "position_id": "RB",
       "rank": 357,
@@ -1234,7 +1256,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "LV",
       "position_id": "WR",
       "rank": 368,
@@ -1250,7 +1272,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 13890,
@@ -1265,14 +1287,14 @@
       "rank": 369,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.9147",
+      "probability_of_playing": "1",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 25282,
@@ -1281,7 +1303,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "GB",
       "position_id": "TE",
       "rank": 372,
@@ -1325,7 +1347,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SF",
       "position_id": "RB",
       "rank": 376,
@@ -1338,7 +1360,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 27144,
@@ -1371,7 +1393,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SF",
       "position_id": "WR",
       "rank": 387,
@@ -1387,7 +1409,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 25321,
@@ -1402,14 +1424,14 @@
       "rank": 390,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.12311",
+      "probability_of_playing": "0.03172",
       "practice_1": "DNP",
       "practice_2": "DNP",
-      "practice_3": null,
+      "practice_3": "DNP",
       "practice_report_injury_type": "back",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24347,
@@ -1424,14 +1446,14 @@
       "rank": 409,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.85599",
+      "probability_of_playing": "1",
       "practice_1": "--",
       "practice_2": "Full",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Full",
+      "practice_report_injury_type": "illness",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 25368,
@@ -1473,6 +1495,28 @@
       "practice_2": "DNP",
       "practice_3": "Limit",
       "practice_report_injury_type": "hamstring",
+      "team_practice_1_submitted": true,
+      "team_practice_2_submitted": true,
+      "team_practice_3_submitted": true
+    },
+    {
+      "player_id": 10585,
+      "yahoo_id": "8827",
+      "name": "Calais Campbell",
+      "status": "",
+      "injury_type": "",
+      "comment": "",
+      "injury_update_date": null,
+      "team_id": "BAL",
+      "position_id": "DE",
+      "rank": null,
+      "status_short": "",
+      "ir_weeks": [],
+      "probability_of_playing": null,
+      "practice_1": "--",
+      "practice_2": "--",
+      "practice_3": "DNP",
+      "practice_report_injury_type": "NIR",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
       "team_practice_3_submitted": true
@@ -1556,14 +1600,14 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.99",
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": "Limit",
+      "practice_3": null,
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 12088,
@@ -1600,14 +1644,14 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": null,
+      "probability_of_playing": "1",
       "practice_1": "DNP",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "NIR",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 12205,
@@ -1647,11 +1691,11 @@
       "probability_of_playing": "0.92086",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "--",
       "practice_report_injury_type": "achilles",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 13429,
@@ -1691,11 +1735,11 @@
       "probability_of_playing": "1",
       "practice_1": "--",
       "practice_2": "DNP",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "NIR",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 14047,
@@ -1704,7 +1748,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "LAC",
       "position_id": "LB",
       "rank": null,
@@ -1720,29 +1764,29 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 14060,
       "yahoo_id": "28510",
       "name": "Za'Darius Smith",
-      "status": "Questionable",
-      "injury_type": "Shoulder",
+      "status": "",
+      "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": null,
       "team_id": "ATL",
       "position_id": "LB",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.4993",
+      "probability_of_playing": "0.50494",
       "practice_1": "Limit",
       "practice_2": "DNP",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Full",
+      "practice_report_injury_type": "shoulder",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 14084,
@@ -1767,6 +1811,28 @@
       "team_practice_3_submitted": false
     },
     {
+      "player_id": 15494,
+      "yahoo_id": "29241",
+      "name": "DeForest Buckner",
+      "status": "",
+      "injury_type": "",
+      "comment": "",
+      "injury_update_date": null,
+      "team_id": "IND",
+      "position_id": "DT",
+      "rank": null,
+      "status_short": "",
+      "ir_weeks": [],
+      "probability_of_playing": "1",
+      "practice_1": "--",
+      "practice_2": "--",
+      "practice_3": "DNP",
+      "practice_report_injury_type": "NIR",
+      "team_practice_1_submitted": true,
+      "team_practice_2_submitted": true,
+      "team_practice_3_submitted": true
+    },
+    {
       "player_id": 15512,
       "yahoo_id": "29306",
       "name": "Jonathan Bullard",
@@ -1779,14 +1845,14 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.92086",
+      "probability_of_playing": "1",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Full",
+      "practice_report_injury_type": "groin",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 15533,
@@ -1801,7 +1867,7 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.69148",
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Limit",
       "practice_3": "Limit",
@@ -1809,6 +1875,28 @@
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
       "team_practice_3_submitted": true
+    },
+    {
+      "player_id": 15620,
+      "yahoo_id": "29271",
+      "name": "Chris Jones",
+      "status": "Questionable",
+      "injury_type": "Calf",
+      "comment": "",
+      "injury_update_date": "2026-09-11 00:00:00",
+      "team_id": "KC",
+      "position_id": "DT",
+      "rank": null,
+      "status_short": "Q",
+      "ir_weeks": [],
+      "probability_of_playing": "0.60836",
+      "practice_1": "--",
+      "practice_2": "Limit",
+      "practice_3": null,
+      "practice_report_injury_type": "calf",
+      "team_practice_1_submitted": true,
+      "team_practice_2_submitted": true,
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 15628,
@@ -1839,7 +1927,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NYG",
       "position_id": "DT",
       "rank": null,
@@ -1855,7 +1943,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 16370,
@@ -1908,7 +1996,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "MIN",
       "position_id": "S",
       "rank": null,
@@ -1948,7 +2036,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 16513,
@@ -1979,7 +2067,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "WAS",
       "position_id": "DE",
       "rank": null,
@@ -1992,7 +2080,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 16556,
@@ -2029,14 +2117,14 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.59723",
+      "probability_of_playing": "1",
       "practice_1": "--",
       "practice_2": "DNP",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Full",
+      "practice_report_injury_type": "NIR",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 16618,
@@ -2045,7 +2133,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "TEN",
       "position_id": "DE",
       "rank": null,
@@ -2076,14 +2164,14 @@
       "rank": null,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "1",
+      "probability_of_playing": "0.47844",
       "practice_1": "--",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Limit",
       "practice_report_injury_type": "groin",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 17246,
@@ -2114,20 +2202,20 @@
       "status": "Questionable",
       "injury_type": "Knee",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "WAS",
       "position_id": "DT",
       "rank": null,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.63813",
+      "probability_of_playing": "1",
       "practice_1": "--",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Limit",
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 17315,
@@ -2136,7 +2224,7 @@
       "status": "Suspended",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "WAS",
       "position_id": "DE",
       "rank": null,
@@ -2149,20 +2237,20 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 17319,
       "yahoo_id": "31063",
       "name": "Ronnie Harrison Jr.",
-      "status": "Questionable",
-      "injury_type": "Hamstring",
+      "status": "",
+      "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": null,
       "team_id": "MIA",
       "position_id": "S",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "",
       "ir_weeks": [],
       "probability_of_playing": null,
       "practice_1": "--",
@@ -2180,7 +2268,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NE",
       "position_id": "LB",
       "rank": null,
@@ -2202,7 +2290,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "PIT",
       "position_id": "S",
       "rank": null,
@@ -2223,45 +2311,45 @@
       "player_id": 17348,
       "yahoo_id": "31084",
       "name": "Da'Shawn Hand",
-      "status": "Questionable",
-      "injury_type": "Knee",
+      "status": "",
+      "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": null,
       "team_id": "ATL",
       "position_id": "DT",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.69008",
+      "probability_of_playing": "0.65113",
       "practice_1": "--",
       "practice_2": "Limit",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Full",
+      "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 17363,
       "yahoo_id": "31101",
       "name": "Josh Sweat",
-      "status": "Questionable",
-      "injury_type": "Knee",
+      "status": "",
+      "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": null,
       "team_id": "ARI",
       "position_id": "DE",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": null,
+      "probability_of_playing": "1",
       "practice_1": "DNP",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "NIR",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 17402,
@@ -2292,7 +2380,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "HOU",
       "position_id": "CB",
       "rank": null,
@@ -2305,7 +2393,29 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
+    },
+    {
+      "player_id": 17763,
+      "yahoo_id": "31293",
+      "name": "Charvarius Ward",
+      "status": "",
+      "injury_type": "",
+      "comment": "",
+      "injury_update_date": null,
+      "team_id": "IND",
+      "position_id": "CB",
+      "rank": null,
+      "status_short": "",
+      "ir_weeks": [],
+      "probability_of_playing": "1",
+      "practice_1": "--",
+      "practice_2": "--",
+      "practice_3": "Limit",
+      "practice_report_injury_type": "NIR",
+      "team_practice_1_submitted": true,
+      "team_practice_2_submitted": true,
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 18199,
@@ -2327,7 +2437,7 @@
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 18211,
@@ -2364,14 +2474,14 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.92086",
+      "probability_of_playing": "1",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 18310,
@@ -2393,7 +2503,7 @@
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 18463,
@@ -2448,7 +2558,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NO",
       "position_id": "CB",
       "rank": null,
@@ -2473,7 +2583,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "HOU",
       "position_id": "LB",
       "rank": null,
@@ -2486,7 +2596,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 18943,
@@ -2508,7 +2618,7 @@
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 18984,
@@ -2517,7 +2627,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "IND",
       "position_id": "WR",
       "rank": null,
@@ -2533,7 +2643,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 19093,
@@ -2542,7 +2652,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NYG",
       "position_id": "WR",
       "rank": null,
@@ -2558,7 +2668,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 19206,
@@ -2573,14 +2683,14 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.7024",
+      "probability_of_playing": "1",
       "practice_1": "--",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 19228,
@@ -2589,20 +2699,20 @@
       "status": "Questionable",
       "injury_type": "Knee",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "WAS",
       "position_id": "DE",
       "rank": null,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.70334",
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Limit",
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 19257,
@@ -2630,38 +2740,38 @@
       "player_id": 19272,
       "yahoo_id": "32741",
       "name": "Nnamdi Madubuike",
-      "status": "Questionable",
+      "status": "OUT",
       "injury_type": "Neck",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "BAL",
       "position_id": "DT",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "O",
       "ir_weeks": [],
-      "probability_of_playing": "0.70334",
+      "probability_of_playing": "0",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Limit",
+      "practice_report_injury_type": "neck",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 19276,
       "yahoo_id": "32760",
       "name": "Jonathan Greenard",
-      "status": "Questionable",
+      "status": "OUT",
       "injury_type": "Pectoral",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "PHI",
       "position_id": "DE",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "O",
       "ir_weeks": [],
-      "probability_of_playing": null,
+      "probability_of_playing": "0",
       "practice_1": "--",
       "practice_2": "--",
       "practice_3": "Limit",
@@ -2677,7 +2787,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "ATL",
       "position_id": "RB",
       "rank": null,
@@ -2693,7 +2803,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 19471,
@@ -2702,7 +2812,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NO",
       "position_id": "RB",
       "rank": null,
@@ -2727,7 +2837,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "CAR",
       "position_id": "DE",
       "rank": null,
@@ -2755,13 +2865,13 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.89949",
+      "probability_of_playing": "0.92257",
       "practice_1": "Full",
-      "practice_2": null,
+      "practice_2": "Full",
       "practice_3": null,
       "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -2793,7 +2903,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "GB",
       "position_id": "LB",
       "rank": null,
@@ -2837,7 +2947,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "MIN",
       "position_id": "RB",
       "rank": null,
@@ -2862,7 +2972,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "LV",
       "position_id": "WR",
       "rank": null,
@@ -2878,7 +2988,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 22691,
@@ -2909,7 +3019,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "CLE",
       "position_id": "LB",
       "rank": null,
@@ -2953,20 +3063,20 @@
       "status": "Questionable",
       "injury_type": "Calf",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "WAS",
       "position_id": "DE",
       "rank": null,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.70334",
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Limit",
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 22750,
@@ -2975,7 +3085,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "PIT",
       "position_id": "CB",
       "rank": null,
@@ -3006,11 +3116,11 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.94266",
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Full",
       "practice_3": "Full",
-      "practice_report_injury_type": "back",
+      "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
       "team_practice_3_submitted": true
@@ -3022,7 +3132,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "DET",
       "position_id": "DE",
       "rank": null,
@@ -3047,7 +3157,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NYJ",
       "position_id": "CB",
       "rank": null,
@@ -3109,7 +3219,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23093,
@@ -3118,7 +3228,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NO",
       "position_id": "TE",
       "rank": null,
@@ -3189,7 +3299,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "HOU",
       "position_id": "QB",
       "rank": null,
@@ -3205,7 +3315,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23249,
@@ -3258,7 +3368,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SF",
       "position_id": "S",
       "rank": null,
@@ -3274,7 +3384,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 23299,
@@ -3283,7 +3393,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SF",
       "position_id": "CB",
       "rank": null,
@@ -3299,7 +3409,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 23307,
@@ -3308,7 +3418,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CHI",
       "position_id": "LB",
       "rank": null,
@@ -3323,7 +3433,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23316,
@@ -3354,7 +3464,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "TEN",
       "position_id": "LB",
       "rank": null,
@@ -3379,7 +3489,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "MIA",
       "position_id": "TE",
       "rank": null,
@@ -3404,7 +3514,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CHI",
       "position_id": "CB",
       "rank": null,
@@ -3420,7 +3530,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23735,
@@ -3429,7 +3539,7 @@
       "status": "Suspended",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "BUF",
       "position_id": "DT",
       "rank": null,
@@ -3442,7 +3552,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23739,
@@ -3451,7 +3561,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NYG",
       "position_id": "WR",
       "rank": null,
@@ -3467,7 +3577,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23757,
@@ -3498,7 +3608,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "CHI",
       "position_id": "CB",
       "rank": null,
@@ -3511,7 +3621,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23800,
@@ -3520,7 +3630,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "DET",
       "position_id": "S",
       "rank": null,
@@ -3542,7 +3652,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "DET",
       "position_id": "LB",
       "rank": null,
@@ -3580,7 +3690,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23849,
@@ -3589,7 +3699,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "HOU",
       "position_id": "DE",
       "rank": null,
@@ -3605,29 +3715,29 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23855,
       "yahoo_id": "40127",
       "name": "Garrett Williams",
       "status": "OUT",
-      "injury_type": "",
-      "comment": "injured",
-      "injury_update_date": "2026-09-11 12:00:00",
+      "injury_type": "Achilles",
+      "comment": "",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "ARI",
       "position_id": "CB",
       "rank": null,
       "status_short": "O",
       "ir_weeks": [],
-      "probability_of_playing": "0.69148",
+      "probability_of_playing": "0",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Limit",
       "practice_report_injury_type": "achilles",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23876,
@@ -3636,7 +3746,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "ATL",
       "position_id": "DE",
       "rank": null,
@@ -3649,7 +3759,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23906,
@@ -3658,7 +3768,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CLE",
       "position_id": "DT",
       "rank": null,
@@ -3696,7 +3806,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23923,
@@ -3705,7 +3815,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CHI",
       "position_id": "LB",
       "rank": null,
@@ -3721,7 +3831,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 23928,
@@ -3752,7 +3862,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NYG",
       "position_id": "CB",
       "rank": null,
@@ -3768,7 +3878,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24010,
@@ -3777,7 +3887,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "DEN",
       "position_id": "DT",
       "rank": null,
@@ -3792,7 +3902,7 @@
       "practice_3": null,
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -3802,7 +3912,7 @@
       "status": "Suspended",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "IND",
       "position_id": "CB",
       "rank": null,
@@ -3815,7 +3925,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24083,
@@ -3824,7 +3934,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "LV",
       "position_id": "WR",
       "rank": null,
@@ -3840,7 +3950,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24110,
@@ -3849,7 +3959,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CIN",
       "position_id": "CB",
       "rank": null,
@@ -3873,7 +3983,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CHI",
       "position_id": "TE",
       "rank": null,
@@ -3889,7 +3999,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24170,
@@ -3898,7 +4008,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "BAL",
       "position_id": "QB",
       "rank": null,
@@ -3914,7 +4024,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24178,
@@ -3923,7 +4033,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "PHI",
       "position_id": "WR",
       "rank": null,
@@ -3993,7 +4103,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "MIA",
       "position_id": "CB",
       "rank": null,
@@ -4015,7 +4125,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CLE",
       "position_id": "CB",
       "rank": null,
@@ -4040,7 +4150,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "ARI",
       "position_id": "S",
       "rank": null,
@@ -4056,7 +4166,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24540,
@@ -4065,7 +4175,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CLE",
       "position_id": "DE",
       "rank": null,
@@ -4096,14 +4206,14 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.93839",
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Full",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Full",
+      "practice_report_injury_type": "neck",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24572,
@@ -4112,7 +4222,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CHI",
       "position_id": "RB",
       "rank": null,
@@ -4128,29 +4238,29 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24578,
       "yahoo_id": "",
       "name": "Deane Leonard",
-      "status": "Questionable",
+      "status": "OUT",
       "injury_type": "Abdomen",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "LAC",
       "position_id": "DB",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "O",
       "ir_weeks": [],
-      "probability_of_playing": "0.30471",
+      "probability_of_playing": "0",
       "practice_1": "DNP",
       "practice_2": "DNP",
-      "practice_3": null,
+      "practice_3": "DNP",
       "practice_report_injury_type": "abdomen",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24582,
@@ -4159,7 +4269,7 @@
       "status": "Suspended",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "TEN",
       "position_id": "S",
       "rank": null,
@@ -4181,7 +4291,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SF",
       "position_id": "DE",
       "rank": null,
@@ -4197,7 +4307,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 24694,
@@ -4206,7 +4316,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NO",
       "position_id": "DT",
       "rank": null,
@@ -4275,7 +4385,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "CHI",
       "position_id": "LB",
       "rank": null,
@@ -4288,7 +4398,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24717,
@@ -4303,14 +4413,14 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.59723",
+      "probability_of_playing": "1",
       "practice_1": "--",
       "practice_2": "DNP",
-      "practice_3": null,
+      "practice_3": "--",
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 24776,
@@ -4325,13 +4435,13 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.89949",
+      "probability_of_playing": "0.92257",
       "practice_1": "Full",
-      "practice_2": null,
+      "practice_2": "Full",
       "practice_3": null,
       "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -4341,7 +4451,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NE",
       "position_id": "S",
       "rank": null,
@@ -4366,7 +4476,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "LAR",
       "position_id": "DE",
       "rank": null,
@@ -4391,7 +4501,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NYJ",
       "position_id": "DT",
       "rank": null,
@@ -4416,7 +4526,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SEA",
       "position_id": "WR",
       "rank": null,
@@ -4454,7 +4564,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 25235,
@@ -4463,7 +4573,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "DET",
       "position_id": "S",
       "rank": null,
@@ -4535,14 +4645,14 @@
       "rank": null,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.71917",
+      "probability_of_playing": "1",
       "practice_1": "--",
       "practice_2": "DNP",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Full",
+      "practice_report_injury_type": "NIR",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 25280,
@@ -4551,7 +4661,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "IND",
       "position_id": "CB",
       "rank": null,
@@ -4567,7 +4677,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 25295,
@@ -4576,7 +4686,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "PHI",
       "position_id": "WR",
       "rank": null,
@@ -4601,7 +4711,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SEA",
       "position_id": "WR",
       "rank": null,
@@ -4650,20 +4760,20 @@
       "status": "Questionable",
       "injury_type": "Hip",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "LAC",
       "position_id": "DE",
       "rank": null,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.74331",
+      "probability_of_playing": "0.44178",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Limit",
       "practice_report_injury_type": "hip",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 25412,
@@ -4672,7 +4782,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NO",
       "position_id": "S",
       "rank": null,
@@ -4735,13 +4845,35 @@
       "team_practice_3_submitted": true
     },
     {
+      "player_id": 25480,
+      "yahoo_id": "40297",
+      "name": "Austin Ajiake",
+      "status": "",
+      "injury_type": "",
+      "comment": "",
+      "injury_update_date": null,
+      "team_id": "IND",
+      "position_id": "LB",
+      "rank": null,
+      "status_short": "",
+      "ir_weeks": [],
+      "probability_of_playing": "0.34697",
+      "practice_1": "--",
+      "practice_2": "--",
+      "practice_3": "DNP",
+      "practice_report_injury_type": "hamstring",
+      "team_practice_1_submitted": true,
+      "team_practice_2_submitted": true,
+      "team_practice_3_submitted": true
+    },
+    {
       "player_id": 25497,
       "yahoo_id": "40151",
       "name": "Dylan Horton",
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "HOU",
       "position_id": "DT",
       "rank": null,
@@ -4757,7 +4889,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 25509,
@@ -4766,19 +4898,19 @@
       "status": "Questionable",
       "injury_type": "Knee",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "KC",
       "position_id": "S",
       "rank": null,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.20996",
+      "probability_of_playing": "0.2954",
       "practice_1": "DNP",
-      "practice_2": null,
+      "practice_2": "DNP",
       "practice_3": null,
       "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -4788,7 +4920,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "GB",
       "position_id": "DT",
       "rank": null,
@@ -4810,7 +4942,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SF",
       "position_id": "LB",
       "rank": null,
@@ -4826,7 +4958,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 25567,
@@ -4848,7 +4980,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 25585,
@@ -4857,7 +4989,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "TB",
       "position_id": "CB",
       "rank": null,
@@ -4881,7 +5013,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "TEN",
       "position_id": "S",
       "rank": null,
@@ -4927,7 +5059,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "GB",
       "position_id": "S",
       "rank": null,
@@ -4952,7 +5084,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NO",
       "position_id": "CB",
       "rank": null,
@@ -4999,7 +5131,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "BUF",
       "position_id": "WR",
       "rank": null,
@@ -5012,7 +5144,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 25824,
@@ -5021,7 +5153,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NE",
       "position_id": "TE",
       "rank": null,
@@ -5046,7 +5178,7 @@
       "status": "Questionable",
       "injury_type": "Groin",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "DET",
       "position_id": "S",
       "rank": null,
@@ -5068,7 +5200,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "DAL",
       "position_id": "TE",
       "rank": null,
@@ -5084,7 +5216,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26011,
@@ -5093,20 +5225,20 @@
       "status": "Questionable",
       "injury_type": "Groin",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "BAL",
       "position_id": "WR",
       "rank": null,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.67275",
+      "probability_of_playing": "0.45637",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Limit",
+      "practice_report_injury_type": "groin",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26044,
@@ -5115,7 +5247,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "DET",
       "position_id": "WR",
       "rank": null,
@@ -5137,14 +5269,14 @@
       "player_id": 26141,
       "yahoo_id": "41091",
       "name": "Mekhi Wingo",
-      "status": "Questionable",
-      "injury_type": "Groin",
+      "status": "",
+      "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": null,
       "team_id": "DET",
       "position_id": "DT",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "",
       "ir_weeks": [],
       "probability_of_playing": "1",
       "practice_1": "Limit",
@@ -5203,23 +5335,23 @@
       "player_id": 26184,
       "yahoo_id": "40994",
       "name": "Brandon Dorlus",
-      "status": "Questionable",
-      "injury_type": "Groin",
+      "status": "",
+      "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": null,
       "team_id": "ATL",
       "position_id": "DT",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "",
       "ir_weeks": [],
       "probability_of_playing": "0.70334",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Full",
+      "practice_report_injury_type": "groin",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26204,
@@ -5272,7 +5404,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SF",
       "position_id": "WR",
       "rank": null,
@@ -5288,7 +5420,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 26218,
@@ -5297,7 +5429,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "WAS",
       "position_id": "DT",
       "rank": null,
@@ -5313,7 +5445,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26220,
@@ -5344,7 +5476,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "TB",
       "position_id": "LB",
       "rank": null,
@@ -5382,7 +5514,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26327,
@@ -5391,7 +5523,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "LV",
       "position_id": "LB",
       "rank": null,
@@ -5407,29 +5539,29 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26346,
       "yahoo_id": "40999",
       "name": "Dadrion Taylor-Demerson",
-      "status": "Questionable",
+      "status": "OUT",
       "injury_type": "Ribs",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "ARI",
       "position_id": "S",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "O",
       "ir_weeks": [],
-      "probability_of_playing": "0.50724",
+      "probability_of_playing": "0",
       "practice_1": "Limit",
       "practice_2": "DNP",
-      "practice_3": null,
+      "practice_3": "DNP",
       "practice_report_injury_type": "rib",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26357,
@@ -5438,7 +5570,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "ATL",
       "position_id": "LB",
       "rank": null,
@@ -5454,7 +5586,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26368,
@@ -5463,7 +5595,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "MIA",
       "position_id": "CB",
       "rank": null,
@@ -5485,7 +5617,7 @@
       "status": "Suspended",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "MIN",
       "position_id": "WR",
       "rank": null,
@@ -5507,7 +5639,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "ARI",
       "position_id": "TE",
       "rank": null,
@@ -5520,7 +5652,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26451,
@@ -5542,7 +5674,7 @@
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 26461,
@@ -5557,14 +5689,14 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.92086",
+      "probability_of_playing": "1",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26464,
@@ -5573,7 +5705,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "TEN",
       "position_id": "CB",
       "rank": null,
@@ -5597,7 +5729,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "PIT",
       "position_id": "DT",
       "rank": null,
@@ -5635,7 +5767,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 26495,
@@ -5644,7 +5776,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "TEN",
       "position_id": "DE",
       "rank": null,
@@ -5669,7 +5801,7 @@
       "status": "Suspended",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "CHI",
       "position_id": "CB",
       "rank": null,
@@ -5682,7 +5814,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26519,
@@ -5713,7 +5845,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NO",
       "position_id": "WR",
       "rank": null,
@@ -5735,7 +5867,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "MIN",
       "position_id": "DT",
       "rank": null,
@@ -5760,7 +5892,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "LV",
       "position_id": "CB",
       "rank": null,
@@ -5776,7 +5908,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26597,
@@ -5785,7 +5917,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "LV",
       "position_id": "RB",
       "rank": null,
@@ -5801,7 +5933,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 26669,
@@ -5810,7 +5942,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "MIN",
       "position_id": "LB",
       "rank": null,
@@ -5834,7 +5966,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "PHI",
       "position_id": "S",
       "rank": null,
@@ -5858,7 +5990,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "DEN",
       "position_id": "LB",
       "rank": null,
@@ -5873,7 +6005,7 @@
       "practice_3": null,
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -5883,7 +6015,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "GB",
       "position_id": "TE",
       "rank": null,
@@ -5908,7 +6040,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "MIN",
       "position_id": "LB",
       "rank": null,
@@ -5938,14 +6070,14 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.92257",
+      "probability_of_playing": "1",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "ankle",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27013,
@@ -5954,7 +6086,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SF",
       "position_id": "DT",
       "rank": null,
@@ -5967,7 +6099,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 27018,
@@ -5976,7 +6108,7 @@
       "status": "Suspended",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "ATL",
       "position_id": "DE",
       "rank": null,
@@ -5989,7 +6121,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27020,
@@ -5998,7 +6130,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CAR",
       "position_id": "DT",
       "rank": null,
@@ -6023,7 +6155,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "MIA",
       "position_id": "DT",
       "rank": null,
@@ -6048,7 +6180,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "ATL",
       "position_id": "LB",
       "rank": null,
@@ -6064,7 +6196,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27032,
@@ -6073,20 +6205,20 @@
       "status": "Questionable",
       "injury_type": "Knee",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "BUF",
       "position_id": "DT",
       "rank": null,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.50494",
+      "probability_of_playing": "0.38768",
       "practice_1": "Limit",
       "practice_2": "DNP",
-      "practice_3": null,
+      "practice_3": "Limit",
       "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27039,
@@ -6101,13 +6233,13 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.89949",
+      "probability_of_playing": "0.92086",
       "practice_1": "Full",
-      "practice_2": null,
+      "practice_2": "Full",
       "practice_3": null,
       "practice_report_injury_type": "foot",
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -6183,7 +6315,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "HOU",
       "position_id": "WR",
       "rank": null,
@@ -6199,7 +6331,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27079,
@@ -6223,7 +6355,7 @@
       "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 27081,
@@ -6248,13 +6380,35 @@
       "team_practice_3_submitted": true
     },
     {
+      "player_id": 27090,
+      "yahoo_id": "41941",
+      "name": "Dante Trader Jr.",
+      "status": "",
+      "injury_type": "",
+      "comment": "",
+      "injury_update_date": null,
+      "team_id": "MIA",
+      "position_id": "S",
+      "rank": null,
+      "status_short": "",
+      "ir_weeks": [],
+      "probability_of_playing": null,
+      "practice_1": "--",
+      "practice_2": "--",
+      "practice_3": "--",
+      "practice_report_injury_type": "hamstring",
+      "team_practice_1_submitted": true,
+      "team_practice_2_submitted": true,
+      "team_practice_3_submitted": true
+    },
+    {
       "player_id": 27099,
       "yahoo_id": "42002",
       "name": "Dorian Strong",
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "BUF",
       "position_id": "CB",
       "rank": null,
@@ -6270,7 +6424,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27125,
@@ -6279,20 +6433,20 @@
       "status": "Questionable",
       "injury_type": "Quad",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "BUF",
       "position_id": "CB",
       "rank": null,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.62529",
+      "probability_of_playing": "0.57663",
       "practice_1": "DNP",
       "practice_2": "Limit",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "quadricep",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27129,
@@ -6314,7 +6468,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 27139,
@@ -6323,7 +6477,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SF",
       "position_id": "LB",
       "rank": null,
@@ -6339,29 +6493,29 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 27146,
       "yahoo_id": "41908",
       "name": "Teddye Buchanan",
-      "status": "Questionable",
+      "status": "OUT",
       "injury_type": "Knee",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "BAL",
       "position_id": "LB",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "O",
       "ir_weeks": [],
-      "probability_of_playing": "0.70334",
+      "probability_of_playing": "0",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Limit",
+      "practice_report_injury_type": "knee",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27148,
@@ -6370,7 +6524,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NYG",
       "position_id": "CB",
       "rank": null,
@@ -6386,7 +6540,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27150,
@@ -6395,7 +6549,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "WAS",
       "position_id": "CB",
       "rank": null,
@@ -6410,7 +6564,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27154,
@@ -6419,7 +6573,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NYJ",
       "position_id": "DT",
       "rank": null,
@@ -6441,7 +6595,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "CHI",
       "position_id": "DT",
       "rank": null,
@@ -6454,7 +6608,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27176,
@@ -6463,7 +6617,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "KC",
       "position_id": "DT",
       "rank": null,
@@ -6475,7 +6629,7 @@
       "practice_3": null,
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -6485,20 +6639,20 @@
       "status": "Questionable",
       "injury_type": "Achilles",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": "2026-09-11 00:00:00",
       "team_id": "ATL",
       "position_id": "S",
       "rank": null,
       "status_short": "Q",
       "ir_weeks": [],
-      "probability_of_playing": "0.70334",
+      "probability_of_playing": "0.46794",
       "practice_1": "Limit",
       "practice_2": "Limit",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Limit",
+      "practice_report_injury_type": "achilles",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27208,
@@ -6507,7 +6661,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "MIA",
       "position_id": "DT",
       "rank": null,
@@ -6531,7 +6685,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "MIN",
       "position_id": "DT",
       "rank": null,
@@ -6562,7 +6716,7 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.92257",
+      "probability_of_playing": "1",
       "practice_1": "Full",
       "practice_2": "Full",
       "practice_3": "Full",
@@ -6591,7 +6745,7 @@
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 27262,
@@ -6613,7 +6767,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27266,
@@ -6657,7 +6811,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27312,
@@ -6666,7 +6820,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CLE",
       "position_id": "TE",
       "rank": null,
@@ -6735,7 +6889,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SEA",
       "position_id": "TE",
       "rank": null,
@@ -6766,14 +6920,14 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.94266",
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "ankle",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27483,
@@ -6782,7 +6936,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "ATL",
       "position_id": "S",
       "rank": null,
@@ -6798,7 +6952,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27486,
@@ -6820,7 +6974,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 27532,
@@ -6851,7 +7005,7 @@
       "status": "PUP",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "PIT",
       "position_id": "CB",
       "rank": null,
@@ -6885,7 +7039,7 @@
       "practice_3": null,
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -6895,7 +7049,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SEA",
       "position_id": "LB",
       "rank": null,
@@ -6919,7 +7073,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "KC",
       "position_id": "DE",
       "rank": null,
@@ -6934,7 +7088,7 @@
       "practice_3": null,
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -6944,7 +7098,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "GB",
       "position_id": "S",
       "rank": null,
@@ -6969,7 +7123,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CAR",
       "position_id": "LB",
       "rank": null,
@@ -7015,7 +7169,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "MIN",
       "position_id": "WR",
       "rank": null,
@@ -7039,7 +7193,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SEA",
       "position_id": "RB",
       "rank": null,
@@ -7063,7 +7217,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "HOU",
       "position_id": "LB",
       "rank": null,
@@ -7079,7 +7233,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27843,
@@ -7088,7 +7242,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "MIN",
       "position_id": "TE",
       "rank": null,
@@ -7112,7 +7266,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NE",
       "position_id": "WR",
       "rank": null,
@@ -7137,7 +7291,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "JAC",
       "position_id": "LB",
       "rank": null,
@@ -7153,7 +7307,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27867,
@@ -7197,7 +7351,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27889,
@@ -7206,7 +7360,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "KC",
       "position_id": "WR",
       "rank": null,
@@ -7221,7 +7375,7 @@
       "practice_3": null,
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -7237,11 +7391,11 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.92257",
+      "probability_of_playing": "1",
       "practice_1": "Full",
       "practice_2": "Full",
       "practice_3": "Full",
-      "practice_report_injury_type": "shoulder",
+      "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
       "team_practice_3_submitted": true
@@ -7250,14 +7404,14 @@
       "player_id": 27977,
       "yahoo_id": "42666",
       "name": "Derrick Moore",
-      "status": "Questionable",
-      "injury_type": "Hamstring",
+      "status": "",
+      "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": null,
       "team_id": "DET",
       "position_id": "DE",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "",
       "ir_weeks": [],
       "probability_of_playing": "1",
       "practice_1": "Limit",
@@ -7275,7 +7429,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "BUF",
       "position_id": "DT",
       "rank": null,
@@ -7291,7 +7445,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 27992,
@@ -7322,7 +7476,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SF",
       "position_id": "LB",
       "rank": null,
@@ -7338,7 +7492,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 28021,
@@ -7353,13 +7507,13 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.84783",
+      "probability_of_playing": "0.92047",
       "practice_1": "Full",
-      "practice_2": null,
+      "practice_2": "Full",
       "practice_3": null,
       "practice_report_injury_type": "hamstring",
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -7391,7 +7545,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CAR",
       "position_id": "WR",
       "rank": null,
@@ -7429,29 +7583,31 @@
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 28057,
       "yahoo_id": "42658",
       "name": "Kayden McDonald",
-      "status": "Questionable",
+      "status": "IR",
       "injury_type": "Ankle",
       "comment": "",
       "injury_update_date": "2026-09-10 00:00:00",
       "team_id": "HOU",
       "position_id": "DT",
       "rank": null,
-      "status_short": "Q",
-      "ir_weeks": [],
-      "probability_of_playing": "0.4993",
+      "status_short": "IR",
+      "ir_weeks": [
+        1
+      ],
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "DNP",
-      "practice_3": null,
+      "practice_3": "--",
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28069,
@@ -7466,14 +7622,14 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.93947",
+      "probability_of_playing": "1",
       "practice_1": "Limit",
       "practice_2": "Full",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Full",
+      "practice_report_injury_type": "ankle",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28114,
@@ -7482,7 +7638,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NYJ",
       "position_id": "RB",
       "rank": null,
@@ -7507,7 +7663,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "KC",
       "position_id": "TE",
       "rank": null,
@@ -7522,7 +7678,7 @@
       "practice_3": null,
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -7532,7 +7688,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "TEN",
       "position_id": "TE",
       "rank": null,
@@ -7636,7 +7792,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28212,
@@ -7645,7 +7801,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "SEA",
       "position_id": "S",
       "rank": null,
@@ -7692,7 +7848,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "LV",
       "position_id": "DE",
       "rank": null,
@@ -7708,7 +7864,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28234,
@@ -7730,7 +7886,7 @@
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 28263,
@@ -7739,7 +7895,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "ARI",
       "position_id": "TE",
       "rank": null,
@@ -7755,29 +7911,29 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28290,
       "yahoo_id": "42756",
       "name": "Kendal Daniels",
-      "status": "Questionable",
-      "injury_type": "Achilles",
+      "status": "",
+      "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": null,
       "team_id": "ATL",
       "position_id": "S",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.69008",
+      "probability_of_playing": "0.61937",
       "practice_1": "--",
       "practice_2": "Limit",
-      "practice_3": null,
-      "practice_report_injury_type": "other",
+      "practice_3": "Full",
+      "practice_report_injury_type": "achilles",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28310,
@@ -7786,7 +7942,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "MIN",
       "position_id": "CB",
       "rank": null,
@@ -7817,14 +7973,14 @@
       "rank": null,
       "status_short": "",
       "ir_weeks": [],
-      "probability_of_playing": "0.92086",
+      "probability_of_playing": "1",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "other",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28348,
@@ -7833,7 +7989,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "DAL",
       "position_id": "TE",
       "rank": null,
@@ -7849,7 +8005,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28355,
@@ -7877,14 +8033,14 @@
       "player_id": 28403,
       "yahoo_id": "42709",
       "name": "Will Kacmarek",
-      "status": "Questionable",
-      "injury_type": "Calf",
+      "status": "",
+      "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-10 00:00:00",
+      "injury_update_date": null,
       "team_id": "MIA",
       "position_id": "TE",
       "rank": null,
-      "status_short": "Q",
+      "status_short": "",
       "ir_weeks": [],
       "probability_of_playing": null,
       "practice_1": "--",
@@ -7902,7 +8058,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "KC",
       "position_id": "WR",
       "rank": null,
@@ -7917,7 +8073,7 @@
       "practice_3": null,
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
-      "team_practice_2_submitted": false,
+      "team_practice_2_submitted": true,
       "team_practice_3_submitted": false
     },
     {
@@ -7927,7 +8083,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "ARI",
       "position_id": "DT",
       "rank": null,
@@ -7943,7 +8099,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28448,
@@ -7952,7 +8108,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "IND",
       "position_id": "TE",
       "rank": null,
@@ -7968,7 +8124,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28450,
@@ -7977,7 +8133,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NE",
       "position_id": "RB",
       "rank": null,
@@ -8036,7 +8192,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 28469,
@@ -8054,7 +8210,7 @@
       "probability_of_playing": "0.92086",
       "practice_1": "Full",
       "practice_2": "Full",
-      "practice_3": null,
+      "practice_3": "Full",
       "practice_report_injury_type": "hand",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
@@ -8089,7 +8245,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "JAC",
       "position_id": "LB",
       "rank": null,
@@ -8105,7 +8261,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28491,
@@ -8127,7 +8283,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28503,
@@ -8136,7 +8292,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "ATL",
       "position_id": "DT",
       "rank": null,
@@ -8152,7 +8308,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28512,
@@ -8161,7 +8317,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "MIN",
       "position_id": "CB",
       "rank": null,
@@ -8186,7 +8342,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "LAR",
       "position_id": "QB",
       "rank": null,
@@ -8246,7 +8402,7 @@
       "practice_report_injury_type": "hamstring",
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": true
+      "team_practice_3_submitted": false
     },
     {
       "player_id": 28597,
@@ -8255,7 +8411,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "CHI",
       "position_id": "TE",
       "rank": null,
@@ -8271,7 +8427,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28613,
@@ -8280,7 +8436,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "TB",
       "position_id": "DT",
       "rank": null,
@@ -8305,7 +8461,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "DAL",
       "position_id": "DT",
       "rank": null,
@@ -8320,7 +8476,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28635,
@@ -8351,7 +8507,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "MIA",
       "position_id": "DT",
       "rank": null,
@@ -8376,7 +8532,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "LAR",
       "position_id": "DT",
       "rank": null,
@@ -8401,7 +8557,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "PHI",
       "position_id": "S",
       "rank": null,
@@ -8426,7 +8582,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "BAL",
       "position_id": "S",
       "rank": null,
@@ -8442,7 +8598,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28751,
@@ -8451,7 +8607,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "LV",
       "position_id": "WR",
       "rank": null,
@@ -8467,7 +8623,7 @@
       "practice_report_injury_type": null,
       "team_practice_1_submitted": true,
       "team_practice_2_submitted": true,
-      "team_practice_3_submitted": false
+      "team_practice_3_submitted": true
     },
     {
       "player_id": 28767,
@@ -8476,7 +8632,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:02",
+      "injury_update_date": "2026-09-11 21:50:01",
       "team_id": "NE",
       "position_id": "LB",
       "rank": null,
@@ -8523,7 +8679,7 @@
       "status": "IR",
       "injury_type": "",
       "comment": "",
-      "injury_update_date": "2026-09-11 19:40:01",
+      "injury_update_date": "2026-09-11 21:50:00",
       "team_id": "GB",
       "position_id": "CB",
       "rank": null,
@@ -8545,6 +8701,6 @@
   "covids": [],
   "public_api_limited": true,
   "tier": "premium",
-  "fetched_at": "2026-09-11T19:53:49Z",
+  "fetched_at": "2026-09-11T22:06:24Z",
   "source_url": "https://api.fantasypros.com/public/v2/json/nfl/injuries?year=2026&include_probabilities=true"
 }
