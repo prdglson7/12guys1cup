@@ -2595,6 +2595,386 @@ function detectContenderMode(myRoster, allTeamRosters, currentWeek, nflverse) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   FEATURE 4: FAIR MARKET VALUE (calibration foundation)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Compute fair market value for a player.
+   Blends ADP-implied value + projected ROSV + recent scoring.
+   Returns { value: number, source: string }. */
+function computeFairMarketValue(player, currentWeek, nflverse, options = {}) {
+  const projPts = Number(player.proj_pts) || 0;
+  const adp = Number(player._adp) || Number(player.adp) || 999;
+  const weeklyProj = playerWeeklyProj(player);
+  const availability = playerAvailability(player);
+
+  // ADP-implied value (lower ADP = more valuable)
+  // Cap at 200 (undrafted players get minimal ADP value)
+  const adpValue = Math.max(0, 210 - Math.min(adp, 200)) / 210;
+
+  // ROSV value (projected value from now to end of season)
+  const gamesRemaining = Math.max(1, LEAGUE.TOTAL_WEEKS - currentWeek + 1);
+  const rosv = weeklyProj * availability * gamesRemaining;
+  const rosvNorm = Math.min(1, rosv / 250); // normalize (250 pts = elite ROSV)
+
+  // Weighted blend: 40% ROSV forward-looking, 60% ADP (market consensus)
+  const marketValue = (0.60 * adpValue + 0.40 * rosvNorm) * 100;
+
+  return {
+    value: marketValue,
+    rosv: rosv,
+    adp: adp === 999 ? null : adp,
+    weeklyProj: weeklyProj,
+  };
+}
+
+/* Compare two sides of a trade for market value fairness.
+   Returns { myValue, theirValue, delta, deltaPct, verdict } */
+function compareTradeMarketValue(giveArr, getArr, currentWeek, nflverse) {
+  const myValueGiven = giveArr.reduce((s, p) =>
+    s + computeFairMarketValue(p, currentWeek, nflverse).value, 0);
+  const myValueGained = getArr.reduce((s, p) =>
+    s + computeFairMarketValue(p, currentWeek, nflverse).value, 0);
+
+  const delta = myValueGained - myValueGiven;
+  const deltaPct = myValueGiven > 0 ? (delta / myValueGiven) * 100 : 0;
+
+  let verdict;
+  if (deltaPct > 15) verdict = 'overpay-received'; // getting robbed in your favor
+  else if (deltaPct > 5) verdict = 'fair-favor-you';
+  else if (deltaPct > -5) verdict = 'fair-market';
+  else if (deltaPct > -15) verdict = 'fair-favor-them';
+  else verdict = 'overpay-given'; // paying too much
+
+  return {
+    myValueGiven,
+    myValueGained,
+    delta,
+    deltaPct,
+    verdict,
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FEATURE 1: TARGET PLAYER MODE
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* "I want Player X — what would it take?"
+   Finds which team owns the target, analyzes their needs,
+   suggests offers ranging from minimum-viable to overpay. */
+function buildTargetPlayerOffers(targetPlayer, myRoster, allRosters, teams, currentWeek, nflverse, options = {}) {
+  // Find owning team
+  let owningEntry = null;
+  for (const entry of allRosters) {
+    if (entry.roster.some(p => p.name === targetPlayer.name)) {
+      owningEntry = entry;
+      break;
+    }
+  }
+  if (!owningEntry) return { error: 'not-owned', message: 'Player is not on any roster (available on waivers).' };
+
+  const targetOwnerRoster = owningEntry.roster;
+  const targetOwnerTeam = owningEntry.team;
+
+  // Analyze both teams
+  const allRosterArrays = allRosters.map(r => r.roster);
+  const myDiag = diagnoseTeam(myRoster, allRosterArrays, currentWeek, nflverse);
+  const theirDiag = diagnoseTeam(targetOwnerRoster, allRosterArrays, currentWeek, nflverse);
+
+  // Compute target's market value
+  const targetValue = computeFairMarketValue(targetPlayer, currentWeek, nflverse).value;
+  const targetROSV = playerWeeklyProj(targetPlayer) * playerAvailability(targetPlayer) * (LEAGUE.TOTAL_WEEKS - currentWeek + 1);
+
+  // Find candidate players from my roster to offer
+  // Priority: my surplus at their weak positions
+  const candidates = [];
+  myRoster.forEach(p => {
+    if (p.name === targetPlayer.name) return; // can't offer target
+    if (['K', 'DST'].includes(p.pos)) return; // don't trade kickers/defenses
+    const pValue = computeFairMarketValue(p, currentWeek, nflverse).value;
+    const fillsTheirWeakness = theirDiag.weaknesses.some(w => w.pos === p.pos);
+    candidates.push({
+      player: p,
+      value: pValue,
+      fillsWeakness: fillsTheirWeakness,
+      weeklyProj: playerWeeklyProj(p) * playerAvailability(p),
+    });
+  });
+  candidates.sort((a, b) => a.value - b.value); // cheapest first
+
+  // Build 3 tiers of offers: minimum, fair, overpay
+  const offers = [];
+
+  // TIER 1: Minimum offer (just below fair market, might reject)
+  const minTarget = targetValue * 0.85;
+  let minOffer = buildOfferPackage(candidates, minTarget, theirDiag, myRoster, targetPlayer, currentWeek, nflverse);
+  if (minOffer) offers.push({ tier: 'minimum', label: 'Minimum offer', ...minOffer });
+
+  // TIER 2: Fair offer (at market)
+  let fairOffer = buildOfferPackage(candidates, targetValue, theirDiag, myRoster, targetPlayer, currentWeek, nflverse);
+  if (fairOffer) offers.push({ tier: 'fair', label: 'Fair market offer', ...fairOffer });
+
+  // TIER 3: Overpay (15% above market, near-guaranteed acceptance)
+  const overpayTarget = targetValue * 1.15;
+  let overpayOffer = buildOfferPackage(candidates, overpayTarget, theirDiag, myRoster, targetPlayer, currentWeek, nflverse);
+  if (overpayOffer) offers.push({ tier: 'overpay', label: 'Overpay (safe acceptance)', ...overpayOffer });
+
+  // Dedupe: if fair == minimum or overpay == fair, remove duplicates
+  const seen = new Set();
+  const uniqueOffers = offers.filter(o => {
+    const key = o.give.map(p => p.name).sort().join('|');
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  // Analyze each offer from BOTH perspectives
+  uniqueOffers.forEach(offer => {
+    offer.myAnalysis = analyzeTradeForTeam(myRoster, offer.give, [targetPlayer], currentWeek, nflverse, options);
+    offer.theirAnalysis = analyzeTradeForTeam(targetOwnerRoster, [targetPlayer], offer.give, currentWeek, nflverse, options);
+    offer.marketValue = compareTradeMarketValue(offer.give, [targetPlayer], currentWeek, nflverse);
+  });
+
+  return {
+    target: targetPlayer,
+    targetValue,
+    owner: targetOwnerTeam,
+    offers: uniqueOffers,
+    theirWeaknesses: theirDiag.weaknesses.map(w => w.pos),
+  };
+}
+
+/* Build a specific offer package to hit a target value, preferring
+   players that fill the other team's weaknesses. */
+function buildOfferPackage(candidates, targetValue, theirDiag, myRoster, targetPlayer, currentWeek, nflverse) {
+  // Try 1-for-1 first: find a single player close to target value
+  const singles = candidates.filter(c =>
+    c.value >= targetValue * 0.90 && c.value <= targetValue * 1.10
+  );
+  const preferSingle = singles.find(c => c.fillsWeakness) || singles[0];
+  if (preferSingle) return { give: [preferSingle.player], type: '1-for-1' };
+
+  // Try 2-for-1: two players that sum to target
+  // Prefer combos where at least one fills their weakness
+  const twoForOne = [];
+  for (let i = 0; i < candidates.length; i++) {
+    for (let j = i + 1; j < candidates.length; j++) {
+      const sum = candidates[i].value + candidates[j].value;
+      if (sum >= targetValue * 0.90 && sum <= targetValue * 1.15) {
+        twoForOne.push({
+          give: [candidates[i].player, candidates[j].player],
+          sum,
+          fillsWeakness: candidates[i].fillsWeakness || candidates[j].fillsWeakness,
+        });
+      }
+    }
+    if (twoForOne.length > 10) break; // limit search
+  }
+  twoForOne.sort((a, b) => (b.fillsWeakness - a.fillsWeakness) || Math.abs(targetValue - a.sum) - Math.abs(targetValue - b.sum));
+  if (twoForOne[0]) return { give: twoForOne[0].give, type: '2-for-1' };
+
+  return null;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FEATURE 2: COPY TO SLEEPER (formatted trade pitch)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Generate a formatted trade message for pasting into Sleeper chat. */
+function formatTradePitch(give, get, partnerName, myTeamName, rationale) {
+  const givePart = give.length === 1
+    ? give[0].name
+    : give.map(p => p.name).join(' + ');
+  const getPart = get.length === 1
+    ? get[0].name
+    : get.map(p => p.name).join(' + ');
+
+  return `Hey ${partnerName} — proposing a trade:
+
+You send: ${getPart}
+I send: ${givePart}
+
+${rationale || 'Let me know if you\'d consider it.'}
+
+- ${myTeamName}`;
+}
+
+/* Copy trade to clipboard */
+function copyTradeToClipboard(text, buttonEl) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      if (buttonEl) {
+        const original = buttonEl.textContent;
+        buttonEl.textContent = '✓ Copied!';
+        buttonEl.classList.add('copied');
+        setTimeout(() => {
+          buttonEl.textContent = original;
+          buttonEl.classList.remove('copied');
+        }, 2000);
+      }
+    }).catch(() => {
+      // Fallback for older browsers
+      alert('Copy failed. Text:\n\n' + text);
+    });
+  } else {
+    alert(text);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FEATURE 3: RECENT TRADE HISTORY
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Fetch and cache recent trade history from Sleeper.
+   Returns array of trade objects. Cached in memory per page load. */
+let _tradeHistoryCache = null;
+
+async function loadRecentTradeHistory(currentWeek) {
+  if (_tradeHistoryCache) return _tradeHistoryCache;
+
+  const trades = [];
+  const weeksToScan = 4; // last 4 weeks
+
+  for (let w = Math.max(1, currentWeek - weeksToScan); w <= currentWeek; w++) {
+    try {
+      const txns = await window.Sleeper.getTransactions(w);
+      if (!txns) continue;
+      const tradesInWeek = txns.filter(t => t.type === 'trade' && t.status === 'complete');
+      tradesInWeek.forEach(t => {
+        trades.push({ ...t, week: w });
+      });
+    } catch (e) {
+      console.log(`No transactions for week ${w}`);
+    }
+  }
+
+  _tradeHistoryCache = trades;
+  return trades;
+}
+
+/* Check if a similar trade was already offered/completed recently */
+function findSimilarPastTrade(pastTrades, giveNames, getNames, teamPlayerMap) {
+  return pastTrades.find(t => {
+    if (!t.adds || !t.drops) return false;
+    const playerIds = new Set([
+      ...Object.keys(t.adds || {}),
+      ...Object.keys(t.drops || {}),
+    ]);
+    // Check if 2+ of the same players appear in this past trade
+    const overlap = [...giveNames, ...getNames].filter(name => {
+      const pid = teamPlayerMap.get(name);
+      return pid && playerIds.has(pid);
+    });
+    return overlap.length >= 2;
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FEATURE 5: URGENCY INDICATOR
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Compute urgency for a trade proposal based on contextual factors. */
+function computeTradeUrgency(proposal, myRoster, currentWeek, teamRecord, nflverse) {
+  const urgencyReasons = [];
+  let urgencyLevel = 'convenient'; // default
+
+  // Check 1: Injuries in involved players
+  const hasInjury = proposal.get.some(p =>
+    ['Questionable', 'Doubtful', 'Out'].includes(p._injury)
+  ) || proposal.give.some(p =>
+    ['Questionable', 'Doubtful', 'Out'].includes(p._injury)
+  );
+
+  // Check 2: Bye week approaching for players you'd trade for (within 3 weeks)
+  const nearBye = proposal.get.some(p => {
+    const bye = playerBye(p);
+    return bye && bye - currentWeek > 0 && bye - currentWeek <= 3;
+  });
+
+  // Check 3: Team record (losing = more urgent to make moves)
+  const isLosing = teamRecord && (teamRecord.wins < teamRecord.losses);
+
+  // Check 4: Late season (playoff push)
+  const isPlayoffPush = currentWeek >= 10 && currentWeek < LEAGUE.PLAYOFF_START;
+
+  // Check 5: Trade improves playoff weeks specifically
+  const playoffFocused = proposal.myAnalysis?.playoffGain > proposal.myAnalysis?.regularGain * 1.5;
+
+  // Determine urgency level
+  if (isPlayoffPush && (isLosing || playoffFocused)) {
+    urgencyLevel = 'critical';
+    urgencyReasons.push('Playoff push week + urgency to secure playoff roster');
+  } else if (hasInjury) {
+    urgencyLevel = 'high';
+    urgencyReasons.push('Injury involved — value could shift with next update');
+  } else if (isLosing && currentWeek >= 5) {
+    urgencyLevel = 'high';
+    urgencyReasons.push(`Currently ${teamRecord.wins}-${teamRecord.losses} — moves needed`);
+  } else if (nearBye) {
+    urgencyLevel = 'this-week';
+    urgencyReasons.push('Bye week approaching for acquired player');
+  } else if (playoffFocused && currentWeek < 10) {
+    urgencyLevel = 'playoff-push';
+    urgencyReasons.push('Value concentrated in playoff weeks');
+  } else if (proposal.myAnalysis?.netGain > 20) {
+    urgencyLevel = 'do-now';
+    urgencyReasons.push('Massive projected gain — lock this in');
+  }
+
+  const iconMap = {
+    'critical':      { icon: '🔥', label: 'CRITICAL' },
+    'do-now':        { icon: '🔥', label: 'DO NOW' },
+    'high':          { icon: '⚡', label: 'HIGH' },
+    'this-week':     { icon: '📅', label: 'THIS WEEK' },
+    'playoff-push':  { icon: '🕐', label: 'PLAYOFF PUSH' },
+    'convenient':    { icon: '✓',  label: 'WHEN CONVENIENT' },
+  };
+
+  return {
+    level: urgencyLevel,
+    icon: iconMap[urgencyLevel].icon,
+    label: iconMap[urgencyLevel].label,
+    reasons: urgencyReasons,
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FEATURE 6: MODE EXPLANATION HELPER
+   ═══════════════════════════════════════════════════════════════════ */
+
+function explainContenderMode(mode, myRoster, allRosterArrays, currentWeek, nflverse) {
+  // Compute my rank
+  const scores = allRosterArrays.map((roster, i) => {
+    const sim = simulateLineups(roster, currentWeek, nflverse);
+    return { i, score: sim.weightedTotal };
+  }).sort((a, b) => b.score - a.score);
+  const myIdx = allRosterArrays.findIndex(r => r === myRoster);
+  const myRank = scores.findIndex(s => s.i === myIdx) + 1;
+
+  const explanations = {
+    'win-now': {
+      title: 'WIN NOW',
+      description: `You're projected as the #${myRank} team (top ${CONTENDER_TIERS.contender.max_rank} = win-now mode).`,
+      strategy: 'Your window is now — prioritize playoff weeks (15-17) over regular season. Trade future for near-term upgrades. Don\'t save assets for next year.',
+      switch: `Drops below #${CONTENDER_TIERS.contender.max_rank + 1} → switches to Balanced.`,
+    },
+    'balanced': {
+      title: 'BALANCED',
+      description: `You're projected as the #${myRank} team (rank ${CONTENDER_TIERS.contender.max_rank + 1}-${CONTENDER_TIERS.middle.max_rank} = balanced mode).`,
+      strategy: 'You could go either way. Focus on trades that improve BOTH regular season and playoff weeks. Avoid selling major assets for pure future value; avoid all-in playoff moves that leave you exposed if you slip.',
+      switch: `Rises to top ${CONTENDER_TIERS.contender.max_rank} → Win Now. Drops below #${CONTENDER_TIERS.middle.max_rank + 1} → Sell Now.`,
+    },
+    'sell-now': {
+      title: 'REBUILD / SELL',
+      description: `You're projected as the #${myRank} team (bottom 4 = rebuild mode).`,
+      strategy: 'Playoffs unlikely — sell aging veterans for upside picks/players. Prioritize player-with-future-value over win-now assets. Don\'t chase weekly wins at cost of long-term flexibility.',
+      switch: `Rises to top ${CONTENDER_TIERS.middle.max_rank} → Balanced.`,
+    },
+  };
+
+  return { rank: myRank, totalTeams: allRosterArrays.length, ...(explanations[mode] || explanations.balanced) };
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    END NEW TRADE LOGIC ENGINE
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -3843,8 +4223,32 @@ function renderTradeFinder(allPlayers, baselines, teams, container, metaEl, nflv
       <span class="trade-week-info">Week ${currentWeek}</span>
     </div>
 
-    <div id="finder-analysis"></div>
-    <div id="finder-trades"></div>`;
+    <div class="finder-tabs">
+      <button class="finder-tab active" data-tab="scan">🔍 Scan for Trades</button>
+      <button class="finder-tab" data-tab="target">🎯 Target a Player</button>
+      <button class="finder-tab" data-tab="history">📜 Recent Trades</button>
+    </div>
+
+    <div id="finder-mode-explain"></div>
+    <div id="finder-tab-scan" class="finder-tab-panel active">
+      <div id="finder-analysis"></div>
+      <div id="finder-trades"></div>
+    </div>
+
+    <div id="finder-tab-target" class="finder-tab-panel">
+      <div class="finder-target-controls">
+        <label>I want to trade FOR:</label>
+        <div class="player-search">
+          <input type="search" id="finder-target-search" placeholder="Search any player…" autocomplete="off">
+          <div id="finder-target-search-results" class="player-search-results"></div>
+        </div>
+      </div>
+      <div id="finder-target-results"></div>
+    </div>
+
+    <div id="finder-tab-history" class="finder-tab-panel">
+      <div id="finder-history-content">Loading recent trades…</div>
+    </div>`;
 
   const paint = () => {
     const select = document.getElementById('finder-team-select');
@@ -3868,6 +4272,24 @@ function renderTradeFinder(allPlayers, baselines, teams, container, metaEl, nflv
     let contenderMode = modeSel.value;
     if (contenderMode === 'auto') {
       contenderMode = detectContenderMode(myRoster, allRosterArrays, currentWeek, nflv);
+    }
+
+    // Add mode explanation panel
+    const modeExplainEl = document.getElementById('finder-mode-explain');
+    if (modeExplainEl) {
+      const modeInfo = explainContenderMode(contenderMode, myRoster, allRosterArrays, currentWeek, nflv);
+      modeExplainEl.innerHTML = `
+        <details class="finder-mode-explain">
+          <summary>
+            <span class="finder-mode-badge finder-mode-${contenderMode}">${modeInfo.title}</span>
+            <span class="finder-mode-desc">${esc(modeInfo.description)}</span>
+            <span class="finder-mode-toggle">▼</span>
+          </summary>
+          <div class="finder-mode-body">
+            <p><strong>Strategy:</strong> ${esc(modeInfo.strategy)}</p>
+            <p class="dim"><strong>Mode changes:</strong> ${esc(modeInfo.switch)}</p>
+          </div>
+        </details>`;
     }
 
     // Diagnose my team
@@ -3926,6 +4348,8 @@ function renderTradeFinder(allPlayers, baselines, teams, container, metaEl, nflv
         proposals.forEach(p => {
           p.otherTeam = other.team;
           p.compatibility = compat.score;
+          p.urgency = computeTradeUrgency(p, myRoster, currentWeek, null, nflv);
+          p.marketValue = compareTradeMarketValue(p.give, p.get, currentWeek, nflv);
         });
         allProposals.push(...proposals);
       });
@@ -3952,11 +4376,119 @@ function renderTradeFinder(allPlayers, baselines, teams, container, metaEl, nflv
           <strong>${contenderMode.toUpperCase().replace('-', ' ')}</strong> mode is active — this affects which trades are recommended.
           Auto-detected based on your projected standing.
         </p>`;
+
+      // Wire up copy buttons
+      tradesEl.querySelectorAll('.finder-copy-btn').forEach(btn => {
+        btn.addEventListener('click', () => copyTradeToClipboard(btn.dataset.pitch, btn));
+      });
     }, 100);
   };
 
-  document.getElementById('finder-team-select').addEventListener('change', paint);
-  document.getElementById('finder-mode').addEventListener('change', paint);
+  document.getElementById('finder-team-select').addEventListener('change', () => {
+    paint();
+    // Also refresh target player results if a target was selected
+    if (currentTarget) showTargetOffers(currentTarget);
+  });
+  document.getElementById('finder-mode').addEventListener('change', () => {
+    paint();
+    if (currentTarget) showTargetOffers(currentTarget);
+  });
+
+  // Tab switching
+  document.querySelectorAll('.finder-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.finder-tab').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('.finder-tab-panel').forEach(p =>
+        p.classList.toggle('active', p.id === `finder-tab-${tab}`)
+      );
+
+      // Load history tab lazily
+      if (tab === 'history') loadHistoryTab();
+    });
+  });
+
+  // Target player mode
+  let currentTarget = null;
+  const showTargetOffers = (targetPlayer) => {
+    currentTarget = targetPlayer;
+    const resultsEl = document.getElementById('finder-target-results');
+    const myTeamId = Number(document.getElementById('finder-team-select').value);
+    const myEntry = allRosters.find(r => r.team.roster_id === myTeamId);
+    if (!myEntry) return;
+
+    let contenderMode = document.getElementById('finder-mode').value;
+    if (contenderMode === 'auto') {
+      contenderMode = detectContenderMode(myEntry.roster, allRosters.map(r => r.roster), currentWeek, nflv);
+    }
+
+    const result = buildTargetPlayerOffers(
+      targetPlayer, myEntry.roster, allRosters, teams, currentWeek, nflv,
+      { contenderMode }
+    );
+
+    if (result.error) {
+      resultsEl.innerHTML = errBox(result.message);
+      return;
+    }
+
+    if (!result.offers.length) {
+      resultsEl.innerHTML = empty(
+        `Couldn't build a viable offer for ${esc(targetPlayer.name)}. Your roster may not have players close to their market value at the positions ${result.owner.team_name} needs (${result.theirWeaknesses.join(', ') || 'none identified'}).`
+      );
+      return;
+    }
+
+    resultsEl.innerHTML = `
+      <div class="finder-target-header">
+        <div class="finder-target-info">
+          <span class="${_pillClass(targetPlayer.pos)}">${esc(targetPlayer.pos)}</span>
+          <span class="finder-target-name">${esc(targetPlayer.name)}</span>
+          <span class="finder-target-team">${esc(targetPlayer.team || '')}</span>
+        </div>
+        <div class="finder-target-owner">
+          Owned by <strong>${esc(result.owner.team_name)}</strong>
+          ${result.theirWeaknesses.length ? `<br><span class="dim">They need: ${result.theirWeaknesses.join(', ')}</span>` : ''}
+        </div>
+      </div>
+      <div class="finder-target-offers">
+        ${result.offers.map(o => renderTargetOffer(o, targetPlayer, myEntry.team, result.owner)).join('')}
+      </div>`;
+
+    // Wire up copy buttons
+    resultsEl.querySelectorAll('.finder-copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => copyTradeToClipboard(btn.dataset.pitch, btn));
+    });
+  };
+
+  // Attach player search to target input
+  attachPlayerSearch('finder-target-search', allPlayers, (player) => {
+    document.getElementById('finder-target-search').value = '';
+    showTargetOffers(player);
+  });
+
+  // History tab loader
+  let historyLoaded = false;
+  const loadHistoryTab = async () => {
+    if (historyLoaded) return;
+    historyLoaded = true;
+    const historyEl = document.getElementById('finder-history-content');
+    try {
+      const trades = await loadRecentTradeHistory(currentWeek);
+      if (!trades.length) {
+        historyEl.innerHTML = empty('No completed trades in the last 4 weeks.');
+        return;
+      }
+      historyEl.innerHTML = `
+        <p class="finder-history-note">Last ${trades.length} completed trade${trades.length !== 1 ? 's' : ''} in the league (last 4 weeks):</p>
+        <div class="finder-history-list">
+          ${trades.map(t => renderPastTrade(t, teams)).join('')}
+        </div>`;
+    } catch (e) {
+      historyEl.innerHTML = errBox(`Could not load trade history: ${e.message}`);
+    }
+  };
+
   paint();
 }
 
@@ -3976,11 +4508,28 @@ function renderTradeProposal(p) {
       <span class="finder-tp-team">${esc(pl.team || '')}</span>
     </div>`).join('');
 
+  // Compute urgency
+  const urgency = p.urgency || { icon: '✓', label: 'WHEN CONVENIENT', reasons: [] };
+
+  // Market value badge
+  const marketBadge = p.marketValue ? `
+    <span class="finder-market-badge finder-market-${p.marketValue.verdict}">
+      ${p.marketValue.deltaPct > 0 ? '+' : ''}${p.marketValue.deltaPct.toFixed(0)}% value
+    </span>` : '';
+
+  // Generate trade pitch
+  const rationale = `Fills my ${p.myAnalysis?.posImpact ? Object.keys(p.myAnalysis.posImpact).find(k => p.myAnalysis.posImpact[k] > 0) || 'roster' : 'roster'} need — projected +${p.myGain.toFixed(1)} pts for me, +${p.theirGain.toFixed(1)} for you.`;
+  const pitch = formatTradePitch(p.give, p.get, p.otherTeam.team_name, 'Your team', rationale);
+
   return `
-    <div class="finder-tp-card">
+    <div class="finder-tp-card finder-urgency-${urgency.level || 'convenient'}">
       <div class="finder-tp-header">
         <span class="finder-tp-partner">with ${esc(p.otherTeam.team_name)}</span>
-        <span class="finder-tp-type">${p.type}</span>
+        <span class="finder-tp-badges">
+          <span class="finder-urgency-badge finder-urgency-${urgency.level}">${urgency.icon} ${urgency.label}</span>
+          ${marketBadge}
+          <span class="finder-tp-type">${p.type}</span>
+        </span>
       </div>
       <div class="finder-tp-body">
         <div class="finder-tp-side">
@@ -4001,7 +4550,110 @@ function renderTradeProposal(p) {
           Their gain: <strong class="finder-tp-plus">+${p.theirGain.toFixed(1)}</strong> pts
         </div>
       </div>
+      ${urgency.reasons.length ? `<div class="finder-tp-urgency-reasons">⚡ ${urgency.reasons.map(esc).join(' · ')}</div>` : ''}
       <div class="finder-tp-rationale">${esc(p.rationale)}</div>
+      <div class="finder-tp-actions">
+        <button class="finder-copy-btn" data-pitch="${esc(pitch)}">📋 Copy Sleeper message</button>
+      </div>
+    </div>`;
+}
+
+/* Render a target-player offer card (for "Target a Player" mode) */
+function renderTargetOffer(offer, targetPlayer, myTeam, ownerTeam) {
+  const tierColors = {
+    'minimum': { color: '#EF5350', label: '⚠️ Minimum offer (may be rejected)' },
+    'fair':    { color: '#66BB6A', label: '⚖️ Fair market offer' },
+    'overpay': { color: '#2E7D32', label: '✓ Overpay (near-guaranteed acceptance)' },
+  };
+  const t = tierColors[offer.tier] || tierColors.fair;
+
+  const giveHtml = offer.give.map(pl => `
+    <div class="finder-tp-player">
+      <span class="${_pillClass(pl.pos)}">${esc(pl.pos)}</span>
+      <span class="finder-tp-name">${esc(pl.name)}</span>
+      <span class="finder-tp-team">${esc(pl.team || '')}</span>
+    </div>`).join('');
+
+  const rationale = `Getting ${targetPlayer.name} — offer fills your ${offer.marketValue?.verdict === 'fair-market' ? 'roster' : 'needs'}.`;
+  const pitch = formatTradePitch(offer.give, [targetPlayer], ownerTeam.team_name, myTeam.team_name, rationale);
+
+  const marketBadge = offer.marketValue ? `
+    <span class="finder-market-badge finder-market-${offer.marketValue.verdict}">
+      ${offer.marketValue.deltaPct > 0 ? '+' : ''}${offer.marketValue.deltaPct.toFixed(0)}% value
+    </span>` : '';
+
+  return `
+    <div class="finder-target-offer" style="border-left-color: ${t.color}">
+      <div class="finder-target-offer-header">
+        <span class="finder-target-tier-label" style="color: ${t.color}">${t.label}</span>
+        ${marketBadge}
+      </div>
+      <div class="finder-tp-body">
+        <div class="finder-tp-side">
+          <div class="finder-tp-label">You give</div>
+          ${giveHtml}
+        </div>
+        <div class="finder-tp-arrow">⇄</div>
+        <div class="finder-tp-side">
+          <div class="finder-tp-label">You get</div>
+          <div class="finder-tp-player">
+            <span class="${_pillClass(targetPlayer.pos)}">${esc(targetPlayer.pos)}</span>
+            <span class="finder-tp-name">${esc(targetPlayer.name)}</span>
+            <span class="finder-tp-team">${esc(targetPlayer.team || '')}</span>
+          </div>
+        </div>
+      </div>
+      <div class="finder-tp-benefit">
+        <div class="finder-tp-gain">
+          Your gain: <strong class="finder-tp-plus">${offer.myAnalysis?.netGain > 0 ? '+' : ''}${offer.myAnalysis?.netGain.toFixed(1) || '0'}</strong> pts
+        </div>
+        <div class="finder-tp-gain">
+          Their gain: <strong class="finder-tp-plus">${offer.theirAnalysis?.netGain > 0 ? '+' : ''}${offer.theirAnalysis?.netGain.toFixed(1) || '0'}</strong> pts
+        </div>
+      </div>
+      <div class="finder-tp-actions">
+        <button class="finder-copy-btn" data-pitch="${esc(pitch)}">📋 Copy Sleeper message</button>
+      </div>
+    </div>`;
+}
+
+/* Render a past completed trade for the History tab */
+function renderPastTrade(trade, teams) {
+  const rosterIds = trade.roster_ids || [];
+  const teamNames = rosterIds.map(rid => {
+    const t = Array.from(teams.values()).find(x => x.roster_id === rid);
+    return t?.team_name || `Team ${rid}`;
+  });
+
+  const adds = trade.adds || {};
+  const drops = trade.drops || {};
+
+  // Group by roster_id
+  const byTeam = {};
+  Object.entries(adds).forEach(([pid, rid]) => {
+    if (!byTeam[rid]) byTeam[rid] = { received: [], sent: [] };
+    byTeam[rid].received.push(pid);
+  });
+  Object.entries(drops).forEach(([pid, rid]) => {
+    if (!byTeam[rid]) byTeam[rid] = { received: [], sent: [] };
+    byTeam[rid].sent.push(pid);
+  });
+
+  const teamSections = Object.entries(byTeam).map(([rid, data]) => {
+    const team = Array.from(teams.values()).find(t => t.roster_id === Number(rid));
+    const teamName = team?.team_name || `Team ${rid}`;
+    return `
+      <div class="finder-history-team">
+        <strong>${esc(teamName)}</strong> received ${data.received.length} player${data.received.length !== 1 ? 's' : ''}
+      </div>`;
+  }).join('');
+
+  const dateStr = trade.status_updated ? new Date(trade.status_updated).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : `Week ${trade.week}`;
+
+  return `
+    <div class="finder-history-item">
+      <div class="finder-history-date">${esc(dateStr)} · Week ${trade.week}</div>
+      ${teamSections}
     </div>`;
 }
 
