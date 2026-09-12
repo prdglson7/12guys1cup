@@ -299,9 +299,17 @@ function thePeasantMessage(lowest, teamName, managerName, week) {
 
 async function main() {
   const state = await fetchJson('https://api.sleeper.app/v1/state/nfl');
+  const forceRecap = process.env.FORCE_RECAP === 'true';
   const recapWeek = state.week - 1;
+
   if (recapWeek < 1 || recapWeek > 17) {
     console.log(`No week to judge (state.week=${state.week}).`);
+    return;
+  }
+
+  // Guard: don't judge a week that isn't complete yet
+  if (!forceRecap && state.week <= recapWeek) {
+    console.log(`Week ${recapWeek} not yet complete (state.week=${state.week}). Skipping.`);
     return;
   }
 
@@ -322,6 +330,13 @@ async function main() {
     fetchJson(`https://api.sleeper.app/v1/league/${LEAGUE_ID}`),
     fetchJson('https://api.sleeper.app/v1/players/nfl'),
   ]);
+
+  // Guard: if fewer than half the teams have real scores, skip
+  const scoringTeams = matchups.filter(m => (m.points || 0) > 0).length;
+  if (scoringTeams < rosters.length / 2 && !forceRecap) {
+    console.log(`Only ${scoringTeams}/${rosters.length} teams have scores — week not complete. Skipping.`);
+    return;
+  }
 
   if (!matchups?.length) {
     console.log('No matchups for that week.');
