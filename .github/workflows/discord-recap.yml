@@ -10,6 +10,11 @@ on:
   schedule:
     - cron: "0 13 * * 2"   # Tuesday 13:00 UTC ≈ 8am ET (9am EDT / 8am EST)
   workflow_dispatch:
+    inputs:
+      force_recap:
+        description: 'Force recap even if week not complete (use only if guards misfire)'
+        required: false
+        default: 'false'
 
 permissions:
   contents: write
@@ -35,12 +40,14 @@ jobs:
         env:
           DISCORD_RECAP_WEBHOOK: ${{ secrets.DISCORD_RECAP_WEBHOOK }}
           SLEEPER_LEAGUE_ID: "1389753693590532096"
+          FORCE_RECAP: ${{ github.event.inputs.force_recap || 'false' }}
         run: node .github/scripts/discord-recap.js
 
       - name: Post Studs & Duds Council ceremonies to Discord
         env:
           DISCORD_SHAME_WEBHOOK: ${{ secrets.DISCORD_SHAME_WEBHOOK }}
           SLEEPER_LEAGUE_ID: "1389753693590532096"
+          FORCE_RECAP: ${{ github.event.inputs.force_recap || 'false' }}
         run: node .github/scripts/discord-shame.js
 
       - name: Commit shame state if changed
