@@ -5,6 +5,24 @@
   "count": 47,
   "items": [
     {
+      "id": 607241,
+      "created": "2026-09-12 01:30:54",
+      "created_formated": "Sat, Sep 12th 1:30am UTC",
+      "author": "Ari Koslow",
+      "player_id": 24205,
+      "team_id": "DAL",
+      "title": "Malik Davis (hip) to undergo surgery, be placed on IR",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Injury"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/607241/malik-davis-hip-to-undergo-surgery-be-placed-on-ir.php",
+      "desc": "Cowboys running back Malik Davis is scheduled to have hip surgery on Saturday and be placed on injured reserve",
+      "impact": "Davis was injured in practice on Friday. He will miss at least the next four games. "
+    },
+    {
       "id": 607233,
       "created": "2026-09-11 20:34:05",
       "created_formated": "Fri, Sep 11th 8:34pm UTC",
@@ -491,24 +509,6 @@
       "impact": "Harrison practiced in full on Friday. He is good to go as expected. "
     },
     {
-      "id": 607203,
-      "created": "2026-09-11 20:05:24",
-      "created_formated": "Fri, Sep 11th 8:05pm UTC",
-      "author": "Leo Sells",
-      "player_id": 24205,
-      "team_id": "DAL",
-      "title": "Malik Davis (hip) ruled out for Sunday",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/607203/malik-davis-hip-ruled-out-sunday.php",
-      "desc": "Malik Davis (hip) has been ruled out for Sunday night's game against the New York Giants and will undergo further testing.",
-      "impact": "Davis was carted out of practice on Friday after suffering what has since been diagnosed as a hip injury. The exact severity of it is unknown at this point, and the team plans to run additional tests to determine the severity of it. Emari Demercado will step up and play the RB2 role behind Javonte Williams for the Cowboys in the meantime."
-    },
-    {
       "id": 607201,
       "created": "2026-09-11 20:02:26",
       "created_formated": "Fri, Sep 11th 8:02pm UTC",
@@ -851,6 +851,6 @@
   ],
   "public_api_limited": true,
   "tier": "premium",
-  "fetched_at": "2026-09-12T00:25:15Z",
+  "fetched_at": "2026-09-12T04:48:08Z",
   "source_url": "https://api.fantasypros.com/public/v2/json/nfl/news?limit=50"
 }
