@@ -34,13 +34,36 @@ function fetchJson(url) {
 
 async function main() {
   const state = await fetchJson('https://api.sleeper.app/v1/state/nfl');
-  // Recap the JUST-COMPLETED week (state.week is the CURRENT week; recap = previous week)
+
+  // Recap the JUST-COMPLETED week.
+  // Sleeper's state.week represents the CURRENT week (games may be in progress).
+  // state.leg tells us where we are inside the current week:
+  //   1 = pre-game / TNF night
+  //   2 = Sun morning / early games in progress
+  //   3 = Sun afternoon / SNF window
+  //   4 = MNF (Monday)
+  //   5 = post-MNF (week fully complete)
+  // We only want to recap once state.leg has cleared post-MNF (i.e., we're safely into the next week).
+  // The FORCE_RECAP env var bypasses this for manual overrides.
+
+  const forceRecap = process.env.FORCE_RECAP === 'true';
   const recapWeek = state.week - 1;
+
   if (recapWeek < 1 || recapWeek > 17) {
     console.log(`No week to recap (state.week=${state.week}).`);
     return;
   }
-  console.log(`Recapping Week ${recapWeek}`);
+
+  // Guard: ensure the recap week is truly complete
+  // We're in state.week's "new week" territory only if:
+  //   - state.week has advanced past recapWeek (state.week > recapWeek), AND
+  //   - state.leg is 1 or higher (we're solidly into the new week)
+  if (!forceRecap && state.week <= recapWeek) {
+    console.log(`Week ${recapWeek} not yet complete (state.week=${state.week}, leg=${state.leg}). Skipping.`);
+    return;
+  }
+
+  console.log(`Recapping Week ${recapWeek} (state.week=${state.week}, leg=${state.leg})`);
 
   const [rosters, users, matchups] = await Promise.all([
     fetchJson(`https://api.sleeper.app/v1/league/${LEAGUE_ID}/rosters`),
@@ -61,11 +84,18 @@ async function main() {
     });
   });
 
-  // Score analysis
+  // Score analysis — filter out anyone who scored 0 (game not played yet / bug)
   const scores = matchups
     .filter(m => (m.points || 0) > 0)
     .map(m => ({ roster_id: m.roster_id, points: m.points, matchup_id: m.matchup_id }))
     .sort((a, b) => b.points - a.points);
+
+  // Guard: if fewer than half the teams have scores, the week isn't done
+  const totalTeams = rosters.length;
+  if (scores.length < totalTeams / 2 && !forceRecap) {
+    console.log(`Only ${scores.length}/${totalTeams} teams have scores — week not complete. Skipping.`);
+    return;
+  }
 
   if (!scores.length) {
     console.log('No scores recorded for that week — skipping.');
