@@ -1805,7 +1805,7 @@ async function renderDues() {
 /* ---------- nflverse data loader (Phase 1 pipeline output) ---------- */
 
 async function loadNflverseData() {
-  const files = ['xfp', 'snap-counts', 'def-vs-pos', 'schedules', 'weekly-stats'];
+  const files = ['xfp', 'snap-counts', 'def-vs-pos', 'schedules', 'weekly-stats', 'dropback-shares'];
   const results = {};
   await Promise.all(files.map(async (f) => {
     try {
@@ -1858,10 +1858,20 @@ async function loadNflverseData() {
     ? availableSeasons.sort().slice(-1)[0]
     : null;
 
+  // Dropback-based target share lookup (route participation proxy)
+  const dropbackByName = new Map();
+  if (results['dropback-shares']?.players) {
+    for (const p of Object.values(results['dropback-shares'].players)) {
+      if (p.name) dropbackByName.set(normalizeName(p.name), p);
+    }
+  }
+
   return {
     xfp: xfpByName,
     snaps: snapByName,
     usage: usageByName,
+    dropbackShares: dropbackByName,
+    dropbackThresholds: results['dropback-shares']?.thresholds || { WR: 0.20, TE: 0.15 },
     defVsPos: results['def-vs-pos']?.defenses || {},
     playoffOpps: results['schedules']?.playoff_opponents || {},
     gameContext: contextSeason ? gameCtx[contextSeason] : {},
@@ -1870,6 +1880,7 @@ async function loadNflverseData() {
     xfpSeason: results['xfp']?.season,
     snapSeason: results['snap-counts']?.season,
     defSeason: results['def-vs-pos']?.season,
+    dropbackSeason: results['dropback-shares']?.season,
   };
 }
 
@@ -1927,6 +1938,15 @@ function enrichPlayer(player, nflverse) {
     player._recent_tgt_share = usage.recent_tgt_share;
     player._season_tgt_share = usage.season_tgt_share;
     player._tgt_share_delta = usage.tgt_share_delta;
+  }
+
+  // Dropback-based target share (accurate route participation proxy, WR/TE only)
+  const dropback = nflverse.dropbackShares?.get(key);
+  if (dropback) {
+    player._dropback_share_season = dropback.season_share;
+    player._dropback_share_recent = dropback.recent_share;
+    player._dropback_share_blended = dropback.blended_share;
+    player._dropback_games = dropback.games;
   }
 }
 
@@ -4092,6 +4112,14 @@ async function renderWaiver() {
 
       <section class="waiver-section">
         <div class="waiver-section-head">
+          <h3>🏃 Full-Time Route Runners</h3>
+          <span class="waiver-section-note">WR 20%+ / TE 15%+ dropback-based target share (~70%+ route participation)</span>
+        </div>
+        <div class="waiver-cards" id="waiver-route-runners"></div>
+      </section>
+
+      <section class="waiver-section">
+        <div class="waiver-section-head">
           <h3>🎯 Target Share Explosions</h3>
           <span class="waiver-section-note">WRs/TEs seeing routes and volume spike</span>
         </div>
@@ -4156,7 +4184,28 @@ async function renderWaiver() {
         )).join('')
       : '<div class="waiver-empty">No snap risers yet — populates once games play.</div>';
 
-    // 2. Target Share Explosions — WR/TE with delta > 5%
+    // 2. Full-Time Route Runners — WR 20%+ / TE 15%+ blended dropback share
+    const routeThresh = { WR: 0.20, TE: 0.15 };
+    const routeRunners = filtered
+      .filter(p => {
+        if (!['WR', 'TE'].includes(p.pos)) return false;
+        const blended = p._dropback_share_blended;
+        if (blended == null) return false;
+        const games = p._dropback_games || 0;
+        if (games < 2) return false; // need at least 2 games for stability
+        return blended >= routeThresh[p.pos];
+      })
+      .sort((a, b) => (b._dropback_share_blended || 0) - (a._dropback_share_blended || 0))
+      .slice(0, 12);
+    document.getElementById('waiver-route-runners').innerHTML = routeRunners.length
+      ? routeRunners.map(p => cardHtml(p,
+          `<strong>${(p._dropback_share_blended * 100).toFixed(0)}%</strong> dropback share `
+          + `(recent ${(p._dropback_share_recent * 100).toFixed(0)}% / season ${(p._dropback_share_season * 100).toFixed(0)}%) `
+          + `over ${p._dropback_games} game${p._dropback_games !== 1 ? 's' : ''}`
+        )).join('')
+      : '<div class="waiver-empty">No full-time route runners yet — populates after Week 1 games (accurate dropback data).</div>';
+
+    // 3. Target Share Explosions — WR/TE with delta > 5%
     const tgtShare = filtered
       .filter(p => ['WR', 'TE'].includes(p.pos) && p._tgt_share_delta != null && p._tgt_share_delta > 0.05)
       .sort((a, b) => b._tgt_share_delta - a._tgt_share_delta)
