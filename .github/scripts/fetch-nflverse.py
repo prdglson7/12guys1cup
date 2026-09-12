@@ -456,6 +456,130 @@ def fetch_schedules():
     }
 
 # ------------------------------------------------------------------
+# 8. Dropback-based target share (accurate route participation proxy)
+# ------------------------------------------------------------------
+# Uses play-by-play data to compute team dropbacks accurately.
+# Dropbacks = pass attempts + sacks + scrambles + spikes.
+# player_dropback_share = player_targets / team_dropbacks
+# Blended metric: 60% last-4-games + 40% season for stability.
+
+def fetch_dropback_shares(weekly_stats_data):
+    log("Fetching play-by-play for dropback-based target share…")
+
+    if not weekly_stats_data or not weekly_stats_data.get("players"):
+        log("  No weekly stats — skipping dropback share")
+        return {"season": None, "players": {}}
+
+    season = weekly_stats_data.get("season")
+    if not season:
+        log("  No season detected — skipping")
+        return {"season": None, "players": {}}
+
+    try:
+        # Import PBP data — only need pass plays for dropback counting
+        pbp_df = nfl.import_pbp_data([season], downcast=True)
+        log(f"  Loaded {len(pbp_df)} play rows for {season}")
+    except Exception as e:
+        log(f"  PBP fetch failed: {e}")
+        return {"season": season, "players": {}, "error": str(e)}
+
+    if pbp_df is None or pbp_df.empty:
+        log("  Empty PBP — no games played yet this season")
+        return {"season": season, "players": {}}
+
+    # Compute team dropbacks per game
+    # A dropback = play where QB dropped back to pass
+    # Use qb_dropback if available (nflverse's native field), else compute from parts
+    if "qb_dropback" in pbp_df.columns:
+        dropback_plays = pbp_df[pbp_df["qb_dropback"] == 1]
+        log("  Using nflverse qb_dropback field")
+    else:
+        # Fallback: manually combine pass_attempt + sack + qb_scramble + qb_spike
+        dropback_plays = pbp_df[
+            (pbp_df["pass_attempt"] == 1) |
+            (pbp_df["sack"] == 1) |
+            (pbp_df["qb_scramble"] == 1) |
+            (pbp_df.get("qb_spike", 0) == 1)
+        ]
+        log("  Computed dropbacks from pass_attempt + sack + scramble + spike")
+
+    # Group by team + week to get team dropbacks per game
+    team_dropbacks = dropback_plays.groupby(["posteam", "week"]).size().reset_index(name="dropbacks")
+    log(f"  Computed dropbacks for {len(team_dropbacks)} team-week combos")
+
+    # Build lookup: {team: {week: dropbacks}}
+    dropback_lookup = {}
+    for _, row in team_dropbacks.iterrows():
+        team = str(row["posteam"]).strip()
+        wk = int(row["week"])
+        if not team or wk < 1:
+            continue
+        dropback_lookup.setdefault(team, {})[wk] = int(row["dropbacks"])
+
+    # For each player in weekly stats, compute dropback share per week
+    players_out = {}
+    for pid, pdata in weekly_stats_data["players"].items():
+        if pdata.get("pos") not in ("WR", "TE"):
+            continue
+
+        weekly_shares = []
+        for w in pdata.get("weeks", []):
+            wk = w.get("week")
+            team = pdata.get("team")
+            targets = w.get("tgts", 0)
+            if not wk or not team or targets is None:
+                continue
+
+            team_db = dropback_lookup.get(team, {}).get(wk, 0)
+            if team_db < 5:  # too few dropbacks to be meaningful (bench game, blowout)
+                continue
+
+            share = targets / team_db if team_db > 0 else 0
+            weekly_shares.append({
+                "week": wk,
+                "targets": targets,
+                "team_dropbacks": team_db,
+                "share": round(share, 4),
+            })
+
+        if not weekly_shares:
+            continue
+
+        # Season average
+        season_share = sum(w["share"] for w in weekly_shares) / len(weekly_shares)
+
+        # Last 4 games (or fewer if not enough)
+        recent = sorted(weekly_shares, key=lambda x: x["week"], reverse=True)[:4]
+        recent_share = sum(w["share"] for w in recent) / len(recent)
+
+        # Blended (per approved logic: 60% recent + 40% season)
+        blended = 0.60 * recent_share + 0.40 * season_share
+
+        players_out[pid] = {
+            "name": pdata.get("name", ""),
+            "pos": pdata.get("pos", ""),
+            "team": pdata.get("team", ""),
+            "games": len(weekly_shares),
+            "season_share": round(season_share, 4),
+            "recent_share": round(recent_share, 4),
+            "blended_share": round(blended, 4),
+            "weekly": weekly_shares,
+        }
+
+    log(f"  Built dropback shares for {len(players_out)} WR/TE players")
+
+    return {
+        "season": season,
+        "player_count": len(players_out),
+        "players": players_out,
+        "thresholds": {
+            "WR": 0.20,  # 20%+ dropback share ≈ 70%+ route participation
+            "TE": 0.15,  # 15%+ dropback share ≈ 70%+ route participation
+        },
+        "notes": "Blended metric = 0.60 × last-4-games + 0.40 × season. Team dropbacks include pass attempts + sacks + scrambles + spikes.",
+    }
+
+# ------------------------------------------------------------------
 # main
 # ------------------------------------------------------------------
 
@@ -492,6 +616,10 @@ def main():
     sched = safe(fetch_schedules, "schedules") or {"seasons_available": [], "schedule": {}, "playoff_opponents": {}}
     write_json(sched, "schedules.json")
 
+    # 8. Dropback-based target share (accurate route participation proxy)
+    dropback = safe(lambda: fetch_dropback_shares(weekly), "dropback_shares") or {"season": None, "players": {}}
+    write_json(dropback, "dropback-shares.json")
+
     # Manifest
     manifest = {
         "fetched_at": started.isoformat() + "Z",
@@ -505,6 +633,7 @@ def main():
             "depth-charts.json": {"season": depth.get("season"), "week": depth.get("week")},
             "player-ids.json":   {"player_count": ids.get("player_count", 0)},
             "schedules.json":    {"seasons": sched.get("seasons_available", [])},
+            "dropback-shares.json": {"season": dropback.get("season"), "player_count": dropback.get("player_count", 0)},
         },
     }
     write_json(manifest, "_manifest.json")
