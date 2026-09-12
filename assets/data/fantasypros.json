@@ -2,8 +2,43 @@
   "sport": "NFL",
   "title": "Fantasy Player News",
   "description": "Breaking Fantasy Football player news along with the impact for fantasy managers",
-  "count": 46,
+  "count": 47,
   "items": [
+    {
+      "id": 607334,
+      "created": "2026-09-12 15:15:34",
+      "created_formated": "Sat, Sep 12th 3:15pm UTC",
+      "author": "Garrett Ball",
+      "player_id": 23056,
+      "team_id": "LV",
+      "title": "Michael Mayer agrees to a three-year, $45 million deal with Raiders",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/607334/michael-mayer-agrees-to-three-year-45-million-deal-with-raiders.php",
+      "desc": "Michael Mayer has agreed to a three-year, $45 million deal with the Las Vegas Raiders.",
+      "impact": "Mayer is an all around contributor, making it well worth the investment for the Raiders. For fantasy, it means that he is behind Brock Bowers for the long term, but maybe the Raiders will employ more tight end sets so both can eat, as they are likely the two most talented pass catchers on the team at this point in time. Time will tell what his fantasy value will become."
+    },
+    {
+      "id": 607333,
+      "created": "2026-09-12 15:07:29",
+      "created_formated": "Sat, Sep 12th 3:07pm UTC",
+      "author": "Garrett Ball",
+      "player_id": 25298,
+      "team_id": "GB",
+      "title": "Tucker Kraft signs four year, $75 million deal with Packers",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Breaking"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/607333/tucker-kraft-signs-four-year-75-million-deal-with-packers.php",
+      "desc": "Tucker Kraft has agreed to a four-year, $75 million deal with the Green Bay Packers. The deal is worth up to $92 million.",
+      "impact": "Kraft was on his way to a massive season in 2025 before going down with a torn ACL. He gets his payday as the Packers lock in their emergeing star for the long haul."
+    },
     {
       "id": 607276,
       "created": "2026-09-12 07:08:48",
@@ -807,28 +842,10 @@
       "link": "https://www.fantasypros.com/nfl/news/607180/audric-estime-thigh-wont-play-sunday.php",
       "desc": "Audric Estime (thigh) won't play in Sunday's game against the Detroit Lions.",
       "impact": "The Saints will be without Estime on Sunday, who is going to be sidelined due to a nagging thigh injury of some kind. His absence isn't expected to have much of an impact from a fantasy perspective."
-    },
-    {
-      "id": 607178,
-      "created": "2026-09-11 18:19:15",
-      "created_formated": "Fri, Sep 11th 6:19pm UTC",
-      "author": "Leo Sells",
-      "player_id": 25419,
-      "team_id": "ATL",
-      "title": "Zachariah Branch (hamstring) off injury report for Sunday",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/607178/zachariah-branch-hamstring-off-injury-report-sunday.php",
-      "desc": "Zachariah Branch (hamstring) is off of the injury report for Sunday's game against the Pittsburgh Steelers.",
-      "impact": "The rookie was limited at practice earlier in the week due to a hamstring injury, but he is over it now and is off of the injury report ahead of Sunday's game. He isn't expected to be a strong fantasy option against the Steelers, however, especially with Cooper Rush set to start at QB for the Falcons in the absence of Tua Tagovailoa (oblique)."
     }
   ],
   "public_api_limited": true,
   "tier": "premium",
-  "fetched_at": "2026-09-12T12:35:32Z",
+  "fetched_at": "2026-09-12T15:56:22Z",
   "source_url": "https://api.fantasypros.com/public/v2/json/nfl/news?limit=50"
 }
