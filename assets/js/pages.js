@@ -1805,7 +1805,7 @@ async function renderDues() {
 /* ---------- nflverse data loader (Phase 1 pipeline output) ---------- */
 
 async function loadNflverseData() {
-  const files = ['xfp', 'snap-counts', 'def-vs-pos', 'schedules', 'weekly-stats', 'dropback-shares'];
+  const files = ['xfp', 'snap-counts', 'def-vs-pos', 'schedules', 'weekly-stats', 'dropback-shares', 'depth-charts'];
   const results = {};
   await Promise.all(files.map(async (f) => {
     try {
@@ -1858,6 +1858,39 @@ async function loadNflverseData() {
     ? availableSeasons.sort().slice(-1)[0]
     : null;
 
+  let mergedGameCtx = contextSeason ? { ...gameCtx[contextSeason] } : {};
+  let liveGamesInfo = null;
+
+  // Overlay LIVE game data (ESPN spreads + Open-Meteo weather) on top of nflverse schedule
+  try {
+    const liveRes = await fetch('assets/data/live-games.json', { cache: 'default' });
+    if (liveRes.ok) {
+      const live = await liveRes.json();
+      liveGamesInfo = { week: live.week, fetchedAt: live.fetched_at, gameCount: live.game_count };
+      // Deep merge: for each team's week, overlay live data on nflverse baseline
+      for (const [team, weeks] of Object.entries(live.teams || {})) {
+        if (!mergedGameCtx[team]) mergedGameCtx[team] = {};
+        for (const [wk, liveGame] of Object.entries(weeks)) {
+          const existing = mergedGameCtx[team][wk] || {};
+          // Live data wins for spread/total/weather; keep nflverse opp/home if live missing them
+          mergedGameCtx[team][wk] = {
+            ...existing,
+            ...liveGame,
+            // Preserve nflverse historical fields if live doesn't provide them
+            temp: liveGame.temp ?? existing.temp,
+            wind: liveGame.wind ?? existing.wind,
+            spread: liveGame.spread ?? existing.spread,
+            total: liveGame.total ?? existing.total,
+            roof: liveGame.roof ?? existing.roof,
+          };
+        }
+      }
+      console.log(`Live games loaded: Week ${live.week}, ${Object.keys(live.teams).length} teams`);
+    }
+  } catch (e) {
+    console.log('No live games data yet:', e.message);
+  }
+
   // Dropback-based target share lookup (route participation proxy)
   const dropbackByName = new Map();
   if (results['dropback-shares']?.players) {
@@ -1865,6 +1898,9 @@ async function loadNflverseData() {
       if (p.name) dropbackByName.set(normalizeName(p.name), p);
     }
   }
+
+  // Depth charts by team (for injury replacement detection)
+  const depthChartsByTeam = results['depth-charts']?.teams || {};
 
   return {
     xfp: xfpByName,
@@ -1874,13 +1910,16 @@ async function loadNflverseData() {
     dropbackThresholds: results['dropback-shares']?.thresholds || { WR: 0.20, TE: 0.15 },
     defVsPos: results['def-vs-pos']?.defenses || {},
     playoffOpps: results['schedules']?.playoff_opponents || {},
-    gameContext: contextSeason ? gameCtx[contextSeason] : {},
+    gameContext: mergedGameCtx,
+    liveGames: liveGamesInfo,
+    depthCharts: depthChartsByTeam,
     contextSeason,
-    available: (xfpByName.size > 0 || snapByName.size > 0),
+    available: (xfpByName.size > 0 || snapByName.size > 0 || liveGamesInfo !== null),
     xfpSeason: results['xfp']?.season,
     snapSeason: results['snap-counts']?.season,
     defSeason: results['def-vs-pos']?.season,
     dropbackSeason: results['dropback-shares']?.season,
+    depthChartWeek: results['depth-charts']?.week,
   };
 }
 
@@ -3667,7 +3706,109 @@ active — no hidden adjustments.</pre>
   repaint();
 }
 
-/* ---------- Start / Sit (Phase 3 — Advanced) ---------- */
+/* ═══════════════════════════════════════════════════════════════════
+   DEPTH CHART INJURY OVERLAY
+   ═══════════════════════════════════════════════════════════════════
+   Detects when a starter (TE1, RB1, WR1) is Out/IR/Suspended, then
+   applies a projection uplift to the backup who inherits the role.
+
+   Multipliers based on typical role concentration:
+     Starting TE out → backup TE gets +50% (targets concentrate heavily)
+     Starting RB1 out → backup RB gets +40% (workload concentrates)
+     Starting WR1 out → WR2 gets +25%, WR3 gets +15% (targets spread)
+     Starting QB out → backup QB gets -20% (backup typically worse)
+   ═══════════════════════════════════════════════════════════════════ */
+
+const OUT_STATUSES = ['Out', 'IR', 'Suspended', 'PUP', 'NFI'];
+
+/* Build a map of injured starters per team → their backups get uplift */
+function buildDepthChartOverlay(allPlayers, nflverse) {
+  const overlay = {}; // { normalizedPlayerName: { uplift: 1.5, reason: "Bowers Out" } }
+
+  if (!nflverse?.depthCharts) return overlay;
+
+  // Build a player lookup by normalized name for injury status
+  const playerByName = new Map();
+  allPlayers.forEach(p => {
+    if (p.name) playerByName.set(normalizeName(p.name), p);
+  });
+
+  // Iterate each team's depth chart
+  for (const [team, roster] of Object.entries(nflverse.depthCharts)) {
+    if (!Array.isArray(roster)) continue;
+
+    // Group by position
+    const byPos = {};
+    roster.forEach(entry => {
+      const pos = normalizeDepthPos(entry.pos);
+      if (!pos) return;
+      if (!byPos[pos]) byPos[pos] = [];
+      byPos[pos].push(entry);
+    });
+
+    // For each position, check if the starter is out and boost the backup
+    for (const [pos, players] of Object.entries(byPos)) {
+      // Already sorted by order (starter first)
+      const starter = players[0];
+      if (!starter?.name) continue;
+
+      const starterFp = playerByName.get(normalizeName(starter.name));
+      if (!starterFp) continue;
+
+      // Is the starter out?
+      const starterOut = OUT_STATUSES.includes(starterFp._injury);
+      if (!starterOut) continue;
+
+      // Starter is OUT — apply uplift to backup(s)
+      const backup1 = players[1];
+      const backup2 = players[2];
+
+      const upliftMap = {
+        'TE': [1.50, 1.15],  // TE1 out → TE2 +50%, TE3 +15%
+        'RB': [1.40, 1.20],  // RB1 out → RB2 +40%, RB3 +20%
+        'WR': [1.25, 1.15],  // WR1 out → WR2 +25%, WR3 +15%
+        'QB': [0.80, 1.0],   // QB1 out → QB2 downgrade (typically worse)
+      };
+
+      const uplifts = upliftMap[pos];
+      if (!uplifts) continue;
+
+      const reason = `${starterFp.name} Out`;
+
+      if (backup1?.name) {
+        overlay[normalizeName(backup1.name)] = {
+          uplift: uplifts[0],
+          reason,
+          starter: starterFp.name,
+          role: `Promoted to ${pos}1`,
+        };
+      }
+      if (backup2?.name && uplifts[1] !== 1.0) {
+        overlay[normalizeName(backup2.name)] = {
+          uplift: uplifts[1],
+          reason,
+          starter: starterFp.name,
+          role: `Promoted to ${pos}2`,
+        };
+      }
+    }
+  }
+
+  return overlay;
+}
+
+/* Normalize depth chart position codes (nflverse uses varied codes) */
+function normalizeDepthPos(pos) {
+  if (!pos) return null;
+  const p = String(pos).toUpperCase().trim();
+  if (['QB'].includes(p)) return 'QB';
+  if (['RB', 'HB', 'FB'].includes(p)) return 'RB';
+  if (['WR', 'X', 'Z', 'SLOT'].includes(p)) return 'WR';
+  if (['TE'].includes(p)) return 'TE';
+  return null;
+}
+
+
 
 /* Compute weekly matchup rating (1-5 stars) and adjustment multiplier
    from opponent DEF vs POS rank + game script (Vegas spread). */
@@ -3721,17 +3862,29 @@ function computeMatchupRating(player, nflverse, week) {
     }
   }
 
-  // Weather (outdoor games only) — wind matters more than temp
+  // Weather (outdoor games only) — wind matters most, then rain/snow, then temp
   if (game.roof === 'outdoors' || game.roof === 'open') {
+    const isPassing = player.pos === 'QB' || player.pos === 'WR' || player.pos === 'TE';
+
+    // Wind is the biggest weather factor
     if (game.wind != null && game.wind >= 20) {
-      // High wind hurts QB/WR/TE most, less RB
-      const isPassing = player.pos === 'QB' || player.pos === 'WR' || player.pos === 'TE';
       result.weatherMult = isPassing ? 0.88 : 0.95;
       result.weatherWarning = `🌬 ${game.wind.toFixed(0)}mph wind`;
-    } else if (game.temp != null && game.temp < 20) {
-      const isPassing = player.pos === 'QB' || player.pos === 'WR' || player.pos === 'TE';
+    }
+    // Rain/snow (from weather code) — reduces passing efficiency
+    else if (game.precip != null && game.precip >= 0.1) {
+      result.weatherMult = isPassing ? 0.92 : 0.97;
+      result.weatherWarning = `🌧 ${game.precip.toFixed(1)}″ precip`;
+    }
+    // Cold weather affects passing/kicking
+    else if (game.temp != null && game.temp < 20) {
       result.weatherMult = isPassing ? 0.94 : 0.97;
       result.weatherWarning = `🥶 ${game.temp.toFixed(0)}°F`;
+    }
+    // Extreme heat affects RB/QB stamina
+    else if (game.temp != null && game.temp > 95) {
+      result.weatherMult = 0.96;
+      result.weatherWarning = `🥵 ${game.temp.toFixed(0)}°F`;
     }
   }
 
@@ -3750,12 +3903,36 @@ function renderStartSit(allPlayers, container, nflverse) {
   let picks = [];
   let previewWeek = 1;   // offseason default
 
+  // Build data source status - show what's loaded vs pending
+  const statusItems = [];
+  if (nflverse.liveGames) {
+    statusItems.push(`✓ Live game data (Week ${nflverse.liveGames.week} — spreads, totals, weather)`);
+  }
+  if (nflverse.xfp?.size > 0) {
+    statusItems.push('✓ xFP regression data');
+  } else {
+    statusItems.push('⏳ xFP data (populates after Week 3)');
+  }
+  if (nflverse.snaps?.size > 0) {
+    statusItems.push('✓ Snap trend data');
+  } else {
+    statusItems.push('⏳ Snap trend data (populates after Week 1)');
+  }
+  if (Object.keys(nflverse.defVsPos || {}).length > 0) {
+    statusItems.push('✓ DEF vs POS matchup ranks');
+  } else {
+    statusItems.push('⏳ DEF vs POS data (populates after Week 3)');
+  }
+  if (Object.keys(nflverse.depthCharts || {}).length > 0) {
+    statusItems.push('✓ Depth chart injury overlay');
+  }
+
   container.innerHTML = `
     <div class="ss-notice">
       <strong>Advanced Start/Sit.</strong> Uses FantasyPros projections + injury probability,
       layered with nflverse signals: real DEF vs POS matchup, snap trends, target share,
       xFP regression, Vegas game script, and weather.
-      ${!nflverse.available ? '<br><em>⚠ nflverse data not yet loaded — run the Update nflverse data workflow first.</em>' : ''}
+      <div class="ss-status">${statusItems.join(' · ')}</div>
     </div>
 
     <div class="ss-controls">
@@ -3801,9 +3978,12 @@ Uses Vegas spread. Kicks in when |spread| >= 3 points.
   QB favored 3+     → 1.03× (implied higher scoring)
 
 ━━━ WEATHER (outdoor only) ━━━
-  Wind >= 20 mph → 0.88× passing / 0.95× rushing
-  Temp < 20°F    → 0.94× passing / 0.97× rushing
+  Wind >= 20 mph  → 0.88× passing / 0.95× rushing
+  Rain >= 0.1"    → 0.92× passing / 0.97× rushing
+  Temp < 20°F     → 0.94× passing / 0.97× rushing
+  Temp > 95°F     → 0.96× all positions
 Indoor / dome games → 1.0×
+Data source: Open-Meteo hourly forecast at kickoff.
 
 ━━━ SNAP TREND ━━━
 Recent 3-week avg vs earlier weeks (from nflverse).
@@ -3832,6 +4012,15 @@ Based on the actual point gap between top and second player:
   3-8 pt gap    → 65-80% confidence
   8+ pt gap     → 80-95% confidence
 
+━━━ DEPTH CHART INJURY OVERLAY ━━━
+Auto-detects when a starter (TE1/RB1/WR1/QB1) is Out/IR/Suspended
+and boosts the backup's projection to reflect their new role:
+  TE1 Out → TE2 projection × 1.50 (targets concentrate)
+  RB1 Out → RB2 projection × 1.40 (workload concentrates)
+  WR1 Out → WR2 × 1.25, WR3 × 1.15 (targets spread)
+  QB1 Out → QB2 × 0.80 (backup typically worse)
+Green 📈 badge appears on affected players.
+
 ━━━ BYE WEEK HANDLING ━━━
 If a player's bye week matches the analyzed week, they auto-sit
 (shown with 🏖 BYE badge, 50% opacity, score = 0).
@@ -3851,9 +4040,25 @@ If all selected players are on bye, verdict says "pick from bench."</pre>
     repaint();
   });
 
+  // Build depth chart injury overlay once (map of players getting uplift due to teammate injuries)
+  const depthOverlay = buildDepthChartOverlay(allPlayers, nflverse);
+  const overlayCount = Object.keys(depthOverlay).length;
+  if (overlayCount > 0) {
+    console.log(`Depth chart overlay: ${overlayCount} players getting injury-based projection adjustment`);
+  }
+
   const computeSsScore = (p) => {
-    const proj = Number(p.proj_pts) || 0;
+    let proj = Number(p.proj_pts) || 0;
     const playerBye = Number(p.bye);
+
+    // DEPTH CHART OVERLAY — boost projection if teammate ahead of them is Out
+    let depthUpliftLabel = null;
+    const overlayKey = normalizeName(p.name);
+    if (depthOverlay[overlayKey]) {
+      const uplift = depthOverlay[overlayKey];
+      proj = proj * uplift.uplift;
+      depthUpliftLabel = `${uplift.role} · ${uplift.reason} (${uplift.uplift > 1 ? '+' : ''}${((uplift.uplift - 1) * 100).toFixed(0)}%)`;
+    }
 
     // BYE WEEK CHECK — if player is on bye this week, they score 0
     if (playerBye && playerBye === previewWeek) {
@@ -3923,6 +4128,7 @@ If all selected players are on bye, verdict says "pick from bench."</pre>
       snapMult, snapLabel,
       regressionMult, regressionLabel,
       tgtShareLabel,
+      depthUpliftLabel,
     };
   };
 
@@ -3970,6 +4176,7 @@ If all selected players are on bye, verdict says "pick from bench."</pre>
               </div>` : ''}
 
             <div class="ss-signals">
+              ${x.s.depthUpliftLabel ? `<span class="chip chip-depth-uplift">📈 ${esc(x.s.depthUpliftLabel)}</span>` : ''}
               ${x.s.tgtShareLabel ? `<span class="chip chip-tgt">${esc(x.s.tgtShareLabel)}</span>` : ''}
               ${x.s.snapLabel ? `<span class="chip chip-snap">snap ${esc(x.s.snapLabel)}</span>` : ''}
               ${x.s.regressionLabel ? `<span class="chip chip-regression">${esc(x.s.regressionLabel)}</span>` : ''}
