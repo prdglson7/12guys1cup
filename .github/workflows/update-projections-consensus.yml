@@ -1,0 +1,58 @@
+name: Update projections consensus
+
+# Fetches weekly + rest-of-season projections from multiple sources
+# (FantasyPros, ESPN, Sleeper) and computes a consensus.
+# Reduces bias from any single projection source.
+#
+# Runs every 2 hours during the season.
+
+on:
+  schedule:
+    - cron: "0 */2 * * *"   # every 2 hours
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/update-projections-consensus.yml"
+      - ".github/scripts/fetch-projections-consensus.js"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-projections-consensus
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch multi-source projections consensus
+        env:
+          FANTASYPROS_HOF_API_KEY: ${{ secrets.FANTASYPROS_HOF_API_KEY }}
+        run: node .github/scripts/fetch-projections-consensus.js
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/data/projections-consensus.json
+          if git diff --cached --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git commit -m "Update projections consensus [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            echo "Retry $i…"
+            sleep 5
+          done
+          exit 1
