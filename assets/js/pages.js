@@ -3199,6 +3199,48 @@ async function renderTools() {
     p._injury_prob = inj?.prob != null ? inj.prob : null;
   });
 
+  // Load multi-source projection consensus (Tier 1 enhancement)
+  // Averages FantasyPros + ESPN + Sleeper for reduced bias
+  try {
+    const consensusRes = await fetch('assets/data/projections-consensus.json', { cache: 'default' });
+    if (consensusRes.ok) {
+      const consensus = await consensusRes.json();
+      const consensusMap = new Map();
+      for (const [key, c] of Object.entries(consensus.players || {})) {
+        consensusMap.set(key, c);
+      }
+
+      let attached = 0;
+      allPlayers.forEach(p => {
+        const c = consensusMap.get(normalizeName(p.name));
+        if (!c) return;
+
+        // Attach weekly projection (new field the tools already know how to read)
+        if (c.weekly?.consensus != null) {
+          p.weekly_proj = c.weekly.consensus;
+          p._weekly_variance = c.weekly.variance;
+          p._weekly_sources = c.sources_used;
+          p._weekly_fp = c.weekly.fp;
+          p._weekly_espn = c.weekly.espn;
+          p._weekly_sleeper = c.weekly.sleeper;
+          attached++;
+        }
+
+        // Override proj_pts (season) with consensus ROS for better trade valuations
+        if (c.ros?.consensus != null && c.ros.sources_used?.length >= 2) {
+          p.proj_pts = c.ros.consensus;
+          p._ros_variance = c.ros.variance;
+        }
+      });
+      console.log(`Consensus projections: attached to ${attached} players (Week ${consensus.week}, ${consensus.sources_status ? Object.values(consensus.sources_status).filter(Boolean).length : 0} sources active)`);
+      window._consensusInfo = { week: consensus.week, playerCount: consensus.player_count, sourcesStatus: consensus.sources_status };
+    } else {
+      console.log('Consensus projections unavailable — falling back to single-source projections');
+    }
+  } catch (e) {
+    console.log('Consensus projection load error:', e.message);
+  }
+
   // Load nflverse data + enrich each player (Phase 2)
   const nflverse = await loadNflverseData();
   if (nflverse.available) {
@@ -3715,62 +3757,71 @@ active — no hidden adjustments.</pre>
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   DEPTH CHART INJURY OVERLAY
+   DEPTH CHART INJURY OVERLAY (ESPN-powered)
    ═══════════════════════════════════════════════════════════════════
    Detects when a starter (TE1, RB1, WR1) is Out/IR/Suspended, then
    applies a projection uplift to the backup who inherits the role.
 
-   Uses Sleeper's live players DB (depth_chart_position + depth_chart_order)
-   which is always current — nflverse depth charts lag by weeks.
+   Data sources (in priority order):
+     1. ESPN depth chart API (real-time, best source)
+     2. Sleeper players DB (fallback if ESPN unavailable)
 
-   Multipliers based on typical role concentration:
-     Starting TE out → backup TE gets +50% (targets concentrate heavily)
-     Starting RB1 out → backup RB gets +40% (workload concentrates)
-     Starting WR1 out → WR2 gets +25%, WR3 gets +15% (targets spread)
-     Starting QB out → backup QB gets -20% (backup typically worse)
+   Injury detection combines:
+     - ESPN injury feed (real-time)
+     - FantasyPros injury feed (already loaded)
+     - Sleeper injury status (fallback)
+
+   Multipliers:
+     Starting TE out → backup TE gets +50%
+     Starting RB1 out → backup RB gets +40%
+     Starting WR1 out → WR2 gets +25%, WR3 gets +15%
+     Starting QB out → backup QB gets -20%
    ═══════════════════════════════════════════════════════════════════ */
 
-const OUT_STATUSES = ['Out', 'IR', 'Suspended', 'PUP', 'NFI'];
+const OUT_STATUSES = ['Out', 'IR', 'Suspended', 'PUP', 'NFI', 'Injured Reserve'];
 
-/* Build a map of injured starters per team → their backups get uplift
-   Uses Sleeper's players DB which has depth_chart_position + depth_chart_order. */
-function buildDepthChartOverlay(allPlayers, sleeperPlayers) {
+/* Load ESPN depth chart data (async, called once per render) */
+async function loadEspnDepthCharts() {
+  try {
+    const res = await fetch('assets/data/espn-depth-charts.json', { cache: 'default' });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    console.log('ESPN depth charts unavailable:', e.message);
+    return null;
+  }
+}
+
+/* Build the depth chart overlay from ESPN data (primary) + fallbacks */
+function buildDepthChartOverlay(allPlayers, sleeperPlayers, espnData) {
   const overlay = {};
 
-  if (!sleeperPlayers) return overlay;
+  // Build injury lookup — merge ESPN + FP + Sleeper injury statuses
+  const injuryLookup = new Map();
 
-  // Build a player lookup by normalized name for FP injury status
-  const fpByName = new Map();
+  // FP is already attached to allPlayers as p._injury
   allPlayers.forEach(p => {
-    if (p.name) fpByName.set(normalizeName(p.name), p);
+    if (p.name && p._injury) {
+      injuryLookup.set(normalizeName(p.name), { status: p._injury, source: 'FantasyPros' });
+    }
   });
 
-  // Group Sleeper players by team + depth chart position
-  // Structure: { team: { pos: [player, player, ...] sorted by depth_chart_order } }
-  const depthByTeam = {};
-  for (const [pid, sp] of Object.entries(sleeperPlayers)) {
-    if (!sp.team || !sp.depth_chart_position || sp.depth_chart_order == null) continue;
-    // Only care about offensive skill positions
-    const pos = normalizeDepthPos(sp.depth_chart_position);
-    if (!pos) continue;
-    // Get full name
-    const name = sp.full_name || `${sp.first_name || ''} ${sp.last_name || ''}`.trim();
-    if (!name) continue;
-
-    if (!depthByTeam[sp.team]) depthByTeam[sp.team] = {};
-    if (!depthByTeam[sp.team][pos]) depthByTeam[sp.team][pos] = [];
-    depthByTeam[sp.team][pos].push({
-      name,
-      order: Number(sp.depth_chart_order),
-      sleeperStatus: sp.injury_status || null,
-      pid,
-    });
+  // ESPN injuries overlay
+  if (espnData?.injuries) {
+    for (const [name, inj] of Object.entries(espnData.injuries)) {
+      injuryLookup.set(name, { status: inj.status, source: 'ESPN', description: inj.description });
+    }
   }
 
-  // Sort each position by depth order (1 = starter)
-  for (const posMap of Object.values(depthByTeam)) {
-    for (const players of Object.values(posMap)) {
-      players.sort((a, b) => a.order - b.order);
+  // Sleeper injury status
+  if (sleeperPlayers) {
+    for (const sp of Object.values(sleeperPlayers)) {
+      if (sp.full_name && sp.injury_status) {
+        const key = normalizeName(sp.full_name);
+        if (!injuryLookup.has(key)) {
+          injuryLookup.set(key, { status: sp.injury_status, source: 'Sleeper' });
+        }
+      }
     }
   }
 
@@ -3781,46 +3832,100 @@ function buildDepthChartOverlay(allPlayers, sleeperPlayers) {
     'QB': [0.80, 1.0],
   };
 
-  // For each team-position, check if starter is out
-  for (const [team, posMap] of Object.entries(depthByTeam)) {
-    for (const [pos, players] of Object.entries(posMap)) {
-      const starter = players[0];
-      if (!starter) continue;
+  // PRIMARY: Use ESPN depth charts if available
+  if (espnData?.teams) {
+    for (const [team, positions] of Object.entries(espnData.teams)) {
+      for (const [pos, players] of Object.entries(positions)) {
+        if (!upliftMap[pos]) continue;
+        if (!Array.isArray(players) || players.length === 0) continue;
 
-      // Check injury status from FP first (more current), fall back to Sleeper status
-      const fp = fpByName.get(normalizeName(starter.name));
-      const starterFpInjury = fp?._injury;
-      const starterSleeperInjury = starter.sleeperStatus;
+        const starter = players[0];
+        if (!starter?.name) continue;
 
-      // Consider starter "out" if either source says so
-      const starterOut =
-        OUT_STATUSES.includes(starterFpInjury) ||
-        OUT_STATUSES.includes(starterSleeperInjury);
+        const starterInjury = injuryLookup.get(normalizeName(starter.name));
+        if (!starterInjury || !OUT_STATUSES.includes(starterInjury.status)) continue;
 
-      if (!starterOut) continue;
+        const uplifts = upliftMap[pos];
+        const backup1 = players[1];
+        const backup2 = players[2];
+        const reason = `${starter.name} ${starterInjury.status}`;
 
-      const uplifts = upliftMap[pos];
-      if (!uplifts) continue;
-
-      const backup1 = players[1];
-      const backup2 = players[2];
-      const reason = `${starter.name} ${starterFpInjury || starterSleeperInjury || 'Out'}`;
-
-      if (backup1?.name) {
-        overlay[normalizeName(backup1.name)] = {
-          uplift: uplifts[0],
-          reason,
-          starter: starter.name,
-          role: `Promoted to ${pos}1`,
-        };
+        if (backup1?.name) {
+          overlay[normalizeName(backup1.name)] = {
+            uplift: uplifts[0],
+            reason,
+            starter: starter.name,
+            role: `Promoted to ${pos}1`,
+            source: 'ESPN',
+          };
+        }
+        if (backup2?.name && uplifts[1] !== 1.0) {
+          overlay[normalizeName(backup2.name)] = {
+            uplift: uplifts[1],
+            reason,
+            starter: starter.name,
+            role: `Promoted to ${pos}2`,
+            source: 'ESPN',
+          };
+        }
       }
-      if (backup2?.name && uplifts[1] !== 1.0) {
-        overlay[normalizeName(backup2.name)] = {
-          uplift: uplifts[1],
-          reason,
-          starter: starter.name,
-          role: `Promoted to ${pos}2`,
-        };
+    }
+    return overlay;
+  }
+
+  // FALLBACK: Use Sleeper depth chart data (may be incomplete)
+  if (sleeperPlayers) {
+    const depthByTeam = {};
+    for (const sp of Object.values(sleeperPlayers)) {
+      if (!sp.team || !sp.depth_chart_position || sp.depth_chart_order == null) continue;
+      const pos = normalizeDepthPos(sp.depth_chart_position);
+      if (!pos) continue;
+      const name = sp.full_name || `${sp.first_name || ''} ${sp.last_name || ''}`.trim();
+      if (!name) continue;
+
+      if (!depthByTeam[sp.team]) depthByTeam[sp.team] = {};
+      if (!depthByTeam[sp.team][pos]) depthByTeam[sp.team][pos] = [];
+      depthByTeam[sp.team][pos].push({ name, order: Number(sp.depth_chart_order) });
+    }
+
+    for (const posMap of Object.values(depthByTeam)) {
+      for (const players of Object.values(posMap)) {
+        players.sort((a, b) => a.order - b.order);
+      }
+    }
+
+    for (const [team, posMap] of Object.entries(depthByTeam)) {
+      for (const [pos, players] of Object.entries(posMap)) {
+        if (!upliftMap[pos]) continue;
+        const starter = players[0];
+        if (!starter) continue;
+
+        const starterInjury = injuryLookup.get(normalizeName(starter.name));
+        if (!starterInjury || !OUT_STATUSES.includes(starterInjury.status)) continue;
+
+        const uplifts = upliftMap[pos];
+        const backup1 = players[1];
+        const backup2 = players[2];
+        const reason = `${starter.name} ${starterInjury.status}`;
+
+        if (backup1?.name) {
+          overlay[normalizeName(backup1.name)] = {
+            uplift: uplifts[0],
+            reason,
+            starter: starter.name,
+            role: `Promoted to ${pos}1`,
+            source: 'Sleeper',
+          };
+        }
+        if (backup2?.name && uplifts[1] !== 1.0) {
+          overlay[normalizeName(backup2.name)] = {
+            uplift: uplifts[1],
+            reason,
+            starter: starter.name,
+            role: `Promoted to ${pos}2`,
+            source: 'Sleeper',
+          };
+        }
       }
     }
   }
@@ -3828,7 +3933,6 @@ function buildDepthChartOverlay(allPlayers, sleeperPlayers) {
   return overlay;
 }
 
-/* Normalize depth chart position codes */
 function normalizeDepthPos(pos) {
   if (!pos) return null;
   const p = String(pos).toUpperCase().trim();
@@ -3930,12 +4034,19 @@ function computeMatchupRating(player, nflverse, week) {
   return result;
 }
 
-function renderStartSit(allPlayers, container, nflverse, sleeperPlayers) {
+async function renderStartSit(allPlayers, container, nflverse, sleeperPlayers) {
   let picks = [];
   let previewWeek = 1;   // offseason default
 
   // Build data source status - show what's loaded vs pending
   const statusItems = [];
+  if (window._consensusInfo) {
+    const activeSources = Object.values(window._consensusInfo.sourcesStatus || {}).filter(Boolean).length;
+    const totalSources = Object.keys(window._consensusInfo.sourcesStatus || {}).length;
+    statusItems.push(`✓ Consensus projections (${activeSources}/${totalSources} sources · Week ${window._consensusInfo.week})`);
+  } else {
+    statusItems.push('⚠ Single-source projections (FantasyPros only)');
+  }
   if (nflverse.liveGames) {
     statusItems.push(`✓ Live game data (Week ${nflverse.liveGames.week} — spreads, totals, weather)`);
   }
@@ -3954,11 +4065,7 @@ function renderStartSit(allPlayers, container, nflverse, sleeperPlayers) {
   } else {
     statusItems.push('⏳ DEF vs POS data (populates after Week 3)');
   }
-  if (sleeperPlayers && Object.keys(sleeperPlayers).length > 0) {
-    statusItems.push('✓ Depth chart injury overlay (Sleeper live)');
-  } else {
-    statusItems.push('⏳ Depth chart overlay (waiting on Sleeper players DB)');
-  }
+  // Depth chart status is set AFTER ESPN data loads (below)
 
   container.innerHTML = `
     <div class="ss-notice">
@@ -3989,13 +4096,22 @@ function renderStartSit(allPlayers, container, nflverse, sleeperPlayers) {
     </button>
     <div id="ss-math" class="tools-math hidden">
       <h4>Advanced Start/Sit — Phase 3</h4>
-      <pre class="tools-formula">Score = Projected Points
+      <pre class="tools-formula">Score = Weekly Projection (consensus)
       × Injury Probability
       × Matchup Factor
       × Game Script Factor
       × Weather Factor
       × Snap Trend Factor
       × Regression Factor
+
+━━━ PROJECTION SOURCE ━━━
+Weekly consensus from up to 3 sources (weighted average):
+  FantasyPros HOF (weight 1.00) — industry standard aggregator
+  Sleeper (weight 0.90) — internal projection engine
+  ESPN (weight 0.85) — ESPN fantasy projections
+Falls back to FantasyPros season/17 if consensus unavailable.
+Variance stat shows disagreement between sources
+  (lower = sources agree, higher = uncertain).
 
 ━━━ MATCHUP (DEF vs POS) ━━━
 Opponent's rank against this position (1 = best D, 32 = worst D).
@@ -4046,13 +4162,16 @@ Based on the actual point gap between top and second player:
   8+ pt gap     → 80-95% confidence
 
 ━━━ DEPTH CHART INJURY OVERLAY ━━━
-Auto-detects when a starter (TE1/RB1/WR1/QB1) is Out/IR/Suspended
-and boosts the backup's projection to reflect their new role:
+Real-time overlay powered by ESPN's depth chart + injury API.
+Refreshed every 30 min via workflow. Auto-detects when a starter
+(TE1/RB1/WR1/QB1) is Out/IR/Suspended and boosts the backup's
+projection to reflect their new role:
   TE1 Out → TE2 projection × 1.50 (targets concentrate)
   RB1 Out → RB2 projection × 1.40 (workload concentrates)
   WR1 Out → WR2 × 1.25, WR3 × 1.15 (targets spread)
   QB1 Out → QB2 × 0.80 (backup typically worse)
 Green 📈 badge appears on affected players.
+Falls back to Sleeper depth data if ESPN unavailable.
 
 ━━━ BYE WEEK HANDLING ━━━
 If a player's bye week matches the analyzed week, they auto-sit
@@ -4074,17 +4193,42 @@ If all selected players are on bye, verdict says "pick from bench."</pre>
   });
 
   // Build depth chart injury overlay once (map of players getting uplift due to teammate injuries)
-  const depthOverlay = buildDepthChartOverlay(allPlayers, sleeperPlayers);
+  // Load ESPN depth chart data (primary source, real-time)
+  const espnData = await loadEspnDepthCharts();
+  const depthOverlay = buildDepthChartOverlay(allPlayers, sleeperPlayers, espnData);
   const overlayCount = Object.keys(depthOverlay).length;
   if (overlayCount > 0) {
-    console.log(`Depth chart overlay: ${overlayCount} players getting injury-based projection adjustment`);
+    console.log(`Depth chart overlay: ${overlayCount} players getting injury-based projection adjustment (source: ${espnData ? 'ESPN' : 'Sleeper fallback'})`);
     console.log('Overlay entries:', Object.entries(depthOverlay).slice(0, 10));
   } else {
-    console.log('Depth chart overlay: no adjustments (either no starters Out, or Sleeper DB missing depth data)');
+    console.log('Depth chart overlay: no adjustments (no starters Out, or depth data missing)');
+  }
+
+  // Add depth chart status to the status line (now that ESPN data is loaded)
+  const statusEl = container.querySelector('.ss-status');
+  if (statusEl) {
+    let depthStatus;
+    if (espnData) {
+      depthStatus = `✓ Depth chart (ESPN live, ${espnData.team_count} teams, ${overlayCount} uplifts active)`;
+    } else if (sleeperPlayers) {
+      depthStatus = '✓ Depth chart (Sleeper fallback)';
+    } else {
+      depthStatus = '⏳ Depth chart (loading)';
+    }
+    statusEl.textContent = statusEl.textContent + ' · ' + depthStatus;
   }
 
   const computeSsScore = (p) => {
-    let proj = Number(p.proj_pts) || 0;
+    // Prefer weekly consensus projection (multi-source average) over season/17
+    let proj;
+    let projSource;
+    if (p.weekly_proj != null && !isNaN(p.weekly_proj) && p.weekly_proj > 0) {
+      proj = Number(p.weekly_proj);
+      projSource = 'weekly consensus';
+    } else {
+      proj = (Number(p.proj_pts) || 0) / 17; // Fall back to season/17
+      projSource = 'season/17 fallback';
+    }
     const playerBye = Number(p.bye);
 
     // DEPTH CHART OVERLAY — boost projection if teammate ahead of them is Out
