@@ -3823,3 +3823,18 @@ main { padding: 32px 0 60px; }
   color: var(--brown); margin-bottom: 4px;
 }
 .finder-history-team { padding: 3px 0; color: var(--navy); }
+
+/* Start/Sit data source status */
+.ss-status {
+  margin-top: 8px; padding: 6px 10px; background: rgba(30,58,95,0.04);
+  border-radius: 4px; font-size: 11px; color: var(--brown);
+  font-family: 'Oswald', sans-serif; letter-spacing: 0.5px;
+}
+
+/* Depth chart injury uplift chip - the biggest signal */
+.chip-depth-uplift {
+  background: #2E7D32 !important;
+  color: #fff !important;
+  font-weight: 700;
+  border: 1px solid #1B5E20;
+}
