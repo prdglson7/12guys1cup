@@ -3221,8 +3221,16 @@ async function renderTools() {
     console.log('Could not load rosters:', e.message);
   }
 
+  // Load Sleeper players DB for depth chart injury overlay
+  let sleeperPlayers = null;
+  try {
+    sleeperPlayers = await window.Sleeper.getSleeperPlayers();
+  } catch (e) {
+    console.log('Could not load Sleeper players for depth overlay:', e.message);
+  }
+
   renderTradeAnalyzer(allPlayers, baselines, tradeBody, teamsWithRosters, nflverse);
-  renderStartSit(allPlayers, ssBody, nflverse);
+  renderStartSit(allPlayers, ssBody, nflverse, sleeperPlayers);
   renderTradeFinder(allPlayers, baselines, teamsWithRosters, finderBody, finderMeta, nflverse);
 }
 
@@ -3712,6 +3720,9 @@ active — no hidden adjustments.</pre>
    Detects when a starter (TE1, RB1, WR1) is Out/IR/Suspended, then
    applies a projection uplift to the backup who inherits the role.
 
+   Uses Sleeper's live players DB (depth_chart_position + depth_chart_order)
+   which is always current — nflverse depth charts lag by weeks.
+
    Multipliers based on typical role concentration:
      Starting TE out → backup TE gets +50% (targets concentrate heavily)
      Starting RB1 out → backup RB gets +40% (workload concentrates)
@@ -3721,65 +3732,85 @@ active — no hidden adjustments.</pre>
 
 const OUT_STATUSES = ['Out', 'IR', 'Suspended', 'PUP', 'NFI'];
 
-/* Build a map of injured starters per team → their backups get uplift */
-function buildDepthChartOverlay(allPlayers, nflverse) {
-  const overlay = {}; // { normalizedPlayerName: { uplift: 1.5, reason: "Bowers Out" } }
+/* Build a map of injured starters per team → their backups get uplift
+   Uses Sleeper's players DB which has depth_chart_position + depth_chart_order. */
+function buildDepthChartOverlay(allPlayers, sleeperPlayers) {
+  const overlay = {};
 
-  if (!nflverse?.depthCharts) return overlay;
+  if (!sleeperPlayers) return overlay;
 
-  // Build a player lookup by normalized name for injury status
-  const playerByName = new Map();
+  // Build a player lookup by normalized name for FP injury status
+  const fpByName = new Map();
   allPlayers.forEach(p => {
-    if (p.name) playerByName.set(normalizeName(p.name), p);
+    if (p.name) fpByName.set(normalizeName(p.name), p);
   });
 
-  // Iterate each team's depth chart
-  for (const [team, roster] of Object.entries(nflverse.depthCharts)) {
-    if (!Array.isArray(roster)) continue;
+  // Group Sleeper players by team + depth chart position
+  // Structure: { team: { pos: [player, player, ...] sorted by depth_chart_order } }
+  const depthByTeam = {};
+  for (const [pid, sp] of Object.entries(sleeperPlayers)) {
+    if (!sp.team || !sp.depth_chart_position || sp.depth_chart_order == null) continue;
+    // Only care about offensive skill positions
+    const pos = normalizeDepthPos(sp.depth_chart_position);
+    if (!pos) continue;
+    // Get full name
+    const name = sp.full_name || `${sp.first_name || ''} ${sp.last_name || ''}`.trim();
+    if (!name) continue;
 
-    // Group by position
-    const byPos = {};
-    roster.forEach(entry => {
-      const pos = normalizeDepthPos(entry.pos);
-      if (!pos) return;
-      if (!byPos[pos]) byPos[pos] = [];
-      byPos[pos].push(entry);
+    if (!depthByTeam[sp.team]) depthByTeam[sp.team] = {};
+    if (!depthByTeam[sp.team][pos]) depthByTeam[sp.team][pos] = [];
+    depthByTeam[sp.team][pos].push({
+      name,
+      order: Number(sp.depth_chart_order),
+      sleeperStatus: sp.injury_status || null,
+      pid,
     });
+  }
 
-    // For each position, check if the starter is out and boost the backup
-    for (const [pos, players] of Object.entries(byPos)) {
-      // Already sorted by order (starter first)
+  // Sort each position by depth order (1 = starter)
+  for (const posMap of Object.values(depthByTeam)) {
+    for (const players of Object.values(posMap)) {
+      players.sort((a, b) => a.order - b.order);
+    }
+  }
+
+  const upliftMap = {
+    'TE': [1.50, 1.15],
+    'RB': [1.40, 1.20],
+    'WR': [1.25, 1.15],
+    'QB': [0.80, 1.0],
+  };
+
+  // For each team-position, check if starter is out
+  for (const [team, posMap] of Object.entries(depthByTeam)) {
+    for (const [pos, players] of Object.entries(posMap)) {
       const starter = players[0];
-      if (!starter?.name) continue;
+      if (!starter) continue;
 
-      const starterFp = playerByName.get(normalizeName(starter.name));
-      if (!starterFp) continue;
+      // Check injury status from FP first (more current), fall back to Sleeper status
+      const fp = fpByName.get(normalizeName(starter.name));
+      const starterFpInjury = fp?._injury;
+      const starterSleeperInjury = starter.sleeperStatus;
 
-      // Is the starter out?
-      const starterOut = OUT_STATUSES.includes(starterFp._injury);
+      // Consider starter "out" if either source says so
+      const starterOut =
+        OUT_STATUSES.includes(starterFpInjury) ||
+        OUT_STATUSES.includes(starterSleeperInjury);
+
       if (!starterOut) continue;
-
-      // Starter is OUT — apply uplift to backup(s)
-      const backup1 = players[1];
-      const backup2 = players[2];
-
-      const upliftMap = {
-        'TE': [1.50, 1.15],  // TE1 out → TE2 +50%, TE3 +15%
-        'RB': [1.40, 1.20],  // RB1 out → RB2 +40%, RB3 +20%
-        'WR': [1.25, 1.15],  // WR1 out → WR2 +25%, WR3 +15%
-        'QB': [0.80, 1.0],   // QB1 out → QB2 downgrade (typically worse)
-      };
 
       const uplifts = upliftMap[pos];
       if (!uplifts) continue;
 
-      const reason = `${starterFp.name} Out`;
+      const backup1 = players[1];
+      const backup2 = players[2];
+      const reason = `${starter.name} ${starterFpInjury || starterSleeperInjury || 'Out'}`;
 
       if (backup1?.name) {
         overlay[normalizeName(backup1.name)] = {
           uplift: uplifts[0],
           reason,
-          starter: starterFp.name,
+          starter: starter.name,
           role: `Promoted to ${pos}1`,
         };
       }
@@ -3787,7 +3818,7 @@ function buildDepthChartOverlay(allPlayers, nflverse) {
         overlay[normalizeName(backup2.name)] = {
           uplift: uplifts[1],
           reason,
-          starter: starterFp.name,
+          starter: starter.name,
           role: `Promoted to ${pos}2`,
         };
       }
@@ -3797,14 +3828,14 @@ function buildDepthChartOverlay(allPlayers, nflverse) {
   return overlay;
 }
 
-/* Normalize depth chart position codes (nflverse uses varied codes) */
+/* Normalize depth chart position codes */
 function normalizeDepthPos(pos) {
   if (!pos) return null;
   const p = String(pos).toUpperCase().trim();
   if (['QB'].includes(p)) return 'QB';
   if (['RB', 'HB', 'FB'].includes(p)) return 'RB';
-  if (['WR', 'X', 'Z', 'SLOT'].includes(p)) return 'WR';
-  if (['TE'].includes(p)) return 'TE';
+  if (['WR', 'LWR', 'RWR', 'SWR', 'X', 'Z', 'SLOT'].includes(p)) return 'WR';
+  if (['TE', 'LTE', 'RTE'].includes(p)) return 'TE';
   return null;
 }
 
@@ -3899,7 +3930,7 @@ function computeMatchupRating(player, nflverse, week) {
   return result;
 }
 
-function renderStartSit(allPlayers, container, nflverse) {
+function renderStartSit(allPlayers, container, nflverse, sleeperPlayers) {
   let picks = [];
   let previewWeek = 1;   // offseason default
 
@@ -3923,8 +3954,10 @@ function renderStartSit(allPlayers, container, nflverse) {
   } else {
     statusItems.push('⏳ DEF vs POS data (populates after Week 3)');
   }
-  if (Object.keys(nflverse.depthCharts || {}).length > 0) {
-    statusItems.push('✓ Depth chart injury overlay');
+  if (sleeperPlayers && Object.keys(sleeperPlayers).length > 0) {
+    statusItems.push('✓ Depth chart injury overlay (Sleeper live)');
+  } else {
+    statusItems.push('⏳ Depth chart overlay (waiting on Sleeper players DB)');
   }
 
   container.innerHTML = `
@@ -4041,10 +4074,13 @@ If all selected players are on bye, verdict says "pick from bench."</pre>
   });
 
   // Build depth chart injury overlay once (map of players getting uplift due to teammate injuries)
-  const depthOverlay = buildDepthChartOverlay(allPlayers, nflverse);
+  const depthOverlay = buildDepthChartOverlay(allPlayers, sleeperPlayers);
   const overlayCount = Object.keys(depthOverlay).length;
   if (overlayCount > 0) {
     console.log(`Depth chart overlay: ${overlayCount} players getting injury-based projection adjustment`);
+    console.log('Overlay entries:', Object.entries(depthOverlay).slice(0, 10));
+  } else {
+    console.log('Depth chart overlay: no adjustments (either no starters Out, or Sleeper DB missing depth data)');
   }
 
   const computeSsScore = (p) => {
