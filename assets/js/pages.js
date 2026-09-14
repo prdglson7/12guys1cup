@@ -4154,7 +4154,22 @@ async function renderStartSit(allPlayers, container, nflverse, sleeperPlayers) {
       × Game Script Factor
       × Weather Factor
       × Snap Trend Factor
+      × Opportunity Weight        (NEW)
       × Regression Factor
+
+━━━ OPPORTUNITY WEIGHT ━━━
+Measures target share vs. position expectation.
+For WR/TE: uses 60% target share + 40% dropback share (route participation)
+For RB: uses target share (PPR context)
+
+WR thresholds: elite 28%+ → 1.20×
+               strong 22%+ → 1.10×
+               weak 10% → 0.92×
+               minimal <10% → 0.85×
+TE thresholds: elite 22%+, strong 18%+, weak 8%, minimal
+RB thresholds: elite 18%+, strong 12%+, weak 3%, minimal
+Volume is the single strongest fantasy signal.
+Populates after Week 1 games have been played.
 
 ━━━ PROJECTION SOURCE ━━━
 Weekly consensus from up to 3 sources (weighted average):
@@ -4333,6 +4348,61 @@ If all selected players are on bye, verdict says "pick from bench."</pre>
         : `↓ ${(p._snap_trend * 100).toFixed(0)}%`;
     }
 
+    // OPPORTUNITY WEIGHT — the biggest single predictive factor
+    // Compares player's target/route share to position expectation.
+    // High opportunity = boost. Low opportunity = downgrade.
+    let opportunityMult = 1.0;
+    let opportunityLabel = null;
+
+    // Position-based expected target share thresholds (league average starter)
+    // Based on analytics research: what share does a startable player see?
+    const POS_TGT_THRESHOLDS = {
+      WR: { elite: 0.28, strong: 0.22, average: 0.16, weak: 0.10 },
+      TE: { elite: 0.22, strong: 0.18, average: 0.13, weak: 0.08 },
+      RB: { elite: 0.18, strong: 0.12, average: 0.07, weak: 0.03 },
+    };
+
+    if (['WR', 'TE', 'RB'].includes(p.pos)) {
+      const usage = nflverse?.usage?.get(normalizeName(p.name));
+      const thresholds = POS_TGT_THRESHOLDS[p.pos];
+
+      // Use recent target share (last 3 games) if available, else season
+      let tgtShare = null;
+      if (usage && usage.recent_tgt_share > 0) {
+        tgtShare = usage.recent_tgt_share;
+      } else if (usage && usage.season_tgt_share > 0) {
+        tgtShare = usage.season_tgt_share;
+      }
+
+      // Also incorporate dropback share for WR/TE if available (better route participation signal)
+      if (['WR', 'TE'].includes(p.pos) && p._dropback_share_blended > 0) {
+        // Blend: 60% target share, 40% dropback share (route participation)
+        tgtShare = tgtShare != null
+          ? (tgtShare * 0.60 + p._dropback_share_blended * 0.40)
+          : p._dropback_share_blended;
+      }
+
+      if (tgtShare != null && tgtShare > 0) {
+        // Compare to position thresholds, produce multiplier
+        if (tgtShare >= thresholds.elite) {
+          opportunityMult = 1.20;
+          opportunityLabel = `elite volume (${(tgtShare * 100).toFixed(0)}%)`;
+        } else if (tgtShare >= thresholds.strong) {
+          opportunityMult = 1.10;
+          opportunityLabel = `high volume (${(tgtShare * 100).toFixed(0)}%)`;
+        } else if (tgtShare >= thresholds.average) {
+          opportunityMult = 1.00;
+          // No label at average — reduce visual noise
+        } else if (tgtShare >= thresholds.weak) {
+          opportunityMult = 0.92;
+          opportunityLabel = `low volume (${(tgtShare * 100).toFixed(0)}%)`;
+        } else {
+          opportunityMult = 0.85;
+          opportunityLabel = `minimal volume (${(tgtShare * 100).toFixed(0)}%)`;
+        }
+      }
+    }
+
     // Regression (xFP gap)
     let regressionMult = 1.0, regressionLabel = null;
     if (p._xfp_gap != null && Math.abs(p._xfp_gap) > 15) {
@@ -4341,9 +4411,9 @@ If all selected players are on bye, verdict says "pick from bench."</pre>
       regressionLabel = p._xfp_gap > 0 ? 'regress ↓' : 'regress ↑';
     }
 
-    // Target share (WR/TE only — for context, not scoring)
+    // Target share (WR/TE only — informational chip when opportunity label not shown)
     let tgtShareLabel = null;
-    if (['WR', 'TE'].includes(p.pos)) {
+    if (['WR', 'TE'].includes(p.pos) && !opportunityLabel) {
       const usage = nflverse?.usage?.get(normalizeName(p.name));
       if (usage && usage.recent_tgt_share > 0) {
         tgtShareLabel = `${(usage.recent_tgt_share * 100).toFixed(0)}% tgts`;
@@ -4358,6 +4428,7 @@ If all selected players are on bye, verdict says "pick from bench."</pre>
       * matchup.gameScriptMult
       * matchup.weatherMult
       * snapMult
+      * opportunityMult
       * regressionMult;
 
     return {
@@ -4365,6 +4436,7 @@ If all selected players are on bye, verdict says "pick from bench."</pre>
       injuryMult, injuryLabel,
       matchup,
       snapMult, snapLabel,
+      opportunityMult, opportunityLabel,
       regressionMult, regressionLabel,
       tgtShareLabel,
       depthUpliftLabel,
@@ -4416,6 +4488,7 @@ If all selected players are on bye, verdict says "pick from bench."</pre>
 
             <div class="ss-signals">
               ${x.s.depthUpliftLabel ? `<span class="chip chip-depth-uplift">📈 ${esc(x.s.depthUpliftLabel)}</span>` : ''}
+              ${x.s.opportunityLabel ? `<span class="chip chip-opportunity">🎯 ${esc(x.s.opportunityLabel)}</span>` : ''}
               ${x.s.tgtShareLabel ? `<span class="chip chip-tgt">${esc(x.s.tgtShareLabel)}</span>` : ''}
               ${x.s.snapLabel ? `<span class="chip chip-snap">snap ${esc(x.s.snapLabel)}</span>` : ''}
               ${x.s.regressionLabel ? `<span class="chip chip-regression">${esc(x.s.regressionLabel)}</span>` : ''}
