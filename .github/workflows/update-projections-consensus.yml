@@ -37,7 +37,7 @@ jobs:
 
       - name: Fetch multi-source projections consensus
         env:
-          FANTASYPROS_HOF_API_KEY: ${{ secrets.FANTASYPROS_HOF_API_KEY }}
+          FANTASYPROS_API_KEY: ${{ secrets.FANTASYPROS_API_KEY }}
         run: node .github/scripts/fetch-projections-consensus.js
 
       - name: Commit if changed
