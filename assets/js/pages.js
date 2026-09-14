@@ -3841,48 +3841,80 @@ function buildDepthChartOverlay(allPlayers, sleeperPlayers, espnData) {
     'QB': [0.80, 1.0],
   };
 
-  // PRIMARY: Build depth chart from Sleeper data (real-time)
+  // PRIMARY: Build depth chart from Sleeper injury data + FantasyPros projections
+  // (Sleeper's depth_chart_order is unreliable — we use projections to identify starters)
   if (sleeperPlayers) {
-    const depthByTeam = {};
+    // Build lookup of allPlayers by normalized name for projection data
+    const projByName = new Map();
+    allPlayers.forEach(p => {
+      if (p.name) projByName.set(normalizeName(p.name), p);
+    });
+
+    // Group Sleeper players by team + position
+    const rosterByTeam = {};
     for (const sp of Object.values(sleeperPlayers)) {
       const spName = sp.full_name || sp.name;
       const spTeam = sp.team;
-      const spPos = sp.depth_chart_position || sp.position || sp.pos;
-      const spOrder = sp.depth_chart_order;
+      const spPos = sp.position || sp.pos;
 
-      if (!spTeam || !spPos || spOrder == null) continue;
-
+      if (!spTeam || !spName) continue;
       const pos = normalizeDepthPos(spPos);
       if (!pos) continue;
-      if (!spName) continue;
 
-      if (!depthByTeam[spTeam]) depthByTeam[spTeam] = {};
-      if (!depthByTeam[spTeam][pos]) depthByTeam[spTeam][pos] = [];
-      depthByTeam[spTeam][pos].push({ name: spName, order: Number(spOrder) });
+      // Get their projection from allPlayers (FantasyPros consensus)
+      const fp = projByName.get(normalizeName(spName));
+      const proj = fp ? (Number(fp.weekly_proj) || Number(fp.proj_pts) / 17 || 0) : 0;
+
+      if (!rosterByTeam[spTeam]) rosterByTeam[spTeam] = {};
+      if (!rosterByTeam[spTeam][pos]) rosterByTeam[spTeam][pos] = [];
+      rosterByTeam[spTeam][pos].push({
+        name: spName,
+        proj,
+        injury: sp.injury_status || null,
+      });
     }
 
-    // Sort each position by depth order
-    for (const posMap of Object.values(depthByTeam)) {
+    // Sort each team-position by projection (descending) — highest proj = starter
+    for (const posMap of Object.values(rosterByTeam)) {
       for (const players of Object.values(posMap)) {
-        players.sort((a, b) => a.order - b.order);
+        players.sort((a, b) => b.proj - a.proj);
       }
     }
 
-    // Check each starter for injury and apply uplift
     let sleeperOverlays = 0;
-    for (const [team, posMap] of Object.entries(depthByTeam)) {
+    for (const [team, posMap] of Object.entries(rosterByTeam)) {
       for (const [pos, players] of Object.entries(posMap)) {
         if (!upliftMap[pos]) continue;
+        if (players.length < 2) continue; // Need at least a starter + backup
+
+        // Identify the projected starter (highest projection who isn't Out)
+        // Then check if he IS Out — if so, find who inherits
         const starter = players[0];
         if (!starter) continue;
 
-        const starterInjury = injuryLookup.get(normalizeName(starter.name));
-        if (!starterInjury || !OUT_STATUSES.includes(starterInjury.status)) continue;
+        // Cross-check injury from BOTH the Sleeper data AND our injury lookup
+        const starterInjuryLookup = injuryLookup.get(normalizeName(starter.name));
+        const starterOut =
+          OUT_STATUSES.includes(starter.injury) ||
+          (starterInjuryLookup && OUT_STATUSES.includes(starterInjuryLookup.status));
+
+        if (!starterOut) continue;
+
+        // Find backups (skip anyone who's also Out)
+        const availableBackups = players.slice(1).filter(p => {
+          const pInj = injuryLookup.get(normalizeName(p.name));
+          return !OUT_STATUSES.includes(p.injury) &&
+                 !(pInj && OUT_STATUSES.includes(pInj.status));
+        });
+
+        if (availableBackups.length === 0) continue;
 
         const uplifts = upliftMap[pos];
-        const backup1 = players[1];
-        const backup2 = players[2];
-        const reason = `${starter.name} ${starterInjury.status} (${starterInjury.source})`;
+        const backup1 = availableBackups[0];
+        const backup2 = availableBackups[1];
+        const injurySource = starterInjuryLookup?.source || 'Sleeper';
+        const injuryStatus = starterInjuryLookup?.status || starter.injury;
+        const reason = `${starter.name} ${injuryStatus} (${injurySource})`;
 
         if (backup1?.name) {
           overlay[normalizeName(backup1.name)] = {
@@ -3907,7 +3939,6 @@ function buildDepthChartOverlay(allPlayers, sleeperPlayers, espnData) {
       }
     }
 
-    // If Sleeper produced overlays, return them (Sleeper is preferred)
     if (sleeperOverlays > 0) return overlay;
   }
 
