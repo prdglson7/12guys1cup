@@ -44,10 +44,20 @@ async function main() {
 
     slim[id] = {
       name,
+      full_name: name,       // alias for compatibility with buildDepthChartOverlay
       pos: p.position,
+      position: p.position,  // alias
       team: p.team || null,
-      // Include years exp for context but keep it small
       years_exp: p.years_exp || 0,
+      // Injury data (for Start/Sit depth chart overlay)
+      injury_status: p.injury_status || null,
+      injury_body_part: p.injury_body_part || null,
+      injury_notes: p.injury_notes || null,
+      // Depth chart data (for identifying starters and backups)
+      depth_chart_position: p.depth_chart_position || null,
+      depth_chart_order: p.depth_chart_order != null ? p.depth_chart_order : null,
+      // Status (Active, Inactive, etc)
+      status: p.status || null,
     };
     kept++;
   });
