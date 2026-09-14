@@ -31,7 +31,7 @@ const path = require('path');
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 const OUTPUT = path.join(REPO_ROOT, 'assets', 'data', 'projections-consensus.json');
-const FP_KEY = process.env.FANTASYPROS_HOF_API_KEY;
+const FP_KEY = process.env.FANTASYPROS_API_KEY;
 const FP_BASE = 'https://api.fantasypros.com/public/v2/json';
 const SEASON = new Date().getFullYear();
 const SCORING = 'PPR';
