@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-13T23:53:40.145Z",
+  "fetched_at": "2026-09-14T00:48:27.282Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -735,8 +735,8 @@
       "team": "DAL",
       "weekly": {
         "espn": null,
-        "sleeper": 17.42,
-        "consensus": 17.42,
+        "sleeper": 17.13,
+        "consensus": 17.13,
         "variance": 0
       },
       "ros": {
@@ -744,27 +744,6 @@
         "sleeper": 212,
         "consensus": 235.8,
         "variance": 0.104
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
-    "garrett wilson": {
-      "name": "Garrett Wilson",
-      "pos": "WR",
-      "team": "NYJ",
-      "weekly": {
-        "espn": null,
-        "sleeper": 14.82,
-        "consensus": 14.82,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 252.18134106,
-        "sleeper": 224.9,
-        "consensus": 238.2,
-        "variance": 0.057
       },
       "sources_used": [
         "sleeper",
@@ -786,6 +765,27 @@
         "sleeper": 308.72,
         "consensus": 317.9,
         "variance": 0.03
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "garrett wilson": {
+      "name": "Garrett Wilson",
+      "pos": "WR",
+      "team": "NYJ",
+      "weekly": {
+        "espn": null,
+        "sleeper": 14.82,
+        "consensus": 14.82,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 252.18134106,
+        "sleeper": 224.9,
+        "consensus": 238.2,
+        "variance": 0.057
       },
       "sources_used": [
         "sleeper",
@@ -4471,24 +4471,6 @@
         "espn"
       ]
     },
-    "bears dst": {
-      "name": "Bears D/ST",
-      "pos": "DST",
-      "team": "CHI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 70.26872886,
-        "consensus": 70.26872886,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "ray davis": {
       "name": "Ray Davis",
       "pos": "RB",
@@ -4507,6 +4489,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "bears dst": {
+      "name": "Bears D/ST",
+      "pos": "DST",
+      "team": "CHI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 70.26872886,
+        "consensus": 70.26872886,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
@@ -5651,6 +5651,27 @@
         "espn"
       ]
     },
+    "emari demercado": {
+      "name": "Emari Demercado",
+      "pos": "RB",
+      "team": "DAL",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.08,
+        "consensus": 6.08,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 82.62667263,
+        "sleeper": 58,
+        "consensus": 70,
+        "variance": 0.175
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
     "antonio williams": {
       "name": "Antonio Williams",
       "pos": "WR",
@@ -5666,27 +5687,6 @@
         "sleeper": 75.2,
         "consensus": 85.4,
         "variance": 0.122
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
-    "emari demercado": {
-      "name": "Emari Demercado",
-      "pos": "RB",
-      "team": "DAL",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.29,
-        "consensus": 6.29,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 82.62667263,
-        "sleeper": 58,
-        "consensus": 70,
-        "variance": 0.175
       },
       "sources_used": [
         "sleeper",
@@ -6057,27 +6057,6 @@
         "espn"
       ]
     },
-    "kaytron allen": {
-      "name": "Kaytron Allen",
-      "pos": "RB",
-      "team": "WAS",
-      "weekly": {
-        "espn": null,
-        "sleeper": 0.96,
-        "consensus": 0.96,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 15.65470975,
-        "sleeper": 45.9,
-        "consensus": 31.2,
-        "variance": 0.491
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "commanders dst": {
       "name": "Commanders D/ST",
       "pos": "DST",
@@ -6111,6 +6090,27 @@
         "sleeper": 26.3,
         "consensus": 42.6,
         "variance": 0.389
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "kaytron allen": {
+      "name": "Kaytron Allen",
+      "pos": "RB",
+      "team": "WAS",
+      "weekly": {
+        "espn": null,
+        "sleeper": 0.96,
+        "consensus": 0.96,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 15.65470975,
+        "sleeper": 45.9,
+        "consensus": 31.2,
+        "variance": 0.491
       },
       "sources_used": [
         "sleeper",
@@ -6201,27 +6201,6 @@
         "espn"
       ]
     },
-    "tyquan thornton": {
-      "name": "Tyquan Thornton",
-      "pos": "WR",
-      "team": "KC",
-      "weekly": {
-        "espn": null,
-        "sleeper": 4.27,
-        "consensus": 4.27,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 77.49953723,
-        "sleeper": 62.6,
-        "consensus": 69.8,
-        "variance": 0.106
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "ted hurst iii": {
       "name": "Ted Hurst III",
       "pos": "WR",
@@ -6255,6 +6234,27 @@
         "sleeper": 36.7,
         "consensus": 63.3,
         "variance": 0.427
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "tyquan thornton": {
+      "name": "Tyquan Thornton",
+      "pos": "WR",
+      "team": "KC",
+      "weekly": {
+        "espn": null,
+        "sleeper": 4.27,
+        "consensus": 4.27,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 77.49953723,
+        "sleeper": 62.6,
+        "consensus": 69.8,
+        "variance": 0.106
       },
       "sources_used": [
         "sleeper",
@@ -7257,27 +7257,6 @@
         "espn"
       ]
     },
-    "dylan laube": {
-      "name": "Dylan Laube",
-      "pos": "RB",
-      "team": "LV",
-      "weekly": {
-        "espn": null,
-        "sleeper": 0.36,
-        "consensus": 0.36,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 0.66575231,
-        "sleeper": 11.9,
-        "consensus": 6.4,
-        "variance": 0.894
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "kalif raymond": {
       "name": "Kalif Raymond",
       "pos": "WR",
@@ -7293,6 +7272,27 @@
         "sleeper": 27.7,
         "consensus": 41.8,
         "variance": 0.344
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "dylan laube": {
+      "name": "Dylan Laube",
+      "pos": "RB",
+      "team": "LV",
+      "weekly": {
+        "espn": null,
+        "sleeper": 0.36,
+        "consensus": 0.36,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 0.66575231,
+        "sleeper": 11.9,
+        "consensus": 6.4,
+        "variance": 0.894
       },
       "sources_used": [
         "sleeper",
