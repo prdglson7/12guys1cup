@@ -1805,7 +1805,7 @@ async function renderDues() {
 /* ---------- nflverse data loader (Phase 1 pipeline output) ---------- */
 
 async function loadNflverseData() {
-  const files = ['xfp', 'snap-counts', 'def-vs-pos', 'schedules', 'weekly-stats', 'dropback-shares', 'depth-charts'];
+  const files = ['xfp', 'snap-counts', 'def-vs-pos', 'schedules', 'weekly-stats', 'dropback-shares', 'depth-charts', 'route-participation', 'xfp-computed'];
   const results = {};
   await Promise.all(files.map(async (f) => {
     try {
@@ -1899,6 +1899,22 @@ async function loadNflverseData() {
     }
   }
 
+  // Route participation lookup (snap % × team pass rate)
+  const routeByName = new Map();
+  if (results['route-participation']?.players) {
+    for (const p of Object.values(results['route-participation'].players)) {
+      if (p.name) routeByName.set(normalizeName(p.name), p);
+    }
+  }
+
+  // xFP computed lookup (from opportunity signals)
+  const xfpComputedByName = new Map();
+  if (results['xfp-computed']?.players) {
+    for (const p of Object.values(results['xfp-computed'].players)) {
+      if (p.name) xfpComputedByName.set(normalizeName(p.name), p);
+    }
+  }
+
   // Depth charts by team (for injury replacement detection)
   const depthChartsByTeam = results['depth-charts']?.teams || {};
 
@@ -1907,7 +1923,14 @@ async function loadNflverseData() {
     snaps: snapByName,
     usage: usageByName,
     dropbackShares: dropbackByName,
+    routeParticipation: routeByName,
+    xfpComputed: xfpComputedByName,
     dropbackThresholds: results['dropback-shares']?.thresholds || { WR: 0.20, TE: 0.15 },
+    routeThresholds: results['route-participation']?.thresholds || {
+      WR: { elite: 0.85, starter: 0.70, rotational: 0.50, spot: 0.25 },
+      TE: { elite: 0.75, starter: 0.55, rotational: 0.35, spot: 0.15 },
+      RB: { elite: 0.55, starter: 0.35, rotational: 0.20, spot: 0.05 },
+    },
     defVsPos: results['def-vs-pos']?.defenses || {},
     playoffOpps: results['schedules']?.playoff_opponents || {},
     gameContext: mergedGameCtx,
@@ -1919,6 +1942,7 @@ async function loadNflverseData() {
     snapSeason: results['snap-counts']?.season,
     defSeason: results['def-vs-pos']?.season,
     dropbackSeason: results['dropback-shares']?.season,
+    routeSeason: results['route-participation']?.season,
     depthChartWeek: results['depth-charts']?.week,
   };
 }
@@ -4164,18 +4188,28 @@ async function renderStartSit(allPlayers, container, nflverse, sleeperPlayers) {
       × Regression Factor
 
 ━━━ OPPORTUNITY WEIGHT ━━━
-Measures target share vs. position expectation.
-For WR/TE: uses 60% target share + 40% dropback share (route participation)
-For RB: uses target share (PPR context)
+Blends 3 opportunity signals (weighted average):
+  • 40% Target share (% of team targets)
+  • 40% Route participation (snap % × team pass rate)
+  • 20% xFP (expected fantasy points from opportunity)
 
-WR thresholds: elite 28%+ → 1.20×
-               strong 22%+ → 1.10×
-               weak 10% → 0.92×
-               minimal <10% → 0.85×
-TE thresholds: elite 22%+, strong 18%+, weak 8%, minimal
-RB thresholds: elite 18%+, strong 12%+, weak 3%, minimal
-Volume is the single strongest fantasy signal.
-Populates after Week 1 games have been played.
+Position thresholds (elite/strong/average/weak):
+  WR routes:   85% / 70% / 50% / 25%
+  TE routes:   75% / 55% / 35% / 15%
+  RB routes:   55% / 35% / 20% / 5%
+  WR targets:  28% / 22% / 16% / 10%
+  TE targets:  22% / 18% / 13% / 8%
+  RB targets:  18% / 12% / 7% / 3%
+
+Weighted score → multiplier:
+  0.90-1.00 → 1.20× (elite opportunity)
+  0.70-0.90 → 1.10× (strong opportunity)
+  0.40-0.70 → 1.00× (average)
+  0.20-0.40 → 0.92× (low opportunity)
+  0.00-0.20 → 0.85× (minimal opportunity)
+
+Signals populate after Week 1 games. Missing signals are skipped
+and remaining weights are re-normalized.
 
 ━━━ PROJECTION SOURCE ━━━
 Weekly consensus from up to 3 sources (weighted average):
@@ -4355,57 +4389,107 @@ If all selected players are on bye, verdict says "pick from bench."</pre>
     }
 
     // OPPORTUNITY WEIGHT — the biggest single predictive factor
-    // Compares player's target/route share to position expectation.
-    // High opportunity = boost. Low opportunity = downgrade.
+    // Blends 3 signals: target share (40%) + route participation (40%) + xFP-based (20%)
+    // This matches how professional analysts weight opportunity data.
     let opportunityMult = 1.0;
     let opportunityLabel = null;
-
-    // Position-based expected target share thresholds (league average starter)
-    // Based on analytics research: what share does a startable player see?
-    const POS_TGT_THRESHOLDS = {
-      WR: { elite: 0.28, strong: 0.22, average: 0.16, weak: 0.10 },
-      TE: { elite: 0.22, strong: 0.18, average: 0.13, weak: 0.08 },
-      RB: { elite: 0.18, strong: 0.12, average: 0.07, weak: 0.03 },
-    };
+    let routeChip = null;
 
     if (['WR', 'TE', 'RB'].includes(p.pos)) {
       const usage = nflverse?.usage?.get(normalizeName(p.name));
-      const thresholds = POS_TGT_THRESHOLDS[p.pos];
+      const routeData = nflverse?.routeParticipation?.get(normalizeName(p.name));
+      const xfpData = nflverse?.xfpComputed?.get(normalizeName(p.name));
 
-      // Use recent target share (last 3 games) if available, else season
+      // SIGNAL 1: Target share (existing metric)
+      let tgtScore = null; // 0-1 normalized score
+      const POS_TGT_THRESHOLDS = {
+        WR: { elite: 0.28, strong: 0.22, average: 0.16, weak: 0.10 },
+        TE: { elite: 0.22, strong: 0.18, average: 0.13, weak: 0.08 },
+        RB: { elite: 0.18, strong: 0.12, average: 0.07, weak: 0.03 },
+      };
+      const tgtThresh = POS_TGT_THRESHOLDS[p.pos];
       let tgtShare = null;
-      if (usage && usage.recent_tgt_share > 0) {
-        tgtShare = usage.recent_tgt_share;
-      } else if (usage && usage.season_tgt_share > 0) {
-        tgtShare = usage.season_tgt_share;
+      if (usage?.recent_tgt_share > 0) tgtShare = usage.recent_tgt_share;
+      else if (usage?.season_tgt_share > 0) tgtShare = usage.season_tgt_share;
+
+      if (tgtShare != null) {
+        if (tgtShare >= tgtThresh.elite) tgtScore = 1.0;
+        else if (tgtShare >= tgtThresh.strong) tgtScore = 0.8;
+        else if (tgtShare >= tgtThresh.average) tgtScore = 0.5;
+        else if (tgtShare >= tgtThresh.weak) tgtScore = 0.3;
+        else tgtScore = 0.1;
       }
 
-      // Also incorporate dropback share for WR/TE if available (better route participation signal)
-      if (['WR', 'TE'].includes(p.pos) && p._dropback_share_blended > 0) {
-        // Blend: 60% target share, 40% dropback share (route participation)
-        tgtShare = tgtShare != null
-          ? (tgtShare * 0.60 + p._dropback_share_blended * 0.40)
-          : p._dropback_share_blended;
+      // SIGNAL 2: Route participation (NEW — the JJ Zachariason metric)
+      let routeScore = null;
+      const routeThresh = nflverse?.routeThresholds?.[p.pos];
+      if (routeData && routeThresh) {
+        const routePct = routeData.recent_route_pct || routeData.season_route_pct || 0;
+        if (routePct > 0) {
+          if (routePct >= routeThresh.elite) routeScore = 1.0;
+          else if (routePct >= routeThresh.starter) routeScore = 0.8;
+          else if (routePct >= routeThresh.rotational) routeScore = 0.5;
+          else if (routePct >= routeThresh.spot) routeScore = 0.3;
+          else routeScore = 0.1;
+          routeChip = `${(routePct * 100).toFixed(0)}% routes`;
+        }
       }
 
-      if (tgtShare != null && tgtShare > 0) {
-        // Compare to position thresholds, produce multiplier
-        if (tgtShare >= thresholds.elite) {
+      // SIGNAL 3: xFP-based opportunity (NEW — captures underlying value)
+      let xfpScore = null;
+      if (xfpData?.recent_xfp_avg > 0) {
+        // Compare recent xFP to position tier
+        const xfpAvg = xfpData.recent_xfp_avg;
+        const XFP_TIERS = {
+          QB: { elite: 22, strong: 18, average: 14, weak: 10 },
+          RB: { elite: 18, strong: 14, average: 10, weak: 6 },
+          WR: { elite: 16, strong: 13, average: 9, weak: 5 },
+          TE: { elite: 13, strong: 10, average: 7, weak: 4 },
+        };
+        const tier = XFP_TIERS[p.pos];
+        if (tier) {
+          if (xfpAvg >= tier.elite) xfpScore = 1.0;
+          else if (xfpAvg >= tier.strong) xfpScore = 0.8;
+          else if (xfpAvg >= tier.average) xfpScore = 0.5;
+          else if (xfpAvg >= tier.weak) xfpScore = 0.3;
+          else xfpScore = 0.1;
+        }
+      }
+
+      // Blend the signals we have (skip nulls, re-weight remaining)
+      const availableSignals = [
+        { score: tgtScore, weight: 0.40 },
+        { score: routeScore, weight: 0.40 },
+        { score: xfpScore, weight: 0.20 },
+      ].filter(s => s.score != null);
+
+      if (availableSignals.length > 0) {
+        const totalWeight = availableSignals.reduce((sum, s) => sum + s.weight, 0);
+        const weightedScore = availableSignals.reduce((sum, s) => sum + s.score * s.weight, 0) / totalWeight;
+
+        // Convert weighted score (0-1) to multiplier (0.85 to 1.20)
+        if (weightedScore >= 0.9) {
           opportunityMult = 1.20;
-          opportunityLabel = `elite volume (${(tgtShare * 100).toFixed(0)}%)`;
-        } else if (tgtShare >= thresholds.strong) {
+          opportunityLabel = `elite opportunity`;
+        } else if (weightedScore >= 0.7) {
           opportunityMult = 1.10;
-          opportunityLabel = `high volume (${(tgtShare * 100).toFixed(0)}%)`;
-        } else if (tgtShare >= thresholds.average) {
+          opportunityLabel = `strong opportunity`;
+        } else if (weightedScore >= 0.4) {
           opportunityMult = 1.00;
-          // No label at average — reduce visual noise
-        } else if (tgtShare >= thresholds.weak) {
+          // No label for average
+        } else if (weightedScore >= 0.2) {
           opportunityMult = 0.92;
-          opportunityLabel = `low volume (${(tgtShare * 100).toFixed(0)}%)`;
+          opportunityLabel = `low opportunity`;
         } else {
           opportunityMult = 0.85;
-          opportunityLabel = `minimal volume (${(tgtShare * 100).toFixed(0)}%)`;
+          opportunityLabel = `minimal opportunity`;
         }
+
+        // Add detail to label showing which signals contributed
+        const parts = [];
+        if (tgtScore != null && tgtShare) parts.push(`${(tgtShare * 100).toFixed(0)}% tgts`);
+        if (routeScore != null) parts.push(routeChip);
+        if (parts.length > 0) opportunityLabel = `${opportunityLabel} · ${parts.join(', ')}`;
       }
     }
 
