@@ -1,11 +1,12 @@
 name: Update Sleeper players DB
 
-# Fetches the Sleeper NFL player database weekly for roster sync (Trade Finder).
+# Fetches the Sleeper NFL player database every 30 minutes.
+# Powers: roster sync (Trade Finder), depth chart injury overlay (Start/Sit).
 # Sleeper's DB is ~5MB; we slim it to ~500KB by dropping fields we don't use.
 
 on:
   schedule:
-    - cron: "0 9 * * 1"    # Every Monday 9am UTC (~4am ET)
+    - cron: "*/30 * * * *"    # every 30 minutes for fresh injury + depth chart data
   workflow_dispatch:
   push:
     branches: [main]
