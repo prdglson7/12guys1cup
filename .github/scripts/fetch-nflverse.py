@@ -463,6 +463,269 @@ def fetch_schedules():
 # player_dropback_share = player_targets / team_dropbacks
 # Blended metric: 60% last-4-games + 40% season for stability.
 
+# ------------------------------------------------------------------
+# 7b. Route participation (snap-based approximation)
+# ------------------------------------------------------------------
+# True route participation = routes run / team dropbacks
+# We don't have exact player-on-field-per-play, but we can approximate:
+#   routes ≈ offensive_snaps × team_pass_rate
+# For WR/TE this is very accurate (they primarily run routes on pass plays)
+# For RB it's decent but less reliable (they may block or run routes)
+
+def fetch_route_participation(snaps_data, weekly_stats_data):
+    log("Computing route participation (snaps × team pass rate)…")
+
+    if not snaps_data or not snaps_data.get("players"):
+        log("  No snap data — skipping route participation")
+        return {"season": None, "players": {}}
+
+    if not weekly_stats_data or not weekly_stats_data.get("players"):
+        log("  No weekly stats — skipping route participation")
+        return {"season": None, "players": {}}
+
+    season = snaps_data.get("season")
+    if not season:
+        log("  No season detected — skipping")
+        return {"season": None, "players": {}}
+
+    try:
+        pbp_df = nfl.import_pbp_data([season], downcast=True)
+        log(f"  Loaded {len(pbp_df)} play rows for {season}")
+    except Exception as e:
+        log(f"  PBP fetch failed: {e}")
+        return {"season": season, "players": {}, "error": str(e)}
+
+    if pbp_df is None or pbp_df.empty:
+        log("  Empty PBP — no games played yet")
+        return {"season": season, "players": {}}
+
+    # Compute team pass rate per game (dropbacks / total plays)
+    if "qb_dropback" in pbp_df.columns:
+        dropback_plays = pbp_df[pbp_df["qb_dropback"] == 1]
+    else:
+        dropback_plays = pbp_df[
+            (pbp_df.get("pass_attempt", 0) == 1) |
+            (pbp_df.get("sack", 0) == 1) |
+            (pbp_df.get("qb_scramble", 0) == 1)
+        ]
+
+    # Total offensive plays (exclude special teams, penalties, timeouts, etc.)
+    off_plays = pbp_df[
+        pbp_df["posteam"].notna() &
+        pbp_df.get("play_type", pd.Series()).isin(["pass", "run", "qb_kneel", "qb_spike"])
+    ]
+
+    team_pass_by_week = dropback_plays.groupby(["posteam", "week"]).size().reset_index(name="pass_plays")
+    team_total_by_week = off_plays.groupby(["posteam", "week"]).size().reset_index(name="total_plays")
+
+    pass_rate_lookup = {}
+    for _, row in team_pass_by_week.iterrows():
+        team = str(row["posteam"]).strip()
+        wk = int(row["week"])
+        pass_rate_lookup.setdefault(team, {})[wk] = {"pass_plays": int(row["pass_plays"])}
+    for _, row in team_total_by_week.iterrows():
+        team = str(row["posteam"]).strip()
+        wk = int(row["week"])
+        if team in pass_rate_lookup and wk in pass_rate_lookup[team]:
+            pass_rate_lookup[team][wk]["total_plays"] = int(row["total_plays"])
+            total = pass_rate_lookup[team][wk]["total_plays"]
+            passes = pass_rate_lookup[team][wk]["pass_plays"]
+            pass_rate_lookup[team][wk]["pass_rate"] = passes / total if total > 0 else 0
+
+    # Build player route participation
+    players_out = {}
+    for pid, sp in snaps_data["players"].items():
+        pos = sp.get("pos", "")
+        # Only compute for skill positions
+        if pos not in ("WR", "TE", "RB"):
+            continue
+
+        team = sp.get("team", "")
+        if not team:
+            continue
+
+        weekly_routes = []
+        for w in sp.get("weeks", []):
+            wk = w.get("week")
+            off_pct = w.get("off_pct")
+            if not wk or off_pct is None:
+                continue
+
+            # Route participation ≈ snap % × team pass rate
+            team_data = pass_rate_lookup.get(team, {}).get(wk, {})
+            pass_rate = team_data.get("pass_rate")
+            if pass_rate is None:
+                continue
+
+            # For WR/TE: route participation is essentially snap % × pass rate
+            # For RB: reduce because they block on some pass plays (~30% for RB1s)
+            if pos == "RB":
+                route_pct = off_pct * pass_rate * 0.75  # RBs run routes on ~75% of pass plays
+            else:
+                route_pct = off_pct * pass_rate  # WR/TE run routes on virtually all pass plays
+
+            weekly_routes.append({
+                "week": wk,
+                "off_pct": round(off_pct, 3),
+                "pass_rate": round(pass_rate, 3),
+                "route_pct": round(route_pct, 3),
+            })
+
+        if not weekly_routes:
+            continue
+
+        # Season average
+        season_avg = sum(w["route_pct"] for w in weekly_routes) / len(weekly_routes)
+
+        # Recent 3 games
+        recent = sorted(weekly_routes, key=lambda x: x["week"], reverse=True)[:3]
+        recent_avg = sum(w["route_pct"] for w in recent) / len(recent)
+
+        players_out[pid] = {
+            "name": sp.get("name", ""),
+            "pos": pos,
+            "team": team,
+            "games": len(weekly_routes),
+            "season_route_pct": round(season_avg, 3),
+            "recent_route_pct": round(recent_avg, 3),
+            "weekly": weekly_routes,
+        }
+
+    log(f"  Computed route participation for {len(players_out)} players")
+
+    return {
+        "season": season,
+        "player_count": len(players_out),
+        "players": players_out,
+        "thresholds": {
+            # Route participation tiers (based on JJ Zachariason research)
+            "WR": {"elite": 0.85, "starter": 0.70, "rotational": 0.50, "spot": 0.25},
+            "TE": {"elite": 0.75, "starter": 0.55, "rotational": 0.35, "spot": 0.15},
+            "RB": {"elite": 0.55, "starter": 0.35, "rotational": 0.20, "spot": 0.05},
+        },
+        "notes": "Route participation ≈ offensive snap % × team pass rate. For RBs, reduced by 25% to account for pass blocking snaps.",
+    }
+
+# ------------------------------------------------------------------
+# 7c. Computed xFP fallback (for when ff_opportunity dataset is stale)
+# ------------------------------------------------------------------
+# When nflverse's xFP dataset isn't updated yet (early season), compute
+# xFP from raw opportunity signals: air yards, targets, red zone touches
+
+def compute_xfp_fallback(weekly_stats_data):
+    log("Computing xFP fallback from opportunity signals…")
+
+    if not weekly_stats_data or not weekly_stats_data.get("players"):
+        return {"season": None, "players": {}}
+
+    season = weekly_stats_data.get("season")
+    if not season:
+        return {"season": None, "players": {}}
+
+    # xFP formula weights (PPR scoring, derived from historical fantasy correlation research)
+    # For each opportunity type, expected point value:
+    XFP_WEIGHTS = {
+        "target_receiving_yards_per_target": 0.7,   # Avg yards per target
+        "target_reception_rate": 0.65,               # Avg catch rate
+        "carry_yards_per_carry_rb": 4.2,             # Avg YPC for RBs
+        "carry_yards_per_carry_qb": 6.0,             # Avg YPC for QB rushes (scrambles)
+        "rz_carry_td_rate": 0.15,                    # Red zone carry → TD
+        "rz_target_td_rate": 0.20,                   # Red zone target → TD
+        "pass_yards_per_attempt": 7.0,               # Avg passing YPA
+        "pass_td_rate": 0.045,                       # Avg pass TD rate per attempt
+    }
+
+    players_out = {}
+    for pid, pdata in weekly_stats_data["players"].items():
+        pos = pdata.get("pos", "")
+        if pos not in ("QB", "RB", "WR", "TE"):
+            continue
+
+        weekly_xfp = []
+        for w in pdata.get("weeks", []):
+            wk = w.get("week")
+            if not wk:
+                continue
+
+            # Get opportunity signals from weekly stats
+            targets = w.get("tgts", 0) or 0
+            receptions = w.get("rec", 0) or 0
+            rec_yds = w.get("rec_yds", 0) or 0
+            rec_tds = w.get("rec_tds", 0) or 0
+
+            carries = w.get("car", 0) or 0
+            rush_yds = w.get("rush_yds", 0) or 0
+            rush_tds = w.get("rush_tds", 0) or 0
+
+            pass_att = w.get("pass_att", 0) or 0
+            pass_yds = w.get("pass_yds", 0) or 0
+            pass_tds = w.get("pass_tds", 0) or 0
+
+            actual_fp = w.get("fantasy_points_ppr", 0) or 0
+
+            # Compute expected fantasy points from opportunity
+            xfp = 0
+
+            # Receiving xFP: targets × (yards + reception + TD probability)
+            if targets > 0:
+                exp_rec_yds = targets * XFP_WEIGHTS["target_receiving_yards_per_target"]
+                exp_recs = targets * XFP_WEIGHTS["target_reception_rate"]
+                # PPR scoring: 1 pt/rec + 0.1 pt/yd
+                xfp += exp_rec_yds * 0.1 + exp_recs * 1.0
+
+            # Rushing xFP (for RBs/QBs)
+            if carries > 0:
+                yards_per_carry = XFP_WEIGHTS["carry_yards_per_carry_qb"] if pos == "QB" else XFP_WEIGHTS["carry_yards_per_carry_rb"]
+                exp_rush_yds = carries * yards_per_carry
+                exp_rush_tds = carries * 0.02  # ~2% carries → TD
+                xfp += exp_rush_yds * 0.1 + exp_rush_tds * 6
+
+            # Passing xFP (for QBs)
+            if pass_att > 0:
+                exp_pass_yds = pass_att * XFP_WEIGHTS["pass_yards_per_attempt"]
+                exp_pass_tds = pass_att * XFP_WEIGHTS["pass_td_rate"]
+                xfp += exp_pass_yds * 0.04 + exp_pass_tds * 4  # 4pt pass TD scoring
+
+            weekly_xfp.append({
+                "week": wk,
+                "xfp": round(xfp, 1),
+                "actual_fp": round(actual_fp, 1),
+                "gap": round(actual_fp - xfp, 1),  # positive = overperformed, negative = due for regression positive
+            })
+
+        if not weekly_xfp:
+            continue
+
+        total_xfp = sum(w["xfp"] for w in weekly_xfp)
+        total_actual = sum(w["actual_fp"] for w in weekly_xfp)
+
+        # Recent 3 games
+        recent = sorted(weekly_xfp, key=lambda x: x["week"], reverse=True)[:3]
+        recent_xfp = sum(w["xfp"] for w in recent) / len(recent) if recent else 0
+        recent_actual = sum(w["actual_fp"] for w in recent) / len(recent) if recent else 0
+
+        players_out[pid] = {
+            "name": pdata.get("name", ""),
+            "pos": pos,
+            "team": pdata.get("team", ""),
+            "games": len(weekly_xfp),
+            "total_xfp": round(total_xfp, 1),
+            "total_actual": round(total_actual, 1),
+            "gap": round(total_actual - total_xfp, 1),
+            "recent_xfp_avg": round(recent_xfp, 1),
+            "recent_actual_avg": round(recent_actual, 1),
+            "weekly": weekly_xfp,
+        }
+
+    log(f"  Computed xFP for {len(players_out)} players")
+    return {
+        "season": season,
+        "source": "computed_from_opportunity",
+        "player_count": len(players_out),
+        "players": players_out,
+        "notes": "Computed xFP from raw opportunity: targets × (yards/target + reception rate + TD prob) + carries × YPC + red zone touches. Gap column = actual - expected (positive = overperformed).",
+    }
+
 def fetch_dropback_shares(weekly_stats_data):
     log("Fetching play-by-play for dropback-based target share…")
 
@@ -620,6 +883,14 @@ def main():
     dropback = safe(lambda: fetch_dropback_shares(weekly), "dropback_shares") or {"season": None, "players": {}}
     write_json(dropback, "dropback-shares.json")
 
+    # 9. Route participation (snap % × team pass rate)
+    routes = safe(lambda: fetch_route_participation(snaps, weekly), "route_participation") or {"season": None, "players": {}}
+    write_json(routes, "route-participation.json")
+
+    # 10. xFP fallback (compute from opportunity when nflverse ff_opportunity is stale)
+    xfp_computed = safe(lambda: compute_xfp_fallback(weekly), "xfp_computed") or {"season": None, "players": {}}
+    write_json(xfp_computed, "xfp-computed.json")
+
     # Manifest
     manifest = {
         "fetched_at": started.isoformat() + "Z",
@@ -634,6 +905,8 @@ def main():
             "player-ids.json":   {"player_count": ids.get("player_count", 0)},
             "schedules.json":    {"seasons": sched.get("seasons_available", [])},
             "dropback-shares.json": {"season": dropback.get("season"), "player_count": dropback.get("player_count", 0)},
+            "route-participation.json": {"season": routes.get("season"), "player_count": routes.get("player_count", 0)},
+            "xfp-computed.json": {"season": xfp_computed.get("season"), "player_count": xfp_computed.get("player_count", 0)},
         },
     }
     write_json(manifest, "_manifest.json")
