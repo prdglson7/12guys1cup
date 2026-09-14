@@ -3802,7 +3802,15 @@ active — no hidden adjustments.</pre>
      Starting QB out → backup QB gets -20%
    ═══════════════════════════════════════════════════════════════════ */
 
-const OUT_STATUSES = ['Out', 'IR', 'Suspended', 'PUP', 'NFI', 'Injured Reserve'];
+const OUT_STATUSES = ['Out', 'OUT', 'IR', 'Suspended', 'SUSPENDED', 'PUP', 'NFI', 'Injured Reserve', 'Physically Unable to Perform', 'DID_NOT_PLAY'];
+
+// Helper: case-insensitive check if a status means the player is Out
+function isPlayerOut(status) {
+  if (!status) return false;
+  const s = String(status).toUpperCase();
+  return s === 'OUT' || s === 'IR' || s === 'SUSPENDED' || s === 'PUP' || s === 'NFI' ||
+         s === 'INJURED RESERVE' || s === 'PHYSICALLY UNABLE TO PERFORM' || s === 'DID_NOT_PLAY';
+}
 
 /* Load ESPN depth chart data (async, called once per render) */
 async function loadEspnDepthCharts() {
@@ -3840,7 +3848,7 @@ function buildDepthChartOverlay(allPlayers, sleeperPlayers, espnData) {
         const key = normalizeName(spName);
         // Sleeper takes precedence over FP if it says Out (Sleeper is more up-to-date)
         const existing = injuryLookup.get(key);
-        if (!existing || (OUT_STATUSES.includes(sp.injury_status) && !OUT_STATUSES.includes(existing.status))) {
+        if (!existing || (isPlayerOut(sp.injury_status) && !isPlayerOut(existing.status))) {
           injuryLookup.set(key, { status: sp.injury_status, source: 'Sleeper' });
         }
       }
@@ -3852,7 +3860,7 @@ function buildDepthChartOverlay(allPlayers, sleeperPlayers, espnData) {
     for (const [name, inj] of Object.entries(espnData.injuries)) {
       const existing = injuryLookup.get(name);
       // ESPN takes precedence if it says Out and nothing else does
-      if (!existing || (OUT_STATUSES.includes(inj.status) && !OUT_STATUSES.includes(existing.status))) {
+      if (!existing || (isPlayerOut(inj.status) && !isPlayerOut(existing.status))) {
         injuryLookup.set(name, { status: inj.status, source: 'ESPN' });
       }
     }
@@ -3919,16 +3927,16 @@ function buildDepthChartOverlay(allPlayers, sleeperPlayers, espnData) {
         // Cross-check injury from BOTH the Sleeper data AND our injury lookup
         const starterInjuryLookup = injuryLookup.get(normalizeName(starter.name));
         const starterOut =
-          OUT_STATUSES.includes(starter.injury) ||
-          (starterInjuryLookup && OUT_STATUSES.includes(starterInjuryLookup.status));
+          isPlayerOut(starter.injury) ||
+          (starterInjuryLookup && isPlayerOut(starterInjuryLookup.status));
 
         if (!starterOut) continue;
 
         // Find backups (skip anyone who's also Out)
         const availableBackups = players.slice(1).filter(p => {
           const pInj = injuryLookup.get(normalizeName(p.name));
-          return !OUT_STATUSES.includes(p.injury) &&
-                 !(pInj && OUT_STATUSES.includes(pInj.status));
+          return !isPlayerOut(p.injury) &&
+                 !(pInj && isPlayerOut(pInj.status));
         });
 
         if (availableBackups.length === 0) continue;
@@ -3977,7 +3985,7 @@ function buildDepthChartOverlay(allPlayers, sleeperPlayers, espnData) {
         if (!starter?.name) continue;
 
         const starterInjury = injuryLookup.get(normalizeName(starter.name));
-        if (!starterInjury || !OUT_STATUSES.includes(starterInjury.status)) continue;
+        if (!starterInjury || !isPlayerOut(starterInjury.status)) continue;
 
         const uplifts = upliftMap[pos];
         const backup1 = players[1];
