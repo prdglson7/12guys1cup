@@ -3894,19 +3894,29 @@ function buildDepthChartOverlay(allPlayers, sleeperPlayers, espnData) {
       if (!pos) continue;
 
       // Get their projection from allPlayers (FantasyPros consensus)
+      // Use SEASON projection for starter identification because weekly proj = 0 for injured players
       const fp = projByName.get(normalizeName(spName));
-      const proj = fp ? (Number(fp.weekly_proj) || Number(fp.proj_pts) / 17 || 0) : 0;
+      const seasonProj = fp ? Number(fp.proj_pts) : 0;
+      const weeklyProj = fp ? (Number(fp.weekly_proj) || 0) : 0;
+      // Use season proj as the ranking metric — this stays stable even when weekly = 0 due to injury
+      const rankingProj = seasonProj || (weeklyProj * 17);
+
+      // Also grab FP injury status from lookup (FP's OUT designation is authoritative)
+      const fpInjury = injuryLookup.get(normalizeName(spName));
+      const injuryStatus = fpInjury?.status || sp.injury_status || null;
 
       if (!rosterByTeam[spTeam]) rosterByTeam[spTeam] = {};
       if (!rosterByTeam[spTeam][pos]) rosterByTeam[spTeam][pos] = [];
       rosterByTeam[spTeam][pos].push({
         name: spName,
-        proj,
-        injury: sp.injury_status || null,
+        proj: rankingProj,           // season projection (stable regardless of injury)
+        weeklyProj: weeklyProj,      // what they'd score this week (0 if injured)
+        injury: injuryStatus,
       });
     }
 
-    // Sort each team-position by projection (descending) — highest proj = starter
+    // Sort each team-position by SEASON projection (descending) — identifies talent hierarchy
+    // regardless of who's currently healthy
     for (const posMap of Object.values(rosterByTeam)) {
       for (const players of Object.values(posMap)) {
         players.sort((a, b) => b.proj - a.proj);
