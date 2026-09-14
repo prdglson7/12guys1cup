@@ -6,8 +6,10 @@ name: Update ESPN depth charts + injuries
 # Runs every 30 min — ESPN updates when coaches publish practice reports.
 
 on:
-  schedule:
-    - cron: "*/30 * * * *"    # every 30 min
+  # DISABLED — Sleeper DB now provides depth chart + injury data (every 30 min)
+  # Uncomment to re-enable as a backup source
+  # schedule:
+  #   - cron: "*/30 * * * *"
   workflow_dispatch:
   push:
     branches: [main]
