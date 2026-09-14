@@ -4108,7 +4108,13 @@ async function renderStartSit(allPlayers, container, nflverse, sleeperPlayers) {
     statusItems.push('⏳ xFP data (populates after Week 3)');
   }
   if (nflverse.snaps?.size > 0) {
-    statusItems.push('✓ Snap trend data');
+    const currentYear = new Date().getFullYear();
+    const isCurrentSeason = nflverse.snapSeason === currentYear;
+    if (isCurrentSeason) {
+      statusItems.push(`✓ Snap trend data (${currentYear})`);
+    } else {
+      statusItems.push(`⏳ Snap trend (using ${nflverse.snapSeason} baseline · updates after Week 1)`);
+    }
   } else {
     statusItems.push('⏳ Snap trend data (populates after Week 1)');
   }
@@ -4121,9 +4127,9 @@ async function renderStartSit(allPlayers, container, nflverse, sleeperPlayers) {
 
   container.innerHTML = `
     <div class="ss-notice">
-      <strong>Advanced Start/Sit.</strong> Uses FantasyPros projections + injury probability,
-      layered with nflverse signals: real DEF vs POS matchup, snap trends, target share,
-      xFP regression, Vegas game script, and weather.
+      <strong>Advanced Start/Sit.</strong> Uses multi-source consensus projections + injury probability,
+      layered with 8 factors: DEF vs POS matchup, snap trends, opportunity weight (target/route share),
+      xFP regression, Vegas game script, weather, and depth chart injury overlay.
       <div class="ss-status">${statusItems.join(' · ')}</div>
     </div>
 
