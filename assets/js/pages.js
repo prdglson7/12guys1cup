@@ -5510,10 +5510,18 @@ async function renderWaiver() {
     </label>`;
 
   const paint = () => {
-    // Filter based on controls
+    // Filter based on controls (used for standard waiver sections)
     const filtered = allPlayers.filter(p => {
       if (positionFilter !== 'ALL' && p.pos !== positionFilter) return false;
       if (availableOnly && !p._available) return false;
+      return true;
+    });
+
+    // Scouting filter — ignores availability toggle (metric sections show all players)
+    // These sections are scouting tools, not just waiver adds: rush share / target rate /
+    // air yards tell you WHO'S GETTING VOLUME even if rostered (informs trades, start/sit).
+    const scoutingFiltered = allPlayers.filter(p => {
+      if (positionFilter !== 'ALL' && p.pos !== positionFilter) return false;
       return true;
     });
 
@@ -5537,7 +5545,7 @@ async function renderWaiver() {
       <section class="waiver-section">
         <div class="waiver-section-head">
           <h3>🏈 Backfield Kings</h3>
-          <span class="waiver-section-note">RBs with 45%+ recent rush share — the workhorse backs</span>
+          <span class="waiver-section-note">RBs with 45%+ recent rush share — the workhorse backs (scouting: shows all)</span>
         </div>
         <div class="waiver-cards" id="waiver-backfield-kings"></div>
       </section>
@@ -5545,7 +5553,7 @@ async function renderWaiver() {
       <section class="waiver-section">
         <div class="waiver-section-head">
           <h3>🎯 Efficient Targets</h3>
-          <span class="waiver-section-note">WR/TE with 20%+ target rate (targets per route run) — trusted receivers</span>
+          <span class="waiver-section-note">WR/TE with 20%+ target rate (targets per route run) — trusted receivers (scouting: shows all)</span>
         </div>
         <div class="waiver-cards" id="waiver-target-rate"></div>
       </section>
@@ -5553,7 +5561,7 @@ async function renderWaiver() {
       <section class="waiver-section">
         <div class="waiver-section-head">
           <h3>🚀 Downfield Weapons</h3>
-          <span class="waiver-section-note">WR/TE with 65+ air yards per game — deep threats and boom candidates</span>
+          <span class="waiver-section-note">WR/TE with 65+ air yards per game — deep threats and boom candidates (scouting: shows all)</span>
         </div>
         <div class="waiver-cards" id="waiver-air-yards"></div>
       </section>
@@ -5594,7 +5602,7 @@ async function renderWaiver() {
     const cardHtml = (p, signalHtml) => {
       const availBadge = p._available
         ? '<span class="waiver-avail waiver-free">Available</span>'
-        : `<span class="waiver-avail waiver-owned">${esc(p._owner || 'Rostered')}</span>`;
+        : `<span class="waiver-avail waiver-owned">🔒 ${esc(p._owner || 'Rostered')}</span>`;
       return `
         <div class="waiver-card">
           <div class="waiver-card-top">
@@ -5614,7 +5622,7 @@ async function renderWaiver() {
     };
 
     // 1. Snap Risers — sort by latest snap delta
-    const snapRisers = filtered
+    const snapRisers = scoutingFiltered
       .filter(p => p._latest_snap_delta != null && p._latest_snap_delta > 0.10)
       .sort((a, b) => b._latest_snap_delta - a._latest_snap_delta)
       .slice(0, 15);
@@ -5626,7 +5634,7 @@ async function renderWaiver() {
 
     // 2. Full-Time Route Runners — WR 20%+ / TE 15%+ blended dropback share
     const routeThresh = { WR: 0.20, TE: 0.15 };
-    const routeRunners = filtered
+    const routeRunners = scoutingFiltered
       .filter(p => {
         if (!['WR', 'TE'].includes(p.pos)) return false;
         const blended = p._dropback_share_blended;
@@ -5646,7 +5654,7 @@ async function renderWaiver() {
       : '<div class="waiver-empty">No full-time route runners yet — populates after Week 1 games (accurate dropback data).</div>';
 
     // NEW: Backfield Kings — RBs with 45%+ recent rush share
-    const backfieldKings = filtered
+    const backfieldKings = scoutingFiltered
       .filter(p => {
         if (p.pos !== 'RB') return false;
         const share = p._rush_share_recent;
@@ -5666,7 +5674,7 @@ async function renderWaiver() {
       : '<div class="waiver-empty">No backfield kings yet — populates after Week 1 games (rush share data).</div>';
 
     // NEW: Efficient Targets — WR/TE with 20%+ target rate (targets/route)
-    const efficientTargets = filtered
+    const efficientTargets = scoutingFiltered
       .filter(p => {
         if (!['WR', 'TE'].includes(p.pos)) return false;
         const rate = p._target_rate_recent;
@@ -5685,7 +5693,7 @@ async function renderWaiver() {
       : '<div class="waiver-empty">No efficient-target leaders yet — populates after Week 1 games.</div>';
 
     // NEW: Downfield Weapons — WR/TE with 65+ air yards per game
-    const downfieldWeapons = filtered
+    const downfieldWeapons = scoutingFiltered
       .filter(p => {
         if (!['WR', 'TE'].includes(p.pos)) return false;
         const ay = p._air_yards_recent;
@@ -5704,7 +5712,7 @@ async function renderWaiver() {
       : '<div class="waiver-empty">No downfield weapons yet — populates after Week 1 games.</div>';
 
     // 3. Target Share Explosions — WR/TE with delta > 5%
-    const tgtShare = filtered
+    const tgtShare = scoutingFiltered
       .filter(p => ['WR', 'TE'].includes(p.pos) && p._tgt_share_delta != null && p._tgt_share_delta > 0.05)
       .sort((a, b) => b._tgt_share_delta - a._tgt_share_delta)
       .slice(0, 12);
@@ -5715,7 +5723,7 @@ async function renderWaiver() {
       : '<div class="waiver-empty">No target share explosions yet — populates once games play.</div>';
 
     // 3. Positive Regression — negative xFP gap
-    const positive = filtered
+    const positive = scoutingFiltered
       .filter(p => p._xfp_gap != null && p._xfp_gap < -10)
       .sort((a, b) => a._xfp_gap - b._xfp_gap)
       .slice(0, 12);
@@ -5726,7 +5734,7 @@ async function renderWaiver() {
       : '<div class="waiver-empty">No positive regression candidates — populates with xFP data in-season.</div>';
 
     // 4. Negative Regression — positive xFP gap
-    const negative = filtered
+    const negative = scoutingFiltered
       .filter(p => p._xfp_gap != null && p._xfp_gap > 10)
       .sort((a, b) => b._xfp_gap - a._xfp_gap)
       .slice(0, 12);
@@ -5938,22 +5946,14 @@ function analyzeWeek(matchups, playerPosMap, startingSlots) {
   if (!teamResults.length) return null;
   teamResults.sort((a, b) => a.points - b.points);
   const lowest = teamResults[0];
-  const highest = teamResults[teamResults.length - 1];
 
   donkeyCandidates.sort((a, b) => b.missed - a.missed);
   const donkey = donkeyCandidates[0] || null;
 
-  // His Grace = highest scoring team of the week (regardless of win/loss or efficiency)
-  // Find the coach candidate that matches the highest scorer (if they won)
-  // If the highest scorer LOST, still crown them — highest points is highest points
-  const highestScorerEntry = coachCandidates.find(c => c.roster_id === highest.roster_id);
-  const coach = highestScorerEntry || {
-    roster_id: highest.roster_id,
-    actual: highest.points,
-    optimal: highest.points, // fallback — we don't have opt data for losers here
-    efficiency: 1.0,
-    margin: 0,
-  };
+  // His Grace = winner with the highest lineup efficiency (smart management)
+  // We already highlight the highest scorer elsewhere; this rewards a different skill.
+  coachCandidates.sort((a, b) => b.efficiency - a.efficiency);
+  const coach = coachCandidates[0] || null;
 
   return { donkey, coach, lowest, teamResults };
 }
@@ -5993,7 +5993,7 @@ async function renderShame() {
         <h3>The Council awaits games to judge</h3>
         <p>Every Tuesday morning after MNF, the Council convenes to name:</p>
         <ul>
-          <li><strong>His Grace</strong> — highest scoring team of the week</li>
+          <li><strong>His Grace</strong> — winner with the highest lineup efficiency</li>
           <li><strong>The Donkey</strong> — manager who lost by less than the points left upon the bench</li>
           <li><strong>The Peasant</strong> — lowest scorer in all the land</li>
         </ul>
