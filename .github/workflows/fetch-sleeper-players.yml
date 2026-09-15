@@ -27,10 +27,10 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
 
@@ -47,4 +47,16 @@ jobs:
             exit 0
           fi
           git commit -m "Update Sleeper players DB [skip ci]"
-          git push
+
+          # Retry loop for concurrent-push races (other workflows may commit concurrently)
+          for i in 1 2 3 4 5; do
+            if git pull --rebase origin main && git push; then
+              echo "Push successful on attempt $i"
+              exit 0
+            fi
+            echo "Retry $i after concurrent push…"
+            sleep $((i * 3))
+          done
+
+          echo "Failed to push after 5 attempts"
+          exit 1
