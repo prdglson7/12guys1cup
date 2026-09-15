@@ -118,10 +118,17 @@ def fetch_weekly_stats():
             "tgt_share": num_or_none(row.get("target_share")),
             "rec": int_or_none(row.get("receptions")) or 0,
             "rec_yds": num_or_none(row.get("receiving_yards")) or 0,
+            "rec_tds": int_or_none(row.get("receiving_tds")) or 0,
             "car": int_or_none(row.get("carries")) or 0,
             "rush_yds": num_or_none(row.get("rushing_yards")) or 0,
+            "rush_tds": int_or_none(row.get("rushing_tds")) or 0,
+            "pass_att": int_or_none(row.get("attempts")) or 0,
             "pass_yds": num_or_none(row.get("passing_yards")) or 0,
             "pass_td": int_or_none(row.get("passing_tds")) or 0,
+            "pass_tds": int_or_none(row.get("passing_tds")) or 0,
+            "air_yards": num_or_none(row.get("receiving_air_yards")) or 0,
+            "adot": num_or_none(row.get("racr")),  # air yards ratio (Racial Air Yards Ratio)
+            "tgt_air_yards": num_or_none(row.get("targeted_air_yards")) or num_or_none(row.get("receiving_air_yards")) or 0,
         })
 
     weeks = sorted({w["week"] for p in players.values() for w in p["weeks"] if w["week"]})
@@ -726,6 +733,173 @@ def compute_xfp_fallback(weekly_stats_data):
         "notes": "Computed xFP from raw opportunity: targets × (yards/target + reception rate + TD prob) + carries × YPC + red zone touches. Gap column = actual - expected (positive = overperformed).",
     }
 
+# ------------------------------------------------------------------
+# Waiver metrics: rush share, target rate, air yards leaders
+# ------------------------------------------------------------------
+# Produces JJ-style metrics for waiver wire scouting:
+#   1. Rush share — RB carries / team carries (60%+ = backfield king)
+#   2. Target rate — targets / routes run (25%+ = trusted receiver)
+#   3. Air yards per game — WR/TE downfield weapons (90+/game = threat)
+
+def fetch_waiver_metrics(weekly_stats_data, route_data):
+    log("Computing waiver metrics: rush share, target rate, air yards…")
+
+    if not weekly_stats_data or not weekly_stats_data.get("players"):
+        return {"season": None, "players": {}}
+
+    season = weekly_stats_data.get("season")
+    if not season:
+        return {"season": None, "players": {}}
+
+    # Build team rush attempts per week (denominator for rush share)
+    team_rushes = {}  # {team: {week: total_carries}}
+    for pdata in weekly_stats_data["players"].values():
+        team = pdata.get("team", "")
+        if not team:
+            continue
+        for w in pdata.get("weeks", []):
+            wk = w.get("week")
+            car = w.get("car", 0) or 0
+            if not wk or car <= 0:
+                continue
+            team_rushes.setdefault(team, {}).setdefault(wk, 0)
+            team_rushes[team][wk] += car
+
+    # Build route lookup: {normalized_name: {week: route_count}}
+    # Route counts derived from route_data (snap % × team pass rate approximation)
+    routes_lookup = {}
+    if route_data and route_data.get("players"):
+        for p in route_data["players"].values():
+            name = p.get("name", "")
+            if not name:
+                continue
+            weekly_routes = {}
+            for w in p.get("weekly", []):
+                wk = w.get("week")
+                route_pct = w.get("route_pct", 0)
+                # Estimate route count from percentage (assumes ~40 team dropbacks/game avg)
+                # This is approximate but consistent for target rate calculations
+                if wk and route_pct > 0:
+                    weekly_routes[wk] = route_pct  # Store the pct directly for ratio calcs
+            if weekly_routes:
+                routes_lookup[name.lower()] = weekly_routes
+
+    # Compute per-player metrics
+    players_out = {}
+    for pid, pdata in weekly_stats_data["players"].items():
+        pos = pdata.get("pos", "")
+        if pos not in ("QB", "RB", "WR", "TE"):
+            continue
+
+        team = pdata.get("team", "")
+        name = pdata.get("name", "")
+        if not team or not name:
+            continue
+
+        rush_shares = []
+        target_rates = []
+        air_yards_per_game = []
+        targets_per_game = []
+        weekly_detail = []
+
+        for w in pdata.get("weeks", []):
+            wk = w.get("week")
+            if not wk:
+                continue
+
+            car = w.get("car", 0) or 0
+            tgts = w.get("tgts", 0) or 0
+            air_yds = w.get("tgt_air_yards", 0) or w.get("air_yards", 0) or 0
+
+            # Rush share for RBs
+            team_car = team_rushes.get(team, {}).get(wk, 0)
+            rush_share = None
+            if pos == "RB" and team_car >= 5 and car > 0:
+                rush_share = car / team_car
+                rush_shares.append(rush_share)
+
+            # Target rate for WR/TE (targets / route participation)
+            target_rate = None
+            if pos in ("WR", "TE") and tgts > 0:
+                route_pct = routes_lookup.get(name.lower(), {}).get(wk)
+                if route_pct and route_pct > 0.10:  # need meaningful route sample
+                    # Approximate: if player ran routes on 80% of team's ~40 dropbacks = 32 routes
+                    # target_rate = tgts / estimated_routes
+                    # Simplified: target rate proxy = tgt_share / route_share (both are % of team)
+                    tgt_share = w.get("tgt_share")
+                    if tgt_share and tgt_share > 0:
+                        target_rate = tgt_share / route_pct
+                        target_rate = min(target_rate, 1.0)  # cap at 100%
+                        target_rates.append(target_rate)
+
+            # Air yards per game (WR/TE)
+            if pos in ("WR", "TE") and air_yds > 0:
+                air_yards_per_game.append(air_yds)
+
+            if tgts > 0:
+                targets_per_game.append(tgts)
+
+            weekly_detail.append({
+                "week": wk,
+                "car": car,
+                "tgts": tgts,
+                "air_yds": round(air_yds, 1) if air_yds else 0,
+                "rush_share": round(rush_share, 3) if rush_share else None,
+                "target_rate": round(target_rate, 3) if target_rate else None,
+            })
+
+        # Compute season/recent averages
+        recent_n = 3
+        stats = {}
+
+        if rush_shares:
+            stats["season_rush_share"] = round(sum(rush_shares) / len(rush_shares), 3)
+            recent = rush_shares[-recent_n:] if len(rush_shares) >= recent_n else rush_shares
+            stats["recent_rush_share"] = round(sum(recent) / len(recent), 3)
+            stats["rush_share_games"] = len(rush_shares)
+
+        if target_rates:
+            stats["season_target_rate"] = round(sum(target_rates) / len(target_rates), 3)
+            recent = target_rates[-recent_n:] if len(target_rates) >= recent_n else target_rates
+            stats["recent_target_rate"] = round(sum(recent) / len(recent), 3)
+            stats["target_rate_games"] = len(target_rates)
+
+        if air_yards_per_game:
+            stats["season_air_yards_pg"] = round(sum(air_yards_per_game) / len(air_yards_per_game), 1)
+            recent = air_yards_per_game[-recent_n:] if len(air_yards_per_game) >= recent_n else air_yards_per_game
+            stats["recent_air_yards_pg"] = round(sum(recent) / len(recent), 1)
+            stats["air_yards_games"] = len(air_yards_per_game)
+
+        if targets_per_game:
+            stats["season_targets_pg"] = round(sum(targets_per_game) / len(targets_per_game), 1)
+
+        # Only include players with at least one meaningful metric
+        if stats:
+            players_out[pid] = {
+                "name": name,
+                "pos": pos,
+                "team": team,
+                "games": len(pdata.get("weeks", [])),
+                **stats,
+                "weekly": weekly_detail,
+            }
+
+    log(f"  Computed waiver metrics for {len(players_out)} players")
+    return {
+        "season": season,
+        "player_count": len(players_out),
+        "players": players_out,
+        "thresholds": {
+            "rush_share_elite": 0.60,
+            "rush_share_strong": 0.45,
+            "target_rate_elite": 0.25,
+            "target_rate_strong": 0.20,
+            "air_yards_elite": 90,
+            "air_yards_strong": 65,
+        },
+        "notes": "Rush share = player carries / team carries. Target rate = target share / route share. Air yards from targeted routes.",
+    }
+
 def fetch_dropback_shares(weekly_stats_data):
     log("Fetching play-by-play for dropback-based target share…")
 
@@ -891,6 +1065,10 @@ def main():
     xfp_computed = safe(lambda: compute_xfp_fallback(weekly), "xfp_computed") or {"season": None, "players": {}}
     write_json(xfp_computed, "xfp-computed.json")
 
+    # 11. Waiver metrics (rush share, target rate, air yards)
+    waiver_metrics = safe(lambda: fetch_waiver_metrics(weekly, routes), "waiver_metrics") or {"season": None, "players": {}}
+    write_json(waiver_metrics, "waiver-metrics.json")
+
     # Manifest
     manifest = {
         "fetched_at": started.isoformat() + "Z",
@@ -907,6 +1085,7 @@ def main():
             "dropback-shares.json": {"season": dropback.get("season"), "player_count": dropback.get("player_count", 0)},
             "route-participation.json": {"season": routes.get("season"), "player_count": routes.get("player_count", 0)},
             "xfp-computed.json": {"season": xfp_computed.get("season"), "player_count": xfp_computed.get("player_count", 0)},
+            "waiver-metrics.json": {"season": waiver_metrics.get("season"), "player_count": waiver_metrics.get("player_count", 0)},
         },
     }
     write_json(manifest, "_manifest.json")
