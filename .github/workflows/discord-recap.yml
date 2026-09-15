@@ -1,13 +1,14 @@
 name: Discord — Weekly recap
 
-# Posts the week's recap + standings to #recap every Tuesday at 2am ET,
+# Posts the week's recap + standings to #recap every Tuesday at 8am ET,
 # then posts the Council of Twelve Guys and One Cup ceremonies (Studs & Duds)
 # to #studs-and-duds.
-# 2am ET Tuesday = 07:00 UTC (2am EST / 3am EDT during summer months).
+# 8am ET Tuesday gives Sleeper time to finalize records (usually 3-7am ET).
+# This ensures we're reading final W-L data, not preseason zeros.
 
 on:
   schedule:
-    - cron: "0 7 * * 2"    # Tuesday 07:00 UTC = 2am EST / 3am EDT
+    - cron: "0 13 * * 2"    # Tuesday 13:00 UTC = 8am EST / 9am EDT
   workflow_dispatch:
     inputs:
       force_recap:
