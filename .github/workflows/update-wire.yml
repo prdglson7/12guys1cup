@@ -9,7 +9,7 @@ name: Update Wire feed
 
 on:
   schedule:
-    - cron: "*/5 * * * *"    # every 5 minutes
+    - cron: "*/15 * * * *"    # Every 15 minutes (was 5 min — reduced noise, still catches breaking news quickly)    # every 5 minutes
   workflow_dispatch:
   push:
     branches: [main]
@@ -56,4 +56,15 @@ jobs:
           # Include item count in commit message so history is scannable
           COUNT=$(node -e "console.log(require('./assets/data/wire.json').total_items)")
           git commit -m "Update wire: ${COUNT} items [skip ci]"
-          git push
+
+          # Retry loop for concurrent-push races
+          for i in 1 2 3 4 5; do
+            if git pull --rebase origin main && git push; then
+              echo "Push successful on attempt $i"
+              exit 0
+            fi
+            echo "Retry $i after concurrent push…"
+            sleep $((i * 3))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
