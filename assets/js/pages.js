@@ -5938,12 +5938,22 @@ function analyzeWeek(matchups, playerPosMap, startingSlots) {
   if (!teamResults.length) return null;
   teamResults.sort((a, b) => a.points - b.points);
   const lowest = teamResults[0];
+  const highest = teamResults[teamResults.length - 1];
 
   donkeyCandidates.sort((a, b) => b.missed - a.missed);
   const donkey = donkeyCandidates[0] || null;
 
-  coachCandidates.sort((a, b) => b.efficiency - a.efficiency);
-  const coach = coachCandidates[0] || null;
+  // His Grace = highest scoring team of the week (regardless of win/loss or efficiency)
+  // Find the coach candidate that matches the highest scorer (if they won)
+  // If the highest scorer LOST, still crown them — highest points is highest points
+  const highestScorerEntry = coachCandidates.find(c => c.roster_id === highest.roster_id);
+  const coach = highestScorerEntry || {
+    roster_id: highest.roster_id,
+    actual: highest.points,
+    optimal: highest.points, // fallback — we don't have opt data for losers here
+    efficiency: 1.0,
+    margin: 0,
+  };
 
   return { donkey, coach, lowest, teamResults };
 }
@@ -5983,7 +5993,7 @@ async function renderShame() {
         <h3>The Council awaits games to judge</h3>
         <p>Every Tuesday morning after MNF, the Council convenes to name:</p>
         <ul>
-          <li><strong>His Grace</strong> — winner with the highest lineup efficiency</li>
+          <li><strong>His Grace</strong> — highest scoring team of the week</li>
           <li><strong>The Donkey</strong> — manager who lost by less than the points left upon the bench</li>
           <li><strong>The Peasant</strong> — lowest scorer in all the land</li>
         </ul>
