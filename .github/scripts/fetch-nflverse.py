@@ -74,26 +74,76 @@ def int_or_none(v):
     return int(n) if n is not None else None
 
 def try_season_with_fallback(fetcher, label):
-    """Try current season, fall back to prior season if empty (for offseason)."""
-    df = fetcher(CURRENT_SEASON)
-    if df is not None and not df.empty:
-        return df, CURRENT_SEASON
-    log(f"  {label}: {CURRENT_SEASON} empty — trying {CURRENT_SEASON - 1}")
-    df = fetcher(CURRENT_SEASON - 1)
-    return df, CURRENT_SEASON - 1
+    """Try current season, fall back to prior season if empty or error."""
+    try:
+        df = fetcher(CURRENT_SEASON)
+        if df is not None and not df.empty:
+            return df, CURRENT_SEASON
+        log(f"  {label}: {CURRENT_SEASON} empty — trying {CURRENT_SEASON - 1}")
+    except Exception as e:
+        log(f"  {label}: {CURRENT_SEASON} failed ({e}) — trying {CURRENT_SEASON - 1}")
+
+    try:
+        df = fetcher(CURRENT_SEASON - 1)
+        if df is not None and not df.empty:
+            return df, CURRENT_SEASON - 1
+        log(f"  {label}: {CURRENT_SEASON - 1} also empty")
+    except Exception as e:
+        log(f"  {label}: {CURRENT_SEASON - 1} failed ({e})")
+
+    # Return empty DataFrame instead of None so calling code doesn't crash
+    import pandas as pd
+    return pd.DataFrame(), CURRENT_SEASON - 1
 
 # ------------------------------------------------------------------
 # 1. Weekly player stats
 # ------------------------------------------------------------------
 
+def fetch_weekly_stats_direct(season):
+    """Fetch weekly stats directly from nflverse-data releases.
+    Bypasses nfl_data_py which uses stale URLs (v0.3.3 as of 2026)."""
+    import pandas as pd
+    url = f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_{season}.parquet"
+    log(f"  Fetching directly from nflverse: stats_player_week_{season}.parquet")
+    return pd.read_parquet(url, engine='auto')
+
 def fetch_weekly_stats():
     log("Fetching weekly player stats…")
-    df, season_used = try_season_with_fallback(
-        lambda s: nfl.import_weekly_data([s]),
-        "weekly stats"
-    )
+
+    # Try direct nflverse URL first (works with current data)
+    # Fall back to nfl_data_py if direct fetch fails
+    df = None
+    season_used = None
+    try:
+        df = fetch_weekly_stats_direct(CURRENT_SEASON)
+        if df is not None and not df.empty:
+            season_used = CURRENT_SEASON
+            log(f"  ✓ Direct fetch succeeded for {CURRENT_SEASON}")
+    except Exception as e:
+        log(f"  Direct {CURRENT_SEASON} failed ({e}) — trying {CURRENT_SEASON - 1}")
+        try:
+            df = fetch_weekly_stats_direct(CURRENT_SEASON - 1)
+            season_used = CURRENT_SEASON - 1
+        except Exception as e2:
+            log(f"  Direct {CURRENT_SEASON - 1} also failed ({e2}) — trying nfl_data_py")
+
+    # Fallback to nfl_data_py wrapper
+    if df is None or df.empty:
+        try:
+            df, season_used = try_season_with_fallback(
+                lambda s: nfl.import_weekly_data([s]),
+                "weekly stats"
+            )
+        except Exception as e:
+            log(f"  nfl_data_py also failed: {e}")
+
     if df is None or df.empty:
         return {"season": None, "weeks": [], "players": {}}
+
+    # Normalize field names — direct nflverse uses different names than nfl_data_py
+    # nfl_data_py: player_display_name, player_name; nflverse direct: player_display_name
+    if "player_display_name" not in df.columns and "player_name" in df.columns:
+        df["player_display_name"] = df["player_name"]
 
     df = df[df["position"].isin(FANTASY_POSITIONS)]
     log(f"  {len(df)} player-week rows (season {season_used})")
@@ -318,10 +368,21 @@ def fetch_depth_charts():
     if df is None or df.empty:
         return {"season": None, "teams": {}}
 
+    # Column names vary between nfl_data_py versions — find whichever "week" column exists
+    week_col = None
+    for candidate in ["week", "game_week", "gameday_week", "week_num"]:
+        if candidate in df.columns:
+            week_col = candidate
+            break
+
+    if week_col is None:
+        log(f"  Depth chart schema unknown — columns: {list(df.columns)[:20]}")
+        return {"season": season_used, "teams": {}}
+
     # Take most recent week per team
-    df["week"] = pd.to_numeric(df["week"], errors="coerce")
-    latest_week = int(df["week"].max())
-    df = df[df["week"] == latest_week]
+    df[week_col] = pd.to_numeric(df[week_col], errors="coerce")
+    latest_week = int(df[week_col].max())
+    df = df[df[week_col] == latest_week]
 
     teams = {}
     for _, row in df.iterrows():
