@@ -3851,3 +3851,51 @@ main { padding: 32px 0 60px; }
   font-weight: 600;
   border: 1px solid rgba(46,125,50,0.35);
 }
+
+/* Accuracy tracking display */
+.accuracy-summary {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  margin: 16px 0; padding: 20px; background: rgba(30,58,95,0.04);
+  border-radius: 8px;
+}
+.accuracy-metric { text-align: center; }
+.accuracy-value {
+  font-family: var(--f-display); font-size: 42px; color: var(--navy);
+  line-height: 1;
+}
+.accuracy-label {
+  font-family: var(--f-sign); letter-spacing: 2px; font-size: 12px;
+  color: var(--brown); margin-top: 6px;
+}
+.accuracy-sublabel { font-size: 11px; color: var(--brown); margin-top: 4px; opacity: 0.7; }
+.accuracy-details summary {
+  cursor: pointer; padding: 10px; background: rgba(30,58,95,0.04);
+  border-radius: 4px;
+}
+.accuracy-hits-misses {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px;
+}
+.accuracy-hits-misses h4 {
+  font-family: var(--f-sign); letter-spacing: 1px; color: var(--navy);
+  margin-bottom: 8px;
+}
+.accuracy-hits-misses ul { list-style: none; padding: 0; }
+.accuracy-hits-misses li {
+  padding: 4px 0; font-size: 13px; border-bottom: 1px solid rgba(30,58,95,0.08);
+}
+.empty-block {
+  padding: 20px; background: rgba(30,58,95,0.04);
+  border-radius: 6px; color: var(--brown);
+}
+@media (max-width: 600px) {
+  .accuracy-summary { grid-template-columns: 1fr; }
+  .accuracy-hits-misses { grid-template-columns: 1fr; }
+}
+
+/* Consensus projection variance chip - shows when sources disagree */
+.chip-uncertain {
+  background: rgba(232,184,74,0.20) !important;
+  color: #8B6914 !important;
+  font-weight: 600;
+  border: 1px solid rgba(232,184,74,0.45);
+}
