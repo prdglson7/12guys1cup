@@ -12,7 +12,7 @@ name: NFL Weather to Discord
 
 on:
   schedule:
-    - cron: "*/30 * * * *"    # every 30 min, every day
+    - cron: "10,40 * * * *"    # 10 min offset from Sleeper players (reduces concurrent-push contention)
   workflow_dispatch:
     inputs:
       force_post:
@@ -61,4 +61,15 @@ jobs:
             exit 0
           fi
           git commit -m "Update weather state [skip ci]"
-          git push
+
+          # Retry loop for concurrent-push races
+          for i in 1 2 3 4 5; do
+            if git pull --rebase origin main && git push; then
+              echo "Push successful on attempt "
+              exit 0
+            fi
+            echo "Retry  after concurrent push…"
+            sleep 0
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
