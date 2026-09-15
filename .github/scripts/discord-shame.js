@@ -203,12 +203,20 @@ function analyzeWeek(matchups, playerPosMap, startingSlots) {
   if (!teamResults.length) return null;
   teamResults.sort((a, b) => a.points - b.points);
   const lowest = teamResults[0];
+  const highest = teamResults[teamResults.length - 1];
 
   donkeyCandidates.sort((a, b) => b.missed - a.missed);
   const donkey = donkeyCandidates[0] || null;
 
-  coachCandidates.sort((a, b) => b.efficiency - a.efficiency);
-  const coach = coachCandidates[0] || null;
+  // His Grace = highest scoring team of the week (regardless of win/loss or efficiency)
+  const highestScorerEntry = coachCandidates.find(c => c.roster_id === highest.roster_id);
+  const coach = highestScorerEntry || {
+    roster_id: highest.roster_id,
+    actual: highest.points,
+    optimal: highest.points,
+    efficiency: 1.0,
+    margin: 0,
+  };
 
   return { donkey, coach, lowest };
 }
