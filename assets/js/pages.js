@@ -5510,18 +5510,10 @@ async function renderWaiver() {
     </label>`;
 
   const paint = () => {
-    // Filter based on controls (used for standard waiver sections)
+    // Filter based on controls
     const filtered = allPlayers.filter(p => {
       if (positionFilter !== 'ALL' && p.pos !== positionFilter) return false;
       if (availableOnly && !p._available) return false;
-      return true;
-    });
-
-    // Scouting filter — ignores availability toggle (metric sections show all players)
-    // These sections are scouting tools, not just waiver adds: rush share / target rate /
-    // air yards tell you WHO'S GETTING VOLUME even if rostered (informs trades, start/sit).
-    const scoutingFiltered = allPlayers.filter(p => {
-      if (positionFilter !== 'ALL' && p.pos !== positionFilter) return false;
       return true;
     });
 
@@ -5545,7 +5537,7 @@ async function renderWaiver() {
       <section class="waiver-section">
         <div class="waiver-section-head">
           <h3>🏈 Backfield Kings</h3>
-          <span class="waiver-section-note">RBs with 45%+ recent rush share — the workhorse backs (scouting: shows all)</span>
+          <span class="waiver-section-note">RBs with 45%+ recent rush share — the workhorse backs</span>
         </div>
         <div class="waiver-cards" id="waiver-backfield-kings"></div>
       </section>
@@ -5553,7 +5545,7 @@ async function renderWaiver() {
       <section class="waiver-section">
         <div class="waiver-section-head">
           <h3>🎯 Efficient Targets</h3>
-          <span class="waiver-section-note">WR/TE with 20%+ target rate (targets per route run) — trusted receivers (scouting: shows all)</span>
+          <span class="waiver-section-note">WR/TE with 20%+ target rate (targets per route run) — trusted receivers</span>
         </div>
         <div class="waiver-cards" id="waiver-target-rate"></div>
       </section>
@@ -5561,7 +5553,7 @@ async function renderWaiver() {
       <section class="waiver-section">
         <div class="waiver-section-head">
           <h3>🚀 Downfield Weapons</h3>
-          <span class="waiver-section-note">WR/TE with 65+ air yards per game — deep threats and boom candidates (scouting: shows all)</span>
+          <span class="waiver-section-note">WR/TE with 65+ air yards per game — deep threats and boom candidates</span>
         </div>
         <div class="waiver-cards" id="waiver-air-yards"></div>
       </section>
@@ -5588,14 +5580,6 @@ async function renderWaiver() {
           <span class="waiver-section-note">Outperforming their expected — production likely to fall</span>
         </div>
         <div class="waiver-cards" id="waiver-negative-reg"></div>
-      </section>
-
-      <section class="waiver-section">
-        <div class="waiver-section-head">
-          <h3>📋 All Players (by ECR)</h3>
-          <span class="waiver-section-note">${filtered.length} shown • sorted by FantasyPros consensus rank</span>
-        </div>
-        <div class="waiver-list" id="waiver-all-list"></div>
       </section>`;
 
     // Populate sections
@@ -5622,7 +5606,7 @@ async function renderWaiver() {
     };
 
     // 1. Snap Risers — sort by latest snap delta
-    const snapRisers = scoutingFiltered
+    const snapRisers = filtered
       .filter(p => p._latest_snap_delta != null && p._latest_snap_delta > 0.10)
       .sort((a, b) => b._latest_snap_delta - a._latest_snap_delta)
       .slice(0, 15);
@@ -5634,7 +5618,7 @@ async function renderWaiver() {
 
     // 2. Full-Time Route Runners — WR 20%+ / TE 15%+ blended dropback share
     const routeThresh = { WR: 0.20, TE: 0.15 };
-    const routeRunners = scoutingFiltered
+    const routeRunners = filtered
       .filter(p => {
         if (!['WR', 'TE'].includes(p.pos)) return false;
         const blended = p._dropback_share_blended;
@@ -5654,7 +5638,7 @@ async function renderWaiver() {
       : '<div class="waiver-empty">No full-time route runners yet — populates after Week 1 games (accurate dropback data).</div>';
 
     // NEW: Backfield Kings — RBs with 45%+ recent rush share
-    const backfieldKings = scoutingFiltered
+    const backfieldKings = filtered
       .filter(p => {
         if (p.pos !== 'RB') return false;
         const share = p._rush_share_recent;
@@ -5674,7 +5658,7 @@ async function renderWaiver() {
       : '<div class="waiver-empty">No backfield kings yet — populates after Week 1 games (rush share data).</div>';
 
     // NEW: Efficient Targets — WR/TE with 20%+ target rate (targets/route)
-    const efficientTargets = scoutingFiltered
+    const efficientTargets = filtered
       .filter(p => {
         if (!['WR', 'TE'].includes(p.pos)) return false;
         const rate = p._target_rate_recent;
@@ -5693,7 +5677,7 @@ async function renderWaiver() {
       : '<div class="waiver-empty">No efficient-target leaders yet — populates after Week 1 games.</div>';
 
     // NEW: Downfield Weapons — WR/TE with 65+ air yards per game
-    const downfieldWeapons = scoutingFiltered
+    const downfieldWeapons = filtered
       .filter(p => {
         if (!['WR', 'TE'].includes(p.pos)) return false;
         const ay = p._air_yards_recent;
@@ -5712,7 +5696,7 @@ async function renderWaiver() {
       : '<div class="waiver-empty">No downfield weapons yet — populates after Week 1 games.</div>';
 
     // 3. Target Share Explosions — WR/TE with delta > 5%
-    const tgtShare = scoutingFiltered
+    const tgtShare = filtered
       .filter(p => ['WR', 'TE'].includes(p.pos) && p._tgt_share_delta != null && p._tgt_share_delta > 0.05)
       .sort((a, b) => b._tgt_share_delta - a._tgt_share_delta)
       .slice(0, 12);
@@ -5723,7 +5707,7 @@ async function renderWaiver() {
       : '<div class="waiver-empty">No target share explosions yet — populates once games play.</div>';
 
     // 3. Positive Regression — negative xFP gap
-    const positive = scoutingFiltered
+    const positive = filtered
       .filter(p => p._xfp_gap != null && p._xfp_gap < -10)
       .sort((a, b) => a._xfp_gap - b._xfp_gap)
       .slice(0, 12);
@@ -5734,7 +5718,7 @@ async function renderWaiver() {
       : '<div class="waiver-empty">No positive regression candidates — populates with xFP data in-season.</div>';
 
     // 4. Negative Regression — positive xFP gap
-    const negative = scoutingFiltered
+    const negative = filtered
       .filter(p => p._xfp_gap != null && p._xfp_gap > 10)
       .sort((a, b) => b._xfp_gap - a._xfp_gap)
       .slice(0, 12);
@@ -5743,38 +5727,6 @@ async function renderWaiver() {
           `<strong>+${p._xfp_gap.toFixed(0)}</strong> pts above expected — production likely to fall`
         )).join('')
       : '<div class="waiver-empty">No negative regression candidates — populates with xFP data in-season.</div>';
-
-    // 5. All Players list — sorted by ECR, capped to first 100
-    const sorted = filtered.sort((a, b) => (Number(a.rank) || 999) - (Number(b.rank) || 999)).slice(0, 100);
-    document.getElementById('waiver-all-list').innerHTML = sorted.length
-      ? sorted.map(p => {
-          const chips = [];
-          if (p._latest_snap_delta != null && p._latest_snap_delta > 0.10) chips.push(`<span class="chip chip-snap">snap ↑${(p._latest_snap_delta*100).toFixed(0)}%</span>`);
-          if (p._tgt_share_delta != null && p._tgt_share_delta > 0.05) chips.push(`<span class="chip chip-tgt">tgt ↑${(p._tgt_share_delta*100).toFixed(0)}%</span>`);
-          if (p._xfp_gap != null && Math.abs(p._xfp_gap) > 10) {
-            chips.push(`<span class="chip chip-regression">${p._xfp_gap > 0 ? 'regress ↓' : 'regress ↑'}</span>`);
-          }
-          const availBadge = p._available
-            ? '<span class="waiver-avail waiver-free">Available</span>'
-            : `<span class="waiver-avail waiver-owned" title="${esc(p._owner || '')}">Rostered</span>`;
-          return `
-            <div class="waiver-row">
-              <div class="waiver-row-rank">${p.rank || '—'}</div>
-              <div class="waiver-row-main">
-                <div class="waiver-row-name">${esc(p.name)}
-                  ${p._injury ? `<span class="trade-injury">${esc(p._injury)}</span>` : ''}
-                </div>
-                <div class="waiver-row-meta">
-                  <span class="${_pillClass(p.pos)}">${esc(p.pos)}</span>
-                  <span>${esc(p.team || '')}</span>
-                  ${p.bye ? `<span>Bye ${esc(String(p.bye))}</span>` : ''}
-                </div>
-                ${chips.length ? `<div class="waiver-row-chips">${chips.join('')}</div>` : ''}
-              </div>
-              <div class="waiver-row-avail">${availBadge}</div>
-            </div>`;
-        }).join('')
-      : '<div class="waiver-empty">No players match current filters.</div>';
   };
 
   // Wire controls
