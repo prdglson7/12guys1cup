@@ -9,7 +9,8 @@ name: Update nflverse data
 
 on:
   schedule:
-    - cron: "0 21 * * 2"    # Tuesday 4pm ET
+    - cron: "0 21 * * 2"    # Tuesday 4pm ET — post-MNF full data pull
+    - cron: "0 14 * * 4"    # Thursday 10am ET — pre-TNF refresh for late-week injury updates
   workflow_dispatch:
   push:
     branches: [main]
