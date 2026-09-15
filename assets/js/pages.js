@@ -5947,10 +5947,10 @@ async function renderShame() {
     weeks.map(w => window.Sleeper.getMatchups(w).catch(() => null))
   );
 
-  // Determine which weeks are "finalized" — only shown after Tuesday 2am ET
+  // Determine which weeks are "finalized" — only shown after Tuesday 8am ET
   // A week is finalized if:
   //   1. state.week has advanced past it (Sleeper thinks the week is over), AND
-  //   2. We're currently past Tuesday 2am ET
+  //   2. We're currently past Tuesday 8am ET (giving Sleeper time to finalize records)
   // This prevents mid-week partial data from appearing before MNF/Tuesday commit.
   function isWeekFinalized(week) {
     // Must be strictly less than current week (Sleeper considers it complete)
@@ -5960,20 +5960,12 @@ async function renderShame() {
     const now = new Date();
     const etTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
 
-    // Find the Tuesday 2am ET that would finalize this week
-    // Weeks start Thursday. Week N ends after MNF of that week's Monday.
-    // We lock finalization at Tuesday 2am ET of the following week.
-    // Simplest: if state.week has advanced past the given week, and it's currently
-    // past Tuesday 2am ET (any Tuesday since state advanced), we're good.
-
-    // Rough heuristic: if we're in a NEW week (state.week > our week) AND
-    // current day is Tuesday-Sunday (i.e., past Tuesday morning), finalize.
     const dayOfWeek = etTime.getDay(); // 0=Sun, 1=Mon, 2=Tue, ..., 6=Sat
     const hour = etTime.getHours();
 
-    // If it's Monday or before, we haven't hit Tuesday 2am yet
+    // If it's Monday or before, we haven't hit Tuesday 8am yet
     if (dayOfWeek === 1) return false; // Monday
-    if (dayOfWeek === 2 && hour < 2) return false; // Tuesday before 2am
+    if (dayOfWeek === 2 && hour < 8) return false; // Tuesday before 8am
 
     return true;
   }
@@ -5997,8 +5989,8 @@ async function renderShame() {
       ? `<div class="shame-empty">
           <div class="shame-empty-scroll">☙ ❧</div>
           <h3>The Council awaits its Tuesday deliberation</h3>
-          <p>Week ${weeks[weeks.length - 2] || 1} scores are in, but the Council convenes only on Tuesday mornings at 2 o'clock.</p>
-          <p><em>Return after 2 AM ET Tuesday for judgment.</em></p>
+          <p>Week ${weeks[weeks.length - 2] || 1} scores are in, but the Council convenes only on Tuesday mornings at 8 o'clock.</p>
+          <p><em>Return after 8 AM ET Tuesday for judgment.</em></p>
         </div>`
       : empty("No completed weeks with scoring yet.");
     return;
