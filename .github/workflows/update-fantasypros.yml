@@ -7,7 +7,7 @@ name: Update FantasyPros feed
 
 on:
   schedule:
-    - cron: "*/30 * * * *"     # every 30 minutes
+    - cron: "5,35 * * * *"     # 5 min offset from Sleeper players (reduces concurrent-push contention)     # every 30 minutes
   workflow_dispatch:
   push:
     branches: [main]
@@ -121,4 +121,15 @@ jobs:
             exit 0
           fi
           git commit -m "Update FantasyPros feed [skip ci]"
-          git push
+
+          # Retry loop for concurrent-push races
+          for i in 1 2 3 4 5; do
+            if git pull --rebase origin main && git push; then
+              echo "Push successful on attempt "
+              exit 0
+            fi
+            echo "Retry  after concurrent push…"
+            sleep 0
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
