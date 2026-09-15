@@ -1,0 +1,61 @@
+name: Compute weekly accuracy
+
+# Runs Tuesday morning after Sleeper finalizes to compute how well
+# the tool's projections matched actual player performance.
+# Data feeds the Accuracy History display on the site.
+
+on:
+  schedule:
+    - cron: "0 14 * * 2"    # Tuesday 14:00 UTC = 9am EST / 10am EDT (after recap)
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force re-evaluation even if week already computed'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: compute-accuracy
+  cancel-in-progress: false
+
+jobs:
+  compute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: |
+          pip install nfl_data_py pandas
+
+      - name: Compute accuracy
+        env:
+          FORCE: ${{ github.event.inputs.force || '' }}
+        run: python3 .github/scripts/compute-accuracy.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/data/accuracy-history.json
+          if git diff --cached --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git commit -m "Update accuracy history [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            echo "Retry $i…"
+            sleep 5
+          done
+          exit 1
