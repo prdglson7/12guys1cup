@@ -1,14 +1,13 @@
 name: Discord — Weekly recap
 
-# Posts the week's recap + standings to #recap every Tuesday morning after MNF,
+# Posts the week's recap + standings to #recap every Tuesday at 2am ET,
 # then posts the Council of Twelve Guys and One Cup ceremonies (Studs & Duds)
 # to #studs-and-duds.
-# 8am ET Tuesday = 12:00 UTC Tuesday (during DST) / 13:00 UTC (standard time).
-# We run at 13:00 UTC to be safe post-MNF regardless of DST.
+# 2am ET Tuesday = 07:00 UTC (2am EST / 3am EDT during summer months).
 
 on:
   schedule:
-    - cron: "0 13 * * 2"   # Tuesday 13:00 UTC ≈ 8am ET (9am EDT / 8am EST)
+    - cron: "0 7 * * 2"    # Tuesday 07:00 UTC = 2am EST / 3am EDT
   workflow_dispatch:
     inputs:
       force_recap:
