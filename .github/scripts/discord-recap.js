@@ -32,6 +32,28 @@ function fetchJson(url) {
   });
 }
 
+const RECAP_STATE_FILE = 'assets/data/discord-state.json';
+const fs = require('fs');
+const path = require('path');
+
+function loadRecapState() {
+  try {
+    if (fs.existsSync(RECAP_STATE_FILE)) {
+      return JSON.parse(fs.readFileSync(RECAP_STATE_FILE, 'utf8'));
+    }
+  } catch (_) {}
+  return {};
+}
+
+function saveRecapState(state) {
+  try {
+    fs.mkdirSync(path.dirname(RECAP_STATE_FILE), { recursive: true });
+    fs.writeFileSync(RECAP_STATE_FILE, JSON.stringify(state, null, 2));
+  } catch (e) {
+    console.error('Failed to save recap state:', e.message);
+  }
+}
+
 async function main() {
   const state = await fetchJson('https://api.sleeper.app/v1/state/nfl');
 
@@ -51,6 +73,13 @@ async function main() {
 
   if (recapWeek < 1 || recapWeek > 17) {
     console.log(`No week to recap (state.week=${state.week}).`);
+    return;
+  }
+
+  // DEDUP CHECK: don't post the same week twice (multiple cron triggers)
+  const savedState = loadRecapState();
+  if (savedState.recap_last_week === recapWeek && !forceRecap) {
+    console.log(`Already posted Week ${recapWeek} recap. Skipping.`);
     return;
   }
 
@@ -169,6 +198,9 @@ async function main() {
 
   await postToDiscord(WEBHOOK, { embeds: [embed] });
   console.log(`Posted Week ${recapWeek} recap.`);
+
+  // Save dedup state so subsequent runs skip this week
+  saveRecapState({ ...loadRecapState(), recap_last_week: recapWeek });
 }
 
 main()
