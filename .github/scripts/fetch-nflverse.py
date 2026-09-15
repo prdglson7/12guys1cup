@@ -157,7 +157,7 @@ def fetch_weekly_stats():
             players[pid] = {
                 "name": row.get("player_display_name") or row.get("player_name") or "",
                 "pos": row.get("position") or "",
-                "team": row.get("recent_team") or "",
+                "team": row.get("recent_team") or row.get("team") or row.get("posteam") or "",
                 "weeks": [],
             }
         players[pid]["weeks"].append({
@@ -305,21 +305,33 @@ def compute_def_vs_pos(weekly_stats_data):
 # ------------------------------------------------------------------
 
 def fetch_xfp():
-    """Direct fetch of ff_opportunity data (not in nfl_data_py)."""
+    """Direct fetch of ff_opportunity data from ffverse/ffopportunity releases.
+    The old nflverse-data/ff_opportunity path was moved to ffverse/ffopportunity/latest-data."""
     log("Fetching expected fantasy points (xFP)…")
     for season in [CURRENT_SEASON, CURRENT_SEASON - 1]:
-        url = f"https://github.com/nflverse/nflverse-data/releases/download/ff_opportunity/ep_weekly_{season}.csv"
-        try:
-            log(f"  trying {season}")
-            text = fetch_url_text(url)
-            df = pd.read_csv(io.StringIO(text))
-            if df.empty:
+        # Try parquet first (smaller/faster), then CSV
+        for ext in ["parquet", "csv.gz", "csv"]:
+            url = f"https://github.com/ffverse/ffopportunity/releases/download/latest-data/ep_weekly_{season}.{ext}"
+            try:
+                log(f"  trying {season} ({ext})")
+                if ext == "parquet":
+                    df = pd.read_parquet(url, engine='auto')
+                elif ext == "csv.gz":
+                    df = pd.read_csv(url, compression='gzip')
+                else:
+                    text = fetch_url_text(url)
+                    df = pd.read_csv(io.StringIO(text))
+                if df.empty:
+                    log(f"  {season} ({ext}): empty")
+                    continue
+                log(f"  ✓ {len(df)} rows loaded from {season} ({ext})")
+                return build_xfp_dataset(df, season)
+            except Exception as e:
+                # Print short version of error
+                err_short = str(e)[:100]
+                log(f"  {season} ({ext}): {err_short}")
                 continue
-            log(f"  {len(df)} rows loaded")
-            return build_xfp_dataset(df, season)
-        except Exception as e:
-            log(f"  {season}: {e}")
-            continue
+    log("  All xFP sources exhausted — will use computed fallback")
     return {"season": None, "players": {}}
 
 def build_xfp_dataset(df, season):
@@ -328,7 +340,7 @@ def build_xfp_dataset(df, season):
     result = {}
     for _, row in df.iterrows():
         pid = str(row.get("player_id") or "").strip()
-        name = row.get("player_name") or row.get("full_name") or ""
+        name = row.get("player_name") or row.get("player_display_name") or row.get("full_name") or ""
         pos = row.get("position") or ""
         if pos not in FANTASY_POSITIONS:
             continue
