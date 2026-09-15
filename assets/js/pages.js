@@ -5892,19 +5892,60 @@ async function renderShame() {
     weeks.map(w => window.Sleeper.getMatchups(w).catch(() => null))
   );
 
-  // Analyze each week that has scoring
+  // Determine which weeks are "finalized" — only shown after Tuesday 2am ET
+  // A week is finalized if:
+  //   1. state.week has advanced past it (Sleeper thinks the week is over), AND
+  //   2. We're currently past Tuesday 2am ET
+  // This prevents mid-week partial data from appearing before MNF/Tuesday commit.
+  function isWeekFinalized(week) {
+    // Must be strictly less than current week (Sleeper considers it complete)
+    if (week >= currentWeek) return false;
+
+    // Get current time in ET
+    const now = new Date();
+    const etTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+
+    // Find the Tuesday 2am ET that would finalize this week
+    // Weeks start Thursday. Week N ends after MNF of that week's Monday.
+    // We lock finalization at Tuesday 2am ET of the following week.
+    // Simplest: if state.week has advanced past the given week, and it's currently
+    // past Tuesday 2am ET (any Tuesday since state advanced), we're good.
+
+    // Rough heuristic: if we're in a NEW week (state.week > our week) AND
+    // current day is Tuesday-Sunday (i.e., past Tuesday morning), finalize.
+    const dayOfWeek = etTime.getDay(); // 0=Sun, 1=Mon, 2=Tue, ..., 6=Sat
+    const hour = etTime.getHours();
+
+    // If it's Monday or before, we haven't hit Tuesday 2am yet
+    if (dayOfWeek === 1) return false; // Monday
+    if (dayOfWeek === 2 && hour < 2) return false; // Tuesday before 2am
+
+    return true;
+  }
+
+  // Analyze each week that has scoring AND is finalized
   const weeklyAnalyses = [];
   weeks.forEach((week, idx) => {
     const m = allMatchups[idx];
     if (!m?.length) return;
     if (m.every(x => (x.points || 0) === 0)) return;
+    // FINALIZATION GATE: only include if week is truly complete + past Tuesday 2am ET
+    if (!isWeekFinalized(week)) return;
     const a = analyzeWeek(m, playerPos, startingSlots);
     if (a) weeklyAnalyses.push({ week, ...a });
   });
 
   if (!weeklyAnalyses.length) {
     metaEl.textContent = `Week ${currentWeek}`;
-    bodyEl.innerHTML = empty("No completed weeks with scoring yet.");
+    const pending = weeks.filter(w => w < currentWeek).length;
+    bodyEl.innerHTML = pending > 0
+      ? `<div class="shame-empty">
+          <div class="shame-empty-scroll">☙ ❧</div>
+          <h3>The Council awaits its Tuesday deliberation</h3>
+          <p>Week ${weeks[weeks.length - 2] || 1} scores are in, but the Council convenes only on Tuesday mornings at 2 o'clock.</p>
+          <p><em>Return after 2 AM ET Tuesday for judgment.</em></p>
+        </div>`
+      : empty("No completed weeks with scoring yet.");
     return;
   }
 
