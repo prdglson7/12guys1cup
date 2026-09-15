@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-15T13:09:02.511Z",
+  "fetched_at": "2026-09-15T17:56:11.385Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -7,7 +7,7 @@
     "espn": 0.85,
     "sleeper": 0.9
   },
-  "player_count": 789,
+  "player_count": 790,
   "sources_status": {
     "fp_weekly_qb": true,
     "fp_weekly_rb": true,
@@ -3454,19 +3454,16 @@
       "team": "ARI",
       "weekly": {
         "fp": 0.67,
-        "espn": null,
         "consensus": 0.67,
         "variance": 0
       },
       "ros": {
         "fp": 10.5,
-        "espn": 0.81781294,
-        "consensus": 6.1,
-        "variance": 0.855
+        "consensus": 10.5,
+        "variance": 0
       },
       "sources_used": [
-        "fp",
-        "espn"
+        "fp"
       ]
     },
     "cj donaldson": {
@@ -5146,28 +5143,22 @@
         "espn"
       ]
     },
-    "kc concepcion": {
-      "name": "KC Concepcion",
+    "kc concepcion jr": {
+      "name": "KC Concepcion Jr.",
       "pos": "WR",
       "team": "CLE",
       "weekly": {
         "fp": 8.56,
-        "espn": null,
-        "sleeper": 8.6,
-        "consensus": 8.6,
-        "variance": 0.002
+        "consensus": 8.56,
+        "variance": 0
       },
       "ros": {
         "fp": 151.27,
-        "espn": 156.13174918,
-        "sleeper": 156.4,
-        "consensus": 154.5,
-        "variance": 0.015
+        "consensus": 151.27,
+        "variance": 0
       },
       "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
+        "fp"
       ]
     },
     "makai lemon": {
@@ -6969,22 +6960,19 @@
       "team": "KC",
       "weekly": {
         "fp": 1.26,
-        "espn": null,
         "sleeper": 1.28,
         "consensus": 1.3,
         "variance": 0.008
       },
       "ros": {
         "fp": 23.4,
-        "espn": 18.37322675,
         "sleeper": 33.9,
-        "consensus": 25.3,
-        "variance": 0.256
+        "consensus": 28.4,
+        "variance": 0.183
       },
       "sources_used": [
         "fp",
-        "sleeper",
-        "espn"
+        "sleeper"
       ]
     },
     "tai felton": {
@@ -6993,22 +6981,19 @@
       "team": "MIN",
       "weekly": {
         "fp": 1.31,
-        "espn": null,
         "sleeper": 1.89,
         "consensus": 1.6,
         "variance": 0.181
       },
       "ros": {
         "fp": 21.88,
-        "espn": 9.01853725,
         "sleeper": 29.2,
-        "consensus": 20.3,
-        "variance": 0.416
+        "consensus": 25.3,
+        "variance": 0.143
       },
       "sources_used": [
         "fp",
-        "sleeper",
-        "espn"
+        "sleeper"
       ]
     },
     "deion burks": {
@@ -7037,22 +7022,19 @@
       "team": "LAC",
       "weekly": {
         "fp": 0.92,
-        "espn": null,
         "sleeper": 0.92,
         "consensus": 0.9,
         "variance": 0
       },
       "ros": {
         "fp": 31.31,
-        "espn": 18.18346187,
         "sleeper": 35.5,
-        "consensus": 28.6,
-        "variance": 0.26
+        "consensus": 33.3,
+        "variance": 0.063
       },
       "sources_used": [
         "fp",
-        "sleeper",
-        "espn"
+        "sleeper"
       ]
     },
     "skyy moore": {
@@ -10762,20 +10744,17 @@
       "pos": "RB",
       "team": "DEN",
       "weekly": {
-        "espn": null,
         "consensus": null,
         "variance": null
       },
       "ros": {
         "fp": 9.52,
-        "espn": 0.35321889,
         "sleeper": 8.4,
-        "consensus": 6.3,
-        "variance": 0.67
+        "consensus": 9,
+        "variance": 0.062
       },
       "sources_used": [
         "fp",
-        "espn",
         "sleeper"
       ]
     },
@@ -11237,20 +11216,17 @@
       "pos": "WR",
       "team": "GB",
       "weekly": {
-        "espn": null,
         "consensus": null,
         "variance": null
       },
       "ros": {
         "fp": 24.76,
-        "espn": 40.1316029,
         "sleeper": 32,
-        "consensus": 31.9,
-        "variance": 0.194
+        "consensus": 28.2,
+        "variance": 0.128
       },
       "sources_used": [
         "fp",
-        "espn",
         "sleeper"
       ]
     },
@@ -12523,6 +12499,27 @@
         "espn"
       ]
     },
+    "kc concepcion": {
+      "name": "KC Concepcion",
+      "pos": "WR",
+      "team": "CLE",
+      "weekly": {
+        "espn": null,
+        "sleeper": 8.6,
+        "consensus": 8.6,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 156.13174918,
+        "sleeper": 156.4,
+        "consensus": 156.3,
+        "variance": 0.001
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
     "chargers dst": {
       "name": "Chargers D/ST",
       "pos": "DST",
@@ -12742,24 +12739,6 @@
         "espn"
       ]
     },
-    "vikings dst": {
-      "name": "Vikings D/ST",
-      "pos": "DST",
-      "team": "MIN",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 89.47681013,
-        "consensus": 89.47681013,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "buccaneers dst": {
       "name": "Buccaneers D/ST",
       "pos": "DST",
@@ -12772,6 +12751,24 @@
       "ros": {
         "espn": 92.20740425,
         "consensus": 92.20740425,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "vikings dst": {
+      "name": "Vikings D/ST",
+      "pos": "DST",
+      "team": "MIN",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 89.47681013,
+        "consensus": 89.47681013,
         "variance": 0
       },
       "sources_used": [
@@ -14572,7 +14569,7 @@
     "tyler goodson": {
       "name": "Tyler Goodson",
       "pos": "RB",
-      "team": "ATL",
+      "team": "DAL",
       "weekly": {
         "consensus": null,
         "variance": null
