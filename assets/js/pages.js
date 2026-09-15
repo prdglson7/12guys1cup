@@ -325,12 +325,60 @@ async function renderStandings() {
         </tbody>
       </table>`;
 
-    // Power rankings — need matchup history
-    const power = await computePowerRankings(teams, week);
+    // Power rankings — enhanced with roster strength from consensus projections
+    // Fetch rosters + consensus projections to compute roster strength
+    let rosterStrengths = null;
+    try {
+      const [rosters, consensusRes] = await Promise.all([
+        window.Sleeper.getRosters(),
+        fetch('assets/data/projections-consensus.json', { cache: 'default' }),
+      ]);
+      if (consensusRes.ok) {
+        const consensus = await consensusRes.json();
+        const sleeperPlayers = await window.Sleeper.getSleeperPlayers();
+
+        // Build player_id → weekly consensus projection lookup
+        const projByPlayerId = new Map();
+        if (sleeperPlayers?.players) {
+          const normalizeName = s => String(s || '').toLowerCase().replace(/[^a-z\s]/g, '').replace(/\s+/g, ' ').trim();
+          Object.entries(sleeperPlayers.players).forEach(([pid, sp]) => {
+            const name = sp.full_name || sp.name;
+            if (!name) return;
+            const c = consensus.players?.[normalizeName(name)];
+            if (c?.weekly?.consensus != null) {
+              projByPlayerId.set(pid, c.weekly.consensus);
+            }
+          });
+        }
+
+        // Compute each team's roster strength = sum of top 9 starters' weekly projections
+        rosterStrengths = new Map();
+        rosters.forEach(r => {
+          const playerIds = r.players || [];
+          const playerProjs = playerIds
+            .map(pid => projByPlayerId.get(pid) || 0)
+            .sort((a, b) => b - a);
+          // Take top 9 (typical starting lineup: 1 QB, 2 RB, 2 WR, 1 TE, 1 FLEX, 1 K, 1 DST)
+          const topStarters = playerProjs.slice(0, 9);
+          const strength = topStarters.reduce((s, v) => s + v, 0);
+          rosterStrengths.set(r.roster_id, strength);
+        });
+      }
+    } catch (e) {
+      console.log('Could not compute roster strength:', e.message);
+    }
+
+    const power = await computePowerRankings(teams, week, rosterStrengths);
+    const gamesPlayed = Array.from(teams.values())[0]?.wins + Array.from(teams.values())[0]?.losses || 0;
+    const preSeasonMode = gamesPlayed === 0;
+
     prEl.innerHTML = `
       <table class="stats-table">
         <thead><tr>
-          <th>#</th><th>Team</th><th class="num">Power</th><th class="num">Form</th>
+          <th>#</th><th>Team</th>
+          <th class="num">Power</th>
+          <th class="num">Roster</th>
+          ${preSeasonMode ? '' : '<th class="num">All-Play</th><th class="num">Form</th>'}
         </tr></thead>
         <tbody>${power.map((t, i) => `
           <tr>
@@ -340,12 +388,19 @@ async function renderStandings() {
               ${esc(t.team_name)}
             </div></td>
             <td class="num">${fmt1(t.power)}</td>
-            <td class="num">${fmt2(t.form)}×</td>
+            <td class="num">${t.rosterStrength != null ? fmt1(t.rosterStrength) : '—'}</td>
+            ${preSeasonMode ? '' : `
+              <td class="num">${t.allPlayWins}-${t.allPlayLosses}${t.allPlayTies ? '-' + t.allPlayTies : ''}</td>
+              <td class="num">${fmt2(t.form)}×</td>
+            `}
           </tr>`).join("")}
         </tbody>
       </table>
-      <p style="font-family:var(--f-sign);letter-spacing:1px;color:var(--brown);font-size:13px;margin-top:12px;">
-        Power = 60% win rate + 25% points-for percentile + 15% recent form.
+      <p style="font-family:var(--f-sign);letter-spacing:1px;color:var(--brown);font-size:13px;margin-top:12px;line-height:1.6;">
+        ${preSeasonMode
+          ? '<strong>Preseason mode:</strong> Power = roster strength only (sum of top 9 starters\' consensus weekly projections). Games-based signals activate after Week 1.'
+          : 'Power = 35% Points For + 25% Roster Strength + 20% Recent Form + 10% Points Against (schedule luck) + 10% All-Play Record.'
+        }
       </p>`;
 
     // ========== WEEKLY WINNERS/LOSERS + SEASON LEADERS (moved from Dues) ==========
