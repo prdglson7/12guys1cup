@@ -5580,6 +5580,14 @@ async function renderWaiver() {
           <span class="waiver-section-note">Outperforming their expected — production likely to fall</span>
         </div>
         <div class="waiver-cards" id="waiver-negative-reg"></div>
+      </section>
+
+      <section class="waiver-section">
+        <div class="waiver-section-head">
+          <h3>📊 Rest of Season Rankings</h3>
+          <span class="waiver-section-note">Top available players by ROS consensus projection — long-term stashes</span>
+        </div>
+        <div class="waiver-list" id="waiver-ros-list"></div>
       </section>`;
 
     // Populate sections
@@ -5727,6 +5735,35 @@ async function renderWaiver() {
           `<strong>+${p._xfp_gap.toFixed(0)}</strong> pts above expected — production likely to fall`
         )).join('')
       : '<div class="waiver-empty">No negative regression candidates — populates with xFP data in-season.</div>';
+
+    // ROS Rankings — top players by rest-of-season consensus projection
+    const rosRanked = filtered
+      .filter(p => p.proj_pts != null && p.proj_pts > 0)
+      .sort((a, b) => b.proj_pts - a.proj_pts)
+      .slice(0, 50);
+    document.getElementById('waiver-ros-list').innerHTML = rosRanked.length
+      ? rosRanked.map((p, idx) => {
+          const availBadge = p._available
+            ? '<span class="waiver-avail waiver-free">Available</span>'
+            : `<span class="waiver-avail waiver-owned" title="${esc(p._owner || '')}">🔒 ${esc(p._owner || 'Rostered')}</span>`;
+          return `
+            <div class="waiver-row">
+              <div class="waiver-row-rank">${idx + 1}</div>
+              <div class="waiver-row-main">
+                <div class="waiver-row-name">${esc(p.name)}
+                  ${p._injury ? `<span class="trade-injury">${esc(p._injury)}</span>` : ''}
+                </div>
+                <div class="waiver-row-meta">
+                  <span class="${_pillClass(p.pos)}">${esc(p.pos)}</span>
+                  <span>${esc(p.team || '')}</span>
+                  ${p.bye ? `<span>Bye ${esc(String(p.bye))}</span>` : ''}
+                  <span><strong>${p.proj_pts.toFixed(0)}</strong> ROS pts</span>
+                </div>
+              </div>
+              <div class="waiver-row-avail">${availBadge}</div>
+            </div>`;
+        }).join('')
+      : '<div class="waiver-empty">ROS projections loading…</div>';
   };
 
   // Wire controls
