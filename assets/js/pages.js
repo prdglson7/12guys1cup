@@ -1805,7 +1805,7 @@ async function renderDues() {
 /* ---------- nflverse data loader (Phase 1 pipeline output) ---------- */
 
 async function loadNflverseData() {
-  const files = ['xfp', 'snap-counts', 'def-vs-pos', 'schedules', 'weekly-stats', 'dropback-shares', 'depth-charts', 'route-participation', 'xfp-computed'];
+  const files = ['xfp', 'snap-counts', 'def-vs-pos', 'schedules', 'weekly-stats', 'dropback-shares', 'depth-charts', 'route-participation', 'xfp-computed', 'waiver-metrics'];
   const results = {};
   await Promise.all(files.map(async (f) => {
     try {
@@ -1915,6 +1915,14 @@ async function loadNflverseData() {
     }
   }
 
+  // Waiver metrics lookup (rush share, target rate, air yards)
+  const waiverByName = new Map();
+  if (results['waiver-metrics']?.players) {
+    for (const p of Object.values(results['waiver-metrics'].players)) {
+      if (p.name) waiverByName.set(normalizeName(p.name), p);
+    }
+  }
+
   // Depth charts by team (for injury replacement detection)
   const depthChartsByTeam = results['depth-charts']?.teams || {};
 
@@ -1925,11 +1933,20 @@ async function loadNflverseData() {
     dropbackShares: dropbackByName,
     routeParticipation: routeByName,
     xfpComputed: xfpComputedByName,
+    waiverMetrics: waiverByName,
     dropbackThresholds: results['dropback-shares']?.thresholds || { WR: 0.20, TE: 0.15 },
     routeThresholds: results['route-participation']?.thresholds || {
       WR: { elite: 0.85, starter: 0.70, rotational: 0.50, spot: 0.25 },
       TE: { elite: 0.75, starter: 0.55, rotational: 0.35, spot: 0.15 },
       RB: { elite: 0.55, starter: 0.35, rotational: 0.20, spot: 0.05 },
+    },
+    waiverThresholds: results['waiver-metrics']?.thresholds || {
+      rush_share_elite: 0.60,
+      rush_share_strong: 0.45,
+      target_rate_elite: 0.25,
+      target_rate_strong: 0.20,
+      air_yards_elite: 90,
+      air_yards_strong: 65,
     },
     defVsPos: results['def-vs-pos']?.defenses || {},
     playoffOpps: results['schedules']?.playoff_opponents || {},
@@ -2010,6 +2027,20 @@ function enrichPlayer(player, nflverse) {
     player._dropback_share_recent = dropback.recent_share;
     player._dropback_share_blended = dropback.blended_share;
     player._dropback_games = dropback.games;
+  }
+
+  // Waiver metrics (rush share, target rate, air yards)
+  const waiver = nflverse.waiverMetrics?.get(key);
+  if (waiver) {
+    player._rush_share_recent = waiver.recent_rush_share;
+    player._rush_share_season = waiver.season_rush_share;
+    player._rush_share_games = waiver.rush_share_games;
+    player._target_rate_recent = waiver.recent_target_rate;
+    player._target_rate_season = waiver.season_target_rate;
+    player._target_rate_games = waiver.target_rate_games;
+    player._air_yards_recent = waiver.recent_air_yards_pg;
+    player._air_yards_season = waiver.season_air_yards_pg;
+    player._air_yards_games = waiver.air_yards_games;
   }
 }
 
@@ -5399,6 +5430,30 @@ async function renderWaiver() {
 
       <section class="waiver-section">
         <div class="waiver-section-head">
+          <h3>🏈 Backfield Kings</h3>
+          <span class="waiver-section-note">RBs with 45%+ recent rush share — the workhorse backs</span>
+        </div>
+        <div class="waiver-cards" id="waiver-backfield-kings"></div>
+      </section>
+
+      <section class="waiver-section">
+        <div class="waiver-section-head">
+          <h3>🎯 Efficient Targets</h3>
+          <span class="waiver-section-note">WR/TE with 20%+ target rate (targets per route run) — trusted receivers</span>
+        </div>
+        <div class="waiver-cards" id="waiver-target-rate"></div>
+      </section>
+
+      <section class="waiver-section">
+        <div class="waiver-section-head">
+          <h3>🚀 Downfield Weapons</h3>
+          <span class="waiver-section-note">WR/TE with 65+ air yards per game — deep threats and boom candidates</span>
+        </div>
+        <div class="waiver-cards" id="waiver-air-yards"></div>
+      </section>
+
+      <section class="waiver-section">
+        <div class="waiver-section-head">
           <h3>🎯 Target Share Explosions</h3>
           <span class="waiver-section-note">WRs/TEs seeing routes and volume spike</span>
         </div>
@@ -5483,6 +5538,64 @@ async function renderWaiver() {
           + `over ${p._dropback_games} game${p._dropback_games !== 1 ? 's' : ''}`
         )).join('')
       : '<div class="waiver-empty">No full-time route runners yet — populates after Week 1 games (accurate dropback data).</div>';
+
+    // NEW: Backfield Kings — RBs with 45%+ recent rush share
+    const backfieldKings = filtered
+      .filter(p => {
+        if (p.pos !== 'RB') return false;
+        const share = p._rush_share_recent;
+        if (share == null) return false;
+        const games = p._rush_share_games || 0;
+        if (games < 1) return false;
+        return share >= 0.45;
+      })
+      .sort((a, b) => (b._rush_share_recent || 0) - (a._rush_share_recent || 0))
+      .slice(0, 12);
+    document.getElementById('waiver-backfield-kings').innerHTML = backfieldKings.length
+      ? backfieldKings.map(p => cardHtml(p,
+          `<strong>${(p._rush_share_recent * 100).toFixed(0)}%</strong> recent rush share `
+          + `(season ${(p._rush_share_season * 100).toFixed(0)}%) `
+          + `over ${p._rush_share_games} game${p._rush_share_games !== 1 ? 's' : ''}`
+        )).join('')
+      : '<div class="waiver-empty">No backfield kings yet — populates after Week 1 games (rush share data).</div>';
+
+    // NEW: Efficient Targets — WR/TE with 20%+ target rate (targets/route)
+    const efficientTargets = filtered
+      .filter(p => {
+        if (!['WR', 'TE'].includes(p.pos)) return false;
+        const rate = p._target_rate_recent;
+        if (rate == null) return false;
+        const games = p._target_rate_games || 0;
+        if (games < 1) return false;
+        return rate >= 0.20;
+      })
+      .sort((a, b) => (b._target_rate_recent || 0) - (a._target_rate_recent || 0))
+      .slice(0, 12);
+    document.getElementById('waiver-target-rate').innerHTML = efficientTargets.length
+      ? efficientTargets.map(p => cardHtml(p,
+          `<strong>${(p._target_rate_recent * 100).toFixed(0)}%</strong> target rate `
+          + `(targets per route run) — trusted receiver`
+        )).join('')
+      : '<div class="waiver-empty">No efficient-target leaders yet — populates after Week 1 games.</div>';
+
+    // NEW: Downfield Weapons — WR/TE with 65+ air yards per game
+    const downfieldWeapons = filtered
+      .filter(p => {
+        if (!['WR', 'TE'].includes(p.pos)) return false;
+        const ay = p._air_yards_recent;
+        if (ay == null) return false;
+        const games = p._air_yards_games || 0;
+        if (games < 1) return false;
+        return ay >= 65;
+      })
+      .sort((a, b) => (b._air_yards_recent || 0) - (a._air_yards_recent || 0))
+      .slice(0, 12);
+    document.getElementById('waiver-air-yards').innerHTML = downfieldWeapons.length
+      ? downfieldWeapons.map(p => cardHtml(p,
+          `<strong>${p._air_yards_recent.toFixed(0)}</strong> air yards/game `
+          + `(season ${p._air_yards_season.toFixed(0)}) — deep threat`
+        )).join('')
+      : '<div class="waiver-empty">No downfield weapons yet — populates after Week 1 games.</div>';
 
     // 3. Target Share Explosions — WR/TE with delta > 5%
     const tgtShare = filtered
