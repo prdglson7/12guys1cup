@@ -403,6 +403,117 @@ async function renderStandings() {
         }
       </p>`;
 
+    // ========== PROJECTION ACCURACY HISTORY ==========
+    const accEl = document.getElementById("accuracy-table");
+    if (accEl) {
+      try {
+        const accRes = await fetch('assets/data/accuracy-history.json', { cache: 'default' });
+        if (accRes.ok) {
+          const acc = await accRes.json();
+          const weeks = Object.entries(acc.weeks || {})
+            .map(([k, v]) => v)
+            .sort((a, b) => b.week - a.week);
+
+          if (weeks.length === 0) {
+            accEl.innerHTML = `
+              <div class="empty-block">
+                <p><strong>No accuracy data yet.</strong></p>
+                <p>Accuracy is computed every Tuesday morning after Sleeper finalizes.
+                First data appears after Week 1 games complete.</p>
+              </div>`;
+          } else {
+            // Compute season averages
+            const seasonMAE = weeks.reduce((s, w) => s + (w.accuracy?.overall?.mae || 0), 0) / weeks.length;
+            const seasonRMSE = weeks.reduce((s, w) => s + (w.accuracy?.overall?.rmse || 0), 0) / weeks.length;
+
+            accEl.innerHTML = `
+              <div class="accuracy-summary">
+                <div class="accuracy-metric">
+                  <div class="accuracy-value">${seasonMAE.toFixed(1)}</div>
+                  <div class="accuracy-label">Season MAE (pts)</div>
+                  <div class="accuracy-sublabel">Mean absolute error — lower is better</div>
+                </div>
+                <div class="accuracy-metric">
+                  <div class="accuracy-value">${seasonRMSE.toFixed(1)}</div>
+                  <div class="accuracy-label">Season RMSE (pts)</div>
+                  <div class="accuracy-sublabel">Root mean squared error</div>
+                </div>
+                <div class="accuracy-metric">
+                  <div class="accuracy-value">${weeks.length}</div>
+                  <div class="accuracy-label">Weeks Tracked</div>
+                  <div class="accuracy-sublabel">Since Week 1</div>
+                </div>
+              </div>
+
+              <table class="stats-table" style="margin-top:16px;">
+                <thead><tr>
+                  <th>Week</th>
+                  <th class="num">MAE</th>
+                  <th class="num">RMSE</th>
+                  <th class="num">Players</th>
+                  <th class="num">QB</th>
+                  <th class="num">RB</th>
+                  <th class="num">WR</th>
+                  <th class="num">TE</th>
+                </tr></thead>
+                <tbody>${weeks.map(w => {
+                  const o = w.accuracy?.overall || {};
+                  const p = w.accuracy?.by_position || {};
+                  return `
+                    <tr>
+                      <td>Week ${w.week}</td>
+                      <td class="num">${o.mae ?? '—'}</td>
+                      <td class="num">${o.rmse ?? '—'}</td>
+                      <td class="num">${o.count ?? '—'}</td>
+                      <td class="num">${p.QB?.mae ?? '—'}</td>
+                      <td class="num">${p.RB?.mae ?? '—'}</td>
+                      <td class="num">${p.WR?.mae ?? '—'}</td>
+                      <td class="num">${p.TE?.mae ?? '—'}</td>
+                    </tr>`;
+                }).join("")}
+                </tbody>
+              </table>
+
+              <p style="font-family:var(--f-sign);letter-spacing:1px;color:var(--brown);font-size:13px;margin-top:12px;">
+                MAE = Mean Absolute Error (avg pts off per player). Lower = more accurate.
+                Industry benchmark: ~4-5 MAE is excellent, ~6-7 is good, 8+ needs work.
+              </p>
+
+              ${weeks[0]?.accuracy?.top_hits?.length ? `
+                <details class="accuracy-details" style="margin-top:16px;">
+                  <summary><strong>Week ${weeks[0].week} — Top Hits & Misses</strong></summary>
+                  <div class="accuracy-hits-misses">
+                    <div>
+                      <h4>✓ Top Hits (within 3 pts)</h4>
+                      <ul>
+                        ${weeks[0].accuracy.top_hits.slice(0, 5).map(h => `
+                          <li>${esc(h.name)} (${h.pos}): projected ${h.proj}, scored ${h.actual}</li>
+                        `).join("")}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4>✗ Top Misses</h4>
+                      <ul>
+                        ${weeks[0].accuracy.top_misses.slice(0, 5).map(m => `
+                          <li>${esc(m.name)} (${m.pos}): projected ${m.proj}, scored ${m.actual} (${m.error > 0 ? '+' : ''}${m.error})</li>
+                        `).join("")}
+                      </ul>
+                    </div>
+                  </div>
+                </details>
+              ` : ''}`;
+          }
+        } else {
+          accEl.innerHTML = `
+            <div class="empty-block">
+              <p><em>Accuracy tracking active — first data appears after Week 1 games.</em></p>
+            </div>`;
+        }
+      } catch (e) {
+        accEl.innerHTML = `<div class="empty-block"><em>Accuracy history unavailable.</em></div>`;
+      }
+    }
+
     // ========== WEEKLY WINNERS/LOSERS + SEASON LEADERS (moved from Dues) ==========
     if (weeklyEl && seasonEl) {
       // Load penalty amount from dues.json
@@ -1917,9 +2028,13 @@ async function loadNflverseData() {
   let liveGamesInfo = null;
 
   // Overlay LIVE game data (ESPN spreads + Open-Meteo weather) on top of nflverse schedule
+  // Uses fetch with a special no-cache handler that silently degrades if file doesn't exist yet
   try {
-    const liveRes = await fetch('assets/data/live-games.json', { cache: 'default' });
-    if (liveRes.ok) {
+    const liveRes = await fetch('assets/data/live-games.json', {
+      cache: 'default',
+    }).catch(() => null); // Silent catch — no console error for missing file
+
+    if (liveRes && liveRes.ok) {
       const live = await liveRes.json();
       liveGamesInfo = { week: live.week, fetchedAt: live.fetched_at, gameCount: live.game_count };
       // Deep merge: for each team's week, overlay live data on nflverse baseline
@@ -1927,11 +2042,9 @@ async function loadNflverseData() {
         if (!mergedGameCtx[team]) mergedGameCtx[team] = {};
         for (const [wk, liveGame] of Object.entries(weeks)) {
           const existing = mergedGameCtx[team][wk] || {};
-          // Live data wins for spread/total/weather; keep nflverse opp/home if live missing them
           mergedGameCtx[team][wk] = {
             ...existing,
             ...liveGame,
-            // Preserve nflverse historical fields if live doesn't provide them
             temp: liveGame.temp ?? existing.temp,
             wind: liveGame.wind ?? existing.wind,
             spread: liveGame.spread ?? existing.spread,
@@ -1941,9 +2054,12 @@ async function loadNflverseData() {
         }
       }
       console.log(`Live games loaded: Week ${live.week}, ${Object.keys(live.teams).length} teams`);
+    } else {
+      // File doesn't exist yet — silently fall back to nflverse historical
+      console.log('Live games data not available — using nflverse historical schedule');
     }
   } catch (e) {
-    console.log('No live games data yet:', e.message);
+    // Non-fatal — nflverse schedule provides base data
   }
 
   // Dropback-based target share lookup (route participation proxy)
@@ -3899,21 +4015,10 @@ function isPlayerOut(status) {
 }
 
 /* Load ESPN depth chart data (async, called once per render) */
-async function loadEspnDepthCharts() {
-  try {
-    const res = await fetch('assets/data/espn-depth-charts.json', { cache: 'default' });
-    if (!res.ok) return null;
-    return await res.json();
-  } catch (e) {
-    console.log('ESPN depth charts unavailable:', e.message);
-    return null;
-  }
-}
-
-/* Build the depth chart overlay from Sleeper data (primary) + ESPN fallback.
+/* Build the depth chart overlay from Sleeper data.
    Cross-references FantasyPros injury data for validation.
-   Sleeper is preferred because it's real-time and fantasy-focused. */
-function buildDepthChartOverlay(allPlayers, sleeperPlayers, espnData) {
+   Sleeper is authoritative — updated every 30 min. */
+function buildDepthChartOverlay(allPlayers, sleeperPlayers) {
   const overlay = {};
 
   // Build injury lookup — merge FP + Sleeper + ESPN
@@ -3937,17 +4042,6 @@ function buildDepthChartOverlay(allPlayers, sleeperPlayers, espnData) {
         if (!existing || (isPlayerOut(sp.injury_status) && !isPlayerOut(existing.status))) {
           injuryLookup.set(key, { status: sp.injury_status, source: 'Sleeper' });
         }
-      }
-    }
-  }
-
-  // ESPN injuries overlay (if available)
-  if (espnData?.injuries) {
-    for (const [name, inj] of Object.entries(espnData.injuries)) {
-      const existing = injuryLookup.get(name);
-      // ESPN takes precedence if it says Out and nothing else does
-      if (!existing || (isPlayerOut(inj.status) && !isPlayerOut(existing.status))) {
-        injuryLookup.set(name, { status: inj.status, source: 'ESPN' });
       }
     }
   }
@@ -4068,46 +4162,6 @@ function buildDepthChartOverlay(allPlayers, sleeperPlayers, espnData) {
     }
 
     if (sleeperOverlays > 0) return overlay;
-  }
-
-  // FALLBACK: Use ESPN depth charts if Sleeper produced nothing
-  if (espnData?.teams) {
-    for (const [team, positions] of Object.entries(espnData.teams)) {
-      for (const [pos, players] of Object.entries(positions)) {
-        if (!upliftMap[pos]) continue;
-        if (!Array.isArray(players) || players.length === 0) continue;
-
-        const starter = players[0];
-        if (!starter?.name) continue;
-
-        const starterInjury = injuryLookup.get(normalizeName(starter.name));
-        if (!starterInjury || !isPlayerOut(starterInjury.status)) continue;
-
-        const uplifts = upliftMap[pos];
-        const backup1 = players[1];
-        const backup2 = players[2];
-        const reason = `${starter.name} ${starterInjury.status} (${starterInjury.source})`;
-
-        if (backup1?.name) {
-          overlay[normalizeName(backup1.name)] = {
-            uplift: uplifts[0],
-            reason,
-            starter: starter.name,
-            role: `Promoted to ${pos}1`,
-            source: 'ESPN',
-          };
-        }
-        if (backup2?.name && uplifts[1] !== 1.0) {
-          overlay[normalizeName(backup2.name)] = {
-            uplift: uplifts[1],
-            reason,
-            starter: starter.name,
-            role: `Promoted to ${pos}2`,
-            source: 'ESPN',
-          };
-        }
-      }
-    }
   }
 
   return overlay;
@@ -4404,32 +4458,28 @@ If all selected players are on bye, verdict says "pick from bench."</pre>
   });
 
   // Build depth chart injury overlay once (map of players getting uplift due to teammate injuries)
-  // Load ESPN depth chart data (primary source, real-time)
-  const espnData = await loadEspnDepthCharts();
-  const depthOverlay = buildDepthChartOverlay(allPlayers, sleeperPlayers, espnData);
+  // Uses Sleeper data (updated every 30 min) as source of truth
+  const depthOverlay = buildDepthChartOverlay(allPlayers, sleeperPlayers);
   const overlayCount = Object.keys(depthOverlay).length;
   if (overlayCount > 0) {
-    console.log(`Depth chart overlay: ${overlayCount} players getting injury-based projection adjustment (source: ${espnData ? 'ESPN' : 'Sleeper fallback'})`);
+    console.log(`Depth chart overlay: ${overlayCount} players getting injury-based projection adjustment (Sleeper)`);
     console.log('Overlay entries:', Object.entries(depthOverlay).slice(0, 10));
   } else {
     console.log('Depth chart overlay: no adjustments (no starters Out, or depth data missing)');
   }
 
-  // Add depth chart status to the status line (now that ESPN data is loaded)
+  // Add depth chart status to the status line
   const statusEl = container.querySelector('.ss-status');
   if (statusEl) {
     let depthStatus;
-    // Count Sleeper depth chart coverage
     let sleeperDepthCount = 0;
     if (sleeperPlayers) {
       for (const sp of Object.values(sleeperPlayers)) {
         if (sp.depth_chart_position && sp.depth_chart_order != null) sleeperDepthCount++;
       }
     }
-    if (sleeperDepthCount > 100) {
-      depthStatus = `✓ Depth chart (Sleeper live, ${sleeperDepthCount} players, ${overlayCount} uplifts active)`;
-    } else if (espnData) {
-      depthStatus = `✓ Depth chart (ESPN fallback, ${espnData.team_count} teams, ${overlayCount} uplifts active)`;
+    if (sleeperPlayers && Object.keys(sleeperPlayers).length > 0) {
+      depthStatus = `✓ Depth chart (Sleeper live, ${overlayCount} uplifts active)`;
     } else {
       depthStatus = '⏳ Depth chart (waiting on data)';
     }
@@ -4682,6 +4732,7 @@ If all selected players are on bye, verdict says "pick from bench."</pre>
 
             <div class="ss-signals">
               ${x.s.depthUpliftLabel ? `<span class="chip chip-depth-uplift">📈 ${esc(x.s.depthUpliftLabel)}</span>` : ''}
+              ${x.p._weekly_variance != null && x.p._weekly_variance >= 0.20 ? `<span class="chip chip-uncertain" title="Sources disagree by ${(x.p._weekly_variance * 100).toFixed(0)}% — high uncertainty">⚠️ uncertain (${(x.p._weekly_variance * 100).toFixed(0)}%)</span>` : ''}
               ${x.s.opportunityLabel ? `<span class="chip chip-opportunity">🎯 ${esc(x.s.opportunityLabel)}</span>` : ''}
               ${x.s.tgtShareLabel ? `<span class="chip chip-tgt">${esc(x.s.tgtShareLabel)}</span>` : ''}
               ${x.s.snapLabel ? `<span class="chip chip-snap">snap ${esc(x.s.snapLabel)}</span>` : ''}
