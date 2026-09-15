@@ -5497,6 +5497,7 @@ async function renderWaiver() {
   // Controls
   let positionFilter = 'ALL';
   let availableOnly = !isOffseason;   // default ON in-season, OFF offseason
+  let rosPositionFilter = 'ALL';       // separate position filter for ROS Rankings section
 
   controlsEl.innerHTML = `
     <div class="waiver-pos-tabs">
@@ -5585,7 +5586,12 @@ async function renderWaiver() {
       <section class="waiver-section">
         <div class="waiver-section-head">
           <h3>📊 Rest of Season Rankings</h3>
-          <span class="waiver-section-note">Top available players by ROS consensus projection — long-term stashes</span>
+          <span class="waiver-section-note">Top players by ROS consensus projection — long-term stashes</span>
+        </div>
+        <div class="ros-pos-tabs">
+          ${['ALL', 'QB', 'RB', 'WR', 'TE', 'K', 'DST'].map(pos => `
+            <button class="ros-pos-tab ${pos === rosPositionFilter ? 'active' : ''}" data-ros-pos="${pos}">${pos}</button>
+          `).join('')}
         </div>
         <div class="waiver-list" id="waiver-ros-list"></div>
       </section>`;
@@ -5737,8 +5743,13 @@ async function renderWaiver() {
       : '<div class="waiver-empty">No negative regression candidates — populates with xFP data in-season.</div>';
 
     // ROS Rankings — top players by rest-of-season consensus projection
-    const rosRanked = filtered
-      .filter(p => p.proj_pts != null && p.proj_pts > 0)
+    // Uses its OWN position filter (independent of top tabs), still respects availability toggle
+    const rosRanked = allPlayers
+      .filter(p => {
+        if (rosPositionFilter !== 'ALL' && p.pos !== rosPositionFilter) return false;
+        if (availableOnly && !p._available) return false;
+        return p.proj_pts != null && p.proj_pts > 0;
+      })
       .sort((a, b) => b.proj_pts - a.proj_pts)
       .slice(0, 50);
     document.getElementById('waiver-ros-list').innerHTML = rosRanked.length
@@ -5781,6 +5792,19 @@ async function renderWaiver() {
       paint();
     });
   }
+
+  // Wire ROS position tabs (independent from top position tabs)
+  // Delegated listener since these buttons live inside bodyEl which paint() rebuilds
+  bodyEl.addEventListener('click', (e) => {
+    const rosBtn = e.target.closest('.ros-pos-tab');
+    if (!rosBtn) return;
+    rosPositionFilter = rosBtn.dataset.rosPos;
+    // Update active class on siblings within same parent
+    rosBtn.parentElement.querySelectorAll('.ros-pos-tab').forEach(b =>
+      b.classList.toggle('active', b === rosBtn)
+    );
+    paint();
+  });
 
   paint();
 }
