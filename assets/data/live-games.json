@@ -1,35 +1,9 @@
 {
-  "fetched_at": "2026-09-14T23:02:43.758Z",
+  "fetched_at": "2026-09-15T04:19:23.020Z",
   "season": 2026,
   "week": 1,
   "game_count": 16,
   "teams": {
-    "KC": {
-      "1": {
-        "opp": "DEN",
-        "home": true,
-        "spread": 2.5,
-        "total": 42.5,
-        "roof": "outdoors",
-        "temp": 85,
-        "wind": 10,
-        "precip": null,
-        "kickoff": "2026-09-15T00:15Z"
-      }
-    },
-    "DEN": {
-      "1": {
-        "opp": "KC",
-        "home": false,
-        "spread": -2.5,
-        "total": 42.5,
-        "roof": "outdoors",
-        "temp": 85,
-        "wind": 10,
-        "precip": null,
-        "kickoff": "2026-09-15T00:15Z"
-      }
-    },
     "SEA": {
       "1": {
         "opp": "NE",
@@ -418,6 +392,32 @@
         "wind": 2,
         "precip": null,
         "kickoff": "2026-09-14T00:20Z"
+      }
+    },
+    "KC": {
+      "1": {
+        "opp": "DEN",
+        "home": true,
+        "spread": null,
+        "total": null,
+        "roof": "outdoors",
+        "temp": 85,
+        "wind": 15,
+        "precip": null,
+        "kickoff": "2026-09-15T00:15Z"
+      }
+    },
+    "DEN": {
+      "1": {
+        "opp": "KC",
+        "home": false,
+        "spread": null,
+        "total": null,
+        "roof": "outdoors",
+        "temp": 85,
+        "wind": 15,
+        "precip": null,
+        "kickoff": "2026-09-15T00:15Z"
       }
     }
   }
