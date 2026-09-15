@@ -8,7 +8,11 @@ name: Discord — Weekly recap
 
 on:
   schedule:
-    - cron: "0 13 * * 2"    # Tuesday 13:00 UTC = 8am EST / 9am EDT
+    # Multiple cron entries increase reliability (GitHub free-tier cron
+    # can skip runs when infrastructure is under load)
+    - cron: "0 13 * * 2"    # Tuesday 13:00 UTC = 8am ET
+    - cron: "30 13 * * 2"   # Tuesday 13:30 UTC = 8:30am ET (backup)
+    - cron: "0 14 * * 2"    # Tuesday 14:00 UTC = 9am ET (backup)
   workflow_dispatch:
     inputs:
       force_recap:
