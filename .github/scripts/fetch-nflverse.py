@@ -871,6 +871,7 @@ def fetch_waiver_metrics(weekly_stats_data, route_data):
 
         rush_shares = []
         target_rates = []
+        yprr_values = []  # Yards Per Route Run — the elite WR metric
         air_yards_per_game = []
         targets_per_game = []
         weekly_detail = []
@@ -882,6 +883,7 @@ def fetch_waiver_metrics(weekly_stats_data, route_data):
 
             car = w.get("car", 0) or 0
             tgts = w.get("tgts", 0) or 0
+            rec_yds = w.get("rec_yds", 0) or 0
             air_yds = w.get("tgt_air_yards", 0) or w.get("air_yards", 0) or 0
 
             # Rush share for RBs
@@ -891,19 +893,26 @@ def fetch_waiver_metrics(weekly_stats_data, route_data):
                 rush_share = car / team_car
                 rush_shares.append(rush_share)
 
-            # Target rate for WR/TE (targets / route participation)
+            # Target rate and YPRR for WR/TE (both derived from route participation)
             target_rate = None
-            if pos in ("WR", "TE") and tgts > 0:
+            yprr = None
+            if pos in ("WR", "TE"):
                 route_pct = routes_lookup.get(name.lower(), {}).get(wk)
                 if route_pct and route_pct > 0.10:  # need meaningful route sample
-                    # Approximate: if player ran routes on 80% of team's ~40 dropbacks = 32 routes
-                    # target_rate = tgts / estimated_routes
-                    # Simplified: target rate proxy = tgt_share / route_share (both are % of team)
-                    tgt_share = w.get("tgt_share")
-                    if tgt_share and tgt_share > 0:
-                        target_rate = tgt_share / route_pct
-                        target_rate = min(target_rate, 1.0)  # cap at 100%
-                        target_rates.append(target_rate)
+                    # Estimate routes run from route_pct × ~40 team dropbacks per game
+                    est_routes = route_pct * 40
+
+                    # Target rate (targets per route run)
+                    if tgts > 0:
+                        tgt_share = w.get("tgt_share")
+                        if tgt_share and tgt_share > 0:
+                            target_rate = min(tgt_share / route_pct, 1.0)
+                            target_rates.append(target_rate)
+
+                    # YPRR (yards per route run) — the PFF gold standard
+                    if rec_yds > 0 and est_routes > 0:
+                        yprr = rec_yds / est_routes
+                        yprr_values.append(yprr)
 
             # Air yards per game (WR/TE)
             if pos in ("WR", "TE") and air_yds > 0:
@@ -916,9 +925,11 @@ def fetch_waiver_metrics(weekly_stats_data, route_data):
                 "week": wk,
                 "car": car,
                 "tgts": tgts,
+                "rec_yds": round(rec_yds, 1) if rec_yds else 0,
                 "air_yds": round(air_yds, 1) if air_yds else 0,
                 "rush_share": round(rush_share, 3) if rush_share else None,
                 "target_rate": round(target_rate, 3) if target_rate else None,
+                "yprr": round(yprr, 2) if yprr else None,
             })
 
         # Compute season/recent averages
@@ -936,6 +947,12 @@ def fetch_waiver_metrics(weekly_stats_data, route_data):
             recent = target_rates[-recent_n:] if len(target_rates) >= recent_n else target_rates
             stats["recent_target_rate"] = round(sum(recent) / len(recent), 3)
             stats["target_rate_games"] = len(target_rates)
+
+        if yprr_values:
+            stats["season_yprr"] = round(sum(yprr_values) / len(yprr_values), 2)
+            recent = yprr_values[-recent_n:] if len(yprr_values) >= recent_n else yprr_values
+            stats["recent_yprr"] = round(sum(recent) / len(recent), 2)
+            stats["yprr_games"] = len(yprr_values)
 
         if air_yards_per_game:
             stats["season_air_yards_pg"] = round(sum(air_yards_per_game) / len(air_yards_per_game), 1)
@@ -967,6 +984,9 @@ def fetch_waiver_metrics(weekly_stats_data, route_data):
             "rush_share_strong": 0.45,
             "target_rate_elite": 0.25,
             "target_rate_strong": 0.20,
+            "yprr_elite": 2.5,
+            "yprr_strong": 2.0,
+            "yprr_average": 1.5,
             "air_yards_elite": 90,
             "air_yards_strong": 65,
         },
