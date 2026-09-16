@@ -1076,11 +1076,35 @@ async function renderTransactions() {
     const players = await getPlayers();
     const currentWeek = displayWeek(state, league);
 
+    // Pre-fetch transaction counts per week to auto-select the most recent week WITH data
+    // (Waivers filed under Week N may process into Week N+1, so we can't blindly default to currentWeek)
+    const weekCounts = new Map();
+    for (let w = 1; w <= currentWeek; w++) {
+      try {
+        const t = await getTransactions(w);
+        // Only count "complete" transactions (skip failed waiver bids)
+        const completed = t.filter(x => x.status === 'complete');
+        weekCounts.set(w, completed.length);
+      } catch (_) {
+        weekCounts.set(w, 0);
+      }
+    }
+    // Default to the highest-numbered week that HAS completed transactions
+    let defaultWeek = currentWeek;
+    for (let w = currentWeek; w >= 1; w--) {
+      if ((weekCounts.get(w) || 0) > 0) {
+        defaultWeek = w;
+        break;
+      }
+    }
+
     const select = document.createElement("select");
     for (let w = 1; w <= currentWeek; w++) {
       const opt = document.createElement("option");
-      opt.value = w; opt.textContent = `Week ${w}`;
-      if (w === currentWeek) opt.selected = true;
+      const count = weekCounts.get(w) || 0;
+      opt.value = w;
+      opt.textContent = count > 0 ? `Week ${w} (${count})` : `Week ${w}`;
+      if (w === defaultWeek) opt.selected = true;
       select.appendChild(opt);
     }
     const wrap = document.createElement("label");
@@ -1091,10 +1115,12 @@ async function renderTransactions() {
     async function load(week) {
       listEl.innerHTML = loading();
       try {
-        const txns = await getTransactions(week);
+        const allTxns = await getTransactions(week);
+        // Filter out failed waiver bids — only show completed transactions
+        const txns = allTxns.filter(t => t.status === 'complete');
         if (!txns.length) { listEl.innerHTML = empty("No moves this week."); return; }
-        // sort newest first
-        txns.sort((a, b) => (b.status_updated || 0) - (a.status_updated || 0));
+        // Sort newest first by created timestamp (more accurate than status_updated)
+        txns.sort((a, b) => (b.created || b.status_updated || 0) - (a.created || a.status_updated || 0));
 
         listEl.innerHTML = txns.map(t => {
           const typeLabel = t.type === 'trade' ? 'TRADE'
@@ -1140,7 +1166,7 @@ async function renderTransactions() {
       }
     }
     select.addEventListener("change", () => load(Number(select.value)));
-    load(currentWeek);
+    load(defaultWeek);
   } catch (e) {
     listEl.innerHTML = errBox(e.message);
   }
