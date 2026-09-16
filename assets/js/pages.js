@@ -3726,82 +3726,80 @@ function renderTradeAnalyzer(allPlayers, baselines, container, teams, nflverse) 
       Show me the math ▼
     </button>
     <div id="trade-math" class="tools-math hidden">
-      <h4>Enhanced VBD Trade Analyzer — Phase 2</h4>
-      <pre class="tools-formula">Adjusted Value = Raw VORP
-              × Injury Prob
-              × Snap Trend
-              × Regression
-              × Playoff SoS
-              ± Consolidation Adjustment
+      <h4>Trade Analyzer — Lineup Simulation Methodology</h4>
+      <pre class="tools-formula">Trade Value = Weighted Lineup Impact
+              = (Lineup Points After Trade − Lineup Points Before Trade)
+              × Weekly Weights
 
-━━━ STEP 1: RAW VORP PER PLAYER ━━━
-VORP = Projected Points − Position Baseline
+━━━ CORE PRINCIPLE ━━━
+The value of a trade is NOT the "market value" of the players.
+It's the impact on YOUR starting lineup, week by week.
 
-━━━ POSITION BASELINE ━━━
-Projected points of the LAST STARTABLE player at each position:
+A WR4 with high market value is worthless if he sits on your bench.
+A TE1 replacing your current TE2 could be worth 30+ pts over the season.
 
-  Position   Baseline Rank    ${'Current baseline (pts)'}
-  QB         QB12             ${(baselines.QB || 0).toFixed(1)}
-  RB         RB30             ${(baselines.RB || 0).toFixed(1)}
-  WR         WR28             ${(baselines.WR || 0).toFixed(1)}
-  TE         TE13             ${(baselines.TE || 0).toFixed(1)}
-  K          K12              ${(baselines.K || 0).toFixed(1)}
-  DST        DST12            ${(baselines.DST || 0).toFixed(1)}
+━━━ STEP 1: SIMULATE STARTING LINEUP ━━━
+For each remaining week, compute what your OPTIMAL starting lineup
+would score using consensus projections (11 sources: FantasyPros,
+ESPN, Sleeper).
 
-Computed from actual FP data every fetch — no hardcoded values.
+Runs twice: with current roster ("before"), and with post-trade
+roster ("after").
 
-━━━ STEP 2: INJURY PROBABILITY ━━━
-FantasyPros' published probability_of_playing (0-100%).
-Fallback if unpublished:
-  Questionable × 0.80    Doubtful × 0.35
-  Out/IR/Sus  × 0.05    Probable × 0.95
+━━━ STEP 2: WEEKLY WEIGHTS ━━━
+Not all weeks matter equally:
 
-━━━ STEP 3: SNAP TREND (nflverse) ━━━
-Compares each player's recent 3-week snap % to earlier season avg.
-Rising usage → boost value. Declining usage → discount value.
-Formula: 1.0 + (trend_delta × 0.5), clipped ±15%
-Only kicks in when |delta| > 5%.
+  Current week          × 1.5   (this Sunday matters most)
+  Next 2 weeks          × 1.3   (imminent lineup decisions)
+  Regular season        × 1.0   (baseline value)
+  Playoffs (W15-17)     × 1.5   (fantasy championship weeks)
+  Bye weeks             × 0.0   (no lineup impact)
 
-━━━ STEP 4: REGRESSION (xFP, nflverse) ━━━
-Compares each player's actual season fantasy points to their
-Expected Fantasy Points (from ff_opportunity data). Big gap =
-they got lucky/unlucky, expect regression.
+Weights adjust based on your contender mode:
+  WIN NOW    Regular season weeks weighted 1.3× extra
+  SELL NOW   Playoff weeks weighted 1.5× extra
+  BALANCED   Standard weights
 
-Formula: 1.0 + (-gap / 200), clipped ±15%
-Only kicks in when |gap| > 15 points.
+━━━ STEP 3: CONSENSUS PROJECTIONS (dynamic) ━━━
+Weekly projections update every 2 hours from 11 sources.
+This means the trade valuation AUTOMATICALLY adjusts as:
+  • Injuries reduce projections for hurt players
+  • Snap share / usage data flows in Tuesday-Thursday
+  • Depth chart changes propagate (starter Out → backup uplift)
+  • Weather / Vegas lines affect game script
 
-  Player scoring 20+ pts more than expected → -10% (regress ↓)
-  Player scoring 20+ pts less than expected → +10% (regress ↑)
+No manual refresh needed — the analyzer always reflects the
+latest available data.
 
-━━━ STEP 5: PLAYOFF SoS (nflverse) ━━━
-Averages the player's DEF vs POS rank from their team's
-opponents in weeks 15, 16, 17.
-  1 = toughest matchup (bad) → -15% value
-  32 = softest matchup (good) → +15% value
-Neutral = rank 16.5.
+━━━ STEP 4: NET GAIN CLASSIFICATION ━━━
+  netGain ≥ +25 pts    ACCEPT — Clear Win
+  +10 to +25 pts       ACCEPT — Solid Value
+  +3 to +10 pts        LEAN ACCEPT
+  −3 to +3 pts         FAIR TRADE
+  −10 to −3 pts        LEAN DECLINE
+  −25 to −10 pts       DECLINE — Bad Value
+  netGain ≤ −25 pts    HARD DECLINE 🚨
 
-━━━ STEP 6: CONSOLIDATION PENALTY ━━━
-Trading 3-for-1 is NOT equal even with same raw VORP.
-  Drop penalty:   +10 VORP per extra player received
-  Waiver gain:    −3 VORP per freed spot
+━━━ WHY NOT VORP? ━━━
+The old VORP-based analyzer measured players in isolation ("how good
+is this player?"). But trades affect YOUR TEAM specifically.
 
-━━━ STEP 7: FAIRNESS SCORE (0-100) ━━━
-Fairness = 100 − (|diff| ÷ higher_side × 100)
+Example: Trading a WR4 for a TE1 might look uneven by VORP.
+But if the WR4 was on your bench and the TE1 becomes your starter,
+you gain 2+ pts per week × 17 weeks = 34+ points.
 
-  95-100  PERFECTLY BALANCED
-  85-95   VERY FAIR
-  75-85   FAIR
-  65-75   SLIGHTLY UNEVEN
-  50-65   UNEVEN
-  30-50   UNFAIR
-   0-30   ROBBERY 🚨
+Lineup simulation captures this correctly. VORP does not.
 
-━━━ NOTE ON PHASE 2 SIGNALS ━━━
-The snap trend, regression, and playoff SoS multipliers only
-kick in when nflverse data is available AND has meaningful
-signal. Below-noise-threshold signals default to 1.0 (no
-adjustment). Multipliers are visible on player cards when
-active — no hidden adjustments.</pre>
+━━━ CONSISTENCY WITH TRADE FINDER ━━━
+Trade Finder and Trade Analyzer now use IDENTICAL formulas.
+Any proposal you evaluate here will match Trade Finder's output.
+
+━━━ POSITION BASELINES (reference) ━━━
+Position replacement-level for context:
+  QB12  ${(baselines.QB || 0).toFixed(1)}    K12   ${(baselines.K || 0).toFixed(1)}
+  RB30  ${(baselines.RB || 0).toFixed(1)}    DST12 ${(baselines.DST || 0).toFixed(1)}
+  WR28  ${(baselines.WR || 0).toFixed(1)}
+  TE13  ${(baselines.TE || 0).toFixed(1)}</pre>
     </div>`;
 
   const toggle = document.getElementById('trade-toggle-math');
@@ -3869,7 +3867,9 @@ active — no hidden adjustments.</pre>
       });
     });
 
-    // Verdict — VORP + consolidation + fairness score
+    // ═══ UNIFIED TRADE VERDICT — lineup simulation (matches Trade Finder methodology) ═══
+    // Uses dynamic weekly projections + your actual roster context
+    // Automatically updates as consensus projections refresh (every 2 hours)
     const verdictEl = document.getElementById('trade-verdict');
     if (!teamA.length || !teamB.length) {
       verdictEl.className = 'trade-verdict-empty';
@@ -3877,87 +3877,84 @@ active — no hidden adjustments.</pre>
       return;
     }
 
-    // Raw VORP each side gives up
-    const rawA = teamA.reduce((s, p) => s + computePlayerValue(p, baselines).value, 0);
-    const rawB = teamB.reduce((s, p) => s + computePlayerValue(p, baselines).value, 0);
-
-    // Consolidation math
-    const DROP_PENALTY = 10;   // VORP of average droppable bench player
-    const WAIVER_GAIN = 3;     // VORP of average waiver pickup
-    const rosterDelta = teamB.length - teamA.length;  // positive if A receives more
-
-    let adjA = rawA, adjB = rawB;
-    let noteA = '', noteB = '';
-    let consolidationDetail = '';
-
-    if (rosterDelta > 0) {
-      // Team A receives MORE players — must drop existing bench
-      const penalty = rosterDelta * DROP_PENALTY;
-      const spotGain = rosterDelta * WAIVER_GAIN;
-      adjA += penalty;   // effectively gives up more (must drop rostered players)
-      adjB -= spotGain;  // effectively gives up less (frees spots)
-      noteA = `+${penalty.toFixed(0)} drop penalty`;
-      noteB = `−${spotGain.toFixed(0)} freed spots`;
-      consolidationDetail = `Team A receives ${rosterDelta} more player${rosterDelta > 1 ? 's' : ''} → must drop ${rosterDelta} rostered player${rosterDelta > 1 ? 's' : ''} (~${penalty.toFixed(0)} VORP lost). Team B frees ${rosterDelta} spot${rosterDelta > 1 ? 's' : ''} for waiver adds (~${spotGain.toFixed(0)} VORP gained).`;
-    } else if (rosterDelta < 0) {
-      const spots = Math.abs(rosterDelta);
-      const penalty = spots * DROP_PENALTY;
-      const spotGain = spots * WAIVER_GAIN;
-      adjB += penalty;
-      adjA -= spotGain;
-      noteB = `+${penalty.toFixed(0)} drop penalty`;
-      noteA = `−${spotGain.toFixed(0)} freed spots`;
-      consolidationDetail = `Team B receives ${spots} more player${spots > 1 ? 's' : ''} → must drop ${spots} rostered player${spots > 1 ? 's' : ''} (~${penalty.toFixed(0)} VORP lost). Team A frees ${spots} spot${spots > 1 ? 's' : ''} for waiver adds (~${spotGain.toFixed(0)} VORP gained).`;
+    if (!myRoster) {
+      // Fallback: no roster loaded yet
+      verdictEl.className = 'trade-verdict-empty';
+      verdictEl.textContent = 'Loading your roster to evaluate trade impact…';
+      return;
     }
 
-    // Fairness score & label
-    const diff = adjA - adjB;
-    const higher = Math.max(adjA, adjB, 0.01);
-    const pctDiff = Math.abs(diff) / higher * 100;
-    const fairness = Math.max(0, Math.min(100, Math.round(100 - pctDiff)));
+    // Run the same lineup simulation Trade Finder uses
+    const contenderMode = detectContenderMode(myRoster, allTeamRosters, currentWeek, {});
+    // Team A = you giving, Team B = you receiving
+    // analyzeTradeForTeam expects (myRoster, giving, receiving)
+    const yourAnalysis = analyzeTradeForTeam(myRoster, teamA, teamB, currentWeek, {}, { contenderMode });
 
-    let label, cls, note;
-    if (fairness >= 95) {
-      label = 'PERFECTLY BALANCED';
+    // If we have the other team's roster (via allTeamRosters), evaluate their side too
+    // For now, we show verdict from YOUR perspective (the person using the analyzer)
+    const netGain = yourAnalysis.netGain;
+    const netGainUnweighted = yourAnalysis.netGainUnweighted;
+    const regularGain = yourAnalysis.regularGain;
+    const playoffGain = yourAnalysis.playoffGain;
+
+    // Determine verdict from net weighted gain
+    let label, cls, note, winner;
+    const absGain = Math.abs(netGain);
+
+    if (netGain >= 25) {
+      label = 'ACCEPT — Clear Win';
       cls = 'fair-100';
-      note = 'Effectively even. Both sides get what they give.';
-    } else if (fairness >= 85) {
-      label = 'VERY FAIR';
+      note = 'Strong upgrade to your starting lineup. Take it.';
+      winner = 'you';
+    } else if (netGain >= 10) {
+      label = 'ACCEPT — Solid Value';
       cls = 'fair-90';
-      note = 'Minor edge but well within acceptable range.';
-    } else if (fairness >= 75) {
-      label = 'FAIR';
+      note = 'Meaningful weekly upgrade. Good trade for your roster.';
+      winner = 'you';
+    } else if (netGain >= 3) {
+      label = 'LEAN ACCEPT';
       cls = 'fair-80';
-      note = 'One side has an edge but the other still gets reasonable value.';
-    } else if (fairness >= 65) {
-      label = 'SLIGHTLY UNEVEN';
+      note = 'Marginal gain. Worth doing if the other side agrees.';
+      winner = 'you';
+    } else if (netGain >= -3) {
+      label = 'FAIR TRADE';
       cls = 'fair-70';
-      note = 'Meaningful gap. Losing side should ask for a sweetener.';
-    } else if (fairness >= 50) {
-      label = 'UNEVEN';
+      note = 'Effectively neutral. Neither side gains materially.';
+      winner = 'even';
+    } else if (netGain >= -10) {
+      label = 'LEAN DECLINE';
       cls = 'fair-60';
-      note = 'Big gap. Losing side should decline unless they need the position badly.';
-    } else if (fairness >= 30) {
-      label = 'UNFAIR';
+      note = 'Small loss to your lineup. Only accept if you need positional balance.';
+      winner = 'them';
+    } else if (netGain >= -25) {
+      label = 'DECLINE — Bad Value';
       cls = 'fair-40';
-      note = 'Losing side is being taken advantage of. Hard decline.';
+      note = 'Meaningful downgrade to your starting lineup. Ask for more.';
+      winner = 'them';
     } else {
-      label = 'ROBBERY 🚨';
+      label = 'HARD DECLINE 🚨';
       cls = 'fair-20';
-      note = 'Someone should file a police report. Absolute lopsided deal.';
+      note = 'Massive downgrade. Do not accept without significant sweeteners.';
+      winner = 'them';
     }
 
-    const winner = diff > 0.5 ? 'B' : (diff < -0.5 ? 'A' : null);
-    const winnerText = winner
-      ? `<div class="fair-winner">Winner: <strong>Team ${winner}</strong> by ${pctDiff.toFixed(1)}% of value</div>`
-      : `<div class="fair-winner fair-winner-even">Trade is essentially even</div>`;
+    const winnerText = winner === 'you'
+      ? `<div class="fair-winner">You gain <strong>+${netGain.toFixed(1)} pts</strong> across remaining weeks</div>`
+      : winner === 'them'
+        ? `<div class="fair-winner">You lose <strong>${netGain.toFixed(1)} pts</strong> across remaining weeks</div>`
+        : `<div class="fair-winner fair-winner-even">Trade impact is essentially neutral</div>`;
+
+    // Sub-metrics for detail
+    const modeLabel = contenderMode === 'win-now' ? 'Win Now'
+                    : contenderMode === 'sell-now' ? 'Sell Now'
+                    : 'Balanced';
 
     verdictEl.className = `trade-verdict ${cls}`;
     verdictEl.innerHTML = `
       <div class="fair-score-row">
         <div class="fair-score">
-          <div class="fair-score-num">${fairness}</div>
-          <div class="fair-score-outof">/ 100</div>
+          <div class="fair-score-num">${netGain > 0 ? '+' : ''}${netGain.toFixed(1)}</div>
+          <div class="fair-score-outof">pts (weighted)</div>
         </div>
         <div class="fair-label-block">
           <div class="fair-label">${label}</div>
@@ -3967,35 +3964,27 @@ active — no hidden adjustments.</pre>
       ${winnerText}
       <div class="fair-breakdown">
         <div class="fair-side">
-          <div class="fair-side-label">Team A gives (adjusted)</div>
-          <div class="fair-side-value">${adjA.toFixed(1)}</div>
-          <div class="fair-side-detail">
-            Raw VORP: <strong>${rawA.toFixed(1)}</strong>
-            ${noteA ? ` • ${noteA}` : ''}
-          </div>
+          <div class="fair-side-label">Regular Season (W${currentWeek}-14)</div>
+          <div class="fair-side-value">${regularGain > 0 ? '+' : ''}${regularGain.toFixed(1)}</div>
+          <div class="fair-side-detail">Total impact on regular-season lineup</div>
         </div>
-        <div class="fair-vs">vs</div>
+        <div class="fair-vs">+</div>
         <div class="fair-side">
-          <div class="fair-side-label">Team B gives (adjusted)</div>
-          <div class="fair-side-value">${adjB.toFixed(1)}</div>
-          <div class="fair-side-detail">
-            Raw VORP: <strong>${rawB.toFixed(1)}</strong>
-            ${noteB ? ` • ${noteB}` : ''}
-          </div>
+          <div class="fair-side-label">Playoffs (W15-17)</div>
+          <div class="fair-side-value">${playoffGain > 0 ? '+' : ''}${playoffGain.toFixed(1)}</div>
+          <div class="fair-side-detail">Total impact on playoff lineup</div>
         </div>
       </div>
-      ${consolidationDetail ? `<div class="fair-consolidation">${consolidationDetail}</div>` : ''}`;
+      <div class="fair-consolidation">
+        Evaluated using ${modeLabel} weighting. Analysis reflects YOUR roster context — 
+        players that don't upgrade your starting lineup add zero value. Updates automatically 
+        as consensus projections refresh (every 2 hours) and as usage/injury data flows in.
+      </div>`;
 
-    // ═══ NEW: Lineup-based verdict (if roster available) ═══
+    // The old "lineup verdict" element is now the PRIMARY verdict (above).
+    // Hide the secondary duplicate element if it exists in the DOM.
     const lineupVerdictEl = document.getElementById('trade-lineup-verdict');
-    if (myRoster && teamA.length && teamB.length) {
-      const contenderMode = detectContenderMode(myRoster, allTeamRosters, currentWeek, {});
-      const analysis = analyzeTradeForTeam(myRoster, teamA, teamB, currentWeek, {}, { contenderMode });
-      renderLineupVerdict(lineupVerdictEl, analysis, currentWeek);
-      lineupVerdictEl.style.display = '';
-    } else {
-      lineupVerdictEl.style.display = 'none';
-    }
+    if (lineupVerdictEl) lineupVerdictEl.style.display = 'none';
   };
 
   // Team selector handler
