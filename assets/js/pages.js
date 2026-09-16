@@ -1076,10 +1076,8 @@ async function renderTransactions() {
     const players = await getPlayers();
     const currentWeek = displayWeek(state, league);
 
-    // Fetch ALL transactions across all weeks up to current
-    // We then re-bucket by DATE, not Sleeper's internal week field, because Sleeper
-    // files waivers processed Tuesday morning under the PREVIOUS week (when bids were submitted).
-    // Fantasy convention: Tuesday-morning waivers belong to the NEW week's activity.
+    // Fetch all transactions across all weeks, then bucket by Sleeper's `leg` field
+    // (leg is the authoritative week marker — matches how Sleeper's own UI displays them)
     const allTxns = [];
     for (let w = 1; w <= currentWeek; w++) {
       try {
@@ -1088,32 +1086,19 @@ async function renderTransactions() {
       } catch (_) {}
     }
 
-    // Compute the display week for each transaction based on its created timestamp
-    // Week X starts at Tuesday 4am ET the day after Week (X-1)'s MNF
-    // Season starts approximately Sept 4 (Thursday) — Week 1 = Sept 4 through Sept 8 (Mon MNF)
-    // Any transaction created on/after Tuesday of a new week counts as that new week's activity
-    function txnDisplayWeek(txn) {
-      const t = txn.created || txn.status_updated || 0;
-      const d = new Date(t);
-      // NFL season 2026: Week 1 kickoff Thursday Sept 3, 2026
-      // Each week starts Tuesday 4am ET of the following week (~when waivers process)
-      const seasonStart = new Date(2026, 8, 3); // Sept 3, 2026 (Thursday)
-      const week1Tuesday = new Date(2026, 8, 8); // Sept 8, 2026 (Tuesday post-MNF)
-      const daysSinceWk1Tue = Math.floor((d - week1Tuesday) / (1000 * 60 * 60 * 24));
+    // Deduplicate (Sleeper may return the same transaction under multiple week queries)
+    const seen = new Set();
+    const uniqueTxns = allTxns.filter(t => {
+      if (seen.has(t.transaction_id)) return false;
+      seen.add(t.transaction_id);
+      return true;
+    });
 
-      if (d < seasonStart) return 1; // preseason moves → Week 1
-      if (d < week1Tuesday) return 1; // during Week 1 games → Week 1
-      // Every 7 days after Tuesday post-MNF advances to next week
-      return Math.min(2 + Math.floor(daysSinceWk1Tue / 7), 18);
-    }
-
-    // Assign display week to each transaction
-    allTxns.forEach(t => { t._displayWeek = txnDisplayWeek(t); });
-
-    // Count transactions per display week
+    // Bucket each transaction by its `leg` (Sleeper's authoritative week field)
     const weekCounts = new Map();
-    allTxns.forEach(t => {
-      weekCounts.set(t._displayWeek, (weekCounts.get(t._displayWeek) || 0) + 1);
+    uniqueTxns.forEach(t => {
+      const wk = t.leg || 1;
+      weekCounts.set(wk, (weekCounts.get(wk) || 0) + 1);
     });
 
     // Default to the highest-numbered week that has transactions
@@ -1142,8 +1127,8 @@ async function renderTransactions() {
     async function load(week) {
       listEl.innerHTML = loading();
       try {
-        // Filter to transactions whose display week matches selection
-        const txns = allTxns.filter(t => t._displayWeek === week);
+        // Filter to transactions whose `leg` (Sleeper's week field) matches the selection
+        const txns = uniqueTxns.filter(t => (t.leg || 1) === week);
         if (!txns.length) { listEl.innerHTML = empty("No moves this week."); return; }
         // Sort newest first by created timestamp
         txns.sort((a, b) => (b.created || b.status_updated || 0) - (a.created || a.status_updated || 0));
