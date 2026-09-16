@@ -2237,7 +2237,7 @@ function enrichPlayer(player, nflverse) {
     player._dropback_games = dropback.games;
   }
 
-  // Waiver metrics (rush share, target rate, air yards)
+  // Waiver metrics (rush share, target rate, YPRR, air yards)
   const waiver = nflverse.waiverMetrics?.get(key);
   if (waiver) {
     player._rush_share_recent = waiver.recent_rush_share;
@@ -2246,6 +2246,9 @@ function enrichPlayer(player, nflverse) {
     player._target_rate_recent = waiver.recent_target_rate;
     player._target_rate_season = waiver.season_target_rate;
     player._target_rate_games = waiver.target_rate_games;
+    player._yprr_recent = waiver.recent_yprr;
+    player._yprr_season = waiver.season_yprr;
+    player._yprr_games = waiver.yprr_games;
     player._air_yards_recent = waiver.recent_air_yards_pg;
     player._air_yards_season = waiver.season_air_yards_pg;
     player._air_yards_games = waiver.air_yards_games;
@@ -5590,6 +5593,14 @@ async function renderWaiver() {
 
       <section class="waiver-section">
         <div class="waiver-section-head">
+          <h3>⚡ Efficient Producers (YPRR)</h3>
+          <span class="waiver-section-note">WR/TE with 2.0+ yards per route run — PFF's gold standard for WR quality</span>
+        </div>
+        <div class="waiver-cards" id="waiver-yprr"></div>
+      </section>
+
+      <section class="waiver-section">
+        <div class="waiver-section-head">
           <h3>🚀 Downfield Weapons</h3>
           <span class="waiver-section-note">WR/TE with 65+ air yards per game — deep threats and boom candidates</span>
         </div>
@@ -5726,6 +5737,29 @@ async function renderWaiver() {
           + `(targets per route run) — trusted receiver`
         )).join('')
       : '<div class="waiver-empty">No efficient-target leaders yet — populates after Week 1 games.</div>';
+
+    // Efficient Producers — WR/TE with 2.0+ YPRR (PFF gold standard)
+    const efficientProducers = filtered
+      .filter(p => {
+        if (!['WR', 'TE'].includes(p.pos)) return false;
+        const yprr = p._yprr_recent;
+        if (yprr == null) return false;
+        const games = p._yprr_games || 0;
+        if (games < 1) return false;
+        return yprr >= 2.0;
+      })
+      .sort((a, b) => (b._yprr_recent || 0) - (a._yprr_recent || 0))
+      .slice(0, 12);
+    document.getElementById('waiver-yprr').innerHTML = efficientProducers.length
+      ? efficientProducers.map(p => {
+          const yprr = p._yprr_recent;
+          const tier = yprr >= 2.5 ? 'elite' : 'strong';
+          return cardHtml(p,
+            `<strong>${yprr.toFixed(2)}</strong> YPRR `
+            + `(${tier}) — producing on every route`
+          );
+        }).join('')
+      : '<div class="waiver-empty">No efficient producers yet — populates after Week 1 games (YPRR data).</div>';
 
     // NEW: Downfield Weapons — WR/TE with 65+ air yards per game
     const downfieldWeapons = filtered
