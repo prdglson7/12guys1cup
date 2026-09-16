@@ -151,20 +151,29 @@ function windDirection(deg) {
   return dirs[Math.round(deg / 22.5) % 16];
 }
 
-/* ─── Classify game weather severity ─── */
+/* ─── Classify game weather severity ───
+   Concerns are things that ACTUALLY affect NFL fantasy production:
+   - Real precipitation (drizzle codes 51-55 now included — Half a game of light rain matters)
+   - Any snow (extremely rare for NFL, always fantasy-relevant)
+   - Sustained high wind (20+ MPH affects passing game)
+   - Extreme cold (25°F or below reduces production)
+   - Thunderstorms (delays, disrupted play)
+   Heat is intentionally NOT flagged — NFL players train in heat, and 95°F September games
+   in Nashville/Dallas/Arizona are typical, not "concerns."
+*/
 function classifyWeather(weather) {
   if (!weather) return 'unknown';
   const { weatherCode, windSpeed, temp, precipProb } = weather;
 
   // Bad weather categories
-  if (weatherCode >= 71) return 'bad'; // Snow of any kind
-  if (weatherCode >= 61 && weatherCode <= 65) return 'bad'; // Real rain
-  if (weatherCode >= 80 && weatherCode <= 82) return 'bad'; // Showers
+  if (weatherCode >= 71) return 'bad'; // Snow of any kind (codes 71-77)
+  if (weatherCode >= 61 && weatherCode <= 65) return 'bad'; // Actual rain (light, moderate, heavy)
+  if (weatherCode >= 51 && weatherCode <= 55) return 'bad'; // Drizzle counts — 3+ hours affects a game
+  if (weatherCode >= 80 && weatherCode <= 82) return 'bad'; // Rain showers
   if (weatherCode >= 95) return 'bad'; // Thunderstorms
-  if (windSpeed >= 20) return 'bad'; // High wind
-  if (temp <= 25) return 'bad'; // Extreme cold
-  if (temp >= 95) return 'bad'; // Extreme heat
-  if (precipProb >= 60 && weatherCode >= 51) return 'bad'; // High precip probability with rain
+  if (windSpeed >= 20) return 'bad'; // High sustained wind
+  if (temp <= 25) return 'bad'; // Extreme cold — degraded ball handling
+  if (precipProb >= 60) return 'bad'; // High precip probability regardless of current code
   return 'clear';
 }
 
@@ -216,7 +225,8 @@ function buildEmbed(week, season, gameResults) {
   if (indoorGames.length) {
     const indoorText = indoorGames.map(g => {
       const stadium = STADIUMS[g.homeAbbr];
-      return `• **${g.awayAbbr} @ ${g.homeAbbr}** (${formatKickoff(g.date)}) — ${stadium?.name || 'Indoor'}`;
+      const roofLabel = g.roofType === 'retractable' ? ' (retractable — usually closed)' : '';
+      return `• **${g.awayAbbr} @ ${g.homeAbbr}** (${formatKickoff(g.date)}) — ${stadium?.name || 'Indoor'}${roofLabel}`;
     }).join('\n');
     fields.push({
       name: '🏟️ INDOOR (dome/retractable)',
@@ -304,8 +314,17 @@ async function main() {
     }
 
     if (stadium.dome === 'fixed') {
-      results.push({ ...game, isDome: true, weather: null });
-      console.log(`  ~ ${game.awayAbbr} @ ${game.homeAbbr}: INDOOR`);
+      results.push({ ...game, isDome: true, weather: null, roofType: 'fixed' });
+      console.log(`  ~ ${game.awayAbbr} @ ${game.homeAbbr}: INDOOR (fixed)`);
+      continue;
+    }
+
+    if (stadium.dome === 'retractable') {
+      // Retractable roofs are closed for ~90%+ of NFL games historically
+      // We still fetch the forecast in case a team decides to open it, but
+      // classify as indoor unless conditions are truly dire (which would keep it closed anyway)
+      results.push({ ...game, isDome: true, weather: null, roofType: 'retractable' });
+      console.log(`  ~ ${game.awayAbbr} @ ${game.homeAbbr}: INDOOR (retractable — roof usually closed)`);
       continue;
     }
 
