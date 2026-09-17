@@ -37,25 +37,119 @@ function displayWeek(state, league) {
 }
 
 /* ---------- Matchup card ---------- */
-function matchupCardHtml(a, b) {
-  const winner =
-    a && b && a.points !== undefined && b.points !== undefined
-      ? (a.points > b.points ? "left" : b.points > a.points ? "right" : "")
-      : "";
-  const teamBlock = (t, side) => t ? `
-    <div class="team ${side}">
-      <img class="avatar" src="${esc(avatarUrl(t))}" alt="" onerror="this.src='assets/img/logo.jpg'">
-      <div class="name">${esc(t.team_name)}</div>
-    </div>` : `<div class="team ${side}"><div class="name">TBD</div></div>`;
+// Enhanced matchup card with storytelling + live win probability
+function matchupCardHtml(a, b, context = {}) {
+  const {
+    weekNum = 1,
+    h2hRecord = null,        // { aWins, bWins, ties, lastMeeting: {aScore, bScore, season, week} }
+    projectedA = null,        // projected final for A
+    projectedB = null,        // projected final for B
+    topScorerA = null,        // { name, pos, points }
+    topScorerB = null,        // { name, pos, points }
+    benchRegretA = null,      // { points, wouldFlip }
+    benchRegretB = null,      // { points, wouldFlip }
+    streakA = null,           // { type: 'W'|'L', count }
+    streakB = null,           // { type: 'W'|'L', count }
+    tagline = null,           // { emoji, text, className }
+    rankA = null,             // power ranking
+    rankB = null,
+  } = context;
+
+  const aPts = a ? Number(a.points || 0) : 0;
+  const bPts = b ? Number(b.points || 0) : 0;
+  const hasScores = aPts > 0 || bPts > 0;
+  const winner = hasScores ? (aPts > bPts ? "left" : bPts > aPts ? "right" : "") : "";
+  const margin = Math.abs(aPts - bPts);
+  const nailbiter = hasScores && margin > 0 && margin <= 5;
+
+  // Win probability (live) — based on current score vs projected final
+  let winProb = 50;
+  if (projectedA !== null && projectedB !== null && (projectedA > 0 || projectedB > 0)) {
+    // Weight current score heavily as game progresses
+    const totalProj = projectedA + projectedB;
+    winProb = totalProj > 0 ? Math.round((projectedA / totalProj) * 100) : 50;
+    winProb = Math.max(1, Math.min(99, winProb));
+  } else if (hasScores) {
+    winProb = aPts + bPts > 0 ? Math.round((aPts / (aPts + bPts)) * 100) : 50;
+  }
+
+  const teamBlock = (t, side, streak, rank, topScorer) => {
+    if (!t) return `<div class="team ${side}"><div class="name">TBD</div></div>`;
+    const streakBadge = streak
+      ? `<span class="streak-badge streak-${streak.type.toLowerCase()}">${streak.type === 'W' ? '🔥' : '❄️'} ${streak.type}${streak.count}</span>`
+      : '';
+    const rankBadge = rank ? `<span class="rank-badge">#${rank}</span>` : '';
+    const topScorerHtml = topScorer
+      ? `<div class="top-scorer">⭐ ${esc(topScorer.name.split(' ').slice(-1)[0])} <strong>${topScorer.points.toFixed(1)}</strong></div>`
+      : '';
+    return `
+      <div class="team ${side}">
+        <div class="team-badges">${rankBadge}${streakBadge}</div>
+        <img class="avatar" src="${esc(avatarUrl(t))}" alt="" onerror="this.src='assets/img/logo.jpg'">
+        <div class="name">${esc(t.team_name)}</div>
+        ${topScorerHtml}
+      </div>`;
+  };
+
+  // Header tagline (rivalry, top-2 battle, etc.)
+  const taglineHtml = tagline
+    ? `<div class="matchup-tagline ${tagline.className || ''}">${tagline.emoji} ${esc(tagline.text)}</div>`
+    : '';
+
+  // H2H record
+  const h2hHtml = h2hRecord && (h2hRecord.aWins + h2hRecord.bWins) > 0
+    ? `<div class="matchup-h2h">All-time: <strong>${h2hRecord.aWins}-${h2hRecord.bWins}${h2hRecord.ties ? '-' + h2hRecord.ties : ''}</strong>${
+        h2hRecord.lastMeeting
+          ? ` · Last: ${h2hRecord.lastMeeting.aScore.toFixed(0)}-${h2hRecord.lastMeeting.bScore.toFixed(0)} (${h2hRecord.lastMeeting.season})`
+          : ''
+      }</div>`
+    : '';
+
+  // Score section with projected finals
+  const projectedText = (projectedA !== null && projectedB !== null && (projectedA > 0 || projectedB > 0))
+    ? `<div class="score-projected">Proj: ${projectedA.toFixed(0)} - ${projectedB.toFixed(0)}</div>`
+    : '';
+
+  // Win probability bar
+  const winProbBar = hasScores || (projectedA !== null && projectedB !== null)
+    ? `<div class="win-prob-container">
+         <div class="win-prob-bar">
+           <div class="win-prob-fill" style="width:${winProb}%"></div>
+         </div>
+         <div class="win-prob-labels">
+           <span class="wp-label-left">${winProb}%</span>
+           <span class="wp-label-right">${100 - winProb}%</span>
+         </div>
+       </div>`
+    : '';
+
+  // Bench regret warning
+  const benchRegretText = [];
+  if (benchRegretA && benchRegretA.points > 5) {
+    benchRegretText.push(`<div class="bench-regret left">💀 ${benchRegretA.points.toFixed(1)} pts on bench${benchRegretA.wouldFlip ? ' (would flip!)' : ''}</div>`);
+  }
+  if (benchRegretB && benchRegretB.points > 5) {
+    benchRegretText.push(`<div class="bench-regret right">💀 ${benchRegretB.points.toFixed(1)} pts on bench${benchRegretB.wouldFlip ? ' (would flip!)' : ''}</div>`);
+  }
+
+  const nailbiterClass = nailbiter ? 'nailbiter' : '';
+
   return `
-    <div class="matchup ${winner ? 'winner-'+winner : ''}">
-      ${teamBlock(a, 'left')}
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-        <div class="score">${fmt1(a ? a.points : 0)}</div>
-        <div class="vs">VS</div>
-        <div class="score">${fmt1(b ? b.points : 0)}</div>
+    <div class="matchup enhanced ${winner ? 'winner-'+winner : ''} ${nailbiterClass}">
+      ${taglineHtml}
+      <div class="matchup-body">
+        ${teamBlock(a, 'left', streakA, rankA, topScorerA)}
+        <div class="score-center">
+          <div class="score">${fmt1(aPts)}</div>
+          <div class="vs">${nailbiter ? '🔥' : 'VS'}</div>
+          <div class="score">${fmt1(bPts)}</div>
+          ${projectedText}
+        </div>
+        ${teamBlock(b, 'right', streakB, rankB, topScorerB)}
       </div>
-      ${teamBlock(b, 'right')}
+      ${winProbBar}
+      ${h2hHtml}
+      ${benchRegretText.join('')}
     </div>`;
 }
 
@@ -249,8 +343,64 @@ async function renderMatchups() {
     const { state, league, teams } = await bootstrap();
     const currentWeek = displayWeek(state, league);
     let selectedWeek = currentWeek;
+    const players = await getPlayers();
 
-    // Build week selector (1..17)
+    // Pre-compute season context (streaks, standings-based ranks, all-time H2H)
+    const teamRecords = new Map();  // roster_id → { wins, losses, ties }
+    teams.forEach(t => teamRecords.set(t.roster_id, { wins: t.wins || 0, losses: t.losses || 0, ties: t.ties || 0 }));
+
+    // Fetch all completed weeks for streak + H2H history
+    const historyMatchups = new Map();  // week → matchups
+    for (let w = 1; w < currentWeek; w++) {
+      try {
+        const wm = await getMatchups(w);
+        historyMatchups.set(w, wm);
+      } catch (_) {}
+    }
+
+    // Build all-time H2H record
+    function h2hRecord(rosterA, rosterB) {
+      let aWins = 0, bWins = 0, ties = 0, lastMeeting = null;
+      historyMatchups.forEach((wm, wk) => {
+        const teamA = wm.find(m => m.roster_id === rosterA);
+        const teamB = wm.find(m => m.roster_id === rosterB);
+        if (teamA && teamB && teamA.matchup_id === teamB.matchup_id) {
+          const aScore = teamA.points || 0;
+          const bScore = teamB.points || 0;
+          if (aScore > bScore) aWins++;
+          else if (bScore > aScore) bWins++;
+          else ties++;
+          lastMeeting = { aScore, bScore, season: league.season, week: wk };
+        }
+      });
+      return { aWins, bWins, ties, lastMeeting };
+    }
+
+    // Build streaks (W3, L2, etc.) from recent weeks
+    function currentStreak(rosterId) {
+      let type = null, count = 0;
+      const weeks = [...historyMatchups.keys()].sort((a, b) => b - a);
+      for (const wk of weeks) {
+        const wm = historyMatchups.get(wk);
+        const mine = wm.find(m => m.roster_id === rosterId);
+        if (!mine) continue;
+        const opp = wm.find(m => m.roster_id !== rosterId && m.matchup_id === mine.matchup_id);
+        if (!opp || (mine.points === 0 && opp.points === 0)) continue;
+        const won = mine.points > opp.points;
+        const currentType = won ? 'W' : 'L';
+        if (type === null) type = currentType;
+        if (type !== currentType) break;
+        count++;
+      }
+      return count > 0 ? { type, count } : null;
+    }
+
+    // Rank teams by points-for (simple power ranking for badges)
+    const rankByPF = new Map();
+    const teamsArray = [...teams.values()].sort((a, b) => (b.fpts || 0) - (a.fpts || 0));
+    teamsArray.forEach((t, i) => rankByPF.set(t.roster_id, i + 1));
+
+    // Build week selector
     const totalWeeks = 17;
     const select = document.createElement("select");
     for (let w = 1; w <= totalWeeks; w++) {
@@ -270,10 +420,92 @@ async function renderMatchups() {
         const m = await getMatchups(week);
         if (!m.length) { container.innerHTML = empty(`No matchups for week ${week}.`); return; }
         const pairs = pairMatchups(m, teams);
-        container.innerHTML = `<div class="grid">${
-          pairs.map(p => matchupCardHtml(p[0], p[1])).join("")
-        }</div>`;
+
+        // Enrich each matchup with context
+        const enrichedCards = pairs.map(([a, b]) => {
+          if (!a || !b) return matchupCardHtml(a, b, { weekNum: week });
+
+          const rawA = m.find(x => x.roster_id === a.roster_id);
+          const rawB = m.find(x => x.roster_id === b.roster_id);
+
+          // Top scorer for each team
+          function topScorer(raw) {
+            if (!raw?.starters || !raw?.starters_points) return null;
+            let best = null;
+            raw.starters.forEach((pid, idx) => {
+              const pts = raw.starters_points[idx] || 0;
+              if (pid === '0' || !pid) return;
+              if (best === null || pts > best.points) {
+                const player = players[pid] || {};
+                best = {
+                  name: player.full_name || player.first_name + ' ' + player.last_name || 'Player',
+                  pos: player.position || '',
+                  points: pts,
+                };
+              }
+            });
+            return best?.points > 0 ? best : null;
+          }
+
+          // Bench regret
+          function benchRegret(raw, myPts, oppPts) {
+            if (!raw?.players || !raw?.starters || !raw?.players_points) return null;
+            const starterSet = new Set(raw.starters);
+            let benchPts = 0, topBench = 0;
+            raw.players.forEach(pid => {
+              if (starterSet.has(pid) || !pid || pid === '0') return;
+              const pts = raw.players_points[pid] || 0;
+              if (pts > 0) {
+                benchPts += pts;
+                if (pts > topBench) topBench = pts;
+              }
+            });
+            if (topBench < 5) return null;
+            const diff = oppPts - myPts;
+            const wouldFlip = diff > 0 && topBench > diff;
+            return { points: topBench, wouldFlip };
+          }
+
+          const topA = topScorer(rawA);
+          const topB = topScorer(rawB);
+          const regretA = benchRegret(rawA, a.points || 0, b.points || 0);
+          const regretB = benchRegret(rawB, b.points || 0, a.points || 0);
+
+          // Storyline tags
+          let tagline = null;
+          const rankA = rankByPF.get(a.roster_id) || 99;
+          const rankB = rankByPF.get(b.roster_id) || 99;
+          if (rankA <= 2 && rankB <= 2) {
+            tagline = { emoji: '👑', text: 'BATTLE OF THE TOP 2', className: 'tagline-crown' };
+          } else if (rankA >= 11 && rankB >= 11) {
+            tagline = { emoji: '💀', text: 'BASEMENT CLASH', className: 'tagline-basement' };
+          } else {
+            const h2h = h2hRecord(a.roster_id, b.roster_id);
+            if ((h2h.aWins + h2h.bWins) >= 3) {
+              tagline = { emoji: '🔥', text: 'RIVALRY WEEK', className: 'tagline-rivalry' };
+            } else if (Math.abs(rankA - rankB) >= 8) {
+              tagline = { emoji: '⚡', text: 'DAVID vs GOLIATH', className: 'tagline-david' };
+            }
+          }
+
+          return matchupCardHtml(a, b, {
+            weekNum: week,
+            h2hRecord: h2hRecord(a.roster_id, b.roster_id),
+            topScorerA: topA,
+            topScorerB: topB,
+            benchRegretA: regretA,
+            benchRegretB: regretB,
+            streakA: currentStreak(a.roster_id),
+            streakB: currentStreak(b.roster_id),
+            tagline,
+            rankA,
+            rankB,
+          });
+        });
+
+        container.innerHTML = `<div class="grid">${enrichedCards.join("")}</div>`;
       } catch (e) {
+        console.error(e);
         container.innerHTML = errBox(`Couldn't load week ${week}.`);
       }
     }
