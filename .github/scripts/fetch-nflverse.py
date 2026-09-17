@@ -36,10 +36,27 @@ FANTASY_POSITIONS = {"QB", "RB", "WR", "TE"}
 def log(msg):
     print(f"[nflverse] {msg}", flush=True)
 
+def _clean_json_value(obj):
+    """Recursively replace NaN/Infinity with None so output is valid JSON.
+    Standard JSON does not allow NaN; browsers reject it with SyntaxError."""
+    import math
+    if isinstance(obj, dict):
+        return {k: _clean_json_value(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_clean_json_value(v) for v in obj]
+    if isinstance(obj, float):
+        if math.isnan(obj) or math.isinf(obj):
+            return None
+    return obj
+
+
 def write_json(data, filename):
     path = os.path.join(OUTPUT_DIR, filename)
+    cleaned = _clean_json_value(data)
     with open(path, "w") as f:
-        json.dump(data, f, separators=(",", ":"))
+        # allow_nan=False catches any NaN we missed and raises loudly rather than
+        # silently writing invalid JSON like our previous schedules.json bug.
+        json.dump(cleaned, f, separators=(",", ":"), allow_nan=False)
     size_kb = os.path.getsize(path) / 1024
     log(f"Wrote {filename} ({size_kb:.0f}KB)")
 
