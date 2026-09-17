@@ -4120,3 +4120,67 @@ main { padding: 32px 0 60px; }
   .score-center { min-width: 70px; }
   .rank-badge, .streak-badge { font-size: 9px; padding: 1px 6px; }
 }
+
+/* ========== ENHANCED MATCHUP LAYOUT OVERRIDE ========== */
+/* Override .grid for matchups page — enhanced cards need more horizontal space */
+#matchups-list .grid {
+  grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+  gap: 20px;
+}
+
+/* Fix score/name overlap in enhanced cards */
+.matchup.enhanced .matchup-body {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.matchup.enhanced .matchup-body .team {
+  min-width: 0;
+  width: 100%;
+}
+
+.matchup.enhanced .matchup-body .team .name {
+  font-size: 15px;
+  word-break: break-word;
+  hyphens: auto;
+  padding: 0 4px;
+  max-width: 100%;
+}
+
+/* Score block — fixed width to prevent shifting */
+.matchup.enhanced .score-center {
+  min-width: 90px;
+  width: 90px;
+}
+
+/* Mobile — stack teams vertically on small screens */
+@media (max-width: 500px) {
+  #matchups-list .grid {
+    grid-template-columns: 1fr;
+  }
+  .matchup.enhanced .matchup-body {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .matchup.enhanced .matchup-body .team {
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+    text-align: left;
+  }
+  .matchup.enhanced .matchup-body .team.right {
+    order: 3;
+  }
+  .matchup.enhanced .score-center {
+    order: 2;
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    gap: 16px;
+    min-width: 0;
+  }
+  .matchup.enhanced .score-center .vs {
+    margin: 0;
+  }
+}
