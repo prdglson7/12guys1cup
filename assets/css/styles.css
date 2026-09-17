@@ -4184,3 +4184,31 @@ main { padding: 32px 0 60px; }
     margin: 0;
   }
 }
+
+/* Override inherited nowrap from old matchup styles - CRITICAL FIX */
+.matchup.enhanced .matchup-body .team .name {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  font-family: var(--f-display) !important;
+  font-size: 15px !important;
+  letter-spacing: normal !important;
+  line-height: 1.2 !important;
+  text-align: center !important;
+}
+
+/* Reset team layout to column (was row for old cards) */
+.matchup.enhanced .matchup-body .team,
+.matchup.enhanced .matchup-body .team.right {
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+}
+
+/* Ensure avatar sizing is consistent */
+.matchup.enhanced .matchup-body .team .avatar {
+  width: 56px !important;
+  height: 56px !important;
+}
