@@ -4212,3 +4212,33 @@ main { padding: 32px 0 60px; }
   width: 56px !important;
   height: 56px !important;
 }
+
+/* ========== SoS BADGES (Rest of Season Rankings) ========== */
+.sos-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.sos-badge.sos-tough {
+  background: rgba(229,57,53,0.10);
+  color: #B71C1C;
+  border-color: rgba(229,57,53,0.30);
+}
+.sos-badge.sos-neutral {
+  background: rgba(255,183,77,0.15);
+  color: #E65100;
+  border-color: rgba(255,183,77,0.30);
+}
+.sos-badge.sos-easy {
+  background: rgba(46,125,50,0.10);
+  color: #1B5E20;
+  border-color: rgba(46,125,50,0.30);
+}
