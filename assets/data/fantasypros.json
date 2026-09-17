@@ -2,8 +2,26 @@
   "sport": "NFL",
   "title": "Fantasy Player News",
   "description": "Breaking Fantasy Football player news along with the impact for fantasy managers",
-  "count": 50,
+  "count": 49,
   "items": [
+    {
+      "id": 608510,
+      "created": "2026-09-17 00:28:36",
+      "created_formated": "Thu, Sep 17th 12:28am UTC",
+      "author": "Ari Koslow",
+      "player_id": 20130,
+      "team_id": "HOU",
+      "title": "Nico Collins (hamstring) to undergo testing",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Injury"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/608510/nico-collins-hamstring-to-undergo-tests.php",
+      "desc": "The Texans are having tests done on Nico Collins' hamstring.",
+      "impact": "Collins was limited in practice on Wednesday with the injury. It is unclear if it came up during last week's game or during practice. There should be an update on his status on Thursday. "
+    },
     {
       "id": 608483,
       "created": "2026-09-16 23:34:05",
@@ -291,24 +309,6 @@
       "link": "https://www.fantasypros.com/nfl/news/608468/dalton-schultz-rest-misses-practice-wednesday.php",
       "desc": "Dalton Schultz (rest) missed Houston's practice on Wednesday.",
       "impact": "The veteran tight end was given Wednesday off as a veteran rest day to start the week. He is likely to be back at practice on Thursday and should play in Week 2, barring anything unforeseen between now and then. He remains a fringe streaming option at the tight end position at this point."
-    },
-    {
-      "id": 608467,
-      "created": "2026-09-16 22:33:23",
-      "created_formated": "Wed, Sep 16th 10:33pm UTC",
-      "author": "Leo Sells",
-      "player_id": 20130,
-      "team_id": "HOU",
-      "title": "Nico Collins (hamstring) limited at practice Wednesday",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/608467/nico-collins-hamstring-limited-practice-wednesday.php",
-      "desc": "Nico Collins (hamstring) was limited at Houston's practice on Wednesday.",
-      "impact": "Collins was officially a limited participant to start the practice week on Wednesday. He's listed with a hamstring issue right now, but that may very well just be the team limiting his workload early in the week as a load management tactic. Fantasy managers should keep tabs on updates about his status throughout the week to see whether or not this issue will affect his availability for Sunday's game against the Cincinnati Bengals."
     },
     {
       "id": 608466,
@@ -885,28 +885,10 @@
       "link": "https://www.fantasypros.com/nfl/news/608432/mansoor-delane-shoulder-logs-full-practice-wednesday.php",
       "desc": "Mansoor Delane (shoulder) logged a full practice session on Wednesday.",
       "impact": "Surprisingly, the rookie was able to log a full practice session on Wednesday after suffering a shoulder injury in Monday's win over the Broncos. It looks like he will be able to play in Week 2, which is great news for the Chiefs ahead of a matchup against the Colts."
-    },
-    {
-      "id": 608431,
-      "created": "2026-09-16 20:57:40",
-      "created_formated": "Wed, Sep 16th 8:57pm UTC",
-      "author": "Leo Sells",
-      "player_id": 24347,
-      "team_id": "IND",
-      "title": "Anthony Richardson Sr. (groin) officially DNP Wednesday",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/608431/anthony-richardson-sr-groin-officially-dnp-wednesday.php",
-      "desc": "Anthony Richardson Sr. (groin) officially did not practice for the Colts on Wednesday.",
-      "impact": "Richardson wasn't spotted during the open portion of Indianapolis' practice on Wednesday, and he turned out to be absent due to a groin injury of some kind. He's still serving as the backup QB for the Colts at this point, so this injury won't have much of an impact for the team even if it leaves him sidelined this week."
     }
   ],
   "public_api_limited": true,
   "tier": "premium",
-  "fetched_at": "2026-09-16T23:47:39Z",
+  "fetched_at": "2026-09-17T04:44:40Z",
   "source_url": "https://api.fantasypros.com/public/v2/json/nfl/news?limit=50"
 }
