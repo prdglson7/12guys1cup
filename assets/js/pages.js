@@ -2390,6 +2390,15 @@ async function loadNflverseData() {
     },
     defVsPos: results['def-vs-pos']?.defenses || {},
     playoffOpps: results['schedules']?.playoff_opponents || {},
+    // ROS SoS support: full schedule + current week for computing remaining opponents
+    schedule: (() => {
+      const scheds = results['schedules']?.schedule || {};
+      // Use current season key if available, fallback to latest
+      const seasons = Object.keys(scheds).sort();
+      const latest = seasons[seasons.length - 1];
+      return latest ? scheds[latest] : {};
+    })(),
+    currentWeek: results['depth-charts']?.week || 3,
     gameContext: mergedGameCtx,
     liveGames: liveGamesInfo,
     depthCharts: depthChartsByTeam,
@@ -2449,6 +2458,30 @@ function enrichPlayer(player, nflverse) {
     if (ranks.length) {
       player._playoff_avg_rank = ranks.reduce((s, r) => s + r, 0) / ranks.length;
       player._playoff_opps = opps;
+    }
+  }
+
+  // ROS SoS — average opponent DEF vs POS rank across remaining regular-season games
+  // Rank 1 = defense allows FEWEST points (tough matchup)
+  // Rank 32 = defense allows MOST points (easy matchup)
+  if (player.team && nflverse.schedule) {
+    const teamSchedule = nflverse.schedule[player.team];
+    if (teamSchedule) {
+      const currentWeek = nflverse.currentWeek || 3;
+      const rosOpps = [];
+      // Remaining regular season: current week through week 14
+      for (let w = currentWeek; w <= 14; w++) {
+        const opp = teamSchedule[String(w)];
+        if (opp) rosOpps.push(opp);
+      }
+      const rosRanks = rosOpps
+        .map(opp => nflverse.defVsPos[opp]?.[player.pos]?.rank)
+        .filter(r => r != null);
+      if (rosRanks.length) {
+        player._ros_avg_rank = rosRanks.reduce((s, r) => s + r, 0) / rosRanks.length;
+        player._ros_opps = rosOpps;
+        player._ros_games_remaining = rosOpps.length;
+      }
     }
   }
 
@@ -6044,11 +6077,24 @@ async function renderWaiver() {
       })
       .sort((a, b) => b.proj_pts - a.proj_pts)
       .slice(0, 50);
+    // Helper: SoS badge (color-coded, rank 1=toughest, 32=easiest)
+    const sosBadge = (rank, label) => {
+      if (rank == null) return '';
+      const rankNum = Math.round(rank);
+      let cls, emoji, text;
+      if (rank <= 10) { cls = 'sos-tough'; emoji = '🔴'; text = 'Tough'; }
+      else if (rank <= 22) { cls = 'sos-neutral'; emoji = '🟡'; text = 'Neutral'; }
+      else { cls = 'sos-easy'; emoji = '🟢'; text = 'Easy'; }
+      return `<span class="sos-badge ${cls}" title="${label}: ${text} (avg opponent rank ${rankNum}/32)">${emoji} ${label} ${rankNum}</span>`;
+    };
+
     document.getElementById('waiver-ros-list').innerHTML = rosRanked.length
       ? rosRanked.map((p, idx) => {
           const availBadge = p._available
             ? '<span class="waiver-avail waiver-free">Available</span>'
             : `<span class="waiver-avail waiver-owned" title="${esc(p._owner || '')}">🔒 ${esc(p._owner || 'Rostered')}</span>`;
+          const rosSos = sosBadge(p._ros_avg_rank, 'ROS SoS');
+          const playoffSos = sosBadge(p._playoff_avg_rank, 'Playoff SoS');
           return `
             <div class="waiver-row">
               <div class="waiver-row-rank">${idx + 1}</div>
@@ -6061,6 +6107,8 @@ async function renderWaiver() {
                   <span>${esc(p.team || '')}</span>
                   ${p.bye ? `<span>Bye ${esc(String(p.bye))}</span>` : ''}
                   <span><strong>${p.proj_pts.toFixed(0)}</strong> ROS pts</span>
+                  ${rosSos}
+                  ${playoffSos}
                 </div>
               </div>
               <div class="waiver-row-avail">${availBadge}</div>
