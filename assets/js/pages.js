@@ -759,10 +759,15 @@ async function renderStandings() {
       } catch (_) {}
 
       // Fetch matchups for all completed weeks
+      // Fetch matchups for FULLY-COMPLETED weeks only.
+      // A week is only "final" for dues purposes when it's strictly before the current
+      // NFL week — otherwise in-progress Sunday/MNF scores get treated as final results.
+      // Sleeper's state.week advances Tuesday morning after MNF, so currentWeek - 1 is
+      // the safe cutoff for locking in high/low scorers and penalty pot.
       const allWeeks = new Map();
       const currentWeek = (state && state.week) || 0;
-      for (let w = 1; w <= 17; w++) {
-        if (currentWeek > 0 && w > currentWeek) break;
+      const lastCompleteWeek = Math.max(0, currentWeek - 1);
+      for (let w = 1; w <= lastCompleteWeek; w++) {
         try {
           const m = await getMatchups(w);
           if (!m || !m.length) continue;
