@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-22T07:20:41.193Z",
+  "fetched_at": "2026-09-22T13:07:23.329Z",
   "season": 2026,
   "week": 2,
   "source_weights": {
@@ -13179,24 +13179,6 @@
         "espn"
       ]
     },
-    "falcons dst": {
-      "name": "Falcons D/ST",
-      "pos": "DST",
-      "team": "ATL",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 53.1265146,
-        "consensus": 53.1265146,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "matt gay": {
       "name": "Matt Gay",
       "pos": "K",
@@ -13215,6 +13197,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "falcons dst": {
+      "name": "Falcons D/ST",
+      "pos": "DST",
+      "team": "ATL",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 53.1265146,
+        "consensus": 53.1265146,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
