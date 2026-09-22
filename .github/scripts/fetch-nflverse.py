@@ -120,7 +120,7 @@ def fetch_weekly_stats_direct(season):
     """Fetch weekly stats directly from nflverse-data releases.
     Bypasses nfl_data_py which uses stale URLs (v0.3.3 as of 2026)."""
     import pandas as pd
-    url = f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_{season}.parquet"
+    url = f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_{season}.parquet"
     log(f"  Fetching directly from nflverse: stats_player_week_{season}.parquet")
     return pd.read_parquet(url, engine='auto')
 
