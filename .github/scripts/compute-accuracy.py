@@ -56,15 +56,53 @@ def load_existing_history():
         return json.load(f)
 
 
+def fetch_actuals_direct(season):
+    """Fetch weekly stats directly from nflverse-data releases.
+    Bypasses nfl_data_py which uses stale URLs.
+
+    nflverse changed their file naming in 2026: was 'stats_player_week_YYYY.parquet',
+    now 'stats_player_reg_YYYY.parquet' (regular season) or
+    'stats_player_regpost_YYYY.parquet' (regular + postseason).
+    We use _reg_ for in-season fantasy analysis.
+    """
+    import pandas as pd
+    url = f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_{season}.parquet"
+    log(f"  Fetching directly from nflverse: stats_player_reg_{season}.parquet")
+    return pd.read_parquet(url, engine='auto')
+
+
 def fetch_actuals(season, week):
     """Fetch actual weekly stats from nflverse."""
     log(f"Fetching actuals for {season} Week {week}...")
+
+    # Try direct fetch first (works with current nflverse data)
+    df = None
     try:
-        df = nfl.import_weekly_data([season])
+        df = fetch_actuals_direct(season)
+        log(f"  Direct fetch succeeded: {len(df)} total player-weeks")
+    except Exception as e:
+        log(f"  Direct fetch failed ({e}) — falling back to nfl_data_py")
+        try:
+            df = nfl.import_weekly_data([season])
+        except Exception as e2:
+            log(f"  nfl_data_py also failed: {e2}")
+            return {}
+
+    if df is None or df.empty:
+        log(f"  No data available for {season} yet")
+        return {}
+
+    try:
         wk = df[df["week"] == week]
+        log(f"  Week {week} rows: {len(wk)}")
+
         actuals = {}
         for _, row in wk.iterrows():
-            name = row.get("player_display_name") or row.get("player_name")
+            # Column names differ between nfl_data_py and direct nflverse
+            name = (row.get("player_display_name")
+                    or row.get("player_name")
+                    or row.get("full_name")
+                    or "")
             if not name:
                 continue
             fp_ppr = row.get("fantasy_points_ppr")
@@ -73,13 +111,16 @@ def fetch_actuals(season, week):
             actuals[normalize_name(name)] = {
                 "name": name,
                 "pos": row.get("position", ""),
-                "team": row.get("recent_team", ""),
+                "team": (row.get("recent_team")
+                         or row.get("team")
+                         or row.get("posteam")
+                         or ""),
                 "actual_fp": float(fp_ppr),
             }
         log(f"Loaded actuals for {len(actuals)} players")
         return actuals
     except Exception as e:
-        log(f"Error fetching actuals: {e}")
+        log(f"Error parsing actuals: {e}")
         return {}
 
 
