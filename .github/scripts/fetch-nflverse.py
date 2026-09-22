@@ -50,8 +50,58 @@ def _clean_json_value(obj):
     return obj
 
 
-def write_json(data, filename):
+def _read_existing(filename):
+    """Read existing JSON file if present. Returns None if missing or invalid."""
     path = os.path.join(OUTPUT_DIR, filename)
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except Exception as e:
+        log(f"  Could not read existing {filename}: {e}")
+        return None
+
+
+def _extract_count(data):
+    """Get player/entity count from a data blob for validation comparison."""
+    if not isinstance(data, dict):
+        return 0
+    # Explicit count field takes priority
+    if "player_count" in data:
+        return int(data.get("player_count") or 0)
+    # Fallbacks for different file shapes
+    if isinstance(data.get("players"), dict):
+        return len(data["players"])
+    if isinstance(data.get("defenses"), dict):
+        return len(data["defenses"])
+    if isinstance(data.get("teams"), dict):
+        return len(data["teams"])
+    return 0
+
+
+def write_json(data, filename, protect=False, min_ratio=0.80):
+    """Write JSON to file. If protect=True, refuses to overwrite an existing
+    file when the new data has significantly fewer entries than what's there
+    (guards against nflverse mid-ingest wiping out good data).
+
+    protect=True: enable the guardrail (used for weekly-stats, waiver-metrics,
+      route-participation, dropback-shares, xfp-computed, def-vs-pos)
+    min_ratio: new/old ratio below which we refuse to overwrite (default 80%)
+    """
+    path = os.path.join(OUTPUT_DIR, filename)
+
+    if protect:
+        existing = _read_existing(filename)
+        old_count = _extract_count(existing)
+        new_count = _extract_count(data)
+        # Only guard when we have a meaningful existing file to protect
+        if old_count > 20 and new_count < int(old_count * min_ratio):
+            log(f"⚠️  REFUSING to overwrite {filename}: new has {new_count} entries "
+                f"vs existing {old_count} (below {int(min_ratio*100)}% threshold). "
+                f"Keeping existing file. nflverse may still be ingesting — retry later.")
+            return False
+
     cleaned = _clean_json_value(data)
     with open(path, "w") as f:
         # allow_nan=False catches any NaN we missed and raises loudly rather than
@@ -59,6 +109,7 @@ def write_json(data, filename):
         json.dump(cleaned, f, separators=(",", ":"), allow_nan=False)
     size_kb = os.path.getsize(path) / 1024
     log(f"Wrote {filename} ({size_kb:.0f}KB)")
+    return True
 
 def safe(func, label):
     """Run a fetch function, return result or None on failure (with logged traceback)."""
@@ -121,7 +172,7 @@ def fetch_weekly_stats_direct(season):
     Bypasses nfl_data_py which uses stale URLs (v0.3.3 as of 2026)."""
     import pandas as pd
     url = f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_{season}.parquet"
-    log(f"  Fetching directly from nflverse: stats_player_week_{season}.parquet")
+    log(f"  Fetching directly from nflverse: stats_player_reg_{season}.parquet")
     return pd.read_parquet(url, engine='auto')
 
 def fetch_weekly_stats():
@@ -1136,48 +1187,62 @@ def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     # 1. Weekly stats (used by DEF vs POS + regression baseline)
+    #    PROTECTED: refuse to overwrite if new data has <80% of existing players
+    #    (guards against nflverse mid-ingest wiping out complete weeks)
     weekly = safe(fetch_weekly_stats, "weekly_stats") or {"season": None, "weeks": [], "players": {}}
-    write_json(weekly, "weekly-stats.json")
+    weekly_written = write_json(weekly, "weekly-stats.json", protect=True)
+    # If write was refused, re-read the existing good data so downstream files use it
+    if not weekly_written:
+        existing_weekly = _read_existing("weekly-stats.json")
+        if existing_weekly:
+            log("  Re-loading existing weekly-stats.json for downstream computations")
+            weekly = existing_weekly
 
-    # 2. DEF vs POS (computed from weekly stats)
+    # 2. DEF vs POS (computed from weekly stats) — PROTECTED
     def_vs_pos = safe(lambda: compute_def_vs_pos(weekly), "def_vs_pos") or {"season": None, "defenses": {}}
-    write_json(def_vs_pos, "def-vs-pos.json")
+    write_json(def_vs_pos, "def-vs-pos.json", protect=True)
 
-    # 3. Snap counts
+    # 3. Snap counts (not protected — different source, more reliable)
     snaps = safe(fetch_snap_counts, "snap_counts") or {"season": None, "players": {}}
     write_json(snaps, "snap-counts.json")
 
-    # 4. xFP
+    # 4. xFP (not protected — external source, may be intentionally empty early season)
     xfp = safe(fetch_xfp, "xfp") or {"season": None, "players": {}}
     write_json(xfp, "xfp.json")
 
-    # 5. Depth charts
+    # 5. Depth charts (not protected — small file, always refresh)
     depth = safe(fetch_depth_charts, "depth_charts") or {"season": None, "teams": {}}
     write_json(depth, "depth-charts.json")
 
-    # 6. Player IDs (for cross-referencing)
+    # 6. Player IDs (not protected — reference table)
     ids = safe(fetch_player_ids, "player_ids") or {"players": {}}
     write_json(ids, "player-ids.json")
 
-    # 7. Schedules (for playoff SoS)
+    # 7. Schedules (not protected — full-season data, always refresh)
     sched = safe(fetch_schedules, "schedules") or {"seasons_available": [], "schedule": {}, "playoff_opponents": {}}
     write_json(sched, "schedules.json")
 
-    # 8. Dropback-based target share (accurate route participation proxy)
+    # 8. Dropback-based target share — PROTECTED
     dropback = safe(lambda: fetch_dropback_shares(weekly), "dropback_shares") or {"season": None, "players": {}}
-    write_json(dropback, "dropback-shares.json")
+    write_json(dropback, "dropback-shares.json", protect=True)
 
-    # 9. Route participation (snap % × team pass rate)
+    # 9. Route participation — PROTECTED
     routes = safe(lambda: fetch_route_participation(snaps, weekly), "route_participation") or {"season": None, "players": {}}
-    write_json(routes, "route-participation.json")
+    route_written = write_json(routes, "route-participation.json", protect=True)
+    # Re-read existing for downstream waiver metrics if write was refused
+    if not route_written:
+        existing_routes = _read_existing("route-participation.json")
+        if existing_routes:
+            log("  Re-loading existing route-participation.json for waiver metrics")
+            routes = existing_routes
 
-    # 10. xFP fallback (compute from opportunity when nflverse ff_opportunity is stale)
+    # 10. xFP fallback (compute from opportunity when nflverse ff_opportunity is stale) — PROTECTED
     xfp_computed = safe(lambda: compute_xfp_fallback(weekly), "xfp_computed") or {"season": None, "players": {}}
-    write_json(xfp_computed, "xfp-computed.json")
+    write_json(xfp_computed, "xfp-computed.json", protect=True)
 
-    # 11. Waiver metrics (rush share, target rate, air yards)
+    # 11. Waiver metrics (rush share, target rate, air yards) — PROTECTED
     waiver_metrics = safe(lambda: fetch_waiver_metrics(weekly, routes), "waiver_metrics") or {"season": None, "players": {}}
-    write_json(waiver_metrics, "waiver-metrics.json")
+    write_json(waiver_metrics, "waiver-metrics.json", protect=True)
 
     # Manifest
     manifest = {
