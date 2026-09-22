@@ -57,31 +57,18 @@ def load_existing_history():
 
 
 def fetch_actuals_direct(season):
-    """Fetch weekly stats directly from nflverse-data releases.
-    Tries multiple URLs — nflverse's stats_player_reg is season aggregates,
-    but player_stats release still has per-week data.
+    """Fetch weekly stats from nflverse's stats_player_week_YYYY.parquet.
+    This is the confirmed per-week data source. Note: stats_player_reg is
+    season aggregates (no week column) and should NOT be used.
     """
     import pandas as pd
-    urls_to_try = [
-        f"https://github.com/nflverse/nflverse-data/releases/download/player_stats/player_stats_{season}.parquet",
-        f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_reg_{season}.parquet",
-        f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_{season}.parquet",
-    ]
-    last_error = None
-    for url in urls_to_try:
-        try:
-            log(f"  Trying: {url}")
-            df = pd.read_parquet(url, engine='auto')
-            if df is not None and not df.empty and "week" in df.columns:
-                non_zero = df[df["week"].notna() & (df["week"] > 0)]
-                if len(non_zero) > 0:
-                    log(f"  ✓ Got {len(df)} rows with valid weeks")
-                    return df
-        except Exception as e:
-            last_error = str(e)
-            log(f"  ✗ {e}")
-            continue
-    raise Exception(f"All weekly stats URLs failed. Last: {last_error}")
+    url = f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_{season}.parquet"
+    log(f"  Fetching: stats_player_week_{season}.parquet")
+    df = pd.read_parquet(url, engine='auto')
+    if "week" not in df.columns or df[df["week"] > 0].empty:
+        raise Exception("file missing valid week column")
+    log(f"  ✓ Got {len(df)} rows")
+    return df
 
 
 def fetch_actuals(season, week):
