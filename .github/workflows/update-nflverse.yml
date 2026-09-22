@@ -1,22 +1,23 @@
 name: Update nflverse data
 
-# Fetches nflverse (nfl_data_py) datasets weekly for Advanced Start/Sit,
-# Waiver Wire snap trends, DEF vs POS matchups, xFP regression signals,
-# depth charts, and historical context.
+# Fetches nflverse data (weekly stats, snap counts, xFP, depth charts,
+# schedules, play-by-play, waiver metrics) and commits to the repo.
 #
-# Runs Tuesday 21:00 UTC (~4pm ET) — after Monday Night Football data drops.
-# Also triggerable manually via workflow_dispatch.
+# Schedule:
+#   Tuesday 11am CST — main run after nflverse's Tuesday ingest completes
+#   Thursday 10am CST — backup catch for late-Tuesday updates before TNF
+#
+# nflverse typically publishes updated Week N data by ~12pm ET Tuesday,
+# so 11am CST (12pm ET) is the sweet spot: late enough for data to be
+# fresh, early enough that we get the day started with new metrics.
 
 on:
   schedule:
-    - cron: "0 21 * * 2"    # Tuesday 4pm ET — post-MNF full data pull
-    - cron: "0 14 * * 4"    # Thursday 10am ET — pre-TNF refresh for late-week injury updates
+    # Tuesday 16:00 UTC = 11am CST (11am CDT during DST)
+    - cron: "0 16 * * 2"
+    # Thursday 15:00 UTC = 10am CST (10am CDT during DST) — backup
+    - cron: "0 15 * * 4"
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/update-nflverse.yml"
-      - ".github/scripts/fetch-nflverse.py"
 
 permissions:
   contents: write
@@ -37,32 +38,30 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install nfl-data-py pandas pyarrow requests
+          pip install nfl_data_py pandas pyarrow requests
 
       - name: Fetch nflverse data
-        env:
-          NFL_SEASON: '2026'
         run: python .github/scripts/fetch-nflverse.py
 
-      - name: Commit if changed
+      - name: Commit + push updated files
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/data/nflverse/
           if git diff --cached --quiet; then
-            echo "No changes to commit."
+            echo "No data changes to commit."
             exit 0
           fi
           git commit -m "Update nflverse data [skip ci]"
-          # Retry loop for concurrent-push races
-          for i in 1 2 3; do
+          # Retry on concurrent push (up to 5 attempts)
+          for i in 1 2 3 4 5; do
             git pull --rebase origin main && git push && exit 0
             echo "Retry $i after concurrent push…"
             sleep 5
           done
-          echo "Failed to push after 3 attempts."
           exit 1
