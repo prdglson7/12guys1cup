@@ -1,35 +1,9 @@
 {
-  "fetched_at": "2026-09-21T23:05:33.519Z",
+  "fetched_at": "2026-09-22T04:14:49.726Z",
   "season": 2026,
   "week": 2,
   "game_count": 16,
   "teams": {
-    "LAR": {
-      "2": {
-        "opp": "NYG",
-        "home": true,
-        "spread": 6.5,
-        "total": 47.5,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-09-22T00:15Z"
-      }
-    },
-    "NYG": {
-      "2": {
-        "opp": "LAR",
-        "home": false,
-        "spread": -6.5,
-        "total": 47.5,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-09-22T00:15Z"
-      }
-    },
     "BUF": {
       "2": {
         "opp": "DET",
@@ -418,6 +392,32 @@
         "wind": 3,
         "precip": null,
         "kickoff": "2026-09-21T00:20Z"
+      }
+    },
+    "LAR": {
+      "2": {
+        "opp": "NYG",
+        "home": true,
+        "spread": null,
+        "total": null,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-09-22T00:15Z"
+      }
+    },
+    "NYG": {
+      "2": {
+        "opp": "LAR",
+        "home": false,
+        "spread": null,
+        "total": null,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-09-22T00:15Z"
       }
     }
   }
