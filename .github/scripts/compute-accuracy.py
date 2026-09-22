@@ -58,17 +58,30 @@ def load_existing_history():
 
 def fetch_actuals_direct(season):
     """Fetch weekly stats directly from nflverse-data releases.
-    Bypasses nfl_data_py which uses stale URLs.
-
-    nflverse changed their file naming in 2026: was 'stats_player_week_YYYY.parquet',
-    now 'stats_player_reg_YYYY.parquet' (regular season) or
-    'stats_player_regpost_YYYY.parquet' (regular + postseason).
-    We use _reg_ for in-season fantasy analysis.
+    Tries multiple URLs — nflverse's stats_player_reg is season aggregates,
+    but player_stats release still has per-week data.
     """
     import pandas as pd
-    url = f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_{season}.parquet"
-    log(f"  Fetching directly from nflverse: stats_player_reg_{season}.parquet")
-    return pd.read_parquet(url, engine='auto')
+    urls_to_try = [
+        f"https://github.com/nflverse/nflverse-data/releases/download/player_stats/player_stats_{season}.parquet",
+        f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_reg_{season}.parquet",
+        f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_{season}.parquet",
+    ]
+    last_error = None
+    for url in urls_to_try:
+        try:
+            log(f"  Trying: {url}")
+            df = pd.read_parquet(url, engine='auto')
+            if df is not None and not df.empty and "week" in df.columns:
+                non_zero = df[df["week"].notna() & (df["week"] > 0)]
+                if len(non_zero) > 0:
+                    log(f"  ✓ Got {len(df)} rows with valid weeks")
+                    return df
+        except Exception as e:
+            last_error = str(e)
+            log(f"  ✗ {e}")
+            continue
+    raise Exception(f"All weekly stats URLs failed. Last: {last_error}")
 
 
 def fetch_actuals(season, week):
