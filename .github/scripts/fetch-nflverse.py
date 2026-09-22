@@ -169,11 +169,52 @@ def try_season_with_fallback(fetcher, label):
 
 def fetch_weekly_stats_direct(season):
     """Fetch weekly stats directly from nflverse-data releases.
-    Bypasses nfl_data_py which uses stale URLs (v0.3.3 as of 2026)."""
+    Tries multiple URLs since nflverse has changed file organization over time.
+
+    Priority order (per-week data):
+      1. player_stats release (nfl_data_py's original path — most reliable for weekly data)
+      2. stats_player_week_reg (newer weekly-specific file, if exists)
+      3. stats_player_reg (season aggregates — LAST RESORT, won't have week column)
+    """
     import pandas as pd
-    url = f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_{season}.parquet"
-    log(f"  Fetching directly from nflverse: stats_player_reg_{season}.parquet")
-    return pd.read_parquet(url, engine='auto')
+    urls_to_try = [
+        # Per-week data (preferred — has 'week' column)
+        (f"https://github.com/nflverse/nflverse-data/releases/download/player_stats/player_stats_{season}.parquet",
+         "player_stats (per-week)"),
+        (f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_reg_{season}.parquet",
+         "stats_player_week_reg"),
+        # Season aggregates (fallback — no week column, will produce wrong data)
+        (f"https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_{season}.parquet",
+         "stats_player_reg (SEASON AGG — fallback only)"),
+    ]
+
+    last_error = None
+    for url, label in urls_to_try:
+        try:
+            log(f"  Trying {label}: {url}")
+            df = pd.read_parquet(url, engine='auto')
+            if df is not None and not df.empty:
+                # Sanity check: does this file have a 'week' column with real values?
+                if "week" in df.columns:
+                    non_zero_weeks = df[df["week"].notna() & (df["week"] > 0)]
+                    if len(non_zero_weeks) > 0:
+                        log(f"  ✓ {label} succeeded — {len(df)} rows with valid weeks")
+                        return df
+                    else:
+                        log(f"  ✗ {label} returned data but 'week' column is all zeros/null (season aggregate)")
+                        last_error = "week column empty"
+                        continue
+                else:
+                    log(f"  ✗ {label} has no 'week' column")
+                    last_error = "no week column"
+                    continue
+        except Exception as e:
+            last_error = str(e)
+            log(f"  ✗ {label} failed: {e}")
+            continue
+
+    # All URLs failed
+    raise Exception(f"All weekly stats URLs failed. Last error: {last_error}")
 
 def fetch_weekly_stats():
     log("Fetching weekly player stats…")
