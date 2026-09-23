@@ -2624,14 +2624,40 @@ function getWeekWeight(week) {
   return PLAYOFF_WEIGHTS.regular;
 }
 
-/* Weekly projected points for a player.
-   Uses weekly_proj if available, falls back to season/17. */
+/* Weekly projected points for a player — for MULTI-WEEK simulation.
+   Prefers ROS-average (proj_pts / TOTAL_WEEKS) because that reflects the
+   player's true weekly value averaged across the season.
+
+   weekly_proj is the CURRENT week's matchup-adjusted number — using it for
+   every remaining week systematically over/under-values players based on
+   this week's matchup. Bug example (before this fix):
+     Cook this week 17.79 × 16 = 284.6 (overestimated vs ROS 261.7)
+     Brown this week 15.7 × 16 = 251.2 (underestimated vs ROS 269.2)
+     False verdict: -33 pts trading Cook for Brown
+   ROS-avg produces:
+     Cook 16.36/wk, Brown 16.83/wk → +7.5 pts (correct)
+
+   For trade sim & lineup sim, ROS-avg is correct.
+   For start/sit decisions, use playerCurrentWeekProj() instead. */
 function playerWeeklyProj(player) {
+  const season = Number(player.proj_pts);
+  if (season != null && !isNaN(season) && season > 0) {
+    return season / LEAGUE.TOTAL_WEEKS;
+  }
+  // Fallback: weekly_proj if no ROS available (rookie/newly-signed players)
   if (player.weekly_proj != null && !isNaN(player.weekly_proj)) {
     return Number(player.weekly_proj);
   }
-  const season = Number(player.proj_pts) || 0;
-  return season / LEAGUE.TOTAL_WEEKS;
+  return 0;
+}
+
+/* Current-week projected points (matchup-adjusted).
+   Use for start/sit decisions, NOT for multi-week trade simulation. */
+function playerCurrentWeekProj(player) {
+  if (player.weekly_proj != null && !isNaN(player.weekly_proj)) {
+    return Number(player.weekly_proj);
+  }
+  return playerWeeklyProj(player);
 }
 
 /* Availability factor (0-1). Uses FP probability_of_playing or status fallback. */
