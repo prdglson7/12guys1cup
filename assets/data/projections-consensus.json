@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-26T14:07:37.392Z",
+  "fetched_at": "2026-09-26T19:01:30.991Z",
   "season": 2026,
   "week": 3,
   "source_weights": {
@@ -29,7 +29,7 @@
       "weekly": {
         "fp": 23.72,
         "espn": null,
-        "sleeper": 23.6,
+        "sleeper": 23.59,
         "consensus": 23.7,
         "variance": 0.003
       },
@@ -75,11 +75,11 @@
       "pos": "QB",
       "team": "SF",
       "weekly": {
-        "fp": 21.34,
+        "fp": 21.33,
         "espn": null,
         "sleeper": 21.61,
         "consensus": 21.5,
-        "variance": 0.006
+        "variance": 0.007
       },
       "ros": {
         "fp": 310.76,
@@ -99,8 +99,8 @@
       "pos": "QB",
       "team": "KC",
       "weekly": {
-        "fp": 21.14,
-        "consensus": 21.14,
+        "fp": 21.11,
+        "consensus": 21.11,
         "variance": 0
       },
       "ros": {
@@ -117,11 +117,11 @@
       "pos": "QB",
       "team": "PHI",
       "weekly": {
-        "fp": 19.24,
+        "fp": 19.25,
         "espn": null,
-        "sleeper": 18.75,
-        "consensus": 19,
-        "variance": 0.013
+        "sleeper": 18.92,
+        "consensus": 19.1,
+        "variance": 0.009
       },
       "ros": {
         "fp": 321.82,
@@ -141,7 +141,7 @@
       "pos": "QB",
       "team": "NO",
       "weekly": {
-        "fp": 18.95,
+        "fp": 18.96,
         "espn": null,
         "sleeper": 18.33,
         "consensus": 18.7,
@@ -189,11 +189,11 @@
       "pos": "QB",
       "team": "JAC",
       "weekly": {
-        "fp": 18.55,
+        "fp": 18.59,
         "espn": null,
-        "sleeper": 19.17,
-        "consensus": 18.8,
-        "variance": 0.016
+        "sleeper": 19.28,
+        "consensus": 18.9,
+        "variance": 0.018
       },
       "ros": {
         "fp": 311.69,
@@ -237,11 +237,11 @@
       "pos": "QB",
       "team": "NE",
       "weekly": {
-        "fp": 18.46,
+        "fp": 18.49,
         "espn": null,
-        "sleeper": 18.39,
-        "consensus": 18.4,
-        "variance": 0.002
+        "sleeper": 18.48,
+        "consensus": 18.5,
+        "variance": 0
       },
       "ros": {
         "fp": 324.85,
@@ -261,11 +261,11 @@
       "pos": "QB",
       "team": "MIN",
       "weekly": {
-        "fp": 17.56,
+        "fp": 17.57,
         "espn": null,
         "sleeper": 17.55,
         "consensus": 17.6,
-        "variance": 0
+        "variance": 0.001
       },
       "ros": {
         "fp": 298.88,
@@ -304,30 +304,6 @@
         "espn"
       ]
     },
-    "joe burrow": {
-      "name": "Joe Burrow",
-      "pos": "QB",
-      "team": "CIN",
-      "weekly": {
-        "fp": 17.27,
-        "espn": null,
-        "sleeper": 17.57,
-        "consensus": 17.4,
-        "variance": 0.009
-      },
-      "ros": {
-        "fp": 313.72,
-        "espn": 273.54777725,
-        "sleeper": 306.12,
-        "consensus": 298.8,
-        "variance": 0.059
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "jordan love": {
       "name": "Jordan Love",
       "pos": "QB",
@@ -352,16 +328,40 @@
         "espn"
       ]
     },
+    "joe burrow": {
+      "name": "Joe Burrow",
+      "pos": "QB",
+      "team": "CIN",
+      "weekly": {
+        "fp": 17.18,
+        "espn": null,
+        "sleeper": 17.57,
+        "consensus": 17.4,
+        "variance": 0.011
+      },
+      "ros": {
+        "fp": 313.72,
+        "espn": 273.54777725,
+        "sleeper": 306.12,
+        "consensus": 298.8,
+        "variance": 0.059
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "bryce young": {
       "name": "Bryce Young",
       "pos": "QB",
       "team": "CAR",
       "weekly": {
-        "fp": 16.76,
+        "fp": 16.71,
         "espn": null,
-        "sleeper": 16.55,
-        "consensus": 16.7,
-        "variance": 0.006
+        "sleeper": 16.29,
+        "consensus": 16.5,
+        "variance": 0.013
       },
       "ros": {
         "fp": 253.47,
@@ -381,7 +381,7 @@
       "pos": "QB",
       "team": "DEN",
       "weekly": {
-        "fp": 16.53,
+        "fp": 16.52,
         "espn": null,
         "sleeper": 16.78,
         "consensus": 16.6,
@@ -400,40 +400,16 @@
         "espn"
       ]
     },
-    "cj stroud": {
-      "name": "C.J. Stroud",
-      "pos": "QB",
-      "team": "HOU",
-      "weekly": {
-        "fp": 16.24,
-        "espn": null,
-        "sleeper": 15.38,
-        "consensus": 15.8,
-        "variance": 0.027
-      },
-      "ros": {
-        "fp": 260.98,
-        "espn": 234.22496258,
-        "sleeper": 247.82,
-        "consensus": 248.4,
-        "variance": 0.044
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "sam darnold": {
       "name": "Sam Darnold",
       "pos": "QB",
       "team": "SEA",
       "weekly": {
-        "fp": 16.18,
+        "fp": 16.17,
         "espn": null,
-        "sleeper": 16.78,
+        "sleeper": 16.82,
         "consensus": 16.5,
-        "variance": 0.018
+        "variance": 0.02
       },
       "ros": {
         "fp": 274.61,
@@ -448,12 +424,36 @@
         "espn"
       ]
     },
+    "cj stroud": {
+      "name": "C.J. Stroud",
+      "pos": "QB",
+      "team": "HOU",
+      "weekly": {
+        "fp": 16.15,
+        "espn": null,
+        "sleeper": 15.38,
+        "consensus": 15.8,
+        "variance": 0.024
+      },
+      "ros": {
+        "fp": 260.98,
+        "espn": 234.22496258,
+        "sleeper": 247.82,
+        "consensus": 248.4,
+        "variance": 0.044
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "baker mayfield": {
       "name": "Baker Mayfield",
       "pos": "QB",
       "team": "TB",
       "weekly": {
-        "fp": 15.86,
+        "fp": 15.87,
         "espn": null,
         "sleeper": 15.92,
         "consensus": 15.9,
@@ -477,11 +477,11 @@
       "pos": "QB",
       "team": "CLE",
       "weekly": {
-        "fp": 15.42,
+        "fp": 15.49,
         "espn": null,
-        "sleeper": 13.86,
-        "consensus": 14.7,
-        "variance": 0.053
+        "sleeper": 13.71,
+        "consensus": 14.6,
+        "variance": 0.061
       },
       "ros": {
         "fp": 158.01,
@@ -503,9 +503,9 @@
       "weekly": {
         "fp": 15.41,
         "espn": null,
-        "sleeper": 15.85,
+        "sleeper": 15.8,
         "consensus": 15.6,
-        "variance": 0.014
+        "variance": 0.012
       },
       "ros": {
         "fp": 270.66,
@@ -527,9 +527,9 @@
       "weekly": {
         "fp": 15.38,
         "espn": null,
-        "sleeper": 16.09,
+        "sleeper": 16.08,
         "consensus": 15.7,
-        "variance": 0.023
+        "variance": 0.022
       },
       "ros": {
         "fp": 297.64,
@@ -549,7 +549,7 @@
       "pos": "QB",
       "team": "NYJ",
       "weekly": {
-        "fp": 15.35,
+        "fp": 15.36,
         "espn": null,
         "sleeper": 15.6,
         "consensus": 15.5,
@@ -597,11 +597,11 @@
       "pos": "QB",
       "team": "IND",
       "weekly": {
-        "fp": 14.62,
+        "fp": 14.58,
         "espn": null,
         "sleeper": 13.7,
         "consensus": 14.2,
-        "variance": 0.032
+        "variance": 0.031
       },
       "ros": {
         "fp": 272.64,
@@ -609,30 +609,6 @@
         "sleeper": 223.54,
         "consensus": 240.7,
         "variance": 0.099
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
-    "aaron rodgers": {
-      "name": "Aaron Rodgers",
-      "pos": "QB",
-      "team": "PIT",
-      "weekly": {
-        "fp": 14.39,
-        "espn": null,
-        "sleeper": 14.43,
-        "consensus": 14.4,
-        "variance": 0.001
-      },
-      "ros": {
-        "fp": 230.12,
-        "espn": 199.47370804,
-        "sleeper": 177,
-        "consensus": 203.3,
-        "variance": 0.108
       },
       "sources_used": [
         "fp",
@@ -664,6 +640,30 @@
         "espn"
       ]
     },
+    "aaron rodgers": {
+      "name": "Aaron Rodgers",
+      "pos": "QB",
+      "team": "PIT",
+      "weekly": {
+        "fp": 14.33,
+        "espn": null,
+        "sleeper": 14.43,
+        "consensus": 14.4,
+        "variance": 0.003
+      },
+      "ros": {
+        "fp": 230.12,
+        "espn": 199.47370804,
+        "sleeper": 177,
+        "consensus": 203.3,
+        "variance": 0.108
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "marcus mariota": {
       "name": "Marcus Mariota",
       "pos": "QB",
@@ -671,9 +671,9 @@
       "weekly": {
         "fp": 13.65,
         "espn": null,
-        "sleeper": 13.07,
+        "sleeper": 13.09,
         "consensus": 13.4,
-        "variance": 0.022
+        "variance": 0.021
       },
       "ros": {
         "fp": 13.35,
@@ -714,7 +714,7 @@
       "pos": "QB",
       "team": "TEN",
       "weekly": {
-        "fp": 13.4,
+        "fp": 13.41,
         "espn": null,
         "sleeper": 12.13,
         "consensus": 12.8,
@@ -726,29 +726,6 @@
         "sleeper": 227.84,
         "consensus": 222.6,
         "variance": 0.048
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
-    "case keenum": {
-      "name": "Case Keenum",
-      "pos": "QB",
-      "team": "CHI",
-      "weekly": {
-        "fp": 12.67,
-        "espn": null,
-        "sleeper": 10.45,
-        "consensus": 11.6,
-        "variance": 0.096
-      },
-      "ros": {
-        "espn": 12.92385792,
-        "sleeper": 10.76,
-        "consensus": 11.8,
-        "variance": 0.091
       },
       "sources_used": [
         "fp",
@@ -780,14 +757,36 @@
         "espn"
       ]
     },
+    "case keenum": {
+      "name": "Case Keenum",
+      "pos": "QB",
+      "team": "CHI",
+      "weekly": {
+        "fp": 12.64,
+        "espn": null,
+        "consensus": 12.64,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 12.92385792,
+        "sleeper": 10.76,
+        "consensus": 11.8,
+        "variance": 0.091
+      },
+      "sources_used": [
+        "fp",
+        "espn",
+        "sleeper"
+      ]
+    },
     "jayden daniels": {
       "name": "Jayden Daniels",
       "pos": "QB",
       "team": "WAS",
       "weekly": {
-        "fp": 7.74,
+        "fp": 7.71,
         "espn": null,
-        "consensus": 7.74,
+        "consensus": 7.71,
         "variance": 0
       },
       "ros": {
@@ -808,8 +807,8 @@
       "pos": "QB",
       "team": "SEA",
       "weekly": {
-        "fp": 5.57,
-        "consensus": 5.57,
+        "fp": 5.55,
+        "consensus": 5.55,
         "variance": 0
       },
       "ros": {
@@ -827,8 +826,9 @@
       "team": "CHI",
       "weekly": {
         "fp": 3.96,
-        "consensus": 3.96,
-        "variance": 0
+        "sleeper": 12.17,
+        "consensus": 7.8,
+        "variance": 0.509
       },
       "ros": {
         "fp": 9.74,
@@ -1476,11 +1476,11 @@
       "pos": "RB",
       "team": "IND",
       "weekly": {
-        "fp": 18.94,
+        "fp": 18.97,
         "espn": null,
         "sleeper": 19.72,
         "consensus": 19.3,
-        "variance": 0.02
+        "variance": 0.019
       },
       "ros": {
         "fp": 309.29,
@@ -1500,9 +1500,9 @@
       "pos": "RB",
       "team": "KC",
       "weekly": {
-        "fp": 19.45,
+        "fp": 19.49,
         "espn": null,
-        "consensus": 19.45,
+        "consensus": 19.49,
         "variance": 0
       },
       "ros": {
@@ -1521,11 +1521,11 @@
       "pos": "RB",
       "team": "SF",
       "weekly": {
-        "fp": 20.16,
+        "fp": 20.12,
         "espn": null,
         "sleeper": 20.7,
         "consensus": 20.4,
-        "variance": 0.013
+        "variance": 0.014
       },
       "ros": {
         "fp": 331.2,
@@ -1592,9 +1592,9 @@
       "weekly": {
         "fp": 15.56,
         "espn": null,
-        "sleeper": 15.93,
+        "sleeper": 15.91,
         "consensus": 15.7,
-        "variance": 0.012
+        "variance": 0.011
       },
       "ros": {
         "fp": 274.17,
@@ -1614,11 +1614,11 @@
       "pos": "RB",
       "team": "MIA",
       "weekly": {
-        "fp": 17.22,
+        "fp": 17.21,
         "espn": null,
-        "sleeper": 16.2,
-        "consensus": 16.7,
-        "variance": 0.031
+        "sleeper": 16.24,
+        "consensus": 16.8,
+        "variance": 0.029
       },
       "ros": {
         "fp": 300.59,
@@ -1657,6 +1657,30 @@
         "espn"
       ]
     },
+    "chase brown": {
+      "name": "Chase Brown",
+      "pos": "RB",
+      "team": "CIN",
+      "weekly": {
+        "fp": 16.48,
+        "espn": null,
+        "sleeper": 16.14,
+        "consensus": 16.3,
+        "variance": 0.01
+      },
+      "ros": {
+        "fp": 285.81,
+        "espn": 264.33730984,
+        "sleeper": 255.2,
+        "consensus": 269.2,
+        "variance": 0.048
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "breece hall": {
       "name": "Breece Hall",
       "pos": "RB",
@@ -1681,23 +1705,23 @@
         "espn"
       ]
     },
-    "chase brown": {
-      "name": "Chase Brown",
+    "jaylen warren": {
+      "name": "Jaylen Warren",
       "pos": "RB",
-      "team": "CIN",
+      "team": "PIT",
       "weekly": {
-        "fp": 16.43,
+        "fp": 15.52,
         "espn": null,
-        "sleeper": 16.14,
-        "consensus": 16.3,
-        "variance": 0.009
+        "sleeper": 16.22,
+        "consensus": 15.9,
+        "variance": 0.022
       },
       "ros": {
-        "fp": 285.81,
-        "espn": 264.33730984,
-        "sleeper": 255.2,
-        "consensus": 269.2,
-        "variance": 0.048
+        "fp": 199.46,
+        "espn": 196.16718403,
+        "sleeper": 170.6,
+        "consensus": 189,
+        "variance": 0.068
       },
       "sources_used": [
         "fp",
@@ -1722,30 +1746,6 @@
         "sleeper": 212,
         "consensus": 227.3,
         "variance": 0.048
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
-    "jaylen warren": {
-      "name": "Jaylen Warren",
-      "pos": "RB",
-      "team": "PIT",
-      "weekly": {
-        "fp": 15.46,
-        "espn": null,
-        "sleeper": 16.22,
-        "consensus": 15.8,
-        "variance": 0.024
-      },
-      "ros": {
-        "fp": 199.46,
-        "espn": 196.16718403,
-        "sleeper": 170.6,
-        "consensus": 189,
-        "variance": 0.068
       },
       "sources_used": [
         "fp",
@@ -1782,11 +1782,11 @@
       "pos": "RB",
       "team": "NYG",
       "weekly": {
-        "fp": 13.9,
+        "fp": 13.88,
         "espn": null,
         "sleeper": 14.7,
         "consensus": 14.3,
-        "variance": 0.028
+        "variance": 0.029
       },
       "ros": {
         "fp": 233.51,
@@ -1806,11 +1806,11 @@
       "pos": "RB",
       "team": "CAR",
       "weekly": {
-        "fp": 13.89,
+        "fp": 13.95,
         "espn": null,
-        "sleeper": 14.89,
-        "consensus": 14.4,
-        "variance": 0.035
+        "sleeper": 15.03,
+        "consensus": 14.5,
+        "variance": 0.037
       },
       "ros": {
         "fp": 175.76,
@@ -1830,11 +1830,11 @@
       "pos": "RB",
       "team": "HOU",
       "weekly": {
-        "fp": 12.95,
+        "fp": 12.97,
         "espn": null,
         "sleeper": 14.39,
         "consensus": 13.6,
-        "variance": 0.053
+        "variance": 0.052
       },
       "ros": {
         "fp": 203.14,
@@ -1854,11 +1854,11 @@
       "pos": "RB",
       "team": "CLE",
       "weekly": {
-        "fp": 13.35,
+        "fp": 13.52,
         "espn": null,
-        "sleeper": 12.32,
-        "consensus": 12.9,
-        "variance": 0.04
+        "sleeper": 12.57,
+        "consensus": 13.1,
+        "variance": 0.036
       },
       "ros": {
         "fp": 209.45,
@@ -1923,11 +1923,11 @@
       "pos": "RB",
       "team": "CHI",
       "weekly": {
-        "fp": 12.59,
+        "fp": 12.58,
         "espn": null,
-        "sleeper": 13.58,
-        "consensus": 13.1,
-        "variance": 0.038
+        "sleeper": 12.99,
+        "consensus": 12.8,
+        "variance": 0.016
       },
       "ros": {
         "fp": 224.76,
@@ -1947,7 +1947,7 @@
       "pos": "RB",
       "team": "TB",
       "weekly": {
-        "fp": 13.4,
+        "fp": 13.39,
         "espn": null,
         "sleeper": 14.68,
         "consensus": 14,
@@ -1971,11 +1971,11 @@
       "pos": "RB",
       "team": "ARI",
       "weekly": {
-        "fp": 13.39,
+        "fp": 13.4,
         "espn": null,
         "sleeper": 14.47,
         "consensus": 13.9,
-        "variance": 0.039
+        "variance": 0.038
       },
       "ros": {
         "fp": 231.74,
@@ -1995,11 +1995,11 @@
       "pos": "RB",
       "team": "SEA",
       "weekly": {
-        "fp": 10.82,
+        "fp": 10.83,
         "espn": null,
-        "sleeper": 9.99,
+        "sleeper": 9.97,
         "consensus": 10.4,
-        "variance": 0.04
+        "variance": 0.041
       },
       "ros": {
         "fp": 163.45,
@@ -2019,7 +2019,7 @@
       "pos": "RB",
       "team": "TEN",
       "weekly": {
-        "fp": 10.92,
+        "fp": 10.91,
         "espn": null,
         "sleeper": 12.43,
         "consensus": 11.6,
@@ -2043,11 +2043,11 @@
       "pos": "RB",
       "team": "JAC",
       "weekly": {
-        "fp": 10.52,
+        "fp": 10.5,
         "espn": null,
-        "sleeper": 11.32,
+        "sleeper": 11.25,
         "consensus": 10.9,
-        "variance": 0.037
+        "variance": 0.034
       },
       "ros": {
         "fp": 188.31,
@@ -2067,11 +2067,11 @@
       "pos": "RB",
       "team": "DEN",
       "weekly": {
-        "fp": 10.05,
+        "fp": 10.1,
         "espn": null,
-        "sleeper": 11.11,
+        "sleeper": 11.12,
         "consensus": 10.6,
-        "variance": 0.05
+        "variance": 0.048
       },
       "ros": {
         "fp": 174.99,
@@ -2107,40 +2107,16 @@
         "espn"
       ]
     },
-    "treveyon henderson": {
-      "name": "TreVeyon Henderson",
-      "pos": "RB",
-      "team": "NE",
-      "weekly": {
-        "fp": 10.22,
-        "espn": null,
-        "sleeper": 12.53,
-        "consensus": 11.3,
-        "variance": 0.102
-      },
-      "ros": {
-        "fp": 179.69,
-        "espn": 162.81172137,
-        "sleeper": 171,
-        "consensus": 171.6,
-        "variance": 0.04
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "rhamondre stevenson": {
       "name": "Rhamondre Stevenson",
       "pos": "RB",
       "team": "NE",
       "weekly": {
-        "fp": 10.86,
+        "fp": 10.88,
         "espn": null,
-        "sleeper": 10.66,
+        "sleeper": 10.64,
         "consensus": 10.8,
-        "variance": 0.009
+        "variance": 0.011
       },
       "ros": {
         "fp": 198.25,
@@ -2155,6 +2131,30 @@
         "espn"
       ]
     },
+    "treveyon henderson": {
+      "name": "TreVeyon Henderson",
+      "pos": "RB",
+      "team": "NE",
+      "weekly": {
+        "fp": 10.19,
+        "espn": null,
+        "sleeper": 12.45,
+        "consensus": 11.3,
+        "variance": 0.1
+      },
+      "ros": {
+        "fp": 179.69,
+        "espn": 162.81172137,
+        "sleeper": 171,
+        "consensus": 171.6,
+        "variance": 0.04
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "jacory croskeymerritt": {
       "name": "Jacory Croskey-Merritt",
       "pos": "RB",
@@ -2162,9 +2162,9 @@
       "weekly": {
         "fp": 8.82,
         "espn": null,
-        "sleeper": 10.31,
+        "sleeper": 10.28,
         "consensus": 9.5,
-        "variance": 0.078
+        "variance": 0.076
       },
       "ros": {
         "fp": 146.21,
@@ -2232,11 +2232,11 @@
       "pos": "RB",
       "team": "DEN",
       "weekly": {
-        "fp": 9.91,
+        "fp": 9.83,
         "espn": null,
         "sleeper": 10.55,
         "consensus": 10.2,
-        "variance": 0.031
+        "variance": 0.035
       },
       "ros": {
         "fp": 162.41,
@@ -2256,11 +2256,11 @@
       "pos": "RB",
       "team": "CHI",
       "weekly": {
-        "fp": 7.85,
+        "fp": 7.84,
         "espn": null,
-        "sleeper": 7.58,
-        "consensus": 7.7,
-        "variance": 0.017
+        "sleeper": 6.99,
+        "consensus": 7.4,
+        "variance": 0.057
       },
       "ros": {
         "fp": 155.33,
@@ -2280,11 +2280,11 @@
       "pos": "RB",
       "team": "HOU",
       "weekly": {
-        "fp": 8.02,
+        "fp": 8.03,
         "espn": null,
         "sleeper": 7.84,
         "consensus": 7.9,
-        "variance": 0.011
+        "variance": 0.012
       },
       "ros": {
         "fp": 131.48,
@@ -2304,11 +2304,11 @@
       "pos": "RB",
       "team": "TEN",
       "weekly": {
-        "fp": 8.58,
+        "fp": 8.56,
         "espn": null,
         "sleeper": 8.75,
         "consensus": 8.7,
-        "variance": 0.01
+        "variance": 0.011
       },
       "ros": {
         "fp": 128.85,
@@ -2330,7 +2330,7 @@
       "weekly": {
         "fp": 6.87,
         "espn": null,
-        "sleeper": 6.58,
+        "sleeper": 6.57,
         "consensus": 6.7,
         "variance": 0.022
       },
@@ -2400,11 +2400,11 @@
       "pos": "RB",
       "team": "TB",
       "weekly": {
-        "fp": 7.8,
+        "fp": 7.82,
         "espn": null,
         "sleeper": 7.62,
         "consensus": 7.7,
-        "variance": 0.012
+        "variance": 0.013
       },
       "ros": {
         "fp": 154.22,
@@ -2424,11 +2424,11 @@
       "pos": "RB",
       "team": "SF",
       "weekly": {
-        "fp": 6.34,
+        "fp": 6.38,
         "espn": null,
         "sleeper": 5.53,
         "consensus": 6,
-        "variance": 0.068
+        "variance": 0.071
       },
       "ros": {
         "fp": 88.61,
@@ -2474,9 +2474,9 @@
       "weekly": {
         "fp": 7,
         "espn": null,
-        "sleeper": 6.63,
+        "sleeper": 6.64,
         "consensus": 6.8,
-        "variance": 0.027
+        "variance": 0.026
       },
       "ros": {
         "fp": 152.56,
@@ -2584,27 +2584,6 @@
         "espn"
       ]
     },
-    "chris rodriguez jr": {
-      "name": "Chris Rodriguez Jr.",
-      "pos": "RB",
-      "team": "JAC",
-      "weekly": {
-        "fp": 4.71,
-        "espn": null,
-        "consensus": 4.71,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 88.42,
-        "espn": 65.17274118,
-        "consensus": 77.7,
-        "variance": 0.151
-      },
-      "sources_used": [
-        "fp",
-        "espn"
-      ]
-    },
     "chris brooks": {
       "name": "Chris Brooks",
       "pos": "RB",
@@ -2626,6 +2605,27 @@
       "sources_used": [
         "fp",
         "sleeper",
+        "espn"
+      ]
+    },
+    "chris rodriguez jr": {
+      "name": "Chris Rodriguez Jr.",
+      "pos": "RB",
+      "team": "JAC",
+      "weekly": {
+        "fp": 4.71,
+        "espn": null,
+        "consensus": 4.71,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 88.42,
+        "espn": 65.17274118,
+        "consensus": 77.7,
+        "variance": 0.151
+      },
+      "sources_used": [
+        "fp",
         "espn"
       ]
     },
@@ -2658,7 +2658,7 @@
       "pos": "RB",
       "team": "PIT",
       "weekly": {
-        "fp": 5.1,
+        "fp": 5.09,
         "espn": null,
         "sleeper": 2.66,
         "consensus": 3.9,
@@ -2729,11 +2729,11 @@
       "pos": "RB",
       "team": "CIN",
       "weekly": {
-        "fp": 5.11,
+        "fp": 5.13,
         "espn": null,
         "sleeper": 5.15,
         "consensus": 5.1,
-        "variance": 0.004
+        "variance": 0.002
       },
       "ros": {
         "fp": 86.47,
@@ -2753,11 +2753,11 @@
       "pos": "RB",
       "team": "PHI",
       "weekly": {
-        "fp": 4.19,
+        "fp": 4.2,
         "espn": null,
         "sleeper": 4.05,
         "consensus": 4.1,
-        "variance": 0.017
+        "variance": 0.018
       },
       "ros": {
         "fp": 79.49,
@@ -2821,11 +2821,11 @@
       "pos": "RB",
       "team": "CAR",
       "weekly": {
-        "fp": 3.98,
+        "fp": 3.99,
         "espn": null,
-        "sleeper": 3.69,
-        "consensus": 3.8,
-        "variance": 0.038
+        "sleeper": 3.74,
+        "consensus": 3.9,
+        "variance": 0.032
       },
       "ros": {
         "fp": 99.8,
@@ -2844,10 +2844,10 @@
       "pos": "RB",
       "team": "PIT",
       "weekly": {
-        "fp": 4.3,
+        "fp": 4.29,
         "sleeper": 5.15,
         "consensus": 4.7,
-        "variance": 0.09
+        "variance": 0.091
       },
       "ros": {
         "fp": 5.81,
@@ -2864,9 +2864,9 @@
       "pos": "RB",
       "team": "CLE",
       "weekly": {
-        "fp": 3.93,
+        "fp": 3.94,
         "espn": null,
-        "sleeper": 6.02,
+        "sleeper": 6.04,
         "consensus": 4.9,
         "variance": 0.21
       },
@@ -3075,11 +3075,11 @@
       "pos": "RB",
       "team": "TEN",
       "weekly": {
-        "fp": 1.82,
+        "fp": 1.81,
         "espn": null,
         "sleeper": 2.29,
         "consensus": 2,
-        "variance": 0.114
+        "variance": 0.117
       },
       "ros": {
         "fp": 22.34,
@@ -3169,9 +3169,9 @@
       "weekly": {
         "fp": 2.14,
         "espn": null,
-        "sleeper": 2.57,
+        "sleeper": 2.58,
         "consensus": 2.3,
-        "variance": 0.091
+        "variance": 0.093
       },
       "ros": {
         "fp": 20.02,
@@ -3191,11 +3191,11 @@
       "pos": "RB",
       "team": "JAC",
       "weekly": {
-        "fp": 2.06,
+        "fp": 2.08,
         "espn": null,
-        "sleeper": 2.77,
+        "sleeper": 2.76,
         "consensus": 2.4,
-        "variance": 0.147
+        "variance": 0.14
       },
       "ros": {
         "fp": 23.75,
@@ -3215,11 +3215,11 @@
       "pos": "RB",
       "team": "WAS",
       "weekly": {
-        "fp": 1.56,
+        "fp": 1.57,
         "espn": null,
         "sleeper": 1.96,
-        "consensus": 1.7,
-        "variance": 0.114
+        "consensus": 1.8,
+        "variance": 0.11
       },
       "ros": {
         "fp": 22.17,
@@ -3257,59 +3257,15 @@
         "sleeper"
       ]
     },
-    "jaleel mclaughlin": {
-      "name": "Jaleel McLaughlin",
-      "pos": "RB",
-      "team": "CLE",
-      "weekly": {
-        "fp": 1.71,
-        "sleeper": 1.91,
-        "consensus": 1.8,
-        "variance": 0.055
-      },
-      "ros": {
-        "fp": 43.87,
-        "sleeper": 7.5,
-        "consensus": 26.6,
-        "variance": 0.708
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
-    "jonah coleman": {
-      "name": "Jonah Coleman",
-      "pos": "RB",
-      "team": "DEN",
-      "weekly": {
-        "fp": 1.71,
-        "espn": null,
-        "consensus": 1.71,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 49.36,
-        "espn": 24.74529828,
-        "sleeper": 63.9,
-        "consensus": 46.5,
-        "variance": 0.351
-      },
-      "sources_used": [
-        "fp",
-        "espn",
-        "sleeper"
-      ]
-    },
     "cj donaldson": {
       "name": "CJ Donaldson",
       "pos": "RB",
       "team": "NO",
       "weekly": {
-        "fp": 1.62,
+        "fp": 1.67,
         "sleeper": 1.68,
-        "consensus": 1.6,
-        "variance": 0.018
+        "consensus": 1.7,
+        "variance": 0.003
       },
       "ros": {
         "sleeper": 5.2,
@@ -3339,6 +3295,51 @@
       },
       "sources_used": [
         "fp",
+        "espn"
+      ]
+    },
+    "jaleel mclaughlin": {
+      "name": "Jaleel McLaughlin",
+      "pos": "RB",
+      "team": "CLE",
+      "weekly": {
+        "fp": 1.52,
+        "sleeper": 1.92,
+        "consensus": 1.7,
+        "variance": 0.116
+      },
+      "ros": {
+        "fp": 43.87,
+        "sleeper": 7.5,
+        "consensus": 26.6,
+        "variance": 0.708
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "tyler badie": {
+      "name": "Tyler Badie",
+      "pos": "RB",
+      "team": "DEN",
+      "weekly": {
+        "fp": 1.95,
+        "espn": null,
+        "sleeper": 1.42,
+        "consensus": 1.7,
+        "variance": 0.157
+      },
+      "ros": {
+        "fp": 9.52,
+        "espn": 1.89606526,
+        "sleeper": 8.4,
+        "consensus": 6.8,
+        "variance": 0.509
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
         "espn"
       ]
     },
@@ -3440,10 +3441,10 @@
       "pos": "RB",
       "team": "IND",
       "weekly": {
-        "fp": 1.11,
+        "fp": 1.16,
         "sleeper": 0.42,
         "consensus": 0.8,
-        "variance": 0.451
+        "variance": 0.468
       },
       "ros": {
         "fp": 33.16,
@@ -3454,30 +3455,6 @@
       "sources_used": [
         "fp",
         "sleeper"
-      ]
-    },
-    "tyler badie": {
-      "name": "Tyler Badie",
-      "pos": "RB",
-      "team": "DEN",
-      "weekly": {
-        "fp": 1.46,
-        "espn": null,
-        "sleeper": 1.42,
-        "consensus": 1.4,
-        "variance": 0.014
-      },
-      "ros": {
-        "fp": 9.52,
-        "espn": 1.89606526,
-        "sleeper": 8.4,
-        "consensus": 6.8,
-        "variance": 0.509
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
       ]
     },
     "kimani vidal": {
@@ -3526,26 +3503,6 @@
         "fp",
         "sleeper",
         "espn"
-      ]
-    },
-    "audric estime": {
-      "name": "Audric Estime",
-      "pos": "RB",
-      "team": "FA",
-      "weekly": {
-        "fp": 0.96,
-        "consensus": 0.96,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 17.5,
-        "sleeper": 22.6,
-        "consensus": 19.9,
-        "variance": 0.127
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
       ]
     },
     "tyrone tracy jr": {
@@ -3610,10 +3567,10 @@
       "pos": "RB",
       "team": "SF",
       "weekly": {
-        "fp": 0.73,
+        "fp": 0.72,
         "sleeper": 0.73,
         "consensus": 0.7,
-        "variance": 0
+        "variance": 0.007
       },
       "ros": {
         "fp": 73.43,
@@ -3632,9 +3589,9 @@
       "team": "CHI",
       "weekly": {
         "fp": 0.57,
-        "sleeper": 0.25,
+        "sleeper": 0.26,
         "consensus": 0.4,
-        "variance": 0.39
+        "variance": 0.373
       },
       "ros": {
         "fp": 34.4,
@@ -3743,6 +3700,27 @@
         "fp"
       ]
     },
+    "kene nwangwu": {
+      "name": "Kene Nwangwu",
+      "pos": "RB",
+      "team": "NYJ",
+      "weekly": {
+        "fp": 0.41,
+        "espn": null,
+        "consensus": 0.41,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 9.85,
+        "espn": 0.82990234,
+        "consensus": 5.7,
+        "variance": 0.845
+      },
+      "sources_used": [
+        "fp",
+        "espn"
+      ]
+    },
     "rasheen ali": {
       "name": "Rasheen Ali",
       "pos": "RB",
@@ -3782,26 +3760,6 @@
         "fp"
       ]
     },
-    "tyler goodson": {
-      "name": "Tyler Goodson",
-      "pos": "RB",
-      "team": "DAL",
-      "weekly": {
-        "fp": 0.53,
-        "sleeper": 0.72,
-        "consensus": 0.6,
-        "variance": 0.152
-      },
-      "ros": {
-        "sleeper": 4.8,
-        "consensus": 4.8,
-        "variance": 0
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "tahj brooks": {
       "name": "Tahj Brooks",
       "pos": "RB",
@@ -3839,6 +3797,26 @@
       "ros": {
         "sleeper": 8.4,
         "consensus": 8.4,
+        "variance": 0
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "tyler goodson": {
+      "name": "Tyler Goodson",
+      "pos": "RB",
+      "team": "DAL",
+      "weekly": {
+        "fp": 0.48,
+        "sleeper": 0.72,
+        "consensus": 0.6,
+        "variance": 0.2
+      },
+      "ros": {
+        "sleeper": 4.8,
+        "consensus": 4.8,
         "variance": 0
       },
       "sources_used": [
@@ -3896,11 +3874,11 @@
       "pos": "RB",
       "team": "NE",
       "weekly": {
-        "fp": 0.38,
+        "fp": 0.37,
         "espn": null,
         "sleeper": 0.26,
         "consensus": 0.3,
-        "variance": 0.188
+        "variance": 0.175
       },
       "ros": {
         "fp": 7.83,
@@ -3985,11 +3963,11 @@
       "pos": "WR",
       "team": "SEA",
       "weekly": {
-        "fp": 20.59,
+        "fp": 20.58,
         "espn": null,
-        "sleeper": 21.82,
+        "sleeper": 21.9,
         "consensus": 21.2,
-        "variance": 0.029
+        "variance": 0.031
       },
       "ros": {
         "fp": 324.18,
@@ -4081,11 +4059,11 @@
       "pos": "WR",
       "team": "CIN",
       "weekly": {
-        "fp": 17.77,
+        "fp": 17.65,
         "espn": null,
         "sleeper": 16.78,
-        "consensus": 17.3,
-        "variance": 0.029
+        "consensus": 17.2,
+        "variance": 0.025
       },
       "ros": {
         "fp": 338.29,
@@ -4177,11 +4155,11 @@
       "pos": "WR",
       "team": "PHI",
       "weekly": {
-        "fp": 16.45,
+        "fp": 16.47,
         "espn": null,
-        "sleeper": 15.72,
-        "consensus": 16.1,
-        "variance": 0.023
+        "sleeper": 15.91,
+        "consensus": 16.2,
+        "variance": 0.017
       },
       "ros": {
         "fp": 234.15,
@@ -4225,11 +4203,11 @@
       "pos": "WR",
       "team": "JAC",
       "weekly": {
-        "fp": 14.8,
+        "fp": 14.85,
         "espn": null,
-        "sleeper": 15.19,
-        "consensus": 15,
-        "variance": 0.013
+        "sleeper": 15.35,
+        "consensus": 15.1,
+        "variance": 0.017
       },
       "ros": {
         "fp": 196.55,
@@ -4244,40 +4222,16 @@
         "espn"
       ]
     },
-    "davante adams": {
-      "name": "Davante Adams",
-      "pos": "WR",
-      "team": "LAR",
-      "weekly": {
-        "fp": 14.63,
-        "espn": null,
-        "sleeper": 14.28,
-        "consensus": 14.5,
-        "variance": 0.012
-      },
-      "ros": {
-        "fp": 222.6,
-        "espn": 220.60358208,
-        "sleeper": 192.5,
-        "consensus": 212.1,
-        "variance": 0.065
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "rashee rice": {
       "name": "Rashee Rice",
       "pos": "WR",
       "team": "KC",
       "weekly": {
-        "fp": 14.79,
+        "fp": 14.75,
         "espn": null,
-        "sleeper": 12.24,
-        "consensus": 13.6,
-        "variance": 0.094
+        "sleeper": 12.12,
+        "consensus": 13.5,
+        "variance": 0.098
       },
       "ros": {
         "fp": 274.09,
@@ -4316,16 +4270,40 @@
         "espn"
       ]
     },
+    "davante adams": {
+      "name": "Davante Adams",
+      "pos": "WR",
+      "team": "LAR",
+      "weekly": {
+        "fp": 14.4,
+        "espn": null,
+        "sleeper": 14.28,
+        "consensus": 14.3,
+        "variance": 0.004
+      },
+      "ros": {
+        "fp": 222.6,
+        "espn": 220.60358208,
+        "sleeper": 192.5,
+        "consensus": 212.1,
+        "variance": 0.065
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "mike evans": {
       "name": "Mike Evans",
       "pos": "WR",
       "team": "SF",
       "weekly": {
-        "fp": 13.74,
+        "fp": 13.75,
         "espn": null,
         "sleeper": 12.57,
         "consensus": 13.2,
-        "variance": 0.044
+        "variance": 0.045
       },
       "ros": {
         "fp": 199.86,
@@ -4369,11 +4347,11 @@
       "pos": "WR",
       "team": "CAR",
       "weekly": {
-        "fp": 13.74,
+        "fp": 13.62,
         "espn": null,
-        "sleeper": 14.37,
-        "consensus": 14,
-        "variance": 0.022
+        "sleeper": 14,
+        "consensus": 13.8,
+        "variance": 0.014
       },
       "ros": {
         "fp": 221.96,
@@ -4388,30 +4366,6 @@
         "espn"
       ]
     },
-    "tee higgins": {
-      "name": "Tee Higgins",
-      "pos": "WR",
-      "team": "CIN",
-      "weekly": {
-        "fp": 13.29,
-        "espn": null,
-        "sleeper": 13.56,
-        "consensus": 13.4,
-        "variance": 0.01
-      },
-      "ros": {
-        "fp": 220.55,
-        "espn": 201.5419895,
-        "sleeper": 224.4,
-        "consensus": 215.9,
-        "variance": 0.046
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "ladd mcconkey": {
       "name": "Ladd McConkey",
       "pos": "WR",
@@ -4419,7 +4373,7 @@
       "weekly": {
         "fp": 14.13,
         "espn": null,
-        "sleeper": 14.1,
+        "sleeper": 14.09,
         "consensus": 14.1,
         "variance": 0.001
       },
@@ -4436,16 +4390,40 @@
         "espn"
       ]
     },
+    "tee higgins": {
+      "name": "Tee Higgins",
+      "pos": "WR",
+      "team": "CIN",
+      "weekly": {
+        "fp": 13.21,
+        "espn": null,
+        "sleeper": 13.55,
+        "consensus": 13.4,
+        "variance": 0.013
+      },
+      "ros": {
+        "fp": 220.55,
+        "espn": 201.5419895,
+        "sleeper": 224.4,
+        "consensus": 215.9,
+        "variance": 0.046
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "jalen coker": {
       "name": "Jalen Coker",
       "pos": "WR",
       "team": "CAR",
       "weekly": {
-        "fp": 13.84,
+        "fp": 13.72,
         "espn": null,
-        "sleeper": 14.89,
-        "consensus": 14.3,
-        "variance": 0.037
+        "sleeper": 14.5,
+        "consensus": 14.1,
+        "variance": 0.028
       },
       "ros": {
         "fp": 144.42,
@@ -4491,9 +4469,9 @@
       "weekly": {
         "fp": 13.05,
         "espn": null,
-        "sleeper": 13.15,
+        "sleeper": 13.14,
         "consensus": 13.1,
-        "variance": 0.004
+        "variance": 0.003
       },
       "ros": {
         "fp": 209.29,
@@ -4513,7 +4491,7 @@
       "pos": "WR",
       "team": "NYG",
       "weekly": {
-        "fp": 12.87,
+        "fp": 12.88,
         "espn": null,
         "sleeper": 11.93,
         "consensus": 12.4,
@@ -4539,7 +4517,7 @@
       "weekly": {
         "fp": 11.9,
         "espn": null,
-        "sleeper": 12,
+        "sleeper": 11.99,
         "consensus": 11.9,
         "variance": 0.004
       },
@@ -4582,11 +4560,11 @@
       "pos": "WR",
       "team": "PIT",
       "weekly": {
-        "fp": 11.51,
+        "fp": 11.44,
         "espn": null,
         "sleeper": 11.23,
-        "consensus": 11.4,
-        "variance": 0.012
+        "consensus": 11.3,
+        "variance": 0.009
       },
       "ros": {
         "fp": 193.93,
@@ -4625,30 +4603,6 @@
         "espn"
       ]
     },
-    "xavier worthy": {
-      "name": "Xavier Worthy",
-      "pos": "WR",
-      "team": "KC",
-      "weekly": {
-        "fp": 10.73,
-        "espn": null,
-        "sleeper": 10.47,
-        "consensus": 10.6,
-        "variance": 0.012
-      },
-      "ros": {
-        "fp": 163.98,
-        "espn": 165.07736374,
-        "sleeper": 161.5,
-        "consensus": 163.5,
-        "variance": 0.009
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "matthew golden": {
       "name": "Matthew Golden",
       "pos": "WR",
@@ -4673,16 +4627,40 @@
         "espn"
       ]
     },
+    "xavier worthy": {
+      "name": "Xavier Worthy",
+      "pos": "WR",
+      "team": "KC",
+      "weekly": {
+        "fp": 10.72,
+        "espn": null,
+        "sleeper": 10.38,
+        "consensus": 10.6,
+        "variance": 0.016
+      },
+      "ros": {
+        "fp": 163.98,
+        "espn": 165.07736374,
+        "sleeper": 161.5,
+        "consensus": 163.5,
+        "variance": 0.009
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "romeo doubs": {
       "name": "Romeo Doubs",
       "pos": "WR",
       "team": "NE",
       "weekly": {
-        "fp": 10.99,
+        "fp": 11.01,
         "espn": null,
-        "sleeper": 9.31,
-        "consensus": 10.2,
-        "variance": 0.083
+        "sleeper": 9.41,
+        "consensus": 10.3,
+        "variance": 0.078
       },
       "ros": {
         "fp": 165.88,
@@ -4721,36 +4699,12 @@
         "espn"
       ]
     },
-    "denzel boston": {
-      "name": "Denzel Boston",
-      "pos": "WR",
-      "team": "CLE",
-      "weekly": {
-        "fp": 10.72,
-        "espn": null,
-        "sleeper": 10.15,
-        "consensus": 10.5,
-        "variance": 0.027
-      },
-      "ros": {
-        "fp": 134.46,
-        "espn": 163.78836482,
-        "sleeper": 134.7,
-        "consensus": 143.6,
-        "variance": 0.095
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "michael wilson": {
       "name": "Michael Wilson",
       "pos": "WR",
       "team": "ARI",
       "weekly": {
-        "fp": 11.11,
+        "fp": 11.12,
         "espn": null,
         "sleeper": 11.83,
         "consensus": 11.5,
@@ -4774,11 +4728,11 @@
       "pos": "WR",
       "team": "WAS",
       "weekly": {
-        "fp": 10.86,
+        "fp": 10.85,
         "espn": null,
-        "sleeper": 10.22,
+        "sleeper": 10.26,
         "consensus": 10.6,
-        "variance": 0.03
+        "variance": 0.028
       },
       "ros": {
         "fp": 202.67,
@@ -4793,16 +4747,40 @@
         "espn"
       ]
     },
+    "denzel boston": {
+      "name": "Denzel Boston",
+      "pos": "WR",
+      "team": "CLE",
+      "weekly": {
+        "fp": 10.66,
+        "espn": null,
+        "sleeper": 9.92,
+        "consensus": 10.3,
+        "variance": 0.036
+      },
+      "ros": {
+        "fp": 134.46,
+        "espn": 163.78836482,
+        "sleeper": 134.7,
+        "consensus": 143.6,
+        "variance": 0.095
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "josh downs": {
       "name": "Josh Downs",
       "pos": "WR",
       "team": "IND",
       "weekly": {
-        "fp": 11.41,
+        "fp": 11.36,
         "espn": null,
         "sleeper": 11.19,
         "consensus": 11.3,
-        "variance": 0.01
+        "variance": 0.008
       },
       "ros": {
         "fp": 159.3,
@@ -4865,32 +4843,14 @@
         "espn"
       ]
     },
-    "kc concepcion jr": {
-      "name": "KC Concepcion Jr.",
-      "pos": "WR",
-      "team": "CLE",
-      "weekly": {
-        "fp": 10.37,
-        "consensus": 10.37,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 151.27,
-        "consensus": 151.27,
-        "variance": 0
-      },
-      "sources_used": [
-        "fp"
-      ]
-    },
     "brian thomas jr": {
       "name": "Brian Thomas Jr.",
       "pos": "WR",
       "team": "JAC",
       "weekly": {
-        "fp": 9.83,
+        "fp": 9.85,
         "espn": null,
-        "consensus": 9.83,
+        "consensus": 9.85,
         "variance": 0
       },
       "ros": {
@@ -4904,28 +4864,22 @@
         "espn"
       ]
     },
-    "kayshon boutte": {
-      "name": "Kayshon Boutte",
+    "kc concepcion jr": {
+      "name": "KC Concepcion Jr.",
       "pos": "WR",
-      "team": "HOU",
+      "team": "CLE",
       "weekly": {
-        "fp": 9.62,
-        "espn": null,
-        "sleeper": 8.83,
-        "consensus": 9.2,
-        "variance": 0.043
+        "fp": 10.32,
+        "consensus": 10.32,
+        "variance": 0
       },
       "ros": {
-        "fp": 136.45,
-        "espn": 101.76010919,
-        "sleeper": 125.2,
-        "consensus": 122,
-        "variance": 0.119
+        "fp": 151.27,
+        "consensus": 151.27,
+        "variance": 0
       },
       "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
+        "fp"
       ]
     },
     "jordan addison": {
@@ -4945,6 +4899,30 @@
         "sleeper": 171.7,
         "consensus": 169.6,
         "variance": 0.034
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
+    "kayshon boutte": {
+      "name": "Kayshon Boutte",
+      "pos": "WR",
+      "team": "HOU",
+      "weekly": {
+        "fp": 9.57,
+        "espn": null,
+        "sleeper": 8.83,
+        "consensus": 9.2,
+        "variance": 0.04
+      },
+      "ros": {
+        "fp": 136.45,
+        "espn": 101.76010919,
+        "sleeper": 125.2,
+        "consensus": 122,
+        "variance": 0.119
       },
       "sources_used": [
         "fp",
@@ -4981,9 +4959,9 @@
       "pos": "WR",
       "team": "CHI",
       "weekly": {
-        "fp": 10.28,
+        "fp": 10.29,
         "espn": null,
-        "consensus": 10.28,
+        "consensus": 10.29,
         "variance": 0
       },
       "ros": {
@@ -5002,11 +4980,11 @@
       "pos": "WR",
       "team": "PHI",
       "weekly": {
-        "fp": 9.64,
+        "fp": 9.66,
         "espn": null,
-        "sleeper": 9.27,
+        "sleeper": 9.38,
         "consensus": 9.5,
-        "variance": 0.02
+        "variance": 0.015
       },
       "ros": {
         "fp": 96.32,
@@ -5050,9 +5028,9 @@
       "pos": "WR",
       "team": "PIT",
       "weekly": {
-        "fp": 10.39,
+        "fp": 10.31,
         "espn": null,
-        "consensus": 10.39,
+        "consensus": 10.31,
         "variance": 0
       },
       "ros": {
@@ -5071,11 +5049,11 @@
       "pos": "WR",
       "team": "WAS",
       "weekly": {
-        "fp": 10.44,
+        "fp": 10.41,
         "espn": null,
-        "sleeper": 9.58,
+        "sleeper": 9.62,
         "consensus": 10,
-        "variance": 0.043
+        "variance": 0.039
       },
       "ros": {
         "fp": 164.63,
@@ -5095,11 +5073,11 @@
       "pos": "WR",
       "team": "JAC",
       "weekly": {
-        "fp": 9.73,
+        "fp": 9.76,
         "espn": null,
-        "sleeper": 8.37,
+        "sleeper": 8.46,
         "consensus": 9.1,
-        "variance": 0.075
+        "variance": 0.071
       },
       "ros": {
         "fp": 180.38,
@@ -5142,7 +5120,7 @@
       "weekly": {
         "fp": 9.92,
         "espn": null,
-        "sleeper": 10.56,
+        "sleeper": 10.55,
         "consensus": 10.2,
         "variance": 0.031
       },
@@ -5164,11 +5142,11 @@
       "pos": "WR",
       "team": "SEA",
       "weekly": {
-        "fp": 8.51,
+        "fp": 8.49,
         "espn": null,
-        "sleeper": 8.41,
+        "sleeper": 8.43,
         "consensus": 8.5,
-        "variance": 0.006
+        "variance": 0.004
       },
       "ros": {
         "fp": 153.21,
@@ -5188,11 +5166,11 @@
       "pos": "WR",
       "team": "CHI",
       "weekly": {
-        "fp": 8.8,
+        "fp": 8.82,
         "espn": null,
-        "sleeper": 7.94,
-        "consensus": 8.4,
-        "variance": 0.051
+        "sleeper": 8.21,
+        "consensus": 8.5,
+        "variance": 0.036
       },
       "ros": {
         "fp": 193.09,
@@ -5235,7 +5213,7 @@
       "pos": "WR",
       "team": "TEN",
       "weekly": {
-        "fp": 9.33,
+        "fp": 9.34,
         "espn": null,
         "sleeper": 8.05,
         "consensus": 8.7,
@@ -5283,11 +5261,11 @@
       "pos": "WR",
       "team": "HOU",
       "weekly": {
-        "fp": 8.86,
+        "fp": 8.82,
         "espn": null,
         "sleeper": 7.83,
         "consensus": 8.4,
-        "variance": 0.062
+        "variance": 0.059
       },
       "ros": {
         "fp": 102.05,
@@ -5307,11 +5285,11 @@
       "pos": "WR",
       "team": "NE",
       "weekly": {
-        "fp": 8.66,
+        "fp": 8.69,
         "espn": null,
-        "sleeper": 8.45,
+        "sleeper": 8.54,
         "consensus": 8.6,
-        "variance": 0.012
+        "variance": 0.009
       },
       "ros": {
         "fp": 62.71,
@@ -5331,11 +5309,11 @@
       "pos": "WR",
       "team": "MIA",
       "weekly": {
-        "fp": 9.1,
+        "fp": 9.07,
         "espn": null,
-        "sleeper": 10.08,
-        "consensus": 9.6,
-        "variance": 0.051
+        "sleeper": 9.99,
+        "consensus": 9.5,
+        "variance": 0.048
       },
       "ros": {
         "fp": 115.28,
@@ -5395,30 +5373,6 @@
         "espn"
       ]
     },
-    "keenan allen": {
-      "name": "Keenan Allen",
-      "pos": "WR",
-      "team": "IND",
-      "weekly": {
-        "fp": 8.57,
-        "espn": null,
-        "sleeper": 7.27,
-        "consensus": 8,
-        "variance": 0.082
-      },
-      "ros": {
-        "fp": 141.58,
-        "espn": 135.13260462,
-        "sleeper": 106.8,
-        "consensus": 128.2,
-        "variance": 0.118
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "wandale robinson": {
       "name": "Wan'Dale Robinson",
       "pos": "WR",
@@ -5443,16 +5397,40 @@
         "espn"
       ]
     },
+    "keenan allen": {
+      "name": "Keenan Allen",
+      "pos": "WR",
+      "team": "IND",
+      "weekly": {
+        "fp": 8.53,
+        "espn": null,
+        "sleeper": 7.27,
+        "consensus": 7.9,
+        "variance": 0.08
+      },
+      "ros": {
+        "fp": 141.58,
+        "espn": 135.13260462,
+        "sleeper": 106.8,
+        "consensus": 128.2,
+        "variance": 0.118
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "demario douglas": {
       "name": "DeMario Douglas",
       "pos": "WR",
       "team": "NE",
       "weekly": {
-        "fp": 8.07,
+        "fp": 8.08,
         "espn": null,
-        "sleeper": 7.29,
+        "sleeper": 7.36,
         "consensus": 7.7,
-        "variance": 0.051
+        "variance": 0.047
       },
       "ros": {
         "fp": 89.7,
@@ -5472,11 +5450,11 @@
       "pos": "WR",
       "team": "PHI",
       "weekly": {
-        "fp": 7.65,
+        "fp": 7.66,
         "espn": null,
-        "sleeper": 6.35,
-        "consensus": 7,
-        "variance": 0.093
+        "sleeper": 6.42,
+        "consensus": 7.1,
+        "variance": 0.088
       },
       "ros": {
         "fp": 153.81,
@@ -5496,11 +5474,11 @@
       "pos": "WR",
       "team": "HOU",
       "weekly": {
-        "fp": 7.07,
+        "fp": 7.05,
         "espn": null,
         "sleeper": 6.06,
         "consensus": 6.6,
-        "variance": 0.077
+        "variance": 0.076
       },
       "ros": {
         "fp": 115.51,
@@ -5520,7 +5498,7 @@
       "pos": "WR",
       "team": "NYG",
       "weekly": {
-        "fp": 6.98,
+        "fp": 6.99,
         "espn": null,
         "sleeper": 5.4,
         "consensus": 6.2,
@@ -5544,11 +5522,11 @@
       "pos": "WR",
       "team": "SEA",
       "weekly": {
-        "fp": 7.08,
+        "fp": 7.07,
         "espn": null,
-        "sleeper": 7.25,
+        "sleeper": 7.27,
         "consensus": 7.2,
-        "variance": 0.012
+        "variance": 0.014
       },
       "ros": {
         "fp": 143.02,
@@ -5592,11 +5570,11 @@
       "pos": "WR",
       "team": "TEN",
       "weekly": {
-        "fp": 6.53,
+        "fp": 6.54,
         "espn": null,
         "sleeper": 4.59,
         "consensus": 5.6,
-        "variance": 0.174
+        "variance": 0.175
       },
       "ros": {
         "fp": 144.14,
@@ -5616,11 +5594,11 @@
       "pos": "WR",
       "team": "KC",
       "weekly": {
-        "fp": 6.17,
+        "fp": 6.14,
         "espn": null,
-        "sleeper": 6.85,
-        "consensus": 6.5,
-        "variance": 0.052
+        "sleeper": 6.77,
+        "consensus": 6.4,
+        "variance": 0.049
       },
       "ros": {
         "fp": 83.75,
@@ -5640,9 +5618,9 @@
       "pos": "WR",
       "team": "LAC",
       "weekly": {
-        "fp": 6.78,
+        "fp": 6.77,
         "espn": null,
-        "sleeper": 7.33,
+        "sleeper": 7.32,
         "consensus": 7,
         "variance": 0.039
       },
@@ -5688,11 +5666,11 @@
       "pos": "WR",
       "team": "MIA",
       "weekly": {
-        "fp": 6.47,
+        "fp": 6.45,
         "espn": null,
-        "sleeper": 6.09,
+        "sleeper": 6.03,
         "consensus": 6.3,
-        "variance": 0.03
+        "variance": 0.034
       },
       "ros": {
         "fp": 108.29,
@@ -5760,11 +5738,11 @@
       "pos": "WR",
       "team": "CLE",
       "weekly": {
-        "fp": 6.51,
+        "fp": 6.47,
         "espn": null,
-        "sleeper": 6.13,
-        "consensus": 6.3,
-        "variance": 0.03
+        "sleeper": 5.98,
+        "consensus": 6.2,
+        "variance": 0.039
       },
       "ros": {
         "fp": 149.24,
@@ -5827,16 +5805,40 @@
         "espn"
       ]
     },
+    "bryce lance": {
+      "name": "Bryce Lance",
+      "pos": "WR",
+      "team": "NO",
+      "weekly": {
+        "fp": 5.71,
+        "espn": null,
+        "sleeper": 4.32,
+        "consensus": 5.1,
+        "variance": 0.139
+      },
+      "ros": {
+        "fp": 69.64,
+        "espn": 35.5707272,
+        "sleeper": 38.7,
+        "consensus": 49,
+        "variance": 0.321
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "kalif raymond": {
       "name": "Kalif Raymond",
       "pos": "WR",
       "team": "CHI",
       "weekly": {
-        "fp": 6.25,
+        "fp": 6.27,
         "espn": null,
-        "sleeper": 6.04,
-        "consensus": 6.2,
-        "variance": 0.017
+        "sleeper": 6.24,
+        "consensus": 6.3,
+        "variance": 0.002
       },
       "ros": {
         "fp": 53.21,
@@ -5880,10 +5882,10 @@
       "pos": "WR",
       "team": "HOU",
       "weekly": {
-        "fp": 5.64,
+        "fp": 5.62,
         "sleeper": 3.66,
         "consensus": 4.7,
-        "variance": 0.213
+        "variance": 0.211
       },
       "ros": {
         "fp": 26.42,
@@ -5893,30 +5895,6 @@
       "sources_used": [
         "fp",
         "sleeper"
-      ]
-    },
-    "bryce lance": {
-      "name": "Bryce Lance",
-      "pos": "WR",
-      "team": "NO",
-      "weekly": {
-        "fp": 5.61,
-        "espn": null,
-        "sleeper": 4.32,
-        "consensus": 5,
-        "variance": 0.13
-      },
-      "ros": {
-        "fp": 69.64,
-        "espn": 35.5707272,
-        "sleeper": 38.7,
-        "consensus": 49,
-        "variance": 0.321
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
       ]
     },
     "jalen mcmillan": {
@@ -5972,11 +5950,11 @@
       "pos": "WR",
       "team": "WAS",
       "weekly": {
-        "fp": 5.59,
+        "fp": 5.58,
         "espn": null,
-        "sleeper": 4.63,
+        "sleeper": 4.65,
         "consensus": 5.1,
-        "variance": 0.094
+        "variance": 0.091
       },
       "ros": {
         "fp": 81.99,
@@ -5984,29 +5962,6 @@
         "sleeper": 75.2,
         "consensus": 78.7,
         "variance": 0.035
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
-    "laquon treadwell": {
-      "name": "Laquon Treadwell",
-      "pos": "WR",
-      "team": "IND",
-      "weekly": {
-        "fp": 4.88,
-        "espn": null,
-        "sleeper": 3.79,
-        "consensus": 4.4,
-        "variance": 0.126
-      },
-      "ros": {
-        "fp": 17.23,
-        "espn": 38.13448835,
-        "consensus": 26.8,
-        "variance": 0.378
       },
       "sources_used": [
         "fp",
@@ -6035,16 +5990,39 @@
         "espn"
       ]
     },
+    "laquon treadwell": {
+      "name": "Laquon Treadwell",
+      "pos": "WR",
+      "team": "IND",
+      "weekly": {
+        "fp": 4.83,
+        "espn": null,
+        "sleeper": 3.79,
+        "consensus": 4.3,
+        "variance": 0.121
+      },
+      "ros": {
+        "fp": 17.23,
+        "espn": 38.13448835,
+        "consensus": 26.8,
+        "variance": 0.378
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "xavier legette": {
       "name": "Xavier Legette",
       "pos": "WR",
       "team": "CAR",
       "weekly": {
-        "fp": 5.15,
+        "fp": 5.13,
         "espn": null,
-        "sleeper": 4.29,
+        "sleeper": 4.18,
         "consensus": 4.7,
-        "variance": 0.091
+        "variance": 0.102
       },
       "ros": {
         "fp": 91.28,
@@ -6088,11 +6066,11 @@
       "pos": "WR",
       "team": "PIT",
       "weekly": {
-        "fp": 5.13,
+        "fp": 5.06,
         "espn": null,
         "sleeper": 5.68,
         "consensus": 5.4,
-        "variance": 0.051
+        "variance": 0.058
       },
       "ros": {
         "fp": 58.25,
@@ -6112,11 +6090,11 @@
       "pos": "WR",
       "team": "PIT",
       "weekly": {
-        "fp": 4.79,
+        "fp": 4.72,
         "espn": null,
         "sleeper": 4.27,
         "consensus": 4.5,
-        "variance": 0.057
+        "variance": 0.05
       },
       "ros": {
         "fp": 98.53,
@@ -6136,9 +6114,9 @@
       "pos": "WR",
       "team": "MIA",
       "weekly": {
-        "fp": 4.67,
+        "fp": 4.71,
         "espn": null,
-        "consensus": 4.67,
+        "consensus": 4.71,
         "variance": 0
       },
       "ros": {
@@ -6205,11 +6183,11 @@
       "pos": "WR",
       "team": "BAL",
       "weekly": {
-        "fp": 3.73,
+        "fp": 3.74,
         "espn": null,
         "sleeper": 2.61,
         "consensus": 3.2,
-        "variance": 0.177
+        "variance": 0.178
       },
       "ros": {
         "fp": 59.15,
@@ -6277,11 +6255,11 @@
       "pos": "WR",
       "team": "NE",
       "weekly": {
-        "fp": 3.81,
+        "fp": 3.82,
         "espn": null,
-        "sleeper": 3.13,
+        "sleeper": 3.16,
         "consensus": 3.5,
-        "variance": 0.098
+        "variance": 0.095
       },
       "ros": {
         "fp": 30.1,
@@ -6343,16 +6321,40 @@
         "espn"
       ]
     },
+    "jordan whittington": {
+      "name": "Jordan Whittington",
+      "pos": "WR",
+      "team": "LAR",
+      "weekly": {
+        "fp": 3.83,
+        "espn": null,
+        "sleeper": 3.89,
+        "consensus": 3.9,
+        "variance": 0.008
+      },
+      "ros": {
+        "fp": 41.32,
+        "espn": 42.18232021,
+        "sleeper": 23.3,
+        "consensus": 35.7,
+        "variance": 0.245
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "dyami brown": {
       "name": "Dyami Brown",
       "pos": "WR",
       "team": "WAS",
       "weekly": {
-        "fp": 3.6,
+        "fp": 3.59,
         "espn": null,
-        "sleeper": 2.11,
+        "sleeper": 2.12,
         "consensus": 2.9,
-        "variance": 0.261
+        "variance": 0.257
       },
       "ros": {
         "fp": 34.84,
@@ -6367,40 +6369,16 @@
         "espn"
       ]
     },
-    "colbie young": {
-      "name": "Colbie Young",
-      "pos": "WR",
-      "team": "CIN",
-      "weekly": {
-        "fp": 3.49,
-        "espn": null,
-        "sleeper": 2.99,
-        "consensus": 3.3,
-        "variance": 0.077
-      },
-      "ros": {
-        "fp": 29.48,
-        "espn": 26.3163174,
-        "sleeper": 31,
-        "consensus": 29,
-        "variance": 0.067
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "darius cooper": {
       "name": "Darius Cooper",
       "pos": "WR",
       "team": "PHI",
       "weekly": {
-        "fp": 3.32,
+        "fp": 3.33,
         "espn": null,
-        "sleeper": 2.5,
-        "consensus": 2.9,
-        "variance": 0.141
+        "sleeper": 2.53,
+        "consensus": 3,
+        "variance": 0.137
       },
       "ros": {
         "fp": 8.47,
@@ -6408,6 +6386,30 @@
         "sleeper": 6.7,
         "consensus": 12.7,
         "variance": 0.597
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
+    "colbie young": {
+      "name": "Colbie Young",
+      "pos": "WR",
+      "team": "CIN",
+      "weekly": {
+        "fp": 3.47,
+        "espn": null,
+        "sleeper": 2.99,
+        "consensus": 3.2,
+        "variance": 0.074
+      },
+      "ros": {
+        "fp": 29.48,
+        "espn": 26.3163174,
+        "sleeper": 31,
+        "consensus": 29,
+        "variance": 0.067
       },
       "sources_used": [
         "fp",
@@ -6439,37 +6441,13 @@
         "espn"
       ]
     },
-    "konata mumpfield": {
-      "name": "Konata Mumpfield",
-      "pos": "WR",
-      "team": "LAR",
-      "weekly": {
-        "fp": 3.38,
-        "espn": null,
-        "sleeper": 2.03,
-        "consensus": 2.7,
-        "variance": 0.25
-      },
-      "ros": {
-        "fp": 29.45,
-        "espn": 27.79649884,
-        "sleeper": 41.7,
-        "consensus": 32.9,
-        "variance": 0.188
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "ryan miller": {
       "name": "Ryan Miller",
       "pos": "WR",
       "team": "MIA",
       "weekly": {
-        "fp": 3.23,
-        "consensus": 3.23,
+        "fp": 3.24,
+        "consensus": 3.24,
         "variance": 0
       },
       "ros": {
@@ -6486,11 +6464,11 @@
       "pos": "WR",
       "team": "CIN",
       "weekly": {
-        "fp": 3.21,
+        "fp": 3.19,
         "espn": null,
         "sleeper": 2.85,
         "consensus": 3,
-        "variance": 0.059
+        "variance": 0.056
       },
       "ros": {
         "fp": 10.15,
@@ -6546,30 +6524,6 @@
         "espn"
       ]
     },
-    "jacob cowing": {
-      "name": "Jacob Cowing",
-      "pos": "WR",
-      "team": "SF",
-      "weekly": {
-        "fp": 2.95,
-        "espn": null,
-        "sleeper": 2.78,
-        "consensus": 2.9,
-        "variance": 0.03
-      },
-      "ros": {
-        "fp": 9.34,
-        "espn": 15.35048231,
-        "sleeper": 1.7,
-        "consensus": 8.7,
-        "variance": 0.635
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "tory horton": {
       "name": "Tory Horton",
       "pos": "WR",
@@ -6577,9 +6531,9 @@
       "weekly": {
         "fp": 2.89,
         "espn": null,
-        "sleeper": 3.56,
+        "sleeper": 3.58,
         "consensus": 3.2,
-        "variance": 0.104
+        "variance": 0.107
       },
       "ros": {
         "fp": 74.47,
@@ -6599,11 +6553,11 @@
       "pos": "WR",
       "team": "JAC",
       "weekly": {
-        "fp": 3.11,
+        "fp": 3.1,
         "espn": null,
-        "sleeper": 1.56,
+        "sleeper": 1.58,
         "consensus": 2.4,
-        "variance": 0.332
+        "variance": 0.325
       },
       "ros": {
         "fp": 102.23,
@@ -6611,6 +6565,30 @@
         "sleeper": 100.6,
         "consensus": 86.3,
         "variance": 0.272
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
+    "jacob cowing": {
+      "name": "Jacob Cowing",
+      "pos": "WR",
+      "team": "SF",
+      "weekly": {
+        "fp": 2.93,
+        "espn": null,
+        "sleeper": 2.78,
+        "consensus": 2.9,
+        "variance": 0.026
+      },
+      "ros": {
+        "fp": 9.34,
+        "espn": 15.35048231,
+        "sleeper": 1.7,
+        "consensus": 8.7,
+        "variance": 0.635
       },
       "sources_used": [
         "fp",
@@ -6647,11 +6625,11 @@
       "pos": "WR",
       "team": "CLE",
       "weekly": {
-        "fp": 2.65,
+        "fp": 2.63,
         "espn": null,
-        "sleeper": 2.01,
+        "sleeper": 1.97,
         "consensus": 2.3,
-        "variance": 0.137
+        "variance": 0.143
       },
       "ros": {
         "fp": 40.86,
@@ -6671,11 +6649,11 @@
       "pos": "WR",
       "team": "MIA",
       "weekly": {
-        "fp": 2.86,
+        "fp": 2.84,
         "espn": null,
-        "sleeper": 3.45,
+        "sleeper": 3.41,
         "consensus": 3.1,
-        "variance": 0.094
+        "variance": 0.091
       },
       "ros": {
         "fp": 101.02,
@@ -6761,23 +6739,23 @@
         "espn"
       ]
     },
-    "xavier smith": {
-      "name": "Xavier Smith",
+    "konata mumpfield": {
+      "name": "Konata Mumpfield",
       "pos": "WR",
       "team": "LAR",
       "weekly": {
-        "fp": 2.75,
+        "fp": 2.77,
         "espn": null,
-        "sleeper": 1.65,
-        "consensus": 2.2,
-        "variance": 0.25
+        "sleeper": 2.03,
+        "consensus": 2.4,
+        "variance": 0.154
       },
       "ros": {
-        "fp": 25.72,
-        "espn": 13.50044151,
-        "sleeper": 24.1,
-        "consensus": 21.4,
-        "variance": 0.257
+        "fp": 29.45,
+        "espn": 27.79649884,
+        "sleeper": 41.7,
+        "consensus": 32.9,
+        "variance": 0.188
       },
       "sources_used": [
         "fp",
@@ -6835,11 +6813,11 @@
       "pos": "WR",
       "team": "LAR",
       "weekly": {
-        "fp": 2.45,
+        "fp": 2.25,
         "espn": null,
         "sleeper": 0.82,
-        "consensus": 1.7,
-        "variance": 0.498
+        "consensus": 1.6,
+        "variance": 0.466
       },
       "ros": {
         "fp": 64.4,
@@ -6854,30 +6832,6 @@
         "espn"
       ]
     },
-    "jordan whittington": {
-      "name": "Jordan Whittington",
-      "pos": "WR",
-      "team": "LAR",
-      "weekly": {
-        "fp": 2.4,
-        "espn": null,
-        "sleeper": 3.89,
-        "consensus": 3.1,
-        "variance": 0.237
-      },
-      "ros": {
-        "fp": 41.32,
-        "espn": 42.18232021,
-        "sleeper": 23.3,
-        "consensus": 35.7,
-        "variance": 0.245
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "jalen royals": {
       "name": "Jalen Royals",
       "pos": "WR",
@@ -6885,9 +6839,9 @@
       "weekly": {
         "fp": 2.19,
         "espn": null,
-        "sleeper": 1.84,
+        "sleeper": 1.82,
         "consensus": 2,
-        "variance": 0.087
+        "variance": 0.092
       },
       "ros": {
         "fp": 23.4,
@@ -6902,6 +6856,30 @@
         "espn"
       ]
     },
+    "xavier smith": {
+      "name": "Xavier Smith",
+      "pos": "WR",
+      "team": "LAR",
+      "weekly": {
+        "fp": 2.21,
+        "espn": null,
+        "sleeper": 1.65,
+        "consensus": 1.9,
+        "variance": 0.145
+      },
+      "ros": {
+        "fp": 25.72,
+        "espn": 13.50044151,
+        "sleeper": 24.1,
+        "consensus": 21.4,
+        "variance": 0.257
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "jahdae walker": {
       "name": "Jahdae Walker",
       "pos": "WR",
@@ -6909,9 +6887,9 @@
       "weekly": {
         "fp": 2.01,
         "espn": null,
-        "sleeper": 1.62,
-        "consensus": 1.8,
-        "variance": 0.107
+        "sleeper": 1.69,
+        "consensus": 1.9,
+        "variance": 0.086
       },
       "ros": {
         "fp": 67.93,
@@ -6924,29 +6902,6 @@
         "fp",
         "sleeper",
         "espn"
-      ]
-    },
-    "brenen thompson": {
-      "name": "Brenen Thompson",
-      "pos": "WR",
-      "team": "LAC",
-      "weekly": {
-        "fp": 2.02,
-        "espn": null,
-        "consensus": 2.02,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 27.45,
-        "espn": 27.29716282,
-        "sleeper": 39,
-        "consensus": 31.2,
-        "variance": 0.175
-      },
-      "sources_used": [
-        "fp",
-        "espn",
-        "sleeper"
       ]
     },
     "brandin cooks": {
@@ -6964,26 +6919,6 @@
         "sleeper": 28.8,
         "consensus": 64.2,
         "variance": 0.538
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
-    "khadarel hodge": {
-      "name": "KhaDarel Hodge",
-      "pos": "WR",
-      "team": "SF",
-      "weekly": {
-        "fp": 1.83,
-        "sleeper": 0.94,
-        "consensus": 1.4,
-        "variance": 0.321
-      },
-      "ros": {
-        "sleeper": 25.6,
-        "consensus": 25.6,
-        "variance": 0
       },
       "sources_used": [
         "fp",
@@ -7019,11 +6954,11 @@
       "pos": "WR",
       "team": "IND",
       "weekly": {
-        "fp": 1.89,
+        "fp": 1.91,
         "espn": null,
         "sleeper": 2.06,
         "consensus": 2,
-        "variance": 0.043
+        "variance": 0.038
       },
       "ros": {
         "fp": 82.53,
@@ -7038,6 +6973,26 @@
         "espn"
       ]
     },
+    "khadarel hodge": {
+      "name": "KhaDarel Hodge",
+      "pos": "WR",
+      "team": "SF",
+      "weekly": {
+        "fp": 1.75,
+        "sleeper": 0.94,
+        "consensus": 1.4,
+        "variance": 0.301
+      },
+      "ros": {
+        "sleeper": 25.6,
+        "consensus": 25.6,
+        "variance": 0
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
     "josh cameron": {
       "name": "Josh Cameron",
       "pos": "WR",
@@ -7045,9 +7000,9 @@
       "weekly": {
         "fp": 1.58,
         "espn": null,
-        "sleeper": 2.31,
+        "sleeper": 2.33,
         "consensus": 1.9,
-        "variance": 0.188
+        "variance": 0.192
       },
       "ros": {
         "fp": 8.61,
@@ -7060,6 +7015,26 @@
         "fp",
         "sleeper",
         "espn"
+      ]
+    },
+    "derius davis": {
+      "name": "Derius Davis",
+      "pos": "WR",
+      "team": "LAC",
+      "weekly": {
+        "fp": 1.75,
+        "sleeper": 1.63,
+        "consensus": 1.7,
+        "variance": 0.036
+      },
+      "ros": {
+        "fp": 9.45,
+        "consensus": 9.45,
+        "variance": 0
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
       ]
     },
     "ashton dulin": {
@@ -7184,26 +7159,6 @@
         "fp"
       ]
     },
-    "derius davis": {
-      "name": "Derius Davis",
-      "pos": "WR",
-      "team": "LAC",
-      "weekly": {
-        "fp": 1.58,
-        "sleeper": 1.63,
-        "consensus": 1.6,
-        "variance": 0.016
-      },
-      "ros": {
-        "fp": 9.45,
-        "consensus": 9.45,
-        "variance": 0
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "chris blair": {
       "name": "Chris Blair",
       "pos": "WR",
@@ -7220,6 +7175,26 @@
       },
       "sources_used": [
         "fp"
+      ]
+    },
+    "marquez valdesscantling": {
+      "name": "Marquez Valdes-Scantling",
+      "pos": "WR",
+      "team": "LAC",
+      "weekly": {
+        "fp": 1.38,
+        "sleeper": 1.33,
+        "consensus": 1.4,
+        "variance": 0.018
+      },
+      "ros": {
+        "sleeper": 26.9,
+        "consensus": 26.9,
+        "variance": 0
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
       ]
     },
     "malik benson": {
@@ -7246,14 +7221,34 @@
         "espn"
       ]
     },
+    "jordan watkins": {
+      "name": "Jordan Watkins",
+      "pos": "WR",
+      "team": "SF",
+      "weekly": {
+        "fp": 1.27,
+        "sleeper": 1.5,
+        "consensus": 1.4,
+        "variance": 0.083
+      },
+      "ros": {
+        "sleeper": 2.4,
+        "consensus": 2.4,
+        "variance": 0
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
     "efton chism iii": {
       "name": "Efton Chism III",
       "pos": "WR",
       "team": "NE",
       "weekly": {
-        "fp": 1.24,
+        "fp": 1.26,
         "espn": null,
-        "consensus": 1.24,
+        "consensus": 1.26,
         "variance": 0
       },
       "ros": {
@@ -7267,46 +7262,6 @@
         "espn"
       ]
     },
-    "jordan watkins": {
-      "name": "Jordan Watkins",
-      "pos": "WR",
-      "team": "SF",
-      "weekly": {
-        "fp": 1.2,
-        "sleeper": 1.5,
-        "consensus": 1.3,
-        "variance": 0.111
-      },
-      "ros": {
-        "sleeper": 2.4,
-        "consensus": 2.4,
-        "variance": 0
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
-    "marquez valdesscantling": {
-      "name": "Marquez Valdes-Scantling",
-      "pos": "WR",
-      "team": "LAC",
-      "weekly": {
-        "fp": 1.27,
-        "sleeper": 1.33,
-        "consensus": 1.3,
-        "variance": 0.023
-      },
-      "ros": {
-        "sleeper": 26.9,
-        "consensus": 26.9,
-        "variance": 0
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "cyrus allen": {
       "name": "Cyrus Allen",
       "pos": "WR",
@@ -7314,9 +7269,9 @@
       "weekly": {
         "fp": 1.14,
         "espn": null,
-        "sleeper": 0.67,
+        "sleeper": 0.66,
         "consensus": 0.9,
-        "variance": 0.26
+        "variance": 0.267
       },
       "ros": {
         "fp": 52.67,
@@ -7436,29 +7391,6 @@
         "espn"
       ]
     },
-    "barion brown": {
-      "name": "Barion Brown",
-      "pos": "WR",
-      "team": "NO",
-      "weekly": {
-        "fp": 0.76,
-        "espn": null,
-        "consensus": 0.76,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 18.75,
-        "espn": 12.42782536,
-        "sleeper": 63,
-        "consensus": 31.3,
-        "variance": 0.717
-      },
-      "sources_used": [
-        "fp",
-        "espn",
-        "sleeper"
-      ]
-    },
     "deion burks": {
       "name": "Deion Burks",
       "pos": "WR",
@@ -7485,9 +7417,9 @@
       "team": "BUF",
       "weekly": {
         "fp": 0.8,
-        "sleeper": 0.29,
+        "sleeper": 0.28,
         "consensus": 0.6,
-        "variance": 0.468
+        "variance": 0.481
       },
       "ros": {
         "fp": 21.65,
@@ -7507,9 +7439,9 @@
       "weekly": {
         "fp": 0.78,
         "espn": null,
-        "sleeper": 0.23,
+        "sleeper": 0.24,
         "consensus": 0.5,
-        "variance": 0.545
+        "variance": 0.529
       },
       "ros": {
         "fp": 21.92,
@@ -7551,9 +7483,9 @@
       "team": "CAR",
       "weekly": {
         "fp": 0.79,
-        "sleeper": 1.08,
+        "sleeper": 1.05,
         "consensus": 0.9,
-        "variance": 0.155
+        "variance": 0.141
       },
       "ros": {
         "fp": 11.99,
@@ -7596,9 +7528,9 @@
       "team": "CLE",
       "weekly": {
         "fp": 0.63,
-        "sleeper": 0.76,
+        "sleeper": 0.74,
         "consensus": 0.7,
-        "variance": 0.094
+        "variance": 0.08
       },
       "ros": {
         "fp": 16.08,
@@ -7821,27 +7753,6 @@
         "sleeper"
       ]
     },
-    "ben skowronek": {
-      "name": "Ben Skowronek",
-      "pos": "WR",
-      "team": "PIT",
-      "weekly": {
-        "fp": 0.23,
-        "sleeper": 0.22,
-        "consensus": 0.2,
-        "variance": 0.022
-      },
-      "ros": {
-        "fp": 10.39,
-        "sleeper": 0.6,
-        "consensus": 5.8,
-        "variance": 0.891
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "elijah moore": {
       "name": "Elijah Moore",
       "pos": "WR",
@@ -7874,6 +7785,27 @@
         "sleeper": 39.3,
         "consensus": 39.3,
         "variance": 0
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "ben skowronek": {
+      "name": "Ben Skowronek",
+      "pos": "WR",
+      "team": "PIT",
+      "weekly": {
+        "fp": 0.23,
+        "sleeper": 0.22,
+        "consensus": 0.2,
+        "variance": 0.022
+      },
+      "ros": {
+        "fp": 10.39,
+        "sleeper": 0.6,
+        "consensus": 5.8,
+        "variance": 0.891
       },
       "sources_used": [
         "fp",
@@ -7936,37 +7868,15 @@
         "sleeper"
       ]
     },
-    "myles price": {
-      "name": "Myles Price",
-      "pos": "WR",
-      "team": "MIN",
-      "weekly": {
-        "fp": 0.12,
-        "espn": null,
-        "sleeper": 0.11,
-        "consensus": 0.1,
-        "variance": 0.043
-      },
-      "ros": {
-        "espn": 1.89528616,
-        "consensus": 1.89528616,
-        "variance": 0
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "malachi corley": {
       "name": "Malachi Corley",
       "pos": "WR",
       "team": "CLE",
       "weekly": {
-        "fp": 0.09,
+        "fp": 0.11,
         "sleeper": 0.23,
         "consensus": 0.2,
-        "variance": 0.438
+        "variance": 0.353
       },
       "ros": {
         "fp": 20.92,
@@ -7977,6 +7887,28 @@
       "sources_used": [
         "fp",
         "sleeper"
+      ]
+    },
+    "myles price": {
+      "name": "Myles Price",
+      "pos": "WR",
+      "team": "MIN",
+      "weekly": {
+        "fp": 0.16,
+        "espn": null,
+        "sleeper": 0.11,
+        "consensus": 0.1,
+        "variance": 0.185
+      },
+      "ros": {
+        "espn": 1.89528616,
+        "consensus": 1.89528616,
+        "variance": 0
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
       ]
     },
     "nikko remigio": {
@@ -8076,9 +8008,9 @@
       "weekly": {
         "fp": 12.7,
         "espn": null,
-        "sleeper": 13.18,
+        "sleeper": 13.17,
         "consensus": 12.9,
-        "variance": 0.019
+        "variance": 0.018
       },
       "ros": {
         "fp": 156.75,
@@ -8146,11 +8078,11 @@
       "pos": "TE",
       "team": "KC",
       "weekly": {
-        "fp": 12.44,
+        "fp": 12.41,
         "espn": null,
-        "sleeper": 11.74,
-        "consensus": 12.1,
-        "variance": 0.029
+        "sleeper": 11.61,
+        "consensus": 12,
+        "variance": 0.033
       },
       "ros": {
         "fp": 185.65,
@@ -8170,7 +8102,7 @@
       "pos": "TE",
       "team": "DET",
       "weekly": {
-        "fp": 11.82,
+        "fp": 11.81,
         "espn": null,
         "sleeper": 11.86,
         "consensus": 11.8,
@@ -8194,11 +8126,11 @@
       "pos": "TE",
       "team": "BAL",
       "weekly": {
-        "fp": 11.66,
+        "fp": 11.69,
         "espn": null,
         "sleeper": 11.77,
         "consensus": 11.7,
-        "variance": 0.005
+        "variance": 0.003
       },
       "ros": {
         "fp": 172.29,
@@ -8242,11 +8174,11 @@
       "pos": "TE",
       "team": "IND",
       "weekly": {
-        "fp": 11.58,
+        "fp": 11.53,
         "espn": null,
         "sleeper": 10.33,
         "consensus": 11,
-        "variance": 0.057
+        "variance": 0.055
       },
       "ros": {
         "fp": 200.77,
@@ -8266,11 +8198,11 @@
       "pos": "TE",
       "team": "NE",
       "weekly": {
-        "fp": 10.87,
+        "fp": 10.9,
         "espn": null,
-        "sleeper": 10.27,
-        "consensus": 10.6,
-        "variance": 0.028
+        "sleeper": 10.39,
+        "consensus": 10.7,
+        "variance": 0.024
       },
       "ros": {
         "fp": 158.1,
@@ -8290,11 +8222,11 @@
       "pos": "TE",
       "team": "HOU",
       "weekly": {
-        "fp": 11.38,
+        "fp": 11.33,
         "espn": null,
         "sleeper": 11.76,
-        "consensus": 11.6,
-        "variance": 0.016
+        "consensus": 11.5,
+        "variance": 0.019
       },
       "ros": {
         "fp": 142.39,
@@ -8314,7 +8246,7 @@
       "pos": "TE",
       "team": "NYG",
       "weekly": {
-        "fp": 10.67,
+        "fp": 10.68,
         "espn": null,
         "sleeper": 8.54,
         "consensus": 9.7,
@@ -8338,11 +8270,11 @@
       "pos": "TE",
       "team": "NO",
       "weekly": {
-        "fp": 10.25,
+        "fp": 10.24,
         "espn": null,
         "sleeper": 10.3,
         "consensus": 10.3,
-        "variance": 0.002
+        "variance": 0.003
       },
       "ros": {
         "fp": 152.75,
@@ -8362,9 +8294,9 @@
       "pos": "TE",
       "team": "CLE",
       "weekly": {
-        "fp": 10.23,
+        "fp": 10.17,
         "espn": null,
-        "consensus": 10.23,
+        "consensus": 10.17,
         "variance": 0
       },
       "ros": {
@@ -8383,11 +8315,11 @@
       "pos": "TE",
       "team": "CHI",
       "weekly": {
-        "fp": 9.32,
+        "fp": 9.33,
         "espn": null,
-        "sleeper": 8.76,
-        "consensus": 9.1,
-        "variance": 0.031
+        "sleeper": 9.08,
+        "consensus": 9.2,
+        "variance": 0.014
       },
       "ros": {
         "fp": 210.92,
@@ -8407,11 +8339,11 @@
       "pos": "TE",
       "team": "LAR",
       "weekly": {
-        "fp": 8.7,
+        "fp": 8.71,
         "espn": null,
-        "sleeper": 7.73,
+        "sleeper": 7.72,
         "consensus": 8.2,
-        "variance": 0.059
+        "variance": 0.06
       },
       "ros": {
         "fp": 117.52,
@@ -8470,11 +8402,11 @@
       "pos": "TE",
       "team": "JAC",
       "weekly": {
-        "fp": 8.93,
+        "fp": 8.95,
         "espn": null,
-        "sleeper": 9.12,
-        "consensus": 9,
-        "variance": 0.011
+        "sleeper": 9.22,
+        "consensus": 9.1,
+        "variance": 0.015
       },
       "ros": {
         "fp": 153.14,
@@ -8494,11 +8426,11 @@
       "pos": "TE",
       "team": "SEA",
       "weekly": {
-        "fp": 8.02,
+        "fp": 7.98,
         "espn": null,
-        "sleeper": 8.4,
+        "sleeper": 8.42,
         "consensus": 8.2,
-        "variance": 0.023
+        "variance": 0.027
       },
       "ros": {
         "fp": 112.51,
@@ -8518,11 +8450,11 @@
       "pos": "TE",
       "team": "DAL",
       "weekly": {
-        "fp": 9.08,
+        "fp": 9.1,
         "espn": null,
         "sleeper": 9.26,
         "consensus": 9.2,
-        "variance": 0.01
+        "variance": 0.009
       },
       "ros": {
         "fp": 158.68,
@@ -8542,11 +8474,11 @@
       "pos": "TE",
       "team": "PIT",
       "weekly": {
-        "fp": 8.27,
+        "fp": 8.23,
         "espn": null,
         "sleeper": 8.85,
         "consensus": 8.5,
-        "variance": 0.034
+        "variance": 0.036
       },
       "ros": {
         "fp": 129.84,
@@ -8614,11 +8546,11 @@
       "pos": "TE",
       "team": "CAR",
       "weekly": {
-        "fp": 7,
+        "fp": 6.78,
         "espn": null,
-        "sleeper": 7.99,
-        "consensus": 7.5,
-        "variance": 0.066
+        "sleeper": 7.78,
+        "consensus": 7.3,
+        "variance": 0.069
       },
       "ros": {
         "fp": 115.76,
@@ -8662,11 +8594,11 @@
       "pos": "TE",
       "team": "CIN",
       "weekly": {
-        "fp": 6.74,
+        "fp": 6.7,
         "espn": null,
         "sleeper": 6.4,
         "consensus": 6.6,
-        "variance": 0.026
+        "variance": 0.023
       },
       "ros": {
         "fp": 109.61,
@@ -8686,11 +8618,11 @@
       "pos": "TE",
       "team": "MIA",
       "weekly": {
-        "fp": 6.98,
+        "fp": 6.97,
         "espn": null,
-        "sleeper": 6.93,
-        "consensus": 7,
-        "variance": 0.004
+        "sleeper": 6.86,
+        "consensus": 6.9,
+        "variance": 0.008
       },
       "ros": {
         "fp": 137.94,
@@ -8710,11 +8642,11 @@
       "pos": "TE",
       "team": "TEN",
       "weekly": {
-        "fp": 6.26,
+        "fp": 6.27,
         "espn": null,
         "sleeper": 6.39,
         "consensus": 6.3,
-        "variance": 0.01
+        "variance": 0.009
       },
       "ros": {
         "fp": 92.27,
@@ -8734,11 +8666,11 @@
       "pos": "TE",
       "team": "LAR",
       "weekly": {
-        "fp": 5.53,
+        "fp": 5.55,
         "espn": null,
         "sleeper": 5.96,
         "consensus": 5.7,
-        "variance": 0.037
+        "variance": 0.036
       },
       "ros": {
         "fp": 88.81,
@@ -8830,11 +8762,11 @@
       "pos": "TE",
       "team": "PIT",
       "weekly": {
-        "fp": 4.11,
+        "fp": 4.09,
         "espn": null,
         "sleeper": 3.71,
         "consensus": 3.9,
-        "variance": 0.051
+        "variance": 0.049
       },
       "ros": {
         "fp": 84.68,
@@ -8902,11 +8834,11 @@
       "pos": "TE",
       "team": "CAR",
       "weekly": {
-        "fp": 3.93,
+        "fp": 3.91,
         "espn": null,
-        "sleeper": 2.96,
-        "consensus": 3.5,
-        "variance": 0.141
+        "sleeper": 2.89,
+        "consensus": 3.4,
+        "variance": 0.15
       },
       "ros": {
         "fp": 55.15,
@@ -8950,11 +8882,11 @@
       "pos": "TE",
       "team": "PHI",
       "weekly": {
-        "fp": 3.54,
+        "fp": 3.55,
         "espn": null,
-        "sleeper": 3,
+        "sleeper": 3.03,
         "consensus": 3.3,
-        "variance": 0.083
+        "variance": 0.079
       },
       "ros": {
         "espn": 6.98918144,
@@ -9017,9 +8949,9 @@
       "weekly": {
         "fp": 3.15,
         "espn": null,
-        "sleeper": 1.8,
+        "sleeper": 1.82,
         "consensus": 2.5,
-        "variance": 0.273
+        "variance": 0.268
       },
       "ros": {
         "fp": 37.22,
@@ -9041,9 +8973,9 @@
       "weekly": {
         "fp": 3.24,
         "espn": null,
-        "sleeper": 3.19,
+        "sleeper": 3.23,
         "consensus": 3.2,
-        "variance": 0.008
+        "variance": 0.002
       },
       "ros": {
         "fp": 8.35,
@@ -9062,10 +8994,10 @@
       "pos": "TE",
       "team": "CAR",
       "weekly": {
-        "fp": 2.71,
-        "sleeper": 1.61,
+        "fp": 2.7,
+        "sleeper": 1.57,
         "consensus": 2.2,
-        "variance": 0.255
+        "variance": 0.265
       },
       "ros": {
         "fp": 34.35,
@@ -9085,9 +9017,9 @@
       "weekly": {
         "fp": 3.14,
         "espn": null,
-        "sleeper": 3.17,
+        "sleeper": 3.28,
         "consensus": 3.2,
-        "variance": 0.005
+        "variance": 0.022
       },
       "ros": {
         "fp": 69.88,
@@ -9107,10 +9039,10 @@
       "pos": "TE",
       "team": "HOU",
       "weekly": {
-        "fp": 2.9,
+        "fp": 2.89,
         "sleeper": 3.04,
         "consensus": 3,
-        "variance": 0.024
+        "variance": 0.025
       },
       "ros": {
         "fp": 35.13,
@@ -9128,9 +9060,9 @@
       "pos": "TE",
       "team": "CIN",
       "weekly": {
-        "fp": 3.13,
+        "fp": 3.11,
         "espn": null,
-        "consensus": 3.13,
+        "consensus": 3.11,
         "variance": 0
       },
       "ros": {
@@ -9149,11 +9081,11 @@
       "pos": "TE",
       "team": "KC",
       "weekly": {
-        "fp": 2.87,
+        "fp": 2.86,
         "espn": null,
-        "sleeper": 3.41,
+        "sleeper": 3.37,
         "consensus": 3.1,
-        "variance": 0.086
+        "variance": 0.082
       },
       "ros": {
         "fp": 48.4,
@@ -9173,11 +9105,11 @@
       "pos": "TE",
       "team": "SEA",
       "weekly": {
-        "fp": 2.63,
+        "fp": 2.61,
         "espn": null,
-        "sleeper": 3.09,
+        "sleeper": 3.1,
         "consensus": 2.8,
-        "variance": 0.08
+        "variance": 0.086
       },
       "ros": {
         "fp": 43.3,
@@ -9199,9 +9131,9 @@
       "weekly": {
         "fp": 2.85,
         "espn": null,
-        "sleeper": 2.71,
+        "sleeper": 2.72,
         "consensus": 2.8,
-        "variance": 0.025
+        "variance": 0.023
       },
       "ros": {
         "fp": 34.24,
@@ -9237,29 +9169,6 @@
         "sleeper"
       ]
     },
-    "chig okonkwo": {
-      "name": "Chig Okonkwo",
-      "pos": "TE",
-      "team": "WAS",
-      "weekly": {
-        "fp": 2.79,
-        "espn": null,
-        "consensus": 2.79,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 118.96,
-        "espn": 95.24414894,
-        "sleeper": 144.1,
-        "consensus": 119.9,
-        "variance": 0.167
-      },
-      "sources_used": [
-        "fp",
-        "espn",
-        "sleeper"
-      ]
-    },
     "jeremy ruckert": {
       "name": "Jeremy Ruckert",
       "pos": "TE",
@@ -9281,13 +9190,36 @@
         "sleeper"
       ]
     },
+    "chig okonkwo": {
+      "name": "Chig Okonkwo",
+      "pos": "TE",
+      "team": "WAS",
+      "weekly": {
+        "fp": 2.73,
+        "espn": null,
+        "consensus": 2.73,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 118.96,
+        "espn": 95.24414894,
+        "sleeper": 144.1,
+        "consensus": 119.9,
+        "variance": 0.167
+      },
+      "sources_used": [
+        "fp",
+        "espn",
+        "sleeper"
+      ]
+    },
     "hayden rucci": {
       "name": "Hayden Rucci",
       "pos": "TE",
       "team": "LAC",
       "weekly": {
-        "fp": 2.41,
-        "consensus": 2.41,
+        "fp": 2.4,
+        "consensus": 2.4,
         "variance": 0
       },
       "ros": {
@@ -9296,27 +9228,6 @@
       },
       "sources_used": [
         "fp"
-      ]
-    },
-    "blake whiteheart": {
-      "name": "Blake Whiteheart",
-      "pos": "TE",
-      "team": "CLE",
-      "weekly": {
-        "fp": 2.41,
-        "sleeper": 2.29,
-        "consensus": 2.4,
-        "variance": 0.026
-      },
-      "ros": {
-        "fp": 28.2,
-        "sleeper": 4.4,
-        "consensus": 16.9,
-        "variance": 0.73
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
       ]
     },
     "daniel bellinger": {
@@ -9340,6 +9251,27 @@
         "sleeper"
       ]
     },
+    "blake whiteheart": {
+      "name": "Blake Whiteheart",
+      "pos": "TE",
+      "team": "CLE",
+      "weekly": {
+        "fp": 2.4,
+        "sleeper": 2.23,
+        "consensus": 2.3,
+        "variance": 0.037
+      },
+      "ros": {
+        "fp": 28.2,
+        "sleeper": 4.4,
+        "consensus": 16.9,
+        "variance": 0.73
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
     "will kacmarek": {
       "name": "Will Kacmarek",
       "pos": "TE",
@@ -9347,9 +9279,9 @@
       "weekly": {
         "fp": 2.51,
         "espn": null,
-        "sleeper": 2.46,
+        "sleeper": 2.44,
         "consensus": 2.5,
-        "variance": 0.01
+        "variance": 0.014
       },
       "ros": {
         "fp": 61.76,
@@ -9369,8 +9301,8 @@
       "pos": "TE",
       "team": "WAS",
       "weekly": {
-        "fp": 2.68,
-        "sleeper": 2.54,
+        "fp": 2.69,
+        "sleeper": 2.55,
         "consensus": 2.6,
         "variance": 0.027
       },
@@ -9426,30 +9358,6 @@
         "sleeper"
       ]
     },
-    "marlin klein": {
-      "name": "Marlin Klein",
-      "pos": "TE",
-      "team": "HOU",
-      "weekly": {
-        "fp": 2.4,
-        "espn": null,
-        "sleeper": 1.74,
-        "consensus": 2.1,
-        "variance": 0.159
-      },
-      "ros": {
-        "fp": 32.39,
-        "espn": 7.96396195,
-        "sleeper": 29.5,
-        "consensus": 23.9,
-        "variance": 0.468
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "austin hooper": {
       "name": "Austin Hooper",
       "pos": "TE",
@@ -9474,25 +9382,28 @@
         "espn"
       ]
     },
-    "luke farrell": {
-      "name": "Luke Farrell",
+    "marlin klein": {
+      "name": "Marlin Klein",
       "pos": "TE",
-      "team": "SF",
+      "team": "HOU",
       "weekly": {
-        "fp": 2.26,
-        "sleeper": 1.97,
+        "fp": 2.37,
+        "espn": null,
+        "sleeper": 1.74,
         "consensus": 2.1,
-        "variance": 0.069
+        "variance": 0.153
       },
       "ros": {
-        "fp": 9.42,
-        "sleeper": 10.1,
-        "consensus": 9.7,
-        "variance": 0.035
+        "fp": 32.39,
+        "espn": 7.96396195,
+        "sleeper": 29.5,
+        "consensus": 23.9,
+        "variance": 0.468
       },
       "sources_used": [
         "fp",
-        "sleeper"
+        "sleeper",
+        "espn"
       ]
     },
     "jared wiley": {
@@ -9513,30 +9424,6 @@
         "fp"
       ]
     },
-    "drew sample": {
-      "name": "Drew Sample",
-      "pos": "TE",
-      "team": "CIN",
-      "weekly": {
-        "fp": 2.42,
-        "espn": null,
-        "sleeper": 3.32,
-        "consensus": 2.8,
-        "variance": 0.157
-      },
-      "ros": {
-        "fp": 36.26,
-        "espn": 42.78198128,
-        "sleeper": 31.6,
-        "consensus": 36.8,
-        "variance": 0.124
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "adam trautman": {
       "name": "Adam Trautman",
       "pos": "TE",
@@ -9554,6 +9441,30 @@
         "sleeper": 27.8,
         "consensus": 38.5,
         "variance": 0.264
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
+    "drew sample": {
+      "name": "Drew Sample",
+      "pos": "TE",
+      "team": "CIN",
+      "weekly": {
+        "fp": 2.4,
+        "espn": null,
+        "sleeper": 3.32,
+        "consensus": 2.8,
+        "variance": 0.161
+      },
+      "ros": {
+        "fp": 36.26,
+        "espn": 42.78198128,
+        "sleeper": 31.6,
+        "consensus": 36.8,
+        "variance": 0.124
       },
       "sources_used": [
         "fp",
@@ -9654,15 +9565,36 @@
         "espn"
       ]
     },
+    "luke farrell": {
+      "name": "Luke Farrell",
+      "pos": "TE",
+      "team": "SF",
+      "weekly": {
+        "fp": 1.95,
+        "sleeper": 1.97,
+        "consensus": 2,
+        "variance": 0.005
+      },
+      "ros": {
+        "fp": 9.42,
+        "sleeper": 10.1,
+        "consensus": 9.7,
+        "variance": 0.035
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
     "nate boerkircher": {
       "name": "Nate Boerkircher",
       "pos": "TE",
       "team": "JAC",
       "weekly": {
-        "fp": 1.84,
-        "sleeper": 1.47,
+        "fp": 1.87,
+        "sleeper": 1.49,
         "consensus": 1.7,
-        "variance": 0.112
+        "variance": 0.113
       },
       "ros": {
         "fp": 37.22,
@@ -9705,9 +9637,9 @@
       "team": "PHI",
       "weekly": {
         "fp": 1.64,
-        "sleeper": 1.02,
-        "consensus": 1.3,
-        "variance": 0.233
+        "sleeper": 1.04,
+        "consensus": 1.4,
+        "variance": 0.224
       },
       "ros": {
         "consensus": null,
@@ -9769,9 +9701,9 @@
       "team": "JAC",
       "weekly": {
         "fp": 1.51,
-        "sleeper": 0.49,
+        "sleeper": 0.5,
         "consensus": 1,
-        "variance": 0.51
+        "variance": 0.502
       },
       "ros": {
         "fp": 23.34,
@@ -9784,40 +9716,16 @@
         "sleeper"
       ]
     },
-    "mo aliecox": {
-      "name": "Mo Alie-Cox",
-      "pos": "TE",
-      "team": "IND",
-      "weekly": {
-        "fp": 1.37,
-        "espn": null,
-        "sleeper": 1.08,
-        "consensus": 1.2,
-        "variance": 0.118
-      },
-      "ros": {
-        "fp": 37.44,
-        "espn": 7.97063265,
-        "sleeper": 15.4,
-        "consensus": 21.1,
-        "variance": 0.617
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
-      ]
-    },
     "brevyn spannford": {
       "name": "Brevyn Spann-Ford",
       "pos": "TE",
       "team": "DAL",
       "weekly": {
-        "fp": 1.48,
+        "fp": 1.51,
         "espn": null,
         "sleeper": 1.23,
         "consensus": 1.4,
-        "variance": 0.092
+        "variance": 0.102
       },
       "ros": {
         "fp": 15.97,
@@ -9856,6 +9764,30 @@
         "espn"
       ]
     },
+    "mo aliecox": {
+      "name": "Mo Alie-Cox",
+      "pos": "TE",
+      "team": "IND",
+      "weekly": {
+        "fp": 1.36,
+        "espn": null,
+        "sleeper": 1.08,
+        "consensus": 1.2,
+        "variance": 0.115
+      },
+      "ros": {
+        "fp": 37.44,
+        "espn": 7.97063265,
+        "sleeper": 15.4,
+        "consensus": 21.1,
+        "variance": 0.617
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "charlie woerner": {
       "name": "Charlie Woerner",
       "pos": "TE",
@@ -9882,10 +9814,10 @@
       "pos": "TE",
       "team": "IND",
       "weekly": {
-        "fp": 1.21,
+        "fp": 1.2,
         "sleeper": 0.39,
         "consensus": 0.8,
-        "variance": 0.513
+        "variance": 0.509
       },
       "ros": {
         "fp": 26,
@@ -9917,6 +9849,30 @@
         "sleeper"
       ]
     },
+    "sam roush": {
+      "name": "Sam Roush",
+      "pos": "TE",
+      "team": "CHI",
+      "weekly": {
+        "fp": 1.31,
+        "espn": null,
+        "sleeper": 1.85,
+        "consensus": 1.6,
+        "variance": 0.171
+      },
+      "ros": {
+        "fp": 17.89,
+        "espn": 15.26958099,
+        "sleeper": 33.5,
+        "consensus": 22.2,
+        "variance": 0.362
+      },
+      "sources_used": [
+        "fp",
+        "sleeper",
+        "espn"
+      ]
+    },
     "tanner hudson": {
       "name": "Tanner Hudson",
       "pos": "TE",
@@ -9935,30 +9891,6 @@
       "sources_used": [
         "fp",
         "sleeper"
-      ]
-    },
-    "sam roush": {
-      "name": "Sam Roush",
-      "pos": "TE",
-      "team": "CHI",
-      "weekly": {
-        "fp": 1.31,
-        "espn": null,
-        "sleeper": 1.79,
-        "consensus": 1.5,
-        "variance": 0.155
-      },
-      "ros": {
-        "fp": 17.89,
-        "espn": 15.26958099,
-        "sleeper": 33.5,
-        "consensus": 22.2,
-        "variance": 0.362
-      },
-      "sources_used": [
-        "fp",
-        "sleeper",
-        "espn"
       ]
     },
     "hunter long": {
@@ -9985,9 +9917,9 @@
       "team": "WAS",
       "weekly": {
         "fp": 1.27,
-        "sleeper": 2.03,
+        "sleeper": 2.04,
         "consensus": 1.6,
-        "variance": 0.23
+        "variance": 0.233
       },
       "ros": {
         "consensus": null,
@@ -10024,10 +9956,10 @@
       "pos": "TE",
       "team": "JAC",
       "weekly": {
-        "fp": 0.96,
-        "sleeper": 1.25,
+        "fp": 0.97,
+        "sleeper": 1.27,
         "consensus": 1.1,
-        "variance": 0.131
+        "variance": 0.134
       },
       "ros": {
         "fp": 18.15,
@@ -10046,9 +9978,9 @@
       "team": "SEA",
       "weekly": {
         "fp": 0.98,
-        "sleeper": 0.79,
+        "sleeper": 0.8,
         "consensus": 0.9,
-        "variance": 0.107
+        "variance": 0.101
       },
       "ros": {
         "fp": 22.95,
@@ -10126,9 +10058,9 @@
       "team": "CAR",
       "weekly": {
         "fp": 0.85,
-        "sleeper": 0.23,
+        "sleeper": 0.22,
         "consensus": 0.6,
-        "variance": 0.574
+        "variance": 0.589
       },
       "ros": {
         "fp": 47.5,
@@ -10168,9 +10100,9 @@
       "team": "KC",
       "weekly": {
         "fp": 0.59,
-        "sleeper": 0.8,
+        "sleeper": 0.79,
         "consensus": 0.7,
-        "variance": 0.151
+        "variance": 0.145
       },
       "ros": {
         "consensus": null,
@@ -10219,27 +10151,6 @@
         "fp"
       ]
     },
-    "ian thomas": {
-      "name": "Ian Thomas",
-      "pos": "TE",
-      "team": "LV",
-      "weekly": {
-        "fp": 0.64,
-        "sleeper": 0.51,
-        "consensus": 0.6,
-        "variance": 0.113
-      },
-      "ros": {
-        "fp": 18.84,
-        "sleeper": 4,
-        "consensus": 11.8,
-        "variance": 0.65
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "thomas fidone ii": {
       "name": "Thomas Fidone II",
       "pos": "TE",
@@ -10278,6 +10189,27 @@
         "sleeper"
       ]
     },
+    "ian thomas": {
+      "name": "Ian Thomas",
+      "pos": "TE",
+      "team": "LV",
+      "weekly": {
+        "fp": 0.48,
+        "sleeper": 0.51,
+        "consensus": 0.5,
+        "variance": 0.03
+      },
+      "ros": {
+        "fp": 18.84,
+        "sleeper": 4,
+        "consensus": 11.8,
+        "variance": 0.65
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
     "dallen bentley": {
       "name": "Dallen Bentley",
       "pos": "TE",
@@ -10292,6 +10224,27 @@
         "fp": 28.4,
         "consensus": 28.4,
         "variance": 0
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "jack endries": {
+      "name": "Jack Endries",
+      "pos": "TE",
+      "team": "CIN",
+      "weekly": {
+        "fp": 0.47,
+        "sleeper": 0.3,
+        "consensus": 0.4,
+        "variance": 0.221
+      },
+      "ros": {
+        "fp": 31.3,
+        "sleeper": 53.3,
+        "consensus": 41.7,
+        "variance": 0.26
       },
       "sources_used": [
         "fp",
@@ -10334,26 +10287,6 @@
         "sleeper": 8,
         "consensus": 14.2,
         "variance": 0.425
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
-    "bauer sharp": {
-      "name": "Bauer Sharp",
-      "pos": "TE",
-      "team": "TB",
-      "weekly": {
-        "fp": 0.46,
-        "sleeper": 0.1,
-        "consensus": 0.3,
-        "variance": 0.643
-      },
-      "ros": {
-        "fp": 28.3,
-        "consensus": 28.3,
-        "variance": 0
       },
       "sources_used": [
         "fp",
@@ -10407,9 +10340,9 @@
       "team": "NE",
       "weekly": {
         "fp": 0.29,
-        "sleeper": 0.21,
+        "sleeper": 0.22,
         "consensus": 0.3,
-        "variance": 0.16
+        "variance": 0.137
       },
       "ros": {
         "sleeper": 4,
@@ -10442,41 +10375,41 @@
         "sleeper"
       ]
     },
-    "riley nowakowski": {
-      "name": "Riley Nowakowski",
+    "ko kieft": {
+      "name": "Ko Kieft",
       "pos": "TE",
-      "team": "PIT",
+      "team": "TB",
       "weekly": {
-        "fp": 0.2,
-        "sleeper": 0.22,
-        "consensus": 0.2,
-        "variance": 0.048
+        "fp": 0.21,
+        "sleeper": 0.04,
+        "consensus": 0.1,
+        "variance": 0.68
       },
       "ros": {
-        "sleeper": 9.6,
-        "consensus": 9.6,
-        "variance": 0
+        "fp": 15.55,
+        "sleeper": 2.3,
+        "consensus": 9.3,
+        "variance": 0.742
       },
       "sources_used": [
         "fp",
         "sleeper"
       ]
     },
-    "jack endries": {
-      "name": "Jack Endries",
+    "riley nowakowski": {
+      "name": "Riley Nowakowski",
       "pos": "TE",
-      "team": "CIN",
+      "team": "PIT",
       "weekly": {
-        "fp": 0.16,
-        "sleeper": 0.3,
+        "fp": 0.19,
+        "sleeper": 0.22,
         "consensus": 0.2,
-        "variance": 0.304
+        "variance": 0.073
       },
       "ros": {
-        "fp": 31.3,
-        "sleeper": 53.3,
-        "consensus": 41.7,
-        "variance": 0.26
+        "sleeper": 9.6,
+        "consensus": 9.6,
+        "variance": 0
       },
       "sources_used": [
         "fp",
@@ -10489,9 +10422,9 @@
       "team": "CLE",
       "weekly": {
         "fp": 0.13,
-        "sleeper": 0.21,
+        "sleeper": 0.2,
         "consensus": 0.2,
-        "variance": 0.235
+        "variance": 0.212
       },
       "ros": {
         "fp": 8.14,
@@ -10503,19 +10436,19 @@
         "sleeper"
       ]
     },
-    "robert tonyan": {
-      "name": "Robert Tonyan",
+    "bauer sharp": {
+      "name": "Bauer Sharp",
       "pos": "TE",
-      "team": "PIT",
+      "team": "TB",
       "weekly": {
-        "fp": 0.06,
-        "sleeper": 0.08,
+        "fp": 0.11,
+        "sleeper": 0.1,
         "consensus": 0.1,
-        "variance": 0.143
+        "variance": 0.048
       },
       "ros": {
-        "sleeper": 1.9,
-        "consensus": 1.9,
+        "fp": 28.3,
+        "consensus": 28.3,
         "variance": 0
       },
       "sources_used": [
@@ -10544,21 +10477,20 @@
         "sleeper"
       ]
     },
-    "ko kieft": {
-      "name": "Ko Kieft",
+    "robert tonyan": {
+      "name": "Robert Tonyan",
       "pos": "TE",
-      "team": "TB",
+      "team": "PIT",
       "weekly": {
-        "fp": 0.02,
-        "sleeper": 0.04,
-        "consensus": 0,
-        "variance": 0.333
+        "fp": 0.06,
+        "sleeper": 0.08,
+        "consensus": 0.1,
+        "variance": 0.143
       },
       "ros": {
-        "fp": 15.55,
-        "sleeper": 2.3,
-        "consensus": 9.3,
-        "variance": 0.742
+        "sleeper": 1.9,
+        "consensus": 1.9,
+        "variance": 0
       },
       "sources_used": [
         "fp",
@@ -10985,6 +10917,28 @@
         "sleeper"
       ]
     },
+    "jonah coleman": {
+      "name": "Jonah Coleman",
+      "pos": "RB",
+      "team": "DEN",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "fp": 49.36,
+        "espn": 24.74529828,
+        "sleeper": 63.9,
+        "consensus": 46.5,
+        "variance": 0.351
+      },
+      "sources_used": [
+        "fp",
+        "espn",
+        "sleeper"
+      ]
+    },
     "james conner": {
       "name": "James Conner",
       "pos": "RB",
@@ -11133,6 +11087,25 @@
         "fp"
       ]
     },
+    "audric estime": {
+      "name": "Audric Estime",
+      "pos": "RB",
+      "team": "FA",
+      "weekly": {
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "fp": 17.5,
+        "sleeper": 22.6,
+        "consensus": 19.9,
+        "variance": 0.127
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
     "jarquez hunter": {
       "name": "Jarquez Hunter",
       "pos": "RB",
@@ -11150,26 +11123,6 @@
       "sources_used": [
         "fp",
         "sleeper"
-      ]
-    },
-    "kene nwangwu": {
-      "name": "Kene Nwangwu",
-      "pos": "RB",
-      "team": "NYJ",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "fp": 9.85,
-        "espn": 0.82990234,
-        "consensus": 5.7,
-        "variance": 0.845
-      },
-      "sources_used": [
-        "fp",
-        "espn"
       ]
     },
     "terrell jennings": {
@@ -11705,6 +11658,28 @@
         "fp"
       ]
     },
+    "brenen thompson": {
+      "name": "Brenen Thompson",
+      "pos": "WR",
+      "team": "LAC",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "fp": 27.45,
+        "espn": 27.29716282,
+        "sleeper": 39,
+        "consensus": 31.2,
+        "variance": 0.175
+      },
+      "sources_used": [
+        "fp",
+        "espn",
+        "sleeper"
+      ]
+    },
     "savion williams": {
       "name": "Savion Williams",
       "pos": "WR",
@@ -11793,6 +11768,28 @@
       },
       "sources_used": [
         "fp",
+        "sleeper"
+      ]
+    },
+    "barion brown": {
+      "name": "Barion Brown",
+      "pos": "WR",
+      "team": "NO",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "fp": 18.75,
+        "espn": 12.42782536,
+        "sleeper": 63,
+        "consensus": 31.3,
+        "variance": 0.717
+      },
+      "sources_used": [
+        "fp",
+        "espn",
         "sleeper"
       ]
     },
@@ -12477,8 +12474,8 @@
       "team": "KC",
       "weekly": {
         "espn": null,
-        "sleeper": 20.93,
-        "consensus": 20.93,
+        "sleeper": 20.8,
+        "consensus": 20.8,
         "variance": 0
       },
       "ros": {
@@ -12807,8 +12804,8 @@
       "team": "CLE",
       "weekly": {
         "espn": null,
-        "sleeper": 9.58,
-        "consensus": 9.58,
+        "sleeper": 9.38,
+        "consensus": 9.38,
         "variance": 0
       },
       "ros": {
@@ -12960,8 +12957,8 @@
       "team": "CHI",
       "weekly": {
         "espn": null,
-        "sleeper": 7.29,
-        "consensus": 7.29,
+        "sleeper": 7.46,
+        "consensus": 7.46,
         "variance": 0
       },
       "ros": {
@@ -13215,8 +13212,8 @@
       "team": "PHI",
       "weekly": {
         "espn": null,
-        "sleeper": 7.22,
-        "consensus": 7.22,
+        "sleeper": 7.25,
+        "consensus": 7.25,
         "variance": 0
       },
       "ros": {
@@ -13527,8 +13524,8 @@
       "team": "CAR",
       "weekly": {
         "espn": null,
-        "sleeper": 7.38,
-        "consensus": 7.38,
+        "sleeper": 7.34,
+        "consensus": 7.34,
         "variance": 0
       },
       "ros": {
@@ -13665,8 +13662,8 @@
       "team": "CLE",
       "weekly": {
         "espn": null,
-        "sleeper": 6.41,
-        "consensus": 6.41,
+        "sleeper": 6.44,
+        "consensus": 6.44,
         "variance": 0
       },
       "ros": {
@@ -13745,8 +13742,8 @@
       "pos": "DEF",
       "team": "PHI",
       "weekly": {
-        "sleeper": 9.12,
-        "consensus": 9.12,
+        "sleeper": 9.15,
+        "consensus": 9.15,
         "variance": 0
       },
       "ros": {
@@ -13763,8 +13760,8 @@
       "pos": "WR",
       "team": "CHI",
       "weekly": {
-        "sleeper": 9.27,
-        "consensus": 9.27,
+        "sleeper": 9.56,
+        "consensus": 9.56,
         "variance": 0
       },
       "ros": {
@@ -13781,8 +13778,8 @@
       "pos": "DEF",
       "team": "CHI",
       "weekly": {
-        "sleeper": 5.9,
-        "consensus": 5.9,
+        "sleeper": 6.05,
+        "consensus": 6.05,
         "variance": 0
       },
       "ros": {
@@ -13799,8 +13796,8 @@
       "pos": "WR",
       "team": "PHI",
       "weekly": {
-        "sleeper": 0.73,
-        "consensus": 0.73,
+        "sleeper": 0.74,
+        "consensus": 0.74,
         "variance": 0
       },
       "ros": {
@@ -13889,8 +13886,8 @@
       "pos": "DEF",
       "team": "CLE",
       "weekly": {
-        "sleeper": 6.43,
-        "consensus": 6.43,
+        "sleeper": 6.46,
+        "consensus": 6.46,
         "variance": 0
       },
       "ros": {
@@ -14051,8 +14048,8 @@
       "pos": "RB",
       "team": "JAX",
       "weekly": {
-        "sleeper": 1.84,
-        "consensus": 1.84,
+        "sleeper": 1.85,
+        "consensus": 1.85,
         "variance": 0
       },
       "ros": {
@@ -14105,8 +14102,8 @@
       "pos": "WR",
       "team": "MIA",
       "weekly": {
-        "sleeper": 4.99,
-        "consensus": 4.99,
+        "sleeper": 4.94,
+        "consensus": 4.94,
         "variance": 0
       },
       "ros": {
@@ -14249,8 +14246,8 @@
       "pos": "DEF",
       "team": "CAR",
       "weekly": {
-        "sleeper": 8.42,
-        "consensus": 8.42,
+        "sleeper": 8.39,
+        "consensus": 8.39,
         "variance": 0
       },
       "ros": {
@@ -14321,8 +14318,8 @@
       "pos": "WR",
       "team": "NE",
       "weekly": {
-        "sleeper": 1.25,
-        "consensus": 1.25,
+        "sleeper": 1.26,
+        "consensus": 1.26,
         "variance": 0
       },
       "ros": {
@@ -14339,8 +14336,8 @@
       "pos": "RB",
       "team": "MIA",
       "weekly": {
-        "sleeper": 3.5,
-        "consensus": 3.5,
+        "sleeper": 3.52,
+        "consensus": 3.52,
         "variance": 0
       },
       "ros": {
@@ -14375,8 +14372,8 @@
       "pos": "RB",
       "team": "JAX",
       "weekly": {
-        "sleeper": 4.71,
-        "consensus": 4.71,
+        "sleeper": 4.67,
+        "consensus": 4.67,
         "variance": 0
       },
       "ros": {
@@ -14501,8 +14498,8 @@
       "pos": "TE",
       "team": "CLE",
       "weekly": {
-        "sleeper": 9.48,
-        "consensus": 9.48,
+        "sleeper": 9.27,
+        "consensus": 9.27,
         "variance": 0
       },
       "ros": {
@@ -14519,8 +14516,8 @@
       "pos": "WR",
       "team": "JAX",
       "weekly": {
-        "sleeper": 9.02,
-        "consensus": 9.02,
+        "sleeper": 9.12,
+        "consensus": 9.12,
         "variance": 0
       },
       "ros": {
@@ -14609,8 +14606,8 @@
       "pos": "RB",
       "team": "KC",
       "weekly": {
-        "sleeper": 20.41,
-        "consensus": 20.41,
+        "sleeper": 20.5,
+        "consensus": 20.5,
         "variance": 0
       },
       "ros": {
@@ -14645,8 +14642,8 @@
       "pos": "RB",
       "team": "BUF",
       "weekly": {
-        "sleeper": 16.54,
-        "consensus": 16.54,
+        "sleeper": 16.55,
+        "consensus": 16.55,
         "variance": 0
       },
       "ros": {
