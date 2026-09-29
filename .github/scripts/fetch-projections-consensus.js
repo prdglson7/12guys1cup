@@ -64,7 +64,7 @@ const SOURCE_WEIGHTS = {
    Determine current NFL week via ESPN scoreboard
    ───────────────────────────────────────────── */
 async function fetchCurrentWeek() {
-  const url = 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard';
+  const url = 'https://api.sleeper.app/v1/state/nfl';
   const res = await fetch(url);
   if (!res.ok) return { week: 1, season: SEASON };
   const data = await res.json();
