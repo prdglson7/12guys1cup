@@ -1,16 +1,29 @@
 name: Compute weekly accuracy
 
-# Runs Tuesday morning after Sleeper finalizes to compute how well
-# the tool's projections matched actual player performance.
-# Data feeds the Accuracy History display on the site.
+# Evaluates the previous week's projections vs actuals.
+# Runs automatically after "Update projections consensus" completes each Tuesday,
+# ensuring the accuracy check always uses a fresh consensus file with the correct week.
+#
+# Chain sequence every Tuesday:
+#   1. Update projections consensus (fetches fresh week from Sleeper)
+#   2. This workflow auto-fires via workflow_run
+#   3. Reads consensus.week, evaluates week-1 against actual game data
+#
+# Also has manual dispatch + weekly schedule as safety nets.
 
 on:
+  # Chain trigger: auto-fire after consensus workflow completes
+  workflow_run:
+    workflows: ["Update projections consensus"]
+    types: [completed]
+    branches: [main]
+  # Backup schedule: Tuesday 10am CST (in case chain trigger misses)
   schedule:
-    - cron: "0 14 * * 2"    # Tuesday 14:00 UTC = 9am EST / 10am EDT (after recap)
+    - cron: "0 15 * * 2"    # Tuesday 15:00 UTC = 10am CST
   workflow_dispatch:
     inputs:
       force:
-        description: 'Force re-evaluation even if week already computed'
+        description: 'Re-evaluate even if this week is already computed'
         required: false
         default: 'false'
 
@@ -24,54 +37,42 @@ concurrency:
 jobs:
   compute:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
+    # Only run chain-triggered jobs if the upstream workflow succeeded
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install deps
+      - name: Install dependencies
         run: |
-          pip install nfl_data_py pandas
+          pip install --upgrade pip
+          pip install nfl_data_py pandas pyarrow
 
       - name: Compute accuracy
         env:
-          FORCE: ${{ github.event.inputs.force || '' }}
+          FORCE: ${{ github.event.inputs.force || 'false' }}
         run: python3 .github/scripts/compute-accuracy.py
 
-      - name: Commit if changed
+      - name: Commit + push updated accuracy history
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # Only commit if the accuracy file actually exists (script may skip if no target week)
-          if [ ! -f assets/data/accuracy-history.json ]; then
-            echo "No accuracy file generated — nothing to commit (likely preseason or week already tracked)."
-            exit 0
-          fi
-
           git add assets/data/accuracy-history.json
-
           if git diff --cached --quiet; then
-            echo "No changes to commit."
+            echo "No accuracy changes to commit."
             exit 0
           fi
-
           git commit -m "Update accuracy history [skip ci]"
-
-          # Retry loop for concurrent-push races
-          for i in 1 2 3; do
-            if git pull --rebase origin main && git push; then
-              echo "Push successful on attempt $i"
-              exit 0
-            fi
-            echo "Retry $i…"
+          # Retry on concurrent push
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push && exit 0
+            echo "Retry $i after concurrent push…"
             sleep 5
           done
-
-          echo "Failed to push after 3 attempts"
           exit 1
