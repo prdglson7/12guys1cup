@@ -146,37 +146,49 @@ def compute_projection_accuracy(consensus, actuals):
             continue
 
         pos = player.get("pos", "")
-        weekly = player.get("weekly", {})
-        actual_pts = actual["actual_fp"]
+        weekly = player.get("weekly") or {}  # Guard: weekly key may be present but None
+        actual_pts = actual["actual_fp"] or 0
 
         # Only track players with meaningful volume (proj > 3 or actual > 3)
-        if weekly.get("consensus", 0) < 3 and actual_pts < 3:
+        # Use `or 0` so a None value (not just missing key) also defaults to 0
+        consensus_proj = weekly.get("consensus") or 0
+        if consensus_proj < 3 and actual_pts < 3:
             continue
 
-        # Consensus error
+        # Consensus error (only if we have a real projection)
         proj = weekly.get("consensus")
-        if proj is not None:
-            err = actual_pts - proj
-            abs_err = abs(err)
-            all_errors.append(abs_err)
-            by_pos.setdefault(pos, []).append(abs_err)
-            by_source["consensus"].append(abs_err)
+        if proj is not None and not isinstance(proj, str):
+            try:
+                proj = float(proj)
+                err = actual_pts - proj
+                abs_err = abs(err)
+                all_errors.append(abs_err)
+                by_pos.setdefault(pos, []).append(abs_err)
+                by_source["consensus"].append(abs_err)
 
-            # Track hits and misses
-            results["top_hits" if abs_err <= 3 else "top_misses"].append({
-                "name": player.get("name"),
-                "pos": pos,
-                "team": player.get("team"),
-                "proj": round(proj, 1),
-                "actual": round(actual_pts, 1),
-                "error": round(err, 1),
-            })
+                # Track hits and misses
+                results["top_hits" if abs_err <= 3 else "top_misses"].append({
+                    "name": player.get("name"),
+                    "pos": pos,
+                    "team": player.get("team"),
+                    "proj": round(proj, 1),
+                    "actual": round(actual_pts, 1),
+                    "error": round(err, 1),
+                })
+            except (TypeError, ValueError):
+                pass  # Skip malformed projection
 
-        # Individual source errors
+        # Individual source errors — same None-safe pattern
         for src in ["fp", "espn", "sleeper"]:
             src_proj = weekly.get(src)
-            if src_proj is not None and src_proj > 0:
-                by_source[src].append(abs(actual_pts - src_proj))
+            if src_proj is None:
+                continue
+            try:
+                src_proj = float(src_proj)
+                if src_proj > 0:
+                    by_source[src].append(abs(actual_pts - src_proj))
+            except (TypeError, ValueError):
+                continue
 
     def summarize(errs):
         if not errs:
