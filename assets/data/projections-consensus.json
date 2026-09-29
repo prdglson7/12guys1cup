@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-29T07:54:26.626Z",
+  "fetched_at": "2026-09-29T14:37:58.514Z",
   "season": 2026,
   "week": 3,
   "source_weights": {
@@ -7194,22 +7194,19 @@
       "team": "TB",
       "weekly": {
         "fp": 0.55,
-        "espn": null,
         "sleeper": 0.45,
         "consensus": 0.5,
         "variance": 0.1
       },
       "ros": {
         "fp": 14.57,
-        "espn": 0.44091114,
         "sleeper": 4.8,
-        "consensus": 7,
-        "variance": 0.895
+        "consensus": 9.9,
+        "variance": 0.504
       },
       "sources_used": [
         "fp",
-        "sleeper",
-        "espn"
+        "sleeper"
       ]
     },
     "jonathan mingo": {
@@ -9485,19 +9482,22 @@
       "team": "HOU",
       "weekly": {
         "fp": 1.06,
+        "espn": null,
         "sleeper": 0.85,
         "consensus": 1,
         "variance": 0.11
       },
       "ros": {
         "fp": 31.84,
+        "espn": 3.39674404,
         "sleeper": 33.2,
-        "consensus": 32.5,
-        "variance": 0.021
+        "consensus": 23.5,
+        "variance": 0.602
       },
       "sources_used": [
         "fp",
-        "sleeper"
+        "sleeper",
+        "espn"
       ]
     },
     "colson yankoff": {
@@ -12926,24 +12926,6 @@
         "espn"
       ]
     },
-    "buccaneers dst": {
-      "name": "Buccaneers D/ST",
-      "pos": "DST",
-      "team": "TB",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 66.72486699,
-        "consensus": 66.72486699,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "jaguars dst": {
       "name": "Jaguars D/ST",
       "pos": "DST",
@@ -12956,6 +12938,24 @@
       "ros": {
         "espn": 90.61780545,
         "consensus": 90.61780545,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "buccaneers dst": {
+      "name": "Buccaneers D/ST",
+      "pos": "DST",
+      "team": "TB",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 66.72486699,
+        "consensus": 66.72486699,
         "variance": 0
       },
       "sources_used": [
@@ -13568,6 +13568,26 @@
         "espn"
       ]
     },
+    "austin ekeler": {
+      "name": "Austin Ekeler",
+      "pos": "RB",
+      "team": null,
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 53.25041888,
+        "sleeper": 9.3,
+        "consensus": 30.6,
+        "variance": 0.703
+      },
+      "sources_used": [
+        "espn",
+        "sleeper"
+      ]
+    },
     "riley patterson": {
       "name": "Riley Patterson",
       "pos": "K",
@@ -13587,26 +13607,6 @@
       "sources_used": [
         "sleeper",
         "espn"
-      ]
-    },
-    "austin ekeler": {
-      "name": "Austin Ekeler",
-      "pos": "RB",
-      "team": null,
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 53.25041888,
-        "sleeper": 9.3,
-        "consensus": 30.6,
-        "variance": 0.703
-      },
-      "sources_used": [
-        "espn",
-        "sleeper"
       ]
     },
     "matthew hibner": {
