@@ -31,7 +31,7 @@ const path = require('path');
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 const OUTPUT = path.join(REPO_ROOT, 'assets', 'data', 'projections-consensus.json');
-const FP_KEY = process.env.FANTASYPROS_HOF_API_KEY;
+const FP_KEY = process.env.FANTASYPROS_API_KEY;
 const FP_BASE = 'https://api.fantasypros.com/public/v2/json';
 const SEASON = new Date().getFullYear();
 const SCORING = 'PPR';
@@ -61,17 +61,54 @@ const SOURCE_WEIGHTS = {
 };
 
 /* ─────────────────────────────────────────────
-   Determine current NFL week via ESPN scoreboard
+   Determine current NFL week via Sleeper's /state/nfl endpoint.
+
+   Why Sleeper (not ESPN):
+   - ESPN's scoreboard advances Wed/Thu when new games become "current" —
+     that means Tuesday morning after MNF, ESPN still shows the just-completed
+     week as current. This lags fantasy timing by ~24-36 hours.
+   - Sleeper advances Tuesday morning after MNF — matches fantasy waiver cycle.
+   - Consistent with what the rest of the app (waivers, scores, matchups) uses.
+   - Sleeper's week aligns with the league's actual current fantasy week.
+
+   Falls back to ESPN if Sleeper unreachable, then hardcoded 1 as last resort.
    ───────────────────────────────────────────── */
 async function fetchCurrentWeek() {
-  const url = 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard';
-  const res = await fetch(url);
-  if (!res.ok) return { week: 1, season: SEASON };
-  const data = await res.json();
-  return {
-    week: data.week?.number || 1,
-    season: data.season?.year || SEASON,
-  };
+  // Primary: Sleeper (authoritative for fantasy timing)
+  try {
+    const res = await fetch('https://api.sleeper.app/v1/state/nfl', {
+      signal: AbortSignal.timeout(10000),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const week = Number(data.week) || 1;
+      const season = Number(data.season) || SEASON;
+      const seasonType = data.season_type || 'regular';
+      console.log(`[week] Sleeper state → Week ${week}, season ${season} (${seasonType})`);
+      return { week, season };
+    }
+    console.log(`[week] Sleeper state HTTP ${res.status} — falling back to ESPN`);
+  } catch (e) {
+    console.log(`[week] Sleeper state fetch failed: ${e.message} — falling back to ESPN`);
+  }
+
+  // Fallback: ESPN scoreboard
+  try {
+    const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard');
+    if (res.ok) {
+      const data = await res.json();
+      const week = data.week?.number || 1;
+      const season = data.season?.year || SEASON;
+      console.log(`[week] ESPN fallback → Week ${week}, season ${season}`);
+      return { week, season };
+    }
+  } catch (e) {
+    console.log(`[week] ESPN fallback also failed: ${e.message}`);
+  }
+
+  // Last resort
+  console.log(`[week] All sources failed — defaulting to Week 1`);
+  return { week: 1, season: SEASON };
 }
 
 /* ─────────────────────────────────────────────
