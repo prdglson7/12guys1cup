@@ -1,0 +1,227 @@
+{
+  "weeks": {
+    "2026_W2": {
+      "season": 2026,
+      "week": 2,
+      "evaluated_at": "2026-09-29T19:08:38.403809Z",
+      "accuracy": {
+        "by_position": {
+          "QB": {
+            "count": 31,
+            "mae": 6.95,
+            "rmse": 8.2
+          },
+          "RB": {
+            "count": 64,
+            "mae": 3.65,
+            "rmse": 4.51
+          },
+          "WR": {
+            "count": 103,
+            "mae": 4.71,
+            "rmse": 6.58
+          },
+          "TE": {
+            "count": 44,
+            "mae": 4.29,
+            "rmse": 5.66
+          },
+          "K": {
+            "count": 32,
+            "mae": 7.81,
+            "rmse": 7.84
+          }
+        },
+        "by_source": {
+          "fp": {
+            "count": 235,
+            "mae": 4.63,
+            "rmse": 6.2
+          },
+          "espn": null,
+          "sleeper": {
+            "count": 259,
+            "mae": 5.07,
+            "rmse": 6.45
+          },
+          "consensus": {
+            "count": 274,
+            "mae": 5.01,
+            "rmse": 6.4
+          }
+        },
+        "top_hits": [
+          {
+            "name": "Geno Smith",
+            "pos": "QB",
+            "team": "NYJ",
+            "proj": 15.6,
+            "actual": 15.6,
+            "error": -0.0
+          },
+          {
+            "name": "Emeka Egbuka",
+            "pos": "WR",
+            "team": "TB",
+            "proj": 10.3,
+            "actual": 10.3,
+            "error": 0.0
+          },
+          {
+            "name": "Zachariah Branch",
+            "pos": "WR",
+            "team": "ATL",
+            "proj": 3.4,
+            "actual": 3.4,
+            "error": 0.0
+          },
+          {
+            "name": "Chuba Hubbard",
+            "pos": "RB",
+            "team": "CAR",
+            "proj": 14.3,
+            "actual": 14.4,
+            "error": 0.1
+          },
+          {
+            "name": "Kyle Monangai",
+            "pos": "RB",
+            "team": "CHI",
+            "proj": 7.9,
+            "actual": 7.8,
+            "error": -0.1
+          },
+          {
+            "name": "Garrett Wilson",
+            "pos": "WR",
+            "team": "NYJ",
+            "proj": 16.6,
+            "actual": 16.7,
+            "error": 0.1
+          },
+          {
+            "name": "Emmett Johnson",
+            "pos": "RB",
+            "team": "KC",
+            "proj": 5.3,
+            "actual": 5.5,
+            "error": 0.2
+          },
+          {
+            "name": "Harold Fannin Jr.",
+            "pos": "TE",
+            "team": "CLE",
+            "proj": 10.2,
+            "actual": 10.4,
+            "error": 0.2
+          },
+          {
+            "name": "Jalen Coker",
+            "pos": "WR",
+            "team": "CAR",
+            "proj": 14.3,
+            "actual": 14.6,
+            "error": 0.3
+          },
+          {
+            "name": "Ted Hurst III",
+            "pos": "WR",
+            "team": "TB",
+            "proj": 5.0,
+            "actual": 4.7,
+            "error": -0.3
+          }
+        ],
+        "top_misses": [
+          {
+            "name": "Davante Adams",
+            "pos": "WR",
+            "team": "LAR",
+            "proj": 14.8,
+            "actual": 39.5,
+            "error": 24.7
+          },
+          {
+            "name": "Jaxon Smith-Njigba",
+            "pos": "WR",
+            "team": "SEA",
+            "proj": 21.3,
+            "actual": 42.5,
+            "error": 21.2
+          },
+          {
+            "name": "CeeDee Lamb",
+            "pos": "WR",
+            "team": "DAL",
+            "proj": 17.8,
+            "actual": 35.3,
+            "error": 17.5
+          },
+          {
+            "name": "Josh Allen",
+            "pos": "QB",
+            "team": "BUF",
+            "proj": 23.7,
+            "actual": 40.8,
+            "error": 17.1
+          },
+          {
+            "name": "Drew Lock",
+            "pos": "QB",
+            "team": "SEA",
+            "proj": 5.6,
+            "actual": 21.4,
+            "error": 15.8
+          },
+          {
+            "name": "Amon-Ra St. Brown",
+            "pos": "WR",
+            "team": "DET",
+            "proj": 20.0,
+            "actual": 35.2,
+            "error": 15.2
+          },
+          {
+            "name": "Cody White",
+            "pos": "WR",
+            "team": "LV",
+            "proj": 1.2,
+            "actual": 16.4,
+            "error": 15.2
+          },
+          {
+            "name": "Dalton Schultz",
+            "pos": "TE",
+            "team": "HOU",
+            "proj": 11.5,
+            "actual": 26.0,
+            "error": 14.5
+          },
+          {
+            "name": "Tre Tucker",
+            "pos": "WR",
+            "team": "LV",
+            "proj": 8.9,
+            "actual": 22.9,
+            "error": 14.0
+          },
+          {
+            "name": "Travis Kelce",
+            "pos": "TE",
+            "team": "KC",
+            "proj": 12.1,
+            "actual": 25.1,
+            "error": 13.0
+          }
+        ],
+        "overall": {
+          "count": 274,
+          "mae": 5.01,
+          "rmse": 6.4
+        }
+      }
+    }
+  },
+  "created_at": "2026-09-29T19:08:37.957691Z",
+  "updated_at": "2026-09-29T19:08:38.403817Z"
+}
