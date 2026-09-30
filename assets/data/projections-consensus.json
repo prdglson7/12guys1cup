@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-29T20:27:28.094Z",
+  "fetched_at": "2026-09-30T01:05:28.685Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -7303,22 +7303,19 @@
       "team": "TB",
       "weekly": {
         "fp": 0.43,
-        "espn": null,
         "sleeper": 0.71,
         "consensus": 0.6,
         "variance": 0.246
       },
       "ros": {
         "fp": 14.57,
-        "espn": 0.44162183,
         "sleeper": 4.8,
-        "consensus": 7,
-        "variance": 0.895
+        "consensus": 9.9,
+        "variance": 0.504
       },
       "sources_used": [
         "fp",
-        "sleeper",
-        "espn"
+        "sleeper"
       ]
     },
     "tom kennedy": {
@@ -9185,19 +9182,22 @@
       "team": "HOU",
       "weekly": {
         "fp": 1.74,
+        "espn": null,
         "sleeper": 1.66,
         "consensus": 1.7,
         "variance": 0.024
       },
       "ros": {
         "fp": 31.84,
+        "espn": 3.39927625,
         "sleeper": 33.2,
-        "consensus": 32.5,
-        "variance": 0.021
+        "consensus": 23.5,
+        "variance": 0.602
       },
       "sources_used": [
         "fp",
-        "sleeper"
+        "sleeper",
+        "espn"
       ]
     },
     "nate boerkircher": {
@@ -10825,7 +10825,7 @@
     "jerome ford": {
       "name": "Jerome Ford",
       "pos": "RB",
-      "team": "MIN",
+      "team": "FA",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -10842,7 +10842,7 @@
     "devin neal": {
       "name": "Devin Neal",
       "pos": "RB",
-      "team": "FA",
+      "team": "MIN",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -12581,24 +12581,6 @@
         "espn"
       ]
     },
-    "panthers dst": {
-      "name": "Panthers D/ST",
-      "pos": "DST",
-      "team": "CAR",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 53.22237966,
-        "consensus": 53.22237966,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "lions dst": {
       "name": "Lions D/ST",
       "pos": "DST",
@@ -12611,6 +12593,24 @@
       "ros": {
         "espn": 61.92500508,
         "consensus": 61.92500508,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "panthers dst": {
+      "name": "Panthers D/ST",
+      "pos": "DST",
+      "team": "CAR",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 53.22237966,
+        "consensus": 53.22237966,
         "variance": 0
       },
       "sources_used": [
@@ -15162,7 +15162,7 @@
     "dante pettis": {
       "name": "Dante Pettis",
       "pos": "WR",
-      "team": null,
+      "team": "SF",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -15179,7 +15179,7 @@
     "dare ogunbowale": {
       "name": "Dare Ogunbowale",
       "pos": "RB",
-      "team": "LV",
+      "team": "HOU",
       "weekly": {
         "consensus": null,
         "variance": null
