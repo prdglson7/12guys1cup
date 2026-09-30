@@ -1,423 +1,423 @@
 {
-  "fetched_at": "2026-09-29T22:04:42.463Z",
+  "fetched_at": "2026-09-30T04:58:30.623Z",
   "season": 2026,
-  "week": 3,
+  "week": 4,
   "game_count": 16,
   "teams": {
-    "GB": {
-      "3": {
-        "opp": "ATL",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 55,
-        "wind": 3,
-        "precip": null,
-        "kickoff": "2026-09-25T00:15Z"
-      }
-    },
-    "ATL": {
-      "3": {
-        "opp": "GB",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 55,
-        "wind": 3,
-        "precip": null,
-        "kickoff": "2026-09-25T00:15Z"
-      }
-    },
-    "BUF": {
-      "3": {
-        "opp": "LAC",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 67,
-        "wind": 10,
-        "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
-      }
-    },
-    "LAC": {
-      "3": {
-        "opp": "BUF",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 67,
-        "wind": 10,
-        "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
-      }
-    },
     "CLE": {
-      "3": {
-        "opp": "CAR",
+      "4": {
+        "opp": "PIT",
         "home": true,
-        "spread": null,
-        "total": null,
+        "spread": -2.5,
+        "total": 38.5,
         "roof": "outdoors",
-        "temp": 70,
-        "wind": 5,
+        "temp": 75,
+        "wind": 16,
         "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
-      }
-    },
-    "CAR": {
-      "3": {
-        "opp": "CLE",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 70,
-        "wind": 5,
-        "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
-      }
-    },
-    "DET": {
-      "3": {
-        "opp": "NYJ",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
-      }
-    },
-    "NYJ": {
-      "3": {
-        "opp": "DET",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
-      }
-    },
-    "IND": {
-      "3": {
-        "opp": "HOU",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "closed",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
-      }
-    },
-    "HOU": {
-      "3": {
-        "opp": "IND",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "closed",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
-      }
-    },
-    "MIA": {
-      "3": {
-        "opp": "KC",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 85,
-        "wind": 4,
-        "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
-      }
-    },
-    "KC": {
-      "3": {
-        "opp": "MIA",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 85,
-        "wind": 4,
-        "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
-      }
-    },
-    "NYG": {
-      "3": {
-        "opp": "TEN",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 62,
-        "wind": 9,
-        "precip": 0.028,
-        "kickoff": "2026-09-27T17:00Z"
-      }
-    },
-    "TEN": {
-      "3": {
-        "opp": "NYG",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 62,
-        "wind": 9,
-        "precip": 0.028,
-        "kickoff": "2026-09-27T17:00Z"
+        "kickoff": "2026-10-02T00:15Z"
       }
     },
     "PIT": {
-      "3": {
-        "opp": "CIN",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 71,
-        "wind": 10,
-        "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
-      }
-    },
-    "CIN": {
-      "3": {
-        "opp": "PIT",
+      "4": {
+        "opp": "CLE",
         "home": false,
-        "spread": null,
-        "total": null,
+        "spread": 2.5,
+        "total": 38.5,
         "roof": "outdoors",
-        "temp": 71,
-        "wind": 10,
+        "temp": 75,
+        "wind": 16,
         "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
+        "kickoff": "2026-10-02T00:15Z"
       }
     },
     "WAS": {
-      "3": {
-        "opp": "SEA",
+      "4": {
+        "opp": "IND",
         "home": true,
-        "spread": null,
-        "total": null,
+        "spread": -3.5,
+        "total": 47.5,
         "roof": "outdoors",
-        "temp": 61,
-        "wind": 11,
-        "precip": 0.016,
-        "kickoff": "2026-09-27T17:00Z"
+        "temp": 65,
+        "wind": 3,
+        "precip": 0.004,
+        "kickoff": "2026-10-04T13:30Z"
       }
     },
-    "SEA": {
-      "3": {
+    "IND": {
+      "4": {
         "opp": "WAS",
         "home": false,
-        "spread": null,
-        "total": null,
+        "spread": 3.5,
+        "total": 47.5,
         "roof": "outdoors",
-        "temp": 61,
-        "wind": 11,
-        "precip": 0.016,
-        "kickoff": "2026-09-27T17:00Z"
+        "temp": 65,
+        "wind": 3,
+        "precip": 0.004,
+        "kickoff": "2026-10-04T13:30Z"
       }
     },
-    "JAX": {
-      "3": {
+    "BUF": {
+      "4": {
         "opp": "NE",
         "home": true,
-        "spread": null,
-        "total": null,
+        "spread": 7,
+        "total": 48.5,
         "roof": "outdoors",
-        "temp": 86,
-        "wind": 7,
+        "temp": 62,
+        "wind": 13,
         "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
+        "kickoff": "2026-10-04T17:00Z"
       }
     },
     "NE": {
-      "3": {
-        "opp": "JAX",
+      "4": {
+        "opp": "BUF",
         "home": false,
-        "spread": null,
-        "total": null,
+        "spread": -7,
+        "total": 48.5,
         "roof": "outdoors",
-        "temp": 86,
-        "wind": 7,
+        "temp": 62,
+        "wind": 13,
         "precip": null,
-        "kickoff": "2026-09-27T17:00Z"
-      }
-    },
-    "SF": {
-      "3": {
-        "opp": "ARI",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 59,
-        "wind": 6,
-        "precip": null,
-        "kickoff": "2026-09-27T20:05Z"
-      }
-    },
-    "ARI": {
-      "3": {
-        "opp": "SF",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 59,
-        "wind": 6,
-        "precip": null,
-        "kickoff": "2026-09-27T20:05Z"
-      }
-    },
-    "TB": {
-      "3": {
-        "opp": "MIN",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 75,
-        "wind": 3,
-        "precip": null,
-        "kickoff": "2026-09-27T20:05Z"
-      }
-    },
-    "MIN": {
-      "3": {
-        "opp": "TB",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 75,
-        "wind": 3,
-        "precip": null,
-        "kickoff": "2026-09-27T20:05Z"
-      }
-    },
-    "DAL": {
-      "3": {
-        "opp": "BAL",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "closed",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-09-27T20:25Z"
-      }
-    },
-    "BAL": {
-      "3": {
-        "opp": "DAL",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "closed",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-09-27T20:25Z"
-      }
-    },
-    "NO": {
-      "3": {
-        "opp": "LV",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-09-27T20:25Z"
-      }
-    },
-    "LV": {
-      "3": {
-        "opp": "NO",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-09-27T20:25Z"
-      }
-    },
-    "DEN": {
-      "3": {
-        "opp": "LAR",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 64,
-        "wind": 3,
-        "precip": null,
-        "kickoff": "2026-09-28T00:20Z"
-      }
-    },
-    "LAR": {
-      "3": {
-        "opp": "DEN",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 64,
-        "wind": 3,
-        "precip": null,
-        "kickoff": "2026-09-28T00:20Z"
+        "kickoff": "2026-10-04T17:00Z"
       }
     },
     "CHI": {
-      "3": {
-        "opp": "PHI",
+      "4": {
+        "opp": "NYJ",
         "home": true,
-        "spread": null,
-        "total": null,
+        "spread": 3.5,
+        "total": 43.5,
         "roof": "outdoors",
-        "temp": 59,
-        "wind": 3,
+        "temp": 63,
+        "wind": 11,
         "precip": null,
-        "kickoff": "2026-09-29T00:15Z"
+        "kickoff": "2026-10-04T17:00Z"
+      }
+    },
+    "NYJ": {
+      "4": {
+        "opp": "CHI",
+        "home": false,
+        "spread": -3.5,
+        "total": 43.5,
+        "roof": "outdoors",
+        "temp": 63,
+        "wind": 11,
+        "precip": null,
+        "kickoff": "2026-10-04T17:00Z"
+      }
+    },
+    "CIN": {
+      "4": {
+        "opp": "JAX",
+        "home": true,
+        "spread": 2.5,
+        "total": 51.5,
+        "roof": "outdoors",
+        "temp": 73,
+        "wind": 6,
+        "precip": null,
+        "kickoff": "2026-10-04T17:00Z"
+      }
+    },
+    "JAX": {
+      "4": {
+        "opp": "CIN",
+        "home": false,
+        "spread": -2.5,
+        "total": 51.5,
+        "roof": "outdoors",
+        "temp": 73,
+        "wind": 6,
+        "precip": null,
+        "kickoff": "2026-10-04T17:00Z"
+      }
+    },
+    "NYG": {
+      "4": {
+        "opp": "ARI",
+        "home": true,
+        "spread": -1.5,
+        "total": 44.5,
+        "roof": "outdoors",
+        "temp": 65,
+        "wind": 7,
+        "precip": null,
+        "kickoff": "2026-10-04T17:00Z"
+      }
+    },
+    "ARI": {
+      "4": {
+        "opp": "NYG",
+        "home": false,
+        "spread": 1.5,
+        "total": 44.5,
+        "roof": "outdoors",
+        "temp": 65,
+        "wind": 7,
+        "precip": null,
+        "kickoff": "2026-10-04T17:00Z"
       }
     },
     "PHI": {
-      "3": {
-        "opp": "CHI",
-        "home": false,
-        "spread": null,
-        "total": null,
+      "4": {
+        "opp": "LAR",
+        "home": true,
+        "spread": -3,
+        "total": 43.5,
         "roof": "outdoors",
-        "temp": 59,
-        "wind": 3,
+        "temp": 67,
+        "wind": 5,
         "precip": null,
-        "kickoff": "2026-09-29T00:15Z"
+        "kickoff": "2026-10-04T17:00Z"
+      }
+    },
+    "LAR": {
+      "4": {
+        "opp": "PHI",
+        "home": false,
+        "spread": 3,
+        "total": 43.5,
+        "roof": "outdoors",
+        "temp": 67,
+        "wind": 5,
+        "precip": null,
+        "kickoff": "2026-10-04T17:00Z"
+      }
+    },
+    "TB": {
+      "4": {
+        "opp": "GB",
+        "home": true,
+        "spread": -3.5,
+        "total": 39.5,
+        "roof": "outdoors",
+        "temp": 90,
+        "wind": 7,
+        "precip": null,
+        "kickoff": "2026-10-04T17:00Z"
+      }
+    },
+    "GB": {
+      "4": {
+        "opp": "TB",
+        "home": false,
+        "spread": 3.5,
+        "total": 39.5,
+        "roof": "outdoors",
+        "temp": 90,
+        "wind": 7,
+        "precip": null,
+        "kickoff": "2026-10-04T17:00Z"
+      }
+    },
+    "BAL": {
+      "4": {
+        "opp": "TEN",
+        "home": true,
+        "spread": 11.5,
+        "total": 43.5,
+        "roof": "outdoors",
+        "temp": 67,
+        "wind": 5,
+        "precip": null,
+        "kickoff": "2026-10-04T17:00Z"
+      }
+    },
+    "TEN": {
+      "4": {
+        "opp": "BAL",
+        "home": false,
+        "spread": -11.5,
+        "total": 43.5,
+        "roof": "outdoors",
+        "temp": 67,
+        "wind": 5,
+        "precip": null,
+        "kickoff": "2026-10-04T17:00Z"
+      }
+    },
+    "HOU": {
+      "4": {
+        "opp": "DAL",
+        "home": true,
+        "spread": 2.5,
+        "total": 48.5,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-10-04T17:00Z"
+      }
+    },
+    "DAL": {
+      "4": {
+        "opp": "HOU",
+        "home": false,
+        "spread": -2.5,
+        "total": 48.5,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-10-04T17:00Z"
+      }
+    },
+    "MIN": {
+      "4": {
+        "opp": "MIA",
+        "home": true,
+        "spread": 10.5,
+        "total": 38.5,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-10-04T20:05Z"
+      }
+    },
+    "MIA": {
+      "4": {
+        "opp": "MIN",
+        "home": false,
+        "spread": -10.5,
+        "total": 38.5,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-10-04T20:05Z"
+      }
+    },
+    "LV": {
+      "4": {
+        "opp": "KC",
+        "home": true,
+        "spread": -4.5,
+        "total": 47.5,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-10-04T20:25Z"
+      }
+    },
+    "KC": {
+      "4": {
+        "opp": "LV",
+        "home": false,
+        "spread": 4.5,
+        "total": 47.5,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-10-04T20:25Z"
+      }
+    },
+    "SF": {
+      "4": {
+        "opp": "DEN",
+        "home": true,
+        "spread": 3,
+        "total": 47.5,
+        "roof": "outdoors",
+        "temp": 79,
+        "wind": 6,
+        "precip": null,
+        "kickoff": "2026-10-04T20:25Z"
+      }
+    },
+    "DEN": {
+      "4": {
+        "opp": "SF",
+        "home": false,
+        "spread": -3,
+        "total": 47.5,
+        "roof": "outdoors",
+        "temp": 79,
+        "wind": 6,
+        "precip": null,
+        "kickoff": "2026-10-04T20:25Z"
+      }
+    },
+    "SEA": {
+      "4": {
+        "opp": "LAC",
+        "home": true,
+        "spread": 7,
+        "total": 42.5,
+        "roof": "outdoors",
+        "temp": 58,
+        "wind": 4,
+        "precip": null,
+        "kickoff": "2026-10-04T20:25Z"
+      }
+    },
+    "LAC": {
+      "4": {
+        "opp": "SEA",
+        "home": false,
+        "spread": -7,
+        "total": 42.5,
+        "roof": "outdoors",
+        "temp": 58,
+        "wind": 4,
+        "precip": null,
+        "kickoff": "2026-10-04T20:25Z"
+      }
+    },
+    "CAR": {
+      "4": {
+        "opp": "DET",
+        "home": true,
+        "spread": -3.5,
+        "total": 50.5,
+        "roof": "outdoors",
+        "temp": 63,
+        "wind": 5,
+        "precip": 0.024,
+        "kickoff": "2026-10-05T00:20Z"
+      }
+    },
+    "DET": {
+      "4": {
+        "opp": "CAR",
+        "home": false,
+        "spread": 3.5,
+        "total": 50.5,
+        "roof": "outdoors",
+        "temp": 63,
+        "wind": 5,
+        "precip": 0.024,
+        "kickoff": "2026-10-05T00:20Z"
+      }
+    },
+    "NO": {
+      "4": {
+        "opp": "ATL",
+        "home": true,
+        "spread": 3,
+        "total": 48.5,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-10-06T00:15Z"
+      }
+    },
+    "ATL": {
+      "4": {
+        "opp": "NO",
+        "home": false,
+        "spread": -3,
+        "total": 48.5,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-10-06T00:15Z"
       }
     }
   }
