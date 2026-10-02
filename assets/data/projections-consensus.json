@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-02T04:12:01.554Z",
+  "fetched_at": "2026-10-02T11:56:02.484Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12512,6 +12512,24 @@
         "espn"
       ]
     },
+    "chiefs dst": {
+      "name": "Chiefs D/ST",
+      "pos": "DST",
+      "team": "KC",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 92.0960194,
+        "consensus": 92.0960194,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "jake bates": {
       "name": "Jake Bates",
       "pos": "K",
@@ -12533,24 +12551,6 @@
         "espn"
       ]
     },
-    "chiefs dst": {
-      "name": "Chiefs D/ST",
-      "pos": "DST",
-      "team": "KC",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 92.0960194,
-        "consensus": 92.0960194,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "patriots dst": {
       "name": "Patriots D/ST",
       "pos": "DST",
@@ -12563,24 +12563,6 @@
       "ros": {
         "espn": 84.4137778,
         "consensus": 84.4137778,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
-    "ers dst": {
-      "name": "49ers D/ST",
-      "pos": "DST",
-      "team": "SF",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 85.12788361,
-        "consensus": 85.12788361,
         "variance": 0
       },
       "sources_used": [
@@ -12605,6 +12587,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "ers dst": {
+      "name": "49ers D/ST",
+      "pos": "DST",
+      "team": "SF",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 85.12788361,
+        "consensus": 85.12788361,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
@@ -12764,6 +12764,27 @@
         "espn"
       ]
     },
+    "spencer shrader": {
+      "name": "Spencer Shrader",
+      "pos": "K",
+      "team": "IND",
+      "weekly": {
+        "espn": null,
+        "sleeper": 7.31,
+        "consensus": 7.31,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 119.82003062,
+        "sleeper": 75,
+        "consensus": 96.8,
+        "variance": 0.23
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
     "jaguars dst": {
       "name": "Jaguars D/ST",
       "pos": "DST",
@@ -12797,27 +12818,6 @@
         "sleeper": 105,
         "consensus": 109.2,
         "variance": 0.039
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
-    "spencer shrader": {
-      "name": "Spencer Shrader",
-      "pos": "K",
-      "team": "IND",
-      "weekly": {
-        "espn": null,
-        "sleeper": 7.31,
-        "consensus": 7.31,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 119.82003062,
-        "sleeper": 75,
-        "consensus": 96.8,
-        "variance": 0.23
       },
       "sources_used": [
         "sleeper",
