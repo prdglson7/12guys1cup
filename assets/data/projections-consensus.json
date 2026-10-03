@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-03T00:56:53.769Z",
+  "fetched_at": "2026-10-03T07:37:43.103Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -9254,19 +9254,22 @@
       "team": "NYJ",
       "weekly": {
         "fp": 1.72,
+        "espn": null,
         "sleeper": 0.97,
         "consensus": 1.4,
         "variance": 0.279
       },
       "ros": {
         "fp": 35.5,
+        "espn": 38.2578297,
         "sleeper": 9.3,
-        "consensus": 23.1,
-        "variance": 0.585
+        "consensus": 27.8,
+        "variance": 0.471
       },
       "sources_used": [
         "fp",
-        "sleeper"
+        "sleeper",
+        "espn"
       ]
     },
     "johnny mundt": {
@@ -9340,22 +9343,19 @@
       "team": "WAS",
       "weekly": {
         "fp": 1.49,
-        "espn": null,
         "sleeper": 1.04,
         "consensus": 1.3,
         "variance": 0.178
       },
       "ros": {
         "fp": 34.24,
-        "espn": 7.0733531,
         "sleeper": 27.5,
-        "consensus": 23.6,
-        "variance": 0.504
+        "consensus": 31,
+        "variance": 0.109
       },
       "sources_used": [
         "fp",
-        "sleeper",
-        "espn"
+        "sleeper"
       ]
     },
     "sam roush": {
@@ -12557,24 +12557,6 @@
         "espn"
       ]
     },
-    "patriots dst": {
-      "name": "Patriots D/ST",
-      "pos": "DST",
-      "team": "NE",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 84.2991924,
-        "consensus": 84.2991924,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "kc concepcion": {
       "name": "KC Concepcion",
       "pos": "WR",
@@ -12593,6 +12575,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "patriots dst": {
+      "name": "Patriots D/ST",
+      "pos": "DST",
+      "team": "NE",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 84.2991924,
+        "consensus": 84.2991924,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
@@ -12653,24 +12653,6 @@
         "espn"
       ]
     },
-    "lions dst": {
-      "name": "Lions D/ST",
-      "pos": "DST",
-      "team": "DET",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 61.92486059,
-        "consensus": 61.92486059,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "browns dst": {
       "name": "Browns D/ST",
       "pos": "DST",
@@ -12683,6 +12665,24 @@
       "ros": {
         "espn": 72.75972494,
         "consensus": 72.75972494,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "lions dst": {
+      "name": "Lions D/ST",
+      "pos": "DST",
+      "team": "DET",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 61.92486059,
+        "consensus": 61.92486059,
         "variance": 0
       },
       "sources_used": [
@@ -12749,27 +12749,6 @@
         "espn"
       ]
     },
-    "cairo santos": {
-      "name": "Cairo Santos",
-      "pos": "K",
-      "team": "CHI",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.48,
-        "consensus": 6.48,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 116.90751549,
-        "sleeper": 100,
-        "consensus": 108.2,
-        "variance": 0.078
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "spencer shrader": {
       "name": "Spencer Shrader",
       "pos": "K",
@@ -12785,6 +12764,27 @@
         "sleeper": 75,
         "consensus": 96.8,
         "variance": 0.23
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "cairo santos": {
+      "name": "Cairo Santos",
+      "pos": "K",
+      "team": "CHI",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.48,
+        "consensus": 6.48,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 116.90751549,
+        "sleeper": 100,
+        "consensus": 108.2,
+        "variance": 0.078
       },
       "sources_used": [
         "sleeper",
@@ -12866,24 +12866,6 @@
         "espn"
       ]
     },
-    "bengals dst": {
-      "name": "Bengals D/ST",
-      "pos": "DST",
-      "team": "CIN",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 67.87004531,
-        "consensus": 67.87004531,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "chargers dst": {
       "name": "Chargers D/ST",
       "pos": "DST",
@@ -12896,6 +12878,24 @@
       "ros": {
         "espn": 55.79311054,
         "consensus": 55.79311054,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "bengals dst": {
+      "name": "Bengals D/ST",
+      "pos": "DST",
+      "team": "CIN",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 67.87004531,
+        "consensus": 67.87004531,
         "variance": 0
       },
       "sources_used": [
@@ -13214,26 +13214,6 @@
         "espn"
       ]
     },
-    "zach ertz": {
-      "name": "Zach Ertz",
-      "pos": "TE",
-      "team": "PHI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 4.35444822,
-        "sleeper": 36.7,
-        "consensus": 21,
-        "variance": 0.788
-      },
-      "sources_used": [
-        "espn",
-        "sleeper"
-      ]
-    },
     "dominic zvada": {
       "name": "Dominic Zvada",
       "pos": "K",
@@ -13253,6 +13233,26 @@
       "sources_used": [
         "sleeper",
         "espn"
+      ]
+    },
+    "zach ertz": {
+      "name": "Zach Ertz",
+      "pos": "TE",
+      "team": "PHI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 4.35444822,
+        "sleeper": 36.7,
+        "consensus": 21,
+        "variance": 0.788
+      },
+      "sources_used": [
+        "espn",
+        "sleeper"
       ]
     },
     "austin ekeler": {
