@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-03T07:37:43.103Z",
+  "fetched_at": "2026-10-03T13:02:44.249Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12281,24 +12281,6 @@
         "espn"
       ]
     },
-    "texans dst": {
-      "name": "Texans D/ST",
-      "pos": "DST",
-      "team": "HOU",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 101.19670325,
-        "consensus": 101.19670325,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "vikings dst": {
       "name": "Vikings D/ST",
       "pos": "DST",
@@ -12311,6 +12293,24 @@
       "ros": {
         "espn": 108.23057631,
         "consensus": 108.23057631,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "texans dst": {
+      "name": "Texans D/ST",
+      "pos": "DST",
+      "team": "HOU",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 101.19670325,
+        "consensus": 101.19670325,
         "variance": 0
       },
       "sources_used": [
@@ -13275,24 +13275,6 @@
         "sleeper"
       ]
     },
-    "titans dst": {
-      "name": "Titans D/ST",
-      "pos": "DST",
-      "team": "TEN",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 57.44976199,
-        "consensus": 57.44976199,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "matt gay": {
       "name": "Matt Gay",
       "pos": "K",
@@ -13311,6 +13293,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "titans dst": {
+      "name": "Titans D/ST",
+      "pos": "DST",
+      "team": "TEN",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 57.44976199,
+        "consensus": 57.44976199,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
