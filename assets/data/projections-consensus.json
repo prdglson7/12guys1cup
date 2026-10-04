@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-04T07:47:31.230Z",
+  "fetched_at": "2026-10-04T13:42:06.711Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12491,6 +12491,24 @@
         "espn"
       ]
     },
+    "chiefs dst": {
+      "name": "Chiefs D/ST",
+      "pos": "DST",
+      "team": "KC",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 92.14297832,
+        "consensus": 92.14297832,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "tyler loop": {
       "name": "Tyler Loop",
       "pos": "K",
@@ -12509,24 +12527,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "chiefs dst": {
-      "name": "Chiefs D/ST",
-      "pos": "DST",
-      "team": "KC",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 92.14297832,
-        "consensus": 92.14297832,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -12785,24 +12785,6 @@
         "espn"
       ]
     },
-    "jaguars dst": {
-      "name": "Jaguars D/ST",
-      "pos": "DST",
-      "team": "JAX",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 91.6713388,
-        "consensus": 91.6713388,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "packers dst": {
       "name": "Packers D/ST",
       "pos": "DST",
@@ -12815,6 +12797,24 @@
       "ros": {
         "espn": 47.34670639,
         "consensus": 47.34670639,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "jaguars dst": {
+      "name": "Jaguars D/ST",
+      "pos": "DST",
+      "team": "JAX",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 91.6713388,
+        "consensus": 91.6713388,
         "variance": 0
       },
       "sources_used": [
@@ -13112,24 +13112,6 @@
         "espn"
       ]
     },
-    "saints dst": {
-      "name": "Saints D/ST",
-      "pos": "DST",
-      "team": "NO",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 64.16168024,
-        "consensus": 64.16168024,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "commanders dst": {
       "name": "Commanders D/ST",
       "pos": "DST",
@@ -13142,6 +13124,24 @@
       "ros": {
         "espn": 68.81922413,
         "consensus": 68.81922413,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "saints dst": {
+      "name": "Saints D/ST",
+      "pos": "DST",
+      "team": "NO",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 64.16168024,
+        "consensus": 64.16168024,
         "variance": 0
       },
       "sources_used": [
@@ -13425,27 +13425,6 @@
         "espn"
       ]
     },
-    "joey slye": {
-      "name": "Joey Slye",
-      "pos": "K",
-      "team": "TEN",
-      "weekly": {
-        "espn": null,
-        "sleeper": 5.9,
-        "consensus": 5.9,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 101.6463648,
-        "sleeper": 84,
-        "consensus": 92.6,
-        "variance": 0.095
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "andre szmyt": {
       "name": "Andre Szmyt",
       "pos": "K",
@@ -13461,6 +13440,27 @@
         "sleeper": 84,
         "consensus": 94.3,
         "variance": 0.112
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "joey slye": {
+      "name": "Joey Slye",
+      "pos": "K",
+      "team": "TEN",
+      "weekly": {
+        "espn": null,
+        "sleeper": 5.9,
+        "consensus": 5.9,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 101.6463648,
+        "sleeper": 84,
+        "consensus": 92.6,
+        "variance": 0.095
       },
       "sources_used": [
         "sleeper",
