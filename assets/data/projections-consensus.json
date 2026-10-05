@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-04T21:14:09.136Z",
+  "fetched_at": "2026-10-05T00:26:52.906Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12920,24 +12920,6 @@
         "espn"
       ]
     },
-    "panthers dst": {
-      "name": "Panthers D/ST",
-      "pos": "DST",
-      "team": "CAR",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 53.72163212,
-        "consensus": 53.72163212,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "raiders dst": {
       "name": "Raiders D/ST",
       "pos": "DST",
@@ -12950,6 +12932,24 @@
       "ros": {
         "espn": 70.75202653,
         "consensus": 70.75202653,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "panthers dst": {
+      "name": "Panthers D/ST",
+      "pos": "DST",
+      "team": "CAR",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 53.72163212,
+        "consensus": 53.72163212,
         "variance": 0
       },
       "sources_used": [
