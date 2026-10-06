@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-06T01:07:43.538Z",
+  "fetched_at": "2026-10-06T08:35:09.414Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -7,7 +7,7 @@
     "espn": 0.85,
     "sleeper": 0.9
   },
-  "player_count": 792,
+  "player_count": 793,
   "sources_status": {
     "fp_weekly_qb": true,
     "fp_weekly_rb": true,
@@ -12482,24 +12482,6 @@
         "espn"
       ]
     },
-    "chiefs dst": {
-      "name": "Chiefs D/ST",
-      "pos": "DST",
-      "team": "KC",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 88.11532152,
-        "consensus": 88.11532152,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "eagles dst": {
       "name": "Eagles D/ST",
       "pos": "DST",
@@ -12512,6 +12494,24 @@
       "ros": {
         "espn": 68.31523792,
         "consensus": 68.31523792,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "chiefs dst": {
+      "name": "Chiefs D/ST",
+      "pos": "DST",
+      "team": "KC",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 88.11532152,
+        "consensus": 88.11532152,
         "variance": 0
       },
       "sources_used": [
@@ -13079,27 +13079,6 @@
         "espn"
       ]
     },
-    "wil lutz": {
-      "name": "Wil Lutz",
-      "pos": "K",
-      "team": "DEN",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.08,
-        "consensus": 6.08,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 98.68518359,
-        "sleeper": 100,
-        "consensus": 99.4,
-        "variance": 0.007
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "daniel carlson": {
       "name": "Daniel Carlson",
       "pos": "K",
@@ -13115,6 +13094,27 @@
         "sleeper": 104,
         "consensus": 107.9,
         "variance": 0.037
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "wil lutz": {
+      "name": "Wil Lutz",
+      "pos": "K",
+      "team": "DEN",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.08,
+        "consensus": 6.08,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 98.68518359,
+        "sleeper": 100,
+        "consensus": 99.4,
+        "variance": 0.007
       },
       "sources_used": [
         "sleeper",
@@ -16195,6 +16195,23 @@
       "ros": {
         "sleeper": 4.2,
         "consensus": 4.2,
+        "variance": 0
+      },
+      "sources_used": [
+        "sleeper"
+      ]
+    },
+    "treyton welch": {
+      "name": "Treyton Welch",
+      "pos": "TE",
+      "team": "NO",
+      "weekly": {
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "sleeper": 4,
+        "consensus": 4,
         "variance": 0
       },
       "sources_used": [
