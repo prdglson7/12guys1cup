@@ -4242,3 +4242,283 @@ main { padding: 32px 0 60px; }
   color: #1B5E20;
   border-color: rgba(46,125,50,0.30);
 }
+/* ─────────────────────────────────────────────────────────
+   Playoff Odds pills — ADD to assets/css/styles.css
+   (append anywhere; uses existing color tokens)
+   ───────────────────────────────────────────────────────── */
+
+.odds-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  min-width: 52px;
+  text-align: center;
+  letter-spacing: 0.3px;
+  border: 2px solid;
+}
+
+.odds-lock {
+  background: rgba(30, 58, 95, 0.08);
+  color: var(--navy-dark);
+  border-color: var(--navy);
+}
+
+.odds-mid {
+  background: rgba(232, 184, 74, 0.18);
+  color: var(--gold-dark);
+  border-color: var(--gold);
+}
+
+.odds-low {
+  background: rgba(200, 53, 46, 0.08);
+  color: var(--red-dark);
+  border-color: var(--red);
+}
+
+.odds-dead {
+  background: rgba(122, 74, 43, 0.08);
+  color: var(--brown);
+  border-color: rgba(122, 74, 43, 0.4);
+}
+
+.bye-star {
+  display: inline-block;
+  margin-left: 4px;
+  color: var(--gold-dark);
+  font-size: 12px;
+  cursor: help;
+}
+
+/* Explanatory note under the standings table */
+.odds-note {
+  font-family: var(--f-sign);
+  letter-spacing: 1px;
+  color: var(--brown);
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 12px;
+}
+.odds-note strong {
+  color: var(--navy-dark);
+}
+
+/* ─────────────────────────────────────────────────────────
+   The Film Room — weekly/season report (RB/WR/TE)
+   ───────────────────────────────────────────────────────── */
+.fr-tabs-main {
+  display: flex;
+  gap: 6px;
+  margin: 8px 0 0;
+}
+.fr-tab-main {
+  padding: 12px 24px;
+  background: var(--cream-2);
+  border: 2px solid var(--navy);
+  border-bottom: none;
+  font-family: var(--f-display);
+  letter-spacing: 1px;
+  color: var(--navy-dark);
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 6px 6px 0 0;
+}
+.fr-tab-main.active {
+  background: var(--navy);
+  color: var(--gold);
+}
+.fr-tab-main:hover:not(.active) {
+  background: var(--cream);
+}
+
+.fr-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 12px 16px;
+  background: #F5E9C9;
+  border: 2px solid var(--navy);
+  border-bottom: none;
+}
+.fr-controls strong {
+  font-family: var(--f-sign);
+  letter-spacing: 1px;
+  color: var(--navy-dark);
+  margin-right: 4px;
+  font-size: 14px;
+}
+.fr-chip-row {
+  display: inline-flex;
+  gap: 4px;
+}
+.fr-chip {
+  padding: 6px 14px;
+  border: 2px solid var(--navy);
+  background: var(--cream-2);
+  font-family: var(--f-sign);
+  letter-spacing: 1.5px;
+  color: var(--navy-dark);
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 4px;
+}
+.fr-chip.active {
+  background: var(--navy);
+  color: var(--gold);
+}
+.fr-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--navy-dark);
+  font-weight: 600;
+}
+.fr-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--navy);
+  cursor: pointer;
+}
+.fr-search {
+  padding: 6px 10px;
+  border: 2px solid var(--navy);
+  border-radius: 4px;
+  font-family: var(--f-body);
+  font-size: 13px;
+  color: var(--navy-dark);
+  background: #fff;
+  min-width: 200px;
+}
+.fr-showing {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--brown);
+  font-family: var(--f-sign);
+  letter-spacing: 1px;
+}
+
+.fr-table-wrap {
+  overflow-x: auto;
+  border: 2px solid var(--navy);
+  border-top: none;
+  background: #fff;
+}
+.report-table {
+  font-size: 12px;
+  white-space: nowrap;
+  margin: 0;
+  width: 100%;
+  border-collapse: collapse;
+}
+.report-table th {
+  font-size: 10px;
+  padding: 10px 8px;
+  background: var(--navy);
+  color: var(--gold);
+  cursor: pointer;
+  user-select: none;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.report-table th:hover {
+  background: var(--navy-dark);
+}
+.report-table th.sorted {
+  background: var(--navy-dark);
+  color: var(--cream);
+}
+.report-table td {
+  padding: 8px 8px;
+  border-bottom: 1px solid rgba(30,58,95,0.08);
+}
+.report-table tbody tr:nth-child(even) td {
+  background: rgba(232,184,74,0.06);
+}
+.report-table td.num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.report-table td.bold {
+  font-weight: 700;
+}
+.report-table td.team-abbr {
+  font-family: var(--f-mono);
+  font-weight: 700;
+  color: var(--navy-dark);
+  font-size: 11px;
+}
+.report-table .fr-player {
+  position: sticky;
+  left: 0;
+  background: #fff;
+  z-index: 2;
+  border-right: 1px solid rgba(30,58,95,0.12);
+}
+.report-table tbody tr:nth-child(even) .fr-player {
+  background: #FBF3DB;
+}
+.fr-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.fr-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--brown);
+  font-family: var(--f-sign);
+  letter-spacing: 1px;
+}
+
+.avail-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  font-family: var(--f-mono);
+  vertical-align: middle;
+}
+.avail-free {
+  background: rgba(46,125,50,0.14);
+  color: #1B5E20;
+  border: 1px solid rgba(46,125,50,0.3);
+}
+.avail-rostered {
+  background: rgba(200,53,46,0.08);
+  color: var(--red-dark);
+  border: 1px solid rgba(200,53,46,0.25);
+}
+.avail-unknown {
+  background: rgba(0,0,0,0.04);
+  color: var(--brown);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+.rookie-badge {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--navy-dark);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 7px;
+  border-radius: 3px;
+  font-family: var(--f-mono);
+  vertical-align: middle;
+}
+
+/* Mobile: collapse controls, allow horizontal scroll on table */
+@media (max-width: 720px) {
+  .fr-controls { gap: 8px; padding: 10px 12px; }
+  .fr-showing { margin-left: 0; width: 100%; }
+  .fr-search { min-width: 140px; flex: 1; }
+  .report-table th, .report-table td { padding: 7px 6px; font-size: 11px; }
+  .report-table th { font-size: 9px; }
+}
