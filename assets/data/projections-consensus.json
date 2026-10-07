@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-06T22:21:43.794Z",
+  "fetched_at": "2026-10-07T04:27:56.410Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1209,26 +1209,6 @@
         "sleeper"
       ]
     },
-    "jarrett stidham": {
-      "name": "Jarrett Stidham",
-      "pos": "QB",
-      "team": "DEN",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 8.95,
-        "sleeper": 12.22,
-        "consensus": 10.5,
-        "variance": 0.154
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "mason rudolph": {
       "name": "Mason Rudolph",
       "pos": "QB",
@@ -1243,6 +1223,26 @@
         "sleeper": 11.68,
         "consensus": 8.3,
         "variance": 0.383
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "jarrett stidham": {
+      "name": "Jarrett Stidham",
+      "pos": "QB",
+      "team": "DEN",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 8.95,
+        "sleeper": 12.22,
+        "consensus": 10.5,
+        "variance": 0.154
       },
       "sources_used": [
         "fp",
@@ -10815,7 +10815,7 @@
     "devin neal": {
       "name": "Devin Neal",
       "pos": "RB",
-      "team": "MIN",
+      "team": "FA",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -15689,7 +15689,7 @@
     "jam miller": {
       "name": "Jam Miller",
       "pos": "RB",
-      "team": null,
+      "team": "ATL",
       "weekly": {
         "consensus": null,
         "variance": null
