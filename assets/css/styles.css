@@ -4403,11 +4403,33 @@ main { padding: 32px 0 60px; }
   letter-spacing: 1px;
 }
 
+/* Break the table out of the .wrap max-width (1180px) so wide tables use
+   the full viewport width, with horizontal scroll inside the box when
+   content still overflows. Right-edge shadow hints that there's more. */
 .fr-table-wrap {
   overflow-x: auto;
+  overflow-y: visible;
   border: 2px solid var(--navy);
   border-top: none;
   background: #fff;
+  /* Expand to viewport edges (keeping a small gutter) */
+  margin-left: calc(50% - 50vw + 12px);
+  margin-right: calc(50% - 50vw + 12px);
+  /* Right-edge scroll hint — gradient fades white, visible when scrollable */
+  background-image: linear-gradient(to left, rgba(30,58,95,0.14), rgba(255,255,255,0) 32px);
+  background-position: right center;
+  background-repeat: no-repeat;
+  background-size: 32px 100%;
+  background-attachment: local, scroll;
+  -webkit-overflow-scrolling: touch;
+}
+.fr-table-wrap::-webkit-scrollbar { height: 10px; }
+.fr-table-wrap::-webkit-scrollbar-thumb {
+  background: var(--navy);
+  border-radius: 5px;
+}
+.fr-table-wrap::-webkit-scrollbar-track {
+  background: var(--cream-2);
 }
 .report-table {
   font-size: 12px;
@@ -4418,13 +4440,14 @@ main { padding: 32px 0 60px; }
 }
 .report-table th {
   font-size: 10px;
-  padding: 10px 8px;
+  padding: 9px 6px;
   background: var(--navy);
   color: var(--gold);
   cursor: pointer;
   user-select: none;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 .report-table th:hover {
   background: var(--navy-dark);
@@ -4434,7 +4457,7 @@ main { padding: 32px 0 60px; }
   color: var(--cream);
 }
 .report-table td {
-  padding: 8px 8px;
+  padding: 7px 6px;
   border-bottom: 1px solid rgba(30,58,95,0.08);
 }
 .report-table tbody tr:nth-child(even) td {
@@ -4467,7 +4490,18 @@ main { padding: 32px 0 60px; }
   display: flex;
   align-items: center;
   gap: 6px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+.fr-name-cell strong {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+.report-table .fr-player {
+  min-width: 220px;
+  max-width: 260px;
 }
 .fr-empty {
   text-align: center;
@@ -4479,13 +4513,15 @@ main { padding: 32px 0 60px; }
 
 .avail-badge {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 1px 6px;
   border-radius: 3px;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
   font-family: var(--f-mono);
   vertical-align: middle;
+  line-height: 1.4;
+  flex-shrink: 0;
 }
 .avail-free {
   background: rgba(46,125,50,0.14);
@@ -4506,12 +4542,14 @@ main { padding: 32px 0 60px; }
   display: inline-block;
   background: var(--gold);
   color: var(--navy-dark);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
-  padding: 1px 7px;
+  padding: 1px 5px;
   border-radius: 3px;
   font-family: var(--f-mono);
   vertical-align: middle;
+  line-height: 1.4;
+  flex-shrink: 0;
 }
 
 /* Mobile: collapse controls, allow horizontal scroll on table */
