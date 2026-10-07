@@ -10,6 +10,7 @@ const NAV = [
   // Draft Kit removed — season started. Page still exists for direct access if needed.
   { href: "tools.html",        label: "Tools" },
   { href: "waiver.html",       label: "Waivers" },
+  { href: "film-room.html",    label: "Film Room" },
   { href: "injuries.html",     label: "Injuries" },
   { href: "news.html",         label: "News" },
   { href: "transactions.html", label: "Moves" },
