@@ -263,6 +263,14 @@ def main():
                 return rec.get(k)
         return None
 
+    def snap_season_avg(name):
+        """Snap-counts.json has no pre-computed season field — avg from weeks[]."""
+        rec = site_snap.get(name)
+        if not rec:
+            return None
+        vals = [w.get("off_pct") for w in (rec.get("weeks") or []) if w.get("off_pct") is not None]
+        return (sum(vals) / len(vals)) if vals else None
+
     # ── 5. Build WEEKLY records (one row per player per week) ──
     log("Building weekly records...")
     output = {
@@ -377,8 +385,9 @@ def main():
         fp = round_or_none(row.get("fantasy_points_ppr"), 1) or 0
         rec_yac = row.get("receiving_yards_after_catch") or 0
 
-        # Season snap/route = season fields when available
-        snap_pct = round_or_none(pick_season(site_snap, key, ["season_snap_pct"]), 3)
+        # Season snap/route — snap-counts has no top-level season field,
+        # so avg from weeks[]; route-participation has season_route_pct.
+        snap_pct = round_or_none(snap_season_avg(key), 3)
         route_pct = round_or_none(pick_season(site_route, key, ["season_route_pct"]), 3)
         yprr = round_or_none(pick_season(site_wm, key, ["season_yprr"]), 2)
         tprr = round_or_none(pick_season(site_wm, key, ["season_target_rate"]), 2)
