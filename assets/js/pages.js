@@ -519,13 +519,9 @@ async function renderMatchups() {
 /* ---------- STANDINGS + POWER RANKINGS ---------- */
 async function renderStandings() {
   const stEl  = document.getElementById("standings-table");
-  const prEl  = document.getElementById("power-table");
   const weeklyEl = document.getElementById("standings-weekly");
-  const seasonEl = document.getElementById("standings-season");
   stEl.innerHTML = loading();
-  prEl.innerHTML = loading("Computing power rankings…");
   if (weeklyEl) weeklyEl.innerHTML = loading();
-  if (seasonEl) seasonEl.innerHTML = loading();
 
   try {
     const { state, league, teams } = await bootstrap();
@@ -536,29 +532,8 @@ async function renderStandings() {
       if (b.fpts !== a.fpts) return b.fpts - a.fpts;
       return a.fpts_against - b.fpts_against;
     });
-    stEl.innerHTML = `
-      <table class="stats-table">
-        <thead><tr>
-          <th>#</th><th>Team</th><th>W-L-T</th>
-          <th class="num">PF</th><th class="num">PA</th><th class="num">Diff</th>
-        </tr></thead>
-        <tbody>${rows.map((t, i) => `
-          <tr>
-            <td class="rank ${i===0?'gold':''}">${i+1}</td>
-            <td><div class="team-cell">
-              <img class="avatar-sm" src="${esc(avatarUrl(t))}" alt="" onerror="this.src='assets/img/logo.jpg'">
-              ${esc(t.team_name)}
-            </div></td>
-            <td>${t.wins}-${t.losses}-${t.ties}</td>
-            <td class="num">${fmt1(t.fpts)}</td>
-            <td class="num">${fmt1(t.fpts_against)}</td>
-            <td class="num">${fmt1(t.fpts - t.fpts_against)}</td>
-          </tr>`).join("")}
-        </tbody>
-      </table>`;
 
-    // Power rankings — enhanced with roster strength from consensus projections
-    // Fetch rosters + consensus projections to compute roster strength
+    // Compute roster strengths once (used by both playoff odds + simulations)
     let rosterStrengths = null;
     try {
       const [rosters, consensusRes] = await Promise.all([
@@ -568,8 +543,6 @@ async function renderStandings() {
       if (consensusRes.ok) {
         const consensus = await consensusRes.json();
         const sleeperPlayers = await window.Sleeper.getSleeperPlayers();
-
-        // Build player_id → weekly consensus projection lookup
         const projByPlayerId = new Map();
         if (sleeperPlayers?.players) {
           const normalizeName = s => String(s || '').toLowerCase().replace(/[^a-z\s]/g, '').replace(/\s+/g, ' ').trim();
@@ -582,188 +555,68 @@ async function renderStandings() {
             }
           });
         }
-
-        // Compute each team's roster strength = sum of top 9 starters' weekly projections
         rosterStrengths = new Map();
         rosters.forEach(r => {
-          const playerIds = r.players || [];
-          const playerProjs = playerIds
-            .map(pid => projByPlayerId.get(pid) || 0)
-            .sort((a, b) => b - a);
-          // Take top 9 (typical starting lineup: 1 QB, 2 RB, 2 WR, 1 TE, 1 FLEX, 1 K, 1 DST)
-          const topStarters = playerProjs.slice(0, 9);
-          const strength = topStarters.reduce((s, v) => s + v, 0);
-          rosterStrengths.set(r.roster_id, strength);
+          const pids = r.players || [];
+          const projs = pids.map(pid => projByPlayerId.get(pid) || 0).sort((a, b) => b - a);
+          rosterStrengths.set(r.roster_id, projs.slice(0, 9).reduce((s, v) => s + v, 0));
         });
       }
     } catch (e) {
       console.log('Could not compute roster strength:', e.message);
     }
 
-    const power = await computePowerRankings(teams, week, rosterStrengths);
-    const gamesPlayed = Array.from(teams.values())[0]?.wins + Array.from(teams.values())[0]?.losses || 0;
-    const preSeasonMode = gamesPlayed === 0;
+    // Compute playoff odds via Monte Carlo
+    const playoffOdds = await computePlayoffOdds(teams, state, league, rosterStrengths);
 
-    prEl.innerHTML = `
+    const oddsPill = (pct) => {
+      let cls = 'odds-dead';
+      if (pct >= 0.70) cls = 'odds-lock';
+      else if (pct >= 0.30) cls = 'odds-mid';
+      else if (pct >= 0.01) cls = 'odds-low';
+      const display = pct < 0.01 ? '&lt;1%' : `${Math.round(pct * 100)}%`;
+      return `<span class="odds-pill ${cls}">${display}</span>`;
+    };
+    const byeStar = (byePct) => byePct >= 0.15
+      ? `<span class="bye-star" title="Bye odds: ${Math.round(byePct * 100)}%">⭐</span>`
+      : '';
+
+    stEl.innerHTML = `
       <table class="stats-table">
         <thead><tr>
-          <th>#</th><th>Team</th>
-          <th class="num">Power</th>
-          <th class="num">Roster</th>
-          ${preSeasonMode ? '' : '<th class="num">All-Play</th><th class="num">Form</th>'}
+          <th>#</th><th>Team</th><th>W-L-T</th>
+          <th class="num">PF</th><th class="num">PA</th><th class="num">Diff</th>
+          <th class="num">Playoff %</th>
         </tr></thead>
-        <tbody>${power.map((t, i) => `
+        <tbody>${rows.map((t, i) => {
+          const o = playoffOdds.get(t.roster_id) || { playoff: 0, bye: 0 };
+          return `
           <tr>
             <td class="rank ${i===0?'gold':''}">${i+1}</td>
             <td><div class="team-cell">
               <img class="avatar-sm" src="${esc(avatarUrl(t))}" alt="" onerror="this.src='assets/img/logo.jpg'">
               ${esc(t.team_name)}
             </div></td>
-            <td class="num">${fmt1(t.power)}</td>
-            <td class="num">${t.rosterStrength != null ? fmt1(t.rosterStrength) : '—'}</td>
-            ${preSeasonMode ? '' : `
-              <td class="num">${t.allPlayWins}-${t.allPlayLosses}${t.allPlayTies ? '-' + t.allPlayTies : ''}</td>
-              <td class="num">${fmt2(t.form)}×</td>
-            `}
-          </tr>`).join("")}
+            <td>${t.wins}-${t.losses}-${t.ties}</td>
+            <td class="num">${fmt1(t.fpts)}</td>
+            <td class="num">${fmt1(t.fpts_against)}</td>
+            <td class="num">${fmt1(t.fpts - t.fpts_against)}</td>
+            <td class="num">${oddsPill(o.playoff)}${byeStar(o.bye)}</td>
+          </tr>`;
+        }).join("")}
         </tbody>
       </table>
-      <p style="font-family:var(--f-sign);letter-spacing:1px;color:var(--brown);font-size:13px;margin-top:12px;line-height:1.6;">
-        ${preSeasonMode
-          ? '<strong>Preseason mode:</strong> Power = roster strength only (sum of top 9 starters\' consensus weekly projections). Games-based signals activate after Week 1.'
-          : 'Power = 35% Points For + 25% Roster Strength + 20% Recent Form + 10% Points Against (schedule luck) + 10% All-Play Record.'
-        }
+      <p class="odds-note">
+        <strong>Playoff %</strong> — 5,000 Monte Carlo simulations of remaining regular-season games.
+        Weighted by current roster strength + season average + weekly variance.
+        Top 6 make the playoffs; top 2 earn a first-round bye (⭐ marks teams with meaningful bye contention — hover for exact bye %).
       </p>`;
 
-    // ========== PROJECTION ACCURACY HISTORY ==========
-    const accEl = document.getElementById("accuracy-table");
-    if (accEl) {
-      try {
-        const accRes = await fetch('assets/data/accuracy-history.json', { cache: 'default' });
-        if (accRes.ok) {
-          const acc = await accRes.json();
-          const weeks = Object.entries(acc.weeks || {})
-            .map(([k, v]) => v)
-            .sort((a, b) => b.week - a.week);
-
-          if (weeks.length === 0) {
-            accEl.innerHTML = `
-              <div class="empty-block">
-                <p><strong>No accuracy data yet.</strong></p>
-                <p>Accuracy is computed every Tuesday morning after Sleeper finalizes.
-                First data appears after Week 1 games complete.</p>
-              </div>`;
-          } else {
-            // Compute season averages
-            const seasonMAE = weeks.reduce((s, w) => s + (w.accuracy?.overall?.mae || 0), 0) / weeks.length;
-            const seasonRMSE = weeks.reduce((s, w) => s + (w.accuracy?.overall?.rmse || 0), 0) / weeks.length;
-
-            accEl.innerHTML = `
-              <div class="accuracy-summary">
-                <div class="accuracy-metric">
-                  <div class="accuracy-value">${seasonMAE.toFixed(1)}</div>
-                  <div class="accuracy-label">Season MAE (pts)</div>
-                  <div class="accuracy-sublabel">Mean absolute error — lower is better</div>
-                </div>
-                <div class="accuracy-metric">
-                  <div class="accuracy-value">${seasonRMSE.toFixed(1)}</div>
-                  <div class="accuracy-label">Season RMSE (pts)</div>
-                  <div class="accuracy-sublabel">Root mean squared error</div>
-                </div>
-                <div class="accuracy-metric">
-                  <div class="accuracy-value">${weeks.length}</div>
-                  <div class="accuracy-label">Weeks Tracked</div>
-                  <div class="accuracy-sublabel">Since Week 1</div>
-                </div>
-              </div>
-
-              <table class="stats-table" style="margin-top:16px;">
-                <thead><tr>
-                  <th>Week</th>
-                  <th class="num">MAE</th>
-                  <th class="num">RMSE</th>
-                  <th class="num">Players</th>
-                  <th class="num">QB</th>
-                  <th class="num">RB</th>
-                  <th class="num">WR</th>
-                  <th class="num">TE</th>
-                </tr></thead>
-                <tbody>${weeks.map(w => {
-                  const o = w.accuracy?.overall || {};
-                  const p = w.accuracy?.by_position || {};
-                  return `
-                    <tr>
-                      <td>Week ${w.week}</td>
-                      <td class="num">${o.mae ?? '—'}</td>
-                      <td class="num">${o.rmse ?? '—'}</td>
-                      <td class="num">${o.count ?? '—'}</td>
-                      <td class="num">${p.QB?.mae ?? '—'}</td>
-                      <td class="num">${p.RB?.mae ?? '—'}</td>
-                      <td class="num">${p.WR?.mae ?? '—'}</td>
-                      <td class="num">${p.TE?.mae ?? '—'}</td>
-                    </tr>`;
-                }).join("")}
-                </tbody>
-              </table>
-
-              <p style="font-family:var(--f-sign);letter-spacing:1px;color:var(--brown);font-size:13px;margin-top:12px;">
-                MAE = Mean Absolute Error (avg pts off per player). Lower = more accurate.
-                Industry benchmark: ~4-5 MAE is excellent, ~6-7 is good, 8+ needs work.
-              </p>
-
-              ${weeks[0]?.accuracy?.top_hits?.length ? `
-                <details class="accuracy-details" style="margin-top:16px;">
-                  <summary><strong>Week ${weeks[0].week} — Top Hits & Misses</strong></summary>
-                  <div class="accuracy-hits-misses">
-                    <div>
-                      <h4>✓ Top Hits (within 3 pts)</h4>
-                      <ul>
-                        ${weeks[0].accuracy.top_hits.slice(0, 5).map(h => `
-                          <li>${esc(h.name)} (${h.pos}): projected ${h.proj}, scored ${h.actual}</li>
-                        `).join("")}
-                      </ul>
-                    </div>
-                    <div>
-                      <h4>✗ Top Misses</h4>
-                      <ul>
-                        ${weeks[0].accuracy.top_misses.slice(0, 5).map(m => `
-                          <li>${esc(m.name)} (${m.pos}): projected ${m.proj}, scored ${m.actual} (${m.error > 0 ? '+' : ''}${m.error})</li>
-                        `).join("")}
-                      </ul>
-                    </div>
-                  </div>
-                </details>
-              ` : ''}`;
-          }
-        } else {
-          accEl.innerHTML = `
-            <div class="empty-block">
-              <p><em>Accuracy tracking active — first data appears after Week 1 games.</em></p>
-            </div>`;
-        }
-      } catch (e) {
-        accEl.innerHTML = `<div class="empty-block"><em>Accuracy history unavailable.</em></div>`;
-      }
-    }
-
-    // ========== WEEKLY WINNERS/LOSERS + SEASON LEADERS (moved from Dues) ==========
-    if (weeklyEl && seasonEl) {
-      // Load penalty amount from dues.json
-      let wp = 10;
-      try {
-        const res = await fetch("assets/data/dues.json", { cache: "no-cache" });
-        if (res.ok) {
-          const dues = await res.json();
-          wp = dues.weekly_penalty || 10;
-        }
-      } catch (_) {}
-
-      // Fetch matchups for all completed weeks
+    // ========== WEEKLY WINNERS/LOSERS + BEST/WORST SINGLE-WEEK RECORDS ==========
+    if (weeklyEl) {
       // Fetch matchups for FULLY-COMPLETED weeks only.
-      // A week is only "final" for dues purposes when it's strictly before the current
-      // NFL week — otherwise in-progress Sunday/MNF scores get treated as final results.
       // Sleeper's state.week advances Tuesday morning after MNF, so currentWeek - 1 is
-      // the safe cutoff for locking in high/low scorers and penalty pot.
+      // the safe cutoff for locking in high/low scorers.
       const allWeeks = new Map();
       const currentWeek = (state && state.week) || 0;
       const lastCompleteWeek = Math.max(0, currentWeek - 1);
@@ -777,12 +630,12 @@ async function renderStandings() {
         } catch (_) { break; }
       }
 
-      // Weekly winners/losers table
       if (!allWeeks.size) {
         weeklyEl.innerHTML = empty("Weekly winners populate as games play.");
       } else {
         const weeklyRows = [];
-        let totalPenalty = 0;
+        const bestGame = { pts: 0, team: null, week: null };
+        const worstGame = { pts: Infinity, team: null, week: null };
         for (const [w, matchups] of allWeeks) {
           const scored = matchups.filter(x => (x.points || 0) > 0.1);
           if (!scored.length) continue;
@@ -793,13 +646,20 @@ async function renderStandings() {
             high: { team: teams.get(high.roster_id), points: high.points },
             low:  { team: teams.get(low.roster_id),  points: low.points },
           });
-          totalPenalty += wp;
+          // Track best/worst across all weeks
+          matchups.forEach(x => {
+            if (!x.roster_id) return;
+            const pts = x.points || 0;
+            if (pts > bestGame.pts) {
+              bestGame.pts = pts; bestGame.team = teams.get(x.roster_id); bestGame.week = w;
+            }
+            if (pts > 0 && pts < worstGame.pts) {
+              worstGame.pts = pts; worstGame.team = teams.get(x.roster_id); worstGame.week = w;
+            }
+          });
         }
+
         weeklyEl.innerHTML = `
-          <div class="dues-summary">
-            Penalty pot so far: <strong class="gold">$${totalPenalty}</strong>
-            across ${weeklyRows.length} week${weeklyRows.length !== 1 ? 's' : ''}
-          </div>
           <table class="stats-table dues-weekly-table">
             <thead>
               <tr>
@@ -808,7 +668,6 @@ async function renderStandings() {
                 <th class="num">Pts</th>
                 <th>Low score</th>
                 <th class="num">Pts</th>
-                <th class="num">Owes</th>
               </tr>
             </thead>
             <tbody>
@@ -825,59 +684,6 @@ async function renderStandings() {
                     ${esc(r.low.team?.team_name || '?')}
                   </td>
                   <td class="num red">${fmt1(r.low.points)}</td>
-                  <td class="num">$${wp}</td>
-                </tr>`).join('')}
-            </tbody>
-          </table>`;
-      }
-
-      // Season leaders
-      if (!allWeeks.size) {
-        seasonEl.innerHTML = empty("Season leaderboard populates as games play.");
-      } else {
-        const totals = new Map();
-        const bestGame = { pts: 0, team: null, week: null };
-        const worstGame = { pts: Infinity, team: null, week: null };
-        for (const [w, matchups] of allWeeks) {
-          matchups.forEach(x => {
-            if (!x.roster_id) return;
-            const pts = x.points || 0;
-            totals.set(x.roster_id, (totals.get(x.roster_id) || 0) + pts);
-            if (pts > bestGame.pts) {
-              bestGame.pts = pts; bestGame.team = teams.get(x.roster_id); bestGame.week = w;
-            }
-            if (pts > 0 && pts < worstGame.pts) {
-              worstGame.pts = pts; worstGame.team = teams.get(x.roster_id); worstGame.week = w;
-            }
-          });
-        }
-        const penaltyPot = allWeeks.size * wp;
-        const ranked = Array.from(totals.entries())
-          .map(([rid, pts]) => ({ roster_id: rid, team: teams.get(rid), points: pts }))
-          .sort((a, b) => b.points - a.points);
-        const leader = ranked[0];
-        seasonEl.innerHTML = `
-          <div class="dues-summary">
-            🏆 <strong>${esc(leader.team?.team_name || '?')}</strong> leading the season points chase —
-            on track for the <span class="gold">$${penaltyPot}</span> penalty pot at year end
-          </div>
-          <table class="stats-table dues-season-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Team</th>
-                <th class="num">Total Points</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${ranked.map((t, i) => `
-                <tr class="${i === 0 ? 'top-row' : ''}">
-                  <td class="rank ${i===0?'gold':''}">${i + 1}</td>
-                  <td class="team-cell">
-                    <img class="avatar-sm" src="${esc(avatarUrl(t.team))}" alt="" onerror="this.src='assets/img/logo.jpg'">
-                    ${esc(t.team?.team_name || '?')}
-                  </td>
-                  <td class="num">${fmt1(t.points)}</td>
                 </tr>`).join('')}
             </tbody>
           </table>
@@ -903,6 +709,129 @@ async function renderStandings() {
   } catch (e) {
     stEl.innerHTML = errBox(e.message);
   }
+}
+
+/* ──────────────────────────────────────────────────────────
+   Playoff Odds — Monte Carlo simulation
+   5,000 sims of remaining regular-season weeks.
+   Each matchup decided by random normal draws around each
+   team's expected score (blend of season avg + roster strength),
+   with ~25pt weekly standard deviation.
+   Returns Map<roster_id, {playoff: 0..1, bye: 0..1}>
+   ────────────────────────────────────────────────────────── */
+async function computePlayoffOdds(teams, state, league, rosterStrengths) {
+  const SIMS = 5000;
+  const PLAYOFF_SPOTS = 6;
+  const BYE_SPOTS = 2;
+  const STDDEV = 25;
+
+  // Determine regular-season window from league settings
+  const playoffStart = league?.settings?.playoff_week_start || 15;
+  const REGULAR_SEASON_END = playoffStart - 1;
+  const currentWeek = (state && state.week) || 1;
+
+  const result = new Map();
+  const teamArr = Array.from(teams.values());
+  teamArr.forEach(t => result.set(t.roster_id, { playoff: 0, bye: 0 }));
+
+  // Build each team's expected weekly score + current record
+  const teamStats = new Map();
+  teamArr.forEach(t => {
+    const gp = (t.wins || 0) + (t.losses || 0) + (t.ties || 0);
+    const avgPF = gp > 0 ? t.fpts / gp : 115;
+    const rs = rosterStrengths?.get(t.roster_id);
+    // Blend: 60% actual avg, 40% roster strength (if available).
+    // Pre-season or no roster strength: fall back to the other signal.
+    let expected;
+    if (gp > 0 && rs != null) expected = avgPF * 0.6 + rs * 0.4;
+    else if (rs != null)       expected = rs;
+    else                        expected = avgPF;
+    teamStats.set(t.roster_id, {
+      wins: t.wins || 0,
+      ties: t.ties || 0,
+      pf:   t.fpts || 0,
+      expected,
+    });
+  });
+
+  // Fetch remaining-week schedules once
+  const futureSchedules = [];
+  for (let w = currentWeek; w <= REGULAR_SEASON_END; w++) {
+    try {
+      const m = await getMatchups(w);
+      if (!m || !m.length) continue;
+      // Group by matchup_id (two roster_ids per matchup)
+      const pairs = new Map();
+      m.forEach(x => {
+        if (x.matchup_id == null) return;
+        if (!pairs.has(x.matchup_id)) pairs.set(x.matchup_id, []);
+        pairs.get(x.matchup_id).push(x.roster_id);
+      });
+      futureSchedules.push(Array.from(pairs.values()).filter(p => p.length === 2));
+    } catch (_) {}
+  }
+
+  // If no future schedule is available, just use current standings
+  if (!futureSchedules.length) {
+    const ranked = Array.from(teamStats.entries())
+      .map(([rid, s]) => ({ rid, wins: s.wins + s.ties * 0.5, pf: s.pf }))
+      .sort((a, b) => b.wins !== a.wins ? b.wins - a.wins : b.pf - a.pf);
+    ranked.slice(0, PLAYOFF_SPOTS).forEach(r => result.get(r.rid).playoff = 1);
+    ranked.slice(0, BYE_SPOTS).forEach(r => result.get(r.rid).bye = 1);
+    return result;
+  }
+
+  // Box-Muller normal RNG
+  const randNorm = () => {
+    const u = Math.random() || 1e-9;
+    const v = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  };
+
+  // Playoff / bye counters
+  const playoffCount = new Map();
+  const byeCount = new Map();
+  teamArr.forEach(t => { playoffCount.set(t.roster_id, 0); byeCount.set(t.roster_id, 0); });
+
+  // Run simulations
+  for (let s = 0; s < SIMS; s++) {
+    const sim = new Map();
+    teamStats.forEach((v, k) => sim.set(k, { wins: v.wins + v.ties * 0.5, pf: v.pf }));
+
+    futureSchedules.forEach(weekPairs => {
+      weekPairs.forEach(([a, b]) => {
+        const ta = teamStats.get(a), tb = teamStats.get(b);
+        if (!ta || !tb) return;
+        const sa = ta.expected + STDDEV * randNorm();
+        const sb = tb.expected + STDDEV * randNorm();
+        const ssa = sim.get(a), ssb = sim.get(b);
+        if (sa > sb) ssa.wins += 1;
+        else if (sb > sa) ssb.wins += 1;
+        else { ssa.wins += 0.5; ssb.wins += 0.5; }
+        ssa.pf += sa;
+        ssb.pf += sb;
+      });
+    });
+
+    const ranked = Array.from(sim.entries())
+      .map(([rid, s]) => ({ rid, wins: s.wins, pf: s.pf }))
+      .sort((a, b) => b.wins !== a.wins ? b.wins - a.wins : b.pf - a.pf);
+
+    for (let i = 0; i < PLAYOFF_SPOTS && i < ranked.length; i++) {
+      playoffCount.set(ranked[i].rid, playoffCount.get(ranked[i].rid) + 1);
+    }
+    for (let i = 0; i < BYE_SPOTS && i < ranked.length; i++) {
+      byeCount.set(ranked[i].rid, byeCount.get(ranked[i].rid) + 1);
+    }
+  }
+
+  teamArr.forEach(t => {
+    result.set(t.roster_id, {
+      playoff: (playoffCount.get(t.roster_id) || 0) / SIMS,
+      bye:     (byeCount.get(t.roster_id) || 0) / SIMS,
+    });
+  });
+  return result;
 }
 
 /* ---------- NEWS: The Wire (RSS aggregation) ---------- */
@@ -6665,12 +6594,325 @@ async function renderShame() {
   }
 }
 
+/* ──────────────────────────────────────────────────────────
+   THE FILM ROOM — advanced metrics report (RB/WR/TE)
+   Weekly + Season views, with filters: Available / Rookies / My Team.
+   Backed by assets/data/nflverse/film-room.json (built by
+   .github/scripts/fetch-film-room.py every Tue/Thu).
+   ────────────────────────────────────────────────────────── */
+async function renderFilmRoom() {
+  const el = document.getElementById("film-room");
+  if (!el) return;
+  el.innerHTML = loading("Loading The Film Room…");
+
+  try {
+    // Fetch Film Room data + current week + league rosters (parallel)
+    const [frRes, state, rosters, users] = await Promise.all([
+      fetch("assets/data/nflverse/film-room.json", { cache: "default" }),
+      window.Sleeper.getState(),
+      window.Sleeper.getRosters(),
+      window.Sleeper.getUsers(),
+    ]);
+    if (!frRes.ok) {
+      el.innerHTML = empty("Film Room data not available yet — runs Tuesday mornings.");
+      return;
+    }
+    const data = await frRes.json();
+    if (data.status !== "ok") {
+      el.innerHTML = empty(`Film Room data not available yet (${data.status || "no data"}). Runs Tuesday mornings.`);
+      return;
+    }
+
+    // Index: Sleeper roster_id -> array of player ids
+    const rosteredIds = new Set();
+    const myRosterIds = new Set();
+    let currentUserId = null; // Walker, Texas Runner — the site owner's team (see config.OWNER_USER_ID if set)
+    try {
+      const owner = (window.Config && window.Config.OWNER_USER_ID) || null;
+      currentUserId = owner;
+    } catch (_) {}
+    const userIdToRoster = new Map();
+    (rosters || []).forEach(r => {
+      userIdToRoster.set(r.owner_id, r);
+      (r.players || []).forEach(pid => rosteredIds.add(String(pid)));
+    });
+    if (currentUserId && userIdToRoster.get(currentUserId)) {
+      (userIdToRoster.get(currentUserId).players || []).forEach(pid => myRosterIds.add(String(pid)));
+    }
+
+    // UI state
+    const state_ = {
+      view: "weekly",       // 'weekly' | 'season'
+      pos: "RB",            // 'RB' | 'WR' | 'TE'
+      availOnly: false,
+      rookiesOnly: false,
+      myTeamOnly: false,
+      search: "",
+      sortKey: "fp",
+      sortDir: "desc",
+    };
+
+    // Columns per position
+    const COLS_RB = [
+      { k: "name",       label: "Player",   sticky: true },
+      { k: "team",       label: "Team" },
+      { k: "opp",        label: "Opp",      hideSeason: true },
+      { k: "snap_pct",   label: "Snap%",    fmt: "pct", num: true },
+      { k: "route_pct",  label: "Route%",   fmt: "pct", num: true },
+      { k: "car",        label: "Car",      num: true },
+      { k: "rush_yds",   label: "RushYds",  num: true },
+      { k: "ypc",        label: "YPC",      fmt: "num1", num: true },
+      { k: "rush_td",    label: "RushTD",   num: true },
+      { k: "tgt",        label: "Tgt",      num: true },
+      { k: "rec",        label: "Rec",      num: true },
+      { k: "rec_yds",    label: "RecYds",   num: true },
+      { k: "hvt",        label: "HVT",      num: true, seasonKey: "hvt_per_g", seasonLabel: "HVT/G" },
+      { k: "rz_touches", label: "RZ Tch",   num: true },
+      { k: "gl_car",     label: "GL Car",   num: true },
+      { k: "exp_10_rush",label: "10+",      num: true },
+      { k: "exp_20_rush",label: "20+",      num: true },
+      { k: "ryoe_per_att",label:"RYOE/att", fmt: "num2", num: true },
+      { k: "ryoe_pct",   label: "RYOE%",    fmt: "pct", num: true },
+      { k: "efficiency", label: "Eff",      fmt: "num2", num: true },
+      { k: "ttlos",      label: "TTLOS",    fmt: "num2", num: true },
+      { k: "box8_pct",   label: "8+Box%",   fmt: "num1", suffix: "%", num: true },
+      { k: "fp",         label: "FP",       fmt: "num1", num: true, bold: true },
+      { k: "fp_per_g",   label: "FP/G",     fmt: "num1", num: true, weeklyHide: true, bold: true },
+    ];
+    const COLS_WR = [
+      { k: "name",       label: "Player",   sticky: true },
+      { k: "team",       label: "Team" },
+      { k: "opp",        label: "Opp",      hideSeason: true },
+      { k: "snap_pct",   label: "Snap%",    fmt: "pct", num: true },
+      { k: "route_pct",  label: "Route%",   fmt: "pct", num: true },
+      { k: "tgt",        label: "Tgt",      num: true },
+      { k: "rec",        label: "Rec",      num: true },
+      { k: "rec_yds",    label: "RecYds",   num: true },
+      { k: "rec_td",     label: "TD",       num: true },
+      { k: "tprr",       label: "TPRR",     fmt: "num2", num: true },
+      { k: "yprr",       label: "YPRR",     fmt: "num2", num: true },
+      { k: "tgt_share",  label: "Tgt%",     fmt: "pct", num: true },
+      { k: "ay_share",   label: "AY%",      fmt: "pct", num: true },
+      { k: "rz_tgt",     label: "RZ Tgt",   num: true },
+      { k: "yac_per_rec",label: "YAC/R",    fmt: "num1", num: true },
+      { k: "sep",        label: "Sep",      fmt: "num2", num: true },
+      { k: "cushion",    label: "Cushion",  fmt: "num2", num: true },
+      { k: "catch_pct",  label: "Catch%",   fmt: "num1", suffix: "%", num: true },
+      { k: "adot",       label: "aDOT",     fmt: "num1", num: true },
+      { k: "wopr",       label: "WOPR",     fmt: "num2", num: true },
+      { k: "fp",         label: "FP",       fmt: "num1", num: true, bold: true },
+      { k: "fp_per_g",   label: "FP/G",     fmt: "num1", num: true, weeklyHide: true, bold: true },
+    ];
+
+    const fmtCell = (v, col) => {
+      if (v == null || v === "") return "<span class='muted'>—</span>";
+      if (col.fmt === "pct") {
+        let n = Number(v);
+        if (!isFinite(n)) return esc(String(v));
+        if (n <= 1.0) n *= 100;
+        return `${n.toFixed(0)}%`;
+      }
+      if (col.fmt === "num1") return `${Number(v).toFixed(1)}${col.suffix || ""}`;
+      if (col.fmt === "num2") return `${Number(v).toFixed(2)}${col.suffix || ""}`;
+      return esc(String(v));
+    };
+
+    function cols() {
+      const base = state_.pos === "RB" ? COLS_RB : COLS_WR;
+      return base.filter(c => {
+        if (state_.view === "season" && c.hideSeason) return false;
+        if (state_.view === "weekly" && c.weeklyHide) return false;
+        return true;
+      });
+    }
+
+    function dataset() {
+      const bucket = state_.view === "weekly" ? data.weekly : data.season_totals;
+      let rows = (bucket[state_.pos] || []).slice();
+      if (state_.view === "weekly" && data.weeks_played) {
+        rows = rows.filter(r => r.week === data.weeks_played);
+      }
+      if (state_.availOnly) {
+        rows = rows.filter(r => !r.sleeper_id || !rosteredIds.has(String(r.sleeper_id)));
+      }
+      if (state_.rookiesOnly) {
+        rows = rows.filter(r => r.rookie === true);
+      }
+      if (state_.myTeamOnly) {
+        rows = rows.filter(r => r.sleeper_id && myRosterIds.has(String(r.sleeper_id)));
+      }
+      if (state_.search) {
+        const q = state_.search.toLowerCase();
+        rows = rows.filter(r => (r.name || "").toLowerCase().includes(q)
+                              || (r.team || "").toLowerCase().includes(q));
+      }
+      // Sort
+      const dir = state_.sortDir === "desc" ? -1 : 1;
+      const key = state_.sortKey;
+      rows.sort((a, b) => {
+        const av = a[key], bv = b[key];
+        if (av == null && bv == null) return 0;
+        if (av == null) return 1;
+        if (bv == null) return -1;
+        if (typeof av === "number" && typeof bv === "number") return (av - bv) * dir;
+        return String(av).localeCompare(String(bv)) * dir;
+      });
+      return rows;
+    }
+
+    function controlsHtml() {
+      const show = state_.view === "weekly"
+        ? `Week ${data.weeks_played} · ${state_.pos}`
+        : `Season (through W${data.weeks_played}) · ${state_.pos}`;
+      return `
+        <div class="fr-tabs-main">
+          <button class="fr-tab-main ${state_.view==='weekly'?'active':''}" data-view="weekly">Weekly</button>
+          <button class="fr-tab-main ${state_.view==='season'?'active':''}" data-view="season">Season</button>
+        </div>
+        <div class="fr-controls">
+          <strong>Position:</strong>
+          <div class="fr-chip-row">
+            <button class="fr-chip ${state_.pos==='RB'?'active':''}" data-pos="RB">RB</button>
+            <button class="fr-chip ${state_.pos==='WR'?'active':''}" data-pos="WR">WR</button>
+            <button class="fr-chip ${state_.pos==='TE'?'active':''}" data-pos="TE">TE</button>
+          </div>
+          <label class="fr-toggle"><input type="checkbox" data-filter="avail" ${state_.availOnly?'checked':''}> Available only</label>
+          <label class="fr-toggle"><input type="checkbox" data-filter="rookies" ${state_.rookiesOnly?'checked':''}> Rookies only</label>
+          <label class="fr-toggle"><input type="checkbox" data-filter="myteam" ${state_.myTeamOnly?'checked':''}> My team only</label>
+          <input class="fr-search" type="search" placeholder="Search player or team…" value="${esc(state_.search)}">
+          <div class="fr-showing">${show}</div>
+        </div>`;
+    }
+
+    function tableHtml(rows) {
+      const C = cols();
+      const thead = `<tr>${C.map(c => {
+        const label = state_.view === "season" && c.seasonLabel ? c.seasonLabel : c.label;
+        const sortKey = state_.view === "season" && c.seasonKey ? c.seasonKey : c.k;
+        const active = state_.sortKey === sortKey;
+        const arrow = active ? (state_.sortDir === "desc" ? " ▼" : " ▲") : "";
+        const cls = (c.num ? "num " : "") + (active ? "sorted" : "");
+        return `<th class="${cls}" data-sort="${sortKey}">${esc(label)}${arrow}</th>`;
+      }).join("")}</tr>`;
+
+      if (!rows.length) {
+        return `<table class="stats-table report-table"><thead>${thead}</thead><tbody>
+          <tr><td colspan="${C.length}" class="fr-empty">No players match your filters.</td></tr>
+        </tbody></table>`;
+      }
+
+      const body = rows.map((r, i) => {
+        const availBadge = r.sleeper_id
+          ? (rosteredIds.has(String(r.sleeper_id))
+              ? `<span class="avail-badge avail-rostered">Rostered</span>`
+              : `<span class="avail-badge avail-free">Available</span>`)
+          : `<span class="avail-badge avail-unknown">—</span>`;
+        const rookie = r.rookie ? `<span class="rookie-badge" title="2026 rookie">R</span>` : "";
+
+        return `<tr>${C.map(c => {
+          const key = state_.view === "season" && c.seasonKey ? c.seasonKey : c.k;
+          const v = r[key];
+          if (c.k === "name") {
+            return `<td class="fr-player ${c.bold?'bold':''}">
+              <div class="fr-name-cell">
+                <strong>${esc(r.name || "")}</strong>
+                ${rookie}
+                ${availBadge}
+              </div>
+            </td>`;
+          }
+          if (c.k === "team" || c.k === "opp") {
+            return `<td class="team-abbr">${esc(String(v || ""))}</td>`;
+          }
+          return `<td class="${c.num?'num':''} ${c.bold?'bold':''}">${fmtCell(v, c)}</td>`;
+        }).join("")}</tr>`;
+      }).join("");
+      return `<table class="stats-table report-table"><thead>${thead}</thead><tbody>${body}</tbody></table>`;
+    }
+
+    function legendHtml() {
+      return `
+        <p class="odds-note">
+          <strong>Playbook:</strong> <strong>YPRR</strong> = yards per route run (elite WR 2.0+ / TE 1.5+).
+          <strong>TPRR</strong> = targets per route run (0.22+ demand).
+          <strong>WOPR</strong> = weighted opportunity (0.70+ WR1/RB1 territory).
+          <strong>HVT</strong> = carries + 2·targets (per game in season view).
+          <strong>RZ Tch</strong> / <strong>GL Car</strong> = red-zone touches / goal-line carries (TD proxies).
+          <strong>RYOE/att</strong> = NFL Next Gen rush yards over expected per attempt (+0.5 elite talent signal).
+          <strong>Sep</strong> = avg separation at catch (3.0+ gets open).
+        </p>`;
+    }
+
+    function render() {
+      const rows = dataset();
+      el.innerHTML = `
+        ${controlsHtml()}
+        <div class="table-wrap fr-table-wrap">${tableHtml(rows)}</div>
+        ${legendHtml()}
+      `;
+      attachHandlers();
+    }
+
+    function attachHandlers() {
+      el.querySelectorAll("[data-view]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          state_.view = btn.dataset.view;
+          state_.sortKey = state_.view === "season" ? "fp" : "fp";
+          render();
+        });
+      });
+      el.querySelectorAll("[data-pos]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          state_.pos = btn.dataset.pos;
+          render();
+        });
+      });
+      el.querySelectorAll("[data-filter]").forEach(cb => {
+        cb.addEventListener("change", () => {
+          const f = cb.dataset.filter;
+          if (f === "avail")   state_.availOnly = cb.checked;
+          if (f === "rookies") state_.rookiesOnly = cb.checked;
+          if (f === "myteam")  state_.myTeamOnly = cb.checked;
+          render();
+        });
+      });
+      const search = el.querySelector(".fr-search");
+      if (search) {
+        search.addEventListener("input", (e) => {
+          state_.search = e.target.value;
+          render();
+          // Keep focus
+          const s2 = el.querySelector(".fr-search");
+          if (s2) { s2.focus(); s2.setSelectionRange(s2.value.length, s2.value.length); }
+        });
+      }
+      el.querySelectorAll("th[data-sort]").forEach(th => {
+        th.addEventListener("click", () => {
+          const k = th.dataset.sort;
+          if (state_.sortKey === k) {
+            state_.sortDir = state_.sortDir === "desc" ? "asc" : "desc";
+          } else {
+            state_.sortKey = k;
+            state_.sortDir = "desc";
+          }
+          render();
+        });
+      });
+    }
+
+    render();
+  } catch (e) {
+    el.innerHTML = errBox(e.message);
+  }
+}
+
 window.Pages = {
   renderHome, renderMatchups, renderStandings, renderNews,
   renderTransactions, renderHistory,
   renderWire, renderTrending, renderInsiders,
   renderInjuries, renderInjuriesWidget,
   renderDraftKit, renderDues, renderTools, renderWaiver, renderShame,
+  renderFilmRoom,
 };
 
 })();
