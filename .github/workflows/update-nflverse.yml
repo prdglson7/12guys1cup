@@ -29,7 +29,7 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -44,8 +44,13 @@ jobs:
           pip install --upgrade pip
           pip install nfl_data_py pandas pyarrow requests
 
-      - name: Fetch nflverse data
+      - name: Fetch nflverse data (standard pipeline)
         run: python .github/scripts/fetch-nflverse.py
+
+      - name: Build The Film Room dataset
+        # Must run AFTER fetch-nflverse.py so refreshed waiver-metrics +
+        # route-participation files are available for the join.
+        run: python .github/scripts/fetch-film-room.py
 
       - name: Commit + push updated files
         run: |
@@ -56,7 +61,7 @@ jobs:
             echo "No data changes to commit."
             exit 0
           fi
-          git commit -m "Update nflverse data [skip ci]"
+          git commit -m "Update nflverse data + Film Room [skip ci]"
           # Retry on concurrent push (up to 5 attempts)
           for i in 1 2 3 4 5; do
             git pull --rebase origin main && git push && exit 0
