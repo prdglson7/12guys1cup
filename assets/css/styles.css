@@ -4440,14 +4440,17 @@ main { padding: 32px 0 60px; }
 }
 .report-table th {
   font-size: 10px;
-  padding: 9px 6px;
+  padding: 8px 4px;
   background: var(--navy);
   color: var(--gold);
   cursor: pointer;
   user-select: none;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
   text-transform: uppercase;
   white-space: nowrap;
+}
+.report-table th.num {
+  min-width: 44px;
 }
 .report-table th:hover {
   background: var(--navy-dark);
@@ -4457,8 +4460,11 @@ main { padding: 32px 0 60px; }
   color: var(--cream);
 }
 .report-table td {
-  padding: 7px 6px;
+  padding: 6px 4px;
   border-bottom: 1px solid rgba(30,58,95,0.08);
+}
+.report-table td.num {
+  font-size: 11px;
 }
 .report-table tbody tr:nth-child(even) td {
   background: rgba(232,184,74,0.06);
@@ -4489,7 +4495,7 @@ main { padding: 32px 0 60px; }
 .fr-name-cell {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   flex-wrap: nowrap;
   min-width: 0;
 }
@@ -4497,11 +4503,12 @@ main { padding: 32px 0 60px; }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 160px;
+  max-width: 125px;
+  font-size: 12px;
 }
 .report-table .fr-player {
-  min-width: 220px;
-  max-width: 260px;
+  min-width: 180px;
+  max-width: 200px;
 }
 .fr-empty {
   text-align: center;
