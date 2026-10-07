@@ -6606,12 +6606,10 @@ async function renderFilmRoom() {
   el.innerHTML = loading("Loading The Film Room…");
 
   try {
-    // Fetch Film Room data + current week + league rosters (parallel)
-    const [frRes, state, rosters, users] = await Promise.all([
+    // Fetch Film Room data + league rosters (parallel)
+    const [frRes, rosters] = await Promise.all([
       fetch("assets/data/nflverse/film-room.json", { cache: "default" }),
-      window.Sleeper.getState(),
       window.Sleeper.getRosters(),
-      window.Sleeper.getUsers(),
     ]);
     if (!frRes.ok) {
       el.innerHTML = empty("Film Room data not available yet — runs Tuesday mornings.");
@@ -6623,22 +6621,11 @@ async function renderFilmRoom() {
       return;
     }
 
-    // Index: Sleeper roster_id -> array of player ids
+    // Index: all players rostered in the league
     const rosteredIds = new Set();
-    const myRosterIds = new Set();
-    let currentUserId = null; // Walker, Texas Runner — the site owner's team (see config.OWNER_USER_ID if set)
-    try {
-      const owner = (window.Config && window.Config.OWNER_USER_ID) || null;
-      currentUserId = owner;
-    } catch (_) {}
-    const userIdToRoster = new Map();
     (rosters || []).forEach(r => {
-      userIdToRoster.set(r.owner_id, r);
       (r.players || []).forEach(pid => rosteredIds.add(String(pid)));
     });
-    if (currentUserId && userIdToRoster.get(currentUserId)) {
-      (userIdToRoster.get(currentUserId).players || []).forEach(pid => myRosterIds.add(String(pid)));
-    }
 
     // UI state
     const state_ = {
@@ -6646,7 +6633,6 @@ async function renderFilmRoom() {
       pos: "RB",            // 'RB' | 'WR' | 'TE'
       availOnly: false,
       rookiesOnly: false,
-      myTeamOnly: false,
       search: "",
       sortKey: "fp",
       sortDir: "desc",
@@ -6738,9 +6724,6 @@ async function renderFilmRoom() {
       if (state_.rookiesOnly) {
         rows = rows.filter(r => r.rookie === true);
       }
-      if (state_.myTeamOnly) {
-        rows = rows.filter(r => r.sleeper_id && myRosterIds.has(String(r.sleeper_id)));
-      }
       if (state_.search) {
         const q = state_.search.toLowerCase();
         rows = rows.filter(r => (r.name || "").toLowerCase().includes(q)
@@ -6778,7 +6761,6 @@ async function renderFilmRoom() {
           </div>
           <label class="fr-toggle"><input type="checkbox" data-filter="avail" ${state_.availOnly?'checked':''}> Available only</label>
           <label class="fr-toggle"><input type="checkbox" data-filter="rookies" ${state_.rookiesOnly?'checked':''}> Rookies only</label>
-          <label class="fr-toggle"><input type="checkbox" data-filter="myteam" ${state_.myTeamOnly?'checked':''}> My team only</label>
           <input class="fr-search" type="search" placeholder="Search player or team…" value="${esc(state_.search)}">
           <div class="fr-showing">${show}</div>
         </div>`;
@@ -6872,7 +6854,6 @@ async function renderFilmRoom() {
           const f = cb.dataset.filter;
           if (f === "avail")   state_.availOnly = cb.checked;
           if (f === "rookies") state_.rookiesOnly = cb.checked;
-          if (f === "myteam")  state_.myTeamOnly = cb.checked;
           render();
         });
       });
