@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-11T21:31:02.004Z",
+  "fetched_at": "2026-10-12T01:00:22.308Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -7,7 +7,7 @@
     "espn": 0.85,
     "sleeper": 0.9
   },
-  "player_count": 795,
+  "player_count": 794,
   "sources_status": {
     "fp_weekly_qb": true,
     "fp_weekly_rb": true,
@@ -1209,26 +1209,6 @@
         "sleeper"
       ]
     },
-    "mason rudolph": {
-      "name": "Mason Rudolph",
-      "pos": "QB",
-      "team": "PIT",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 5.21,
-        "sleeper": 11.68,
-        "consensus": 8.3,
-        "variance": 0.383
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "jarrett stidham": {
       "name": "Jarrett Stidham",
       "pos": "QB",
@@ -1243,6 +1223,26 @@
         "sleeper": 12.22,
         "consensus": 10.5,
         "variance": 0.154
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "mason rudolph": {
+      "name": "Mason Rudolph",
+      "pos": "QB",
+      "team": "PIT",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 5.21,
+        "sleeper": 11.68,
+        "consensus": 8.3,
+        "variance": 0.383
       },
       "sources_used": [
         "fp",
@@ -8949,18 +8949,21 @@
       "team": "BAL",
       "weekly": {
         "fp": 2.18,
+        "espn": null,
         "sleeper": 1.82,
         "consensus": 2,
         "variance": 0.09
       },
       "ros": {
+        "espn": 46.86008636,
         "sleeper": 31.8,
-        "consensus": 31.8,
-        "variance": 0
+        "consensus": 39.1,
+        "variance": 0.191
       },
       "sources_used": [
         "fp",
-        "sleeper"
+        "sleeper",
+        "espn"
       ]
     },
     "drew sample": {
@@ -13532,24 +13535,6 @@
       "sources_used": [
         "espn",
         "sleeper"
-      ]
-    },
-    "matthew hibner": {
-      "name": "Matthew Hibner",
-      "pos": "TE",
-      "team": "BAL",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 46.86008636,
-        "consensus": 46.86008636,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
       ]
     },
     "pierre strong jr": {
