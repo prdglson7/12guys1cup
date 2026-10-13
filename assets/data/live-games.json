@@ -1,35 +1,9 @@
 {
-  "fetched_at": "2026-10-12T22:49:25.922Z",
+  "fetched_at": "2026-10-13T06:19:01.520Z",
   "season": 2026,
   "week": 5,
   "game_count": 15,
   "teams": {
-    "LAR": {
-      "5": {
-        "opp": "BUF",
-        "home": true,
-        "spread": 3.5,
-        "total": 55.5,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-10-13T00:15Z"
-      }
-    },
-    "BUF": {
-      "5": {
-        "opp": "LAR",
-        "home": false,
-        "spread": -3.5,
-        "total": 55.5,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-10-13T00:15Z"
-      }
-    },
     "DAL": {
       "5": {
         "opp": "TB",
@@ -392,6 +366,32 @@
         "wind": null,
         "precip": null,
         "kickoff": "2026-10-12T00:20Z"
+      }
+    },
+    "LAR": {
+      "5": {
+        "opp": "BUF",
+        "home": true,
+        "spread": null,
+        "total": null,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-10-13T00:15Z"
+      }
+    },
+    "BUF": {
+      "5": {
+        "opp": "LAR",
+        "home": false,
+        "spread": null,
+        "total": null,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-10-13T00:15Z"
       }
     }
   }
