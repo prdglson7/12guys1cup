@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-13T22:18:28.411Z",
+  "fetched_at": "2026-10-14T03:39:28.206Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1206,26 +1206,6 @@
         "sleeper"
       ]
     },
-    "mason rudolph": {
-      "name": "Mason Rudolph",
-      "pos": "QB",
-      "team": "PIT",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 5.21,
-        "sleeper": 11.68,
-        "consensus": 8.3,
-        "variance": 0.383
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "jarrett stidham": {
       "name": "Jarrett Stidham",
       "pos": "QB",
@@ -1240,6 +1220,26 @@
         "sleeper": 12.22,
         "consensus": 10.5,
         "variance": 0.154
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "mason rudolph": {
+      "name": "Mason Rudolph",
+      "pos": "QB",
+      "team": "PIT",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 5.21,
+        "sleeper": 11.68,
+        "consensus": 8.3,
+        "variance": 0.383
       },
       "sources_used": [
         "fp",
@@ -12455,27 +12455,6 @@
         "espn"
       ]
     },
-    "kc concepcion": {
-      "name": "KC Concepcion",
-      "pos": "WR",
-      "team": "CLE",
-      "weekly": {
-        "espn": null,
-        "sleeper": 8.6,
-        "consensus": 8.6,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 106.11251341,
-        "sleeper": 156.4,
-        "consensus": 132,
-        "variance": 0.192
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "spencer shrader": {
       "name": "Spencer Shrader",
       "pos": "K",
@@ -12491,6 +12470,27 @@
         "sleeper": 75,
         "consensus": 100.2,
         "variance": 0.257
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "kc concepcion": {
+      "name": "KC Concepcion",
+      "pos": "WR",
+      "team": "CLE",
+      "weekly": {
+        "espn": null,
+        "sleeper": 8.6,
+        "consensus": 8.6,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 106.11251341,
+        "sleeper": 156.4,
+        "consensus": 132,
+        "variance": 0.192
       },
       "sources_used": [
         "sleeper",
@@ -13454,7 +13454,7 @@
     "blake grupe": {
       "name": "Blake Grupe",
       "pos": "K",
-      "team": null,
+      "team": "LAR",
       "weekly": {
         "espn": null,
         "consensus": null,
