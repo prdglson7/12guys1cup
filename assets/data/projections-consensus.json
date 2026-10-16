@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-16T08:46:02.812Z",
+  "fetched_at": "2026-10-16T14:32:56.525Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -10886,7 +10886,7 @@
     "darius slayton": {
       "name": "Darius Slayton",
       "pos": "WR",
-      "team": "IND",
+      "team": "FA",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -12736,6 +12736,24 @@
         "espn"
       ]
     },
+    "buccaneers dst": {
+      "name": "Buccaneers D/ST",
+      "pos": "DST",
+      "team": "TB",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 63.83370866,
+        "consensus": 63.83370866,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "evan mcpherson": {
       "name": "Evan McPherson",
       "pos": "K",
@@ -12754,24 +12772,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "buccaneers dst": {
-      "name": "Buccaneers D/ST",
-      "pos": "DST",
-      "team": "TB",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 63.83370866,
-        "consensus": 63.83370866,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -12850,24 +12850,6 @@
         "espn"
       ]
     },
-    "bears dst": {
-      "name": "Bears D/ST",
-      "pos": "DST",
-      "team": "CHI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 52.4710599,
-        "consensus": 52.4710599,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "tyler bass": {
       "name": "Tyler Bass",
       "pos": "K",
@@ -12886,6 +12868,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "bears dst": {
+      "name": "Bears D/ST",
+      "pos": "DST",
+      "team": "CHI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 52.4710599,
+        "consensus": 52.4710599,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
