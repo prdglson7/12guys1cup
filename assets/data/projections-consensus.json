@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-16T22:33:05.714Z",
+  "fetched_at": "2026-10-17T03:06:47.958Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1209,26 +1209,6 @@
         "sleeper"
       ]
     },
-    "mason rudolph": {
-      "name": "Mason Rudolph",
-      "pos": "QB",
-      "team": "PIT",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 5.21,
-        "sleeper": 11.68,
-        "consensus": 8.3,
-        "variance": 0.383
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "jarrett stidham": {
       "name": "Jarrett Stidham",
       "pos": "QB",
@@ -1243,6 +1223,26 @@
         "sleeper": 12.22,
         "consensus": 10.5,
         "variance": 0.154
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "mason rudolph": {
+      "name": "Mason Rudolph",
+      "pos": "QB",
+      "team": "PIT",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 5.21,
+        "sleeper": 11.68,
+        "consensus": 8.3,
+        "variance": 0.383
       },
       "sources_used": [
         "fp",
@@ -12521,27 +12521,6 @@
         "espn"
       ]
     },
-    "will reichard": {
-      "name": "Will Reichard",
-      "pos": "K",
-      "team": "MIN",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.56,
-        "consensus": 6.56,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 134.79534423,
-        "sleeper": 109,
-        "consensus": 121.5,
-        "variance": 0.106
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "dominic zvada": {
       "name": "Dominic Zvada",
       "pos": "K",
@@ -12557,6 +12536,27 @@
         "sleeper": 66,
         "consensus": 93.6,
         "variance": 0.301
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "will reichard": {
+      "name": "Will Reichard",
+      "pos": "K",
+      "team": "MIN",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.56,
+        "consensus": 6.56,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 134.79534423,
+        "sleeper": 109,
+        "consensus": 121.5,
+        "variance": 0.106
       },
       "sources_used": [
         "sleeper",
@@ -12602,6 +12602,26 @@
         "espn"
       ]
     },
+    "dameon pierce": {
+      "name": "Dameon Pierce",
+      "pos": "RB",
+      "team": "PHI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 66.15842116,
+        "sleeper": 4.3,
+        "consensus": 34.3,
+        "variance": 0.878
+      },
+      "sources_used": [
+        "espn",
+        "sleeper"
+      ]
+    },
     "jake bates": {
       "name": "Jake Bates",
       "pos": "K",
@@ -12621,26 +12641,6 @@
       "sources_used": [
         "sleeper",
         "espn"
-      ]
-    },
-    "dameon pierce": {
-      "name": "Dameon Pierce",
-      "pos": "RB",
-      "team": "PHI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 66.15842116,
-        "sleeper": 4.3,
-        "consensus": 34.3,
-        "variance": 0.878
-      },
-      "sources_used": [
-        "espn",
-        "sleeper"
       ]
     },
     "matt gay": {
@@ -13065,24 +13065,6 @@
         "espn"
       ]
     },
-    "raiders dst": {
-      "name": "Raiders D/ST",
-      "pos": "DST",
-      "team": "LV",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 48.47639381,
-        "consensus": 48.47639381,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "pierre strong jr": {
       "name": "Pierre Strong Jr.",
       "pos": "RB",
@@ -13095,6 +13077,24 @@
       "ros": {
         "espn": 47.62932735,
         "consensus": 47.62932735,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "raiders dst": {
+      "name": "Raiders D/ST",
+      "pos": "DST",
+      "team": "LV",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 48.47639381,
+        "consensus": 48.47639381,
         "variance": 0
       },
       "sources_used": [
@@ -13480,6 +13480,24 @@
         "sleeper"
       ]
     },
+    "carson steele": {
+      "name": "Carson Steele",
+      "pos": "RB",
+      "team": "PHI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 18.37609786,
+        "consensus": 18.37609786,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "riley patterson": {
       "name": "Riley Patterson",
       "pos": "K",
@@ -13498,24 +13516,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "carson steele": {
-      "name": "Carson Steele",
-      "pos": "RB",
-      "team": "PHI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 18.37609786,
-        "consensus": 18.37609786,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
