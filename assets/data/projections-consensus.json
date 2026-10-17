@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-17T20:10:24.094Z",
+  "fetched_at": "2026-10-17T23:45:03.780Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12332,24 +12332,6 @@
         "espn"
       ]
     },
-    "broncos dst": {
-      "name": "Broncos D/ST",
-      "pos": "DST",
-      "team": "DEN",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 72.56306505,
-        "consensus": 72.56306505,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "chiefs dst": {
       "name": "Chiefs D/ST",
       "pos": "DST",
@@ -12362,6 +12344,24 @@
       "ros": {
         "espn": 69.22308931,
         "consensus": 69.22308931,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "broncos dst": {
+      "name": "Broncos D/ST",
+      "pos": "DST",
+      "team": "DEN",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 72.56306505,
+        "consensus": 72.56306505,
         "variance": 0
       },
       "sources_used": [
@@ -12820,24 +12820,6 @@
         "espn"
       ]
     },
-    "bengals dst": {
-      "name": "Bengals D/ST",
-      "pos": "DST",
-      "team": "CIN",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 63.94837053,
-        "consensus": 63.94837053,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "chase mclaughlin": {
       "name": "Chase McLaughlin",
       "pos": "K",
@@ -12856,6 +12838,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "bengals dst": {
+      "name": "Bengals D/ST",
+      "pos": "DST",
+      "team": "CIN",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 63.94837053,
+        "consensus": 63.94837053,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
@@ -12898,24 +12898,6 @@
         "espn"
       ]
     },
-    "bears dst": {
-      "name": "Bears D/ST",
-      "pos": "DST",
-      "team": "CHI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 51.7804004,
-        "consensus": 51.7804004,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "giants dst": {
       "name": "Giants D/ST",
       "pos": "DST",
@@ -12928,6 +12910,24 @@
       "ros": {
         "espn": 55.5844187,
         "consensus": 55.5844187,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "bears dst": {
+      "name": "Bears D/ST",
+      "pos": "DST",
+      "team": "CHI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 51.7804004,
+        "consensus": 51.7804004,
         "variance": 0
       },
       "sources_used": [
@@ -13522,6 +13522,24 @@
         "espn"
       ]
     },
+    "teagan quitoriano": {
+      "name": "Teagan Quitoriano",
+      "pos": "TE",
+      "team": "ARI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 15.59230861,
+        "consensus": 15.59230861,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "jordan watkins": {
       "name": "Jordan Watkins",
       "pos": "WR",
@@ -13540,24 +13558,6 @@
       "sources_used": [
         "espn",
         "sleeper"
-      ]
-    },
-    "teagan quitoriano": {
-      "name": "Teagan Quitoriano",
-      "pos": "TE",
-      "team": "ARI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 15.59230861,
-        "consensus": 15.59230861,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
       ]
     },
     "dare ogunbowale": {
