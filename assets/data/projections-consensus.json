@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-17T13:28:02.167Z",
+  "fetched_at": "2026-10-17T16:51:11.184Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12287,24 +12287,6 @@
         "espn"
       ]
     },
-    "texans dst": {
-      "name": "Texans D/ST",
-      "pos": "DST",
-      "team": "HOU",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 89.7393642,
-        "consensus": 89.7393642,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "cam little": {
       "name": "Cam Little",
       "pos": "K",
@@ -12323,6 +12305,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "texans dst": {
+      "name": "Texans D/ST",
+      "pos": "DST",
+      "team": "HOU",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 89.7393642,
+        "consensus": 89.7393642,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
@@ -12578,6 +12578,26 @@
         "espn"
       ]
     },
+    "dameon pierce": {
+      "name": "Dameon Pierce",
+      "pos": "RB",
+      "team": "PHI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 70.42311278,
+        "sleeper": 4.3,
+        "consensus": 36.4,
+        "variance": 0.885
+      },
+      "sources_used": [
+        "espn",
+        "sleeper"
+      ]
+    },
     "kc concepcion": {
       "name": "KC Concepcion",
       "pos": "WR",
@@ -12597,26 +12617,6 @@
       "sources_used": [
         "sleeper",
         "espn"
-      ]
-    },
-    "dameon pierce": {
-      "name": "Dameon Pierce",
-      "pos": "RB",
-      "team": "PHI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 70.42311278,
-        "sleeper": 4.3,
-        "consensus": 36.4,
-        "variance": 0.885
-      },
-      "sources_used": [
-        "espn",
-        "sleeper"
       ]
     },
     "jake bates": {
@@ -12700,24 +12700,6 @@
         "espn"
       ]
     },
-    "lions dst": {
-      "name": "Lions D/ST",
-      "pos": "DST",
-      "team": "DET",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 54.38601455,
-        "consensus": 54.38601455,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "buccaneers dst": {
       "name": "Buccaneers D/ST",
       "pos": "DST",
@@ -12730,6 +12712,24 @@
       "ros": {
         "espn": 63.83541925,
         "consensus": 63.83541925,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "lions dst": {
+      "name": "Lions D/ST",
+      "pos": "DST",
+      "team": "DET",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 54.38601455,
+        "consensus": 54.38601455,
         "variance": 0
       },
       "sources_used": [
@@ -13041,6 +13041,24 @@
         "sleeper"
       ]
     },
+    "pierre strong jr": {
+      "name": "Pierre Strong Jr.",
+      "pos": "RB",
+      "team": "GB",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 24.19282541,
+        "consensus": 24.19282541,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "nick folk": {
       "name": "Nick Folk",
       "pos": "K",
@@ -13059,24 +13077,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "pierre strong jr": {
-      "name": "Pierre Strong Jr.",
-      "pos": "RB",
-      "team": "GB",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 24.19282541,
-        "consensus": 24.19282541,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
