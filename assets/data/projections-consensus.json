@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-17T03:06:47.958Z",
+  "fetched_at": "2026-10-17T08:16:32.439Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1209,26 +1209,6 @@
         "sleeper"
       ]
     },
-    "jarrett stidham": {
-      "name": "Jarrett Stidham",
-      "pos": "QB",
-      "team": "DEN",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 8.95,
-        "sleeper": 12.22,
-        "consensus": 10.5,
-        "variance": 0.154
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "mason rudolph": {
       "name": "Mason Rudolph",
       "pos": "QB",
@@ -1243,6 +1223,26 @@
         "sleeper": 11.68,
         "consensus": 8.3,
         "variance": 0.383
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "jarrett stidham": {
+      "name": "Jarrett Stidham",
+      "pos": "QB",
+      "team": "DEN",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 8.95,
+        "sleeper": 12.22,
+        "consensus": 10.5,
+        "variance": 0.154
       },
       "sources_used": [
         "fp",
@@ -12760,6 +12760,24 @@
         "espn"
       ]
     },
+    "jets dst": {
+      "name": "Jets D/ST",
+      "pos": "DST",
+      "team": "NYJ",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 73.84474172,
+        "consensus": 73.84474172,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "evan mcpherson": {
       "name": "Evan McPherson",
       "pos": "K",
@@ -12781,18 +12799,18 @@
         "espn"
       ]
     },
-    "jets dst": {
-      "name": "Jets D/ST",
+    "colts dst": {
+      "name": "Colts D/ST",
       "pos": "DST",
-      "team": "NYJ",
+      "team": "IND",
       "weekly": {
         "espn": null,
         "consensus": null,
         "variance": null
       },
       "ros": {
-        "espn": 73.84474172,
-        "consensus": 73.84474172,
+        "espn": 49.37535986,
+        "consensus": 49.37535986,
         "variance": 0
       },
       "sources_used": [
@@ -12811,24 +12829,6 @@
       "ros": {
         "espn": 63.94837053,
         "consensus": 63.94837053,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
-    "colts dst": {
-      "name": "Colts D/ST",
-      "pos": "DST",
-      "team": "IND",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 49.37535986,
-        "consensus": 49.37535986,
         "variance": 0
       },
       "sources_used": [
@@ -13460,6 +13460,24 @@
         "espn"
       ]
     },
+    "carson steele": {
+      "name": "Carson Steele",
+      "pos": "RB",
+      "team": "PHI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 18.37609786,
+        "consensus": 18.37609786,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "tyler goodson": {
       "name": "Tyler Goodson",
       "pos": "RB",
@@ -13478,24 +13496,6 @@
       "sources_used": [
         "espn",
         "sleeper"
-      ]
-    },
-    "carson steele": {
-      "name": "Carson Steele",
-      "pos": "RB",
-      "team": "PHI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 18.37609786,
-        "consensus": 18.37609786,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
       ]
     },
     "riley patterson": {
