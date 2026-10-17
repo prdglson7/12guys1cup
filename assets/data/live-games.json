@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-16T20:46:34.239Z",
+  "fetched_at": "2026-10-17T00:13:56.035Z",
   "season": 2026,
   "week": 6,
   "game_count": 14,
@@ -38,8 +38,8 @@
         "total": 42.5,
         "roof": "outdoors",
         "temp": 63,
-        "wind": 17,
-        "precip": null,
+        "wind": 16,
+        "precip": 0.002,
         "kickoff": "2026-10-18T13:30Z"
       }
     },
@@ -51,8 +51,8 @@
         "total": 42.5,
         "roof": "outdoors",
         "temp": 63,
-        "wind": 17,
-        "precip": null,
+        "wind": 16,
+        "precip": 0.002,
         "kickoff": "2026-10-18T13:30Z"
       }
     },
@@ -89,8 +89,8 @@
         "spread": -3,
         "total": 39.5,
         "roof": "outdoors",
-        "temp": 62,
-        "wind": 5,
+        "temp": 61,
+        "wind": 8,
         "precip": null,
         "kickoff": "2026-10-18T17:00Z"
       }
@@ -102,8 +102,8 @@
         "spread": 3,
         "total": 39.5,
         "roof": "outdoors",
-        "temp": 62,
-        "wind": 5,
+        "temp": 61,
+        "wind": 8,
         "precip": null,
         "kickoff": "2026-10-18T17:00Z"
       }
@@ -167,7 +167,7 @@
         "spread": -1.5,
         "total": 46.5,
         "roof": "outdoors",
-        "temp": 58,
+        "temp": 59,
         "wind": 8,
         "precip": null,
         "kickoff": "2026-10-18T17:00Z"
@@ -180,7 +180,7 @@
         "spread": 1.5,
         "total": 46.5,
         "roof": "outdoors",
-        "temp": 58,
+        "temp": 59,
         "wind": 8,
         "precip": null,
         "kickoff": "2026-10-18T17:00Z"
@@ -190,11 +190,11 @@
       "6": {
         "opp": "CAR",
         "home": true,
-        "spread": -3.5,
+        "spread": -3,
         "total": 39.5,
         "roof": "outdoors",
-        "temp": 57,
-        "wind": 10,
+        "temp": 58,
+        "wind": 8,
         "precip": null,
         "kickoff": "2026-10-18T17:00Z"
       }
@@ -203,11 +203,11 @@
       "6": {
         "opp": "PHI",
         "home": false,
-        "spread": 3.5,
+        "spread": 3,
         "total": 39.5,
         "roof": "outdoors",
-        "temp": 57,
-        "wind": 10,
+        "temp": 58,
+        "wind": 8,
         "precip": null,
         "kickoff": "2026-10-18T17:00Z"
       }
@@ -220,7 +220,7 @@
         "total": 39.5,
         "roof": "outdoors",
         "temp": 76,
-        "wind": 20,
+        "wind": 17,
         "precip": null,
         "kickoff": "2026-10-18T17:00Z"
       }
@@ -233,7 +233,7 @@
         "total": 39.5,
         "roof": "outdoors",
         "temp": 76,
-        "wind": 20,
+        "wind": 17,
         "precip": null,
         "kickoff": "2026-10-18T17:00Z"
       }
@@ -323,8 +323,8 @@
         "spread": 1.5,
         "total": 53.5,
         "roof": "outdoors",
-        "temp": 46,
-        "wind": 9,
+        "temp": 48,
+        "wind": 10,
         "precip": null,
         "kickoff": "2026-10-19T00:20Z"
       }
@@ -336,8 +336,8 @@
         "spread": -1.5,
         "total": 53.5,
         "roof": "outdoors",
-        "temp": 46,
-        "wind": 9,
+        "temp": 48,
+        "wind": 10,
         "precip": null,
         "kickoff": "2026-10-19T00:20Z"
       }
@@ -347,10 +347,10 @@
         "opp": "WAS",
         "home": true,
         "spread": 7.5,
-        "total": 51.5,
+        "total": 52.5,
         "roof": "outdoors",
         "temp": 59,
-        "wind": 3,
+        "wind": 4,
         "precip": null,
         "kickoff": "2026-10-20T00:15Z"
       }
@@ -360,10 +360,10 @@
         "opp": "SF",
         "home": false,
         "spread": -7.5,
-        "total": 51.5,
+        "total": 52.5,
         "roof": "outdoors",
         "temp": 59,
-        "wind": 3,
+        "wind": 4,
         "precip": null,
         "kickoff": "2026-10-20T00:15Z"
       }
