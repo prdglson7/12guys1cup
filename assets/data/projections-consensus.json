@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-18T20:08:37.950Z",
+  "fetched_at": "2026-10-18T23:55:16.772Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12961,6 +12961,27 @@
         "espn"
       ]
     },
+    "trey smack": {
+      "name": "Trey Smack",
+      "pos": "K",
+      "team": "GB",
+      "weekly": {
+        "espn": null,
+        "sleeper": 7.08,
+        "consensus": 7.08,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 97.00255015,
+        "sleeper": 70,
+        "consensus": 83.1,
+        "variance": 0.162
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
     "blake grupe": {
       "name": "Blake Grupe",
       "pos": "K",
@@ -13014,27 +13035,6 @@
         "variance": 0
       },
       "sources_used": [
-        "espn"
-      ]
-    },
-    "trey smack": {
-      "name": "Trey Smack",
-      "pos": "K",
-      "team": "GB",
-      "weekly": {
-        "espn": null,
-        "sleeper": 7.08,
-        "consensus": 7.08,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 97.00255015,
-        "sleeper": 70,
-        "consensus": 83.1,
-        "variance": 0.162
-      },
-      "sources_used": [
-        "sleeper",
         "espn"
       ]
     },
@@ -13531,24 +13531,6 @@
         "espn"
       ]
     },
-    "teagan quitoriano": {
-      "name": "Teagan Quitoriano",
-      "pos": "TE",
-      "team": "ARI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 15.58941386,
-        "consensus": 15.58941386,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "jordan watkins": {
       "name": "Jordan Watkins",
       "pos": "WR",
@@ -13567,6 +13549,24 @@
       "sources_used": [
         "espn",
         "sleeper"
+      ]
+    },
+    "teagan quitoriano": {
+      "name": "Teagan Quitoriano",
+      "pos": "TE",
+      "team": "ARI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 15.58941386,
+        "consensus": 15.58941386,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
       ]
     },
     "kenneth walker": {
