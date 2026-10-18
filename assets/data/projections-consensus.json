@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-18T03:09:14.182Z",
+  "fetched_at": "2026-10-18T08:33:55.781Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1206,26 +1206,6 @@
         "sleeper"
       ]
     },
-    "jarrett stidham": {
-      "name": "Jarrett Stidham",
-      "pos": "QB",
-      "team": "DEN",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 8.95,
-        "sleeper": 12.22,
-        "consensus": 10.5,
-        "variance": 0.154
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "mason rudolph": {
       "name": "Mason Rudolph",
       "pos": "QB",
@@ -1240,6 +1220,26 @@
         "sleeper": 11.68,
         "consensus": 8.3,
         "variance": 0.383
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "jarrett stidham": {
+      "name": "Jarrett Stidham",
+      "pos": "QB",
+      "team": "DEN",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 8.95,
+        "sleeper": 12.22,
+        "consensus": 10.5,
+        "variance": 0.154
       },
       "sources_used": [
         "fp",
@@ -12991,24 +12991,6 @@
         "espn"
       ]
     },
-    "bills dst": {
-      "name": "Bills D/ST",
-      "pos": "DST",
-      "team": "BUF",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 54.67084741,
-        "consensus": 54.67084741,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "trey smack": {
       "name": "Trey Smack",
       "pos": "K",
@@ -13027,6 +13009,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "bills dst": {
+      "name": "Bills D/ST",
+      "pos": "DST",
+      "team": "BUF",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 54.67084741,
+        "consensus": 54.67084741,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
@@ -13245,6 +13245,26 @@
         "espn"
       ]
     },
+    "austin ekeler": {
+      "name": "Austin Ekeler",
+      "pos": "RB",
+      "team": "WAS",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 50.71584041,
+        "sleeper": 9.3,
+        "consensus": 29.4,
+        "variance": 0.69
+      },
+      "sources_used": [
+        "espn",
+        "sleeper"
+      ]
+    },
     "oronde gadsden": {
       "name": "Oronde Gadsden",
       "pos": "TE",
@@ -13264,26 +13284,6 @@
       "sources_used": [
         "sleeper",
         "espn"
-      ]
-    },
-    "austin ekeler": {
-      "name": "Austin Ekeler",
-      "pos": "RB",
-      "team": "WAS",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 50.71584041,
-        "sleeper": 9.3,
-        "consensus": 29.4,
-        "variance": 0.69
-      },
-      "sources_used": [
-        "espn",
-        "sleeper"
       ]
     },
     "daniel carlson": {
