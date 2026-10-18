@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-18T08:33:55.781Z",
+  "fetched_at": "2026-10-18T13:46:05.796Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12727,24 +12727,6 @@
         "espn"
       ]
     },
-    "lions dst": {
-      "name": "Lions D/ST",
-      "pos": "DST",
-      "team": "DET",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 54.38547867,
-        "consensus": 54.38547867,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "cairo santos": {
       "name": "Cairo Santos",
       "pos": "K",
@@ -12763,6 +12745,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "lions dst": {
+      "name": "Lions D/ST",
+      "pos": "DST",
+      "team": "DET",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 54.38547867,
+        "consensus": 54.38547867,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
@@ -12862,6 +12862,24 @@
         "espn"
       ]
     },
+    "panthers dst": {
+      "name": "Panthers D/ST",
+      "pos": "DST",
+      "team": "CAR",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 47.15205246,
+        "consensus": 47.15205246,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "tyler bass": {
       "name": "Tyler Bass",
       "pos": "K",
@@ -12880,24 +12898,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "panthers dst": {
-      "name": "Panthers D/ST",
-      "pos": "DST",
-      "team": "CAR",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 47.15205246,
-        "consensus": 47.15205246,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -13224,6 +13224,26 @@
         "espn"
       ]
     },
+    "austin ekeler": {
+      "name": "Austin Ekeler",
+      "pos": "RB",
+      "team": "WAS",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 50.71584041,
+        "sleeper": 9.3,
+        "consensus": 29.4,
+        "variance": 0.69
+      },
+      "sources_used": [
+        "espn",
+        "sleeper"
+      ]
+    },
     "ryan fitzgerald": {
       "name": "Ryan Fitzgerald",
       "pos": "K",
@@ -13243,26 +13263,6 @@
       "sources_used": [
         "sleeper",
         "espn"
-      ]
-    },
-    "austin ekeler": {
-      "name": "Austin Ekeler",
-      "pos": "RB",
-      "team": "WAS",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 50.71584041,
-        "sleeper": 9.3,
-        "consensus": 29.4,
-        "variance": 0.69
-      },
-      "sources_used": [
-        "espn",
-        "sleeper"
       ]
     },
     "oronde gadsden": {
@@ -13557,26 +13557,6 @@
         "sleeper": 2.4,
         "consensus": 10.2,
         "variance": 0.77
-      },
-      "sources_used": [
-        "espn",
-        "sleeper"
-      ]
-    },
-    "dare ogunbowale": {
-      "name": "Dare Ogunbowale",
-      "pos": "RB",
-      "team": "HOU",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 0.94019917,
-        "sleeper": 9.2,
-        "consensus": 5.2,
-        "variance": 0.815
       },
       "sources_used": [
         "espn",
@@ -15217,6 +15197,23 @@
       "ros": {
         "sleeper": 7.3,
         "consensus": 7.3,
+        "variance": 0
+      },
+      "sources_used": [
+        "sleeper"
+      ]
+    },
+    "dare ogunbowale": {
+      "name": "Dare Ogunbowale",
+      "pos": "RB",
+      "team": "HOU",
+      "weekly": {
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "sleeper": 9.2,
+        "consensus": 9.2,
         "variance": 0
       },
       "sources_used": [
