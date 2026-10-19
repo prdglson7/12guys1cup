@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-19T09:36:40.120Z",
+  "fetched_at": "2026-10-19T16:48:05.579Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -757,7 +757,7 @@
     "cooper rush": {
       "name": "Cooper Rush",
       "pos": "QB",
-      "team": "ATL",
+      "team": "FA",
       "weekly": {
         "fp": 11.33,
         "sleeper": 10.85,
@@ -1290,7 +1290,7 @@
     "andy dalton": {
       "name": "Andy Dalton",
       "pos": "QB",
-      "team": "FA",
+      "team": "ATL",
       "weekly": {
         "fp": 0.36,
         "consensus": 0.36,
@@ -9631,19 +9631,22 @@
       "team": "SF",
       "weekly": {
         "fp": 0.6,
+        "espn": null,
         "sleeper": 0.62,
         "consensus": 0.6,
         "variance": 0.016
       },
       "ros": {
         "fp": 9.42,
+        "espn": 11.88252748,
         "sleeper": 10.1,
-        "consensus": 9.7,
-        "variance": 0.035
+        "consensus": 10.4,
+        "variance": 0.099
       },
       "sources_used": [
         "fp",
-        "sleeper"
+        "sleeper",
+        "espn"
       ]
     },
     "quintin morris": {
@@ -12230,24 +12233,6 @@
         "espn"
       ]
     },
-    "ravens dst": {
-      "name": "Ravens D/ST",
-      "pos": "DST",
-      "team": "BAL",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 72.60630476,
-        "consensus": 72.60630476,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "rams dst": {
       "name": "Rams D/ST",
       "pos": "DST",
@@ -12266,24 +12251,21 @@
         "espn"
       ]
     },
-    "spencer shrader": {
-      "name": "Spencer Shrader",
-      "pos": "K",
-      "team": "IND",
+    "ravens dst": {
+      "name": "Ravens D/ST",
+      "pos": "DST",
+      "team": "BAL",
       "weekly": {
         "espn": null,
-        "sleeper": 7.31,
-        "consensus": 7.31,
-        "variance": 0
+        "consensus": null,
+        "variance": null
       },
       "ros": {
-        "espn": 115.27372061,
-        "sleeper": 75,
-        "consensus": 94.6,
-        "variance": 0.212
+        "espn": 72.60630476,
+        "consensus": 72.60630476,
+        "variance": 0
       },
       "sources_used": [
-        "sleeper",
         "espn"
       ]
     },
@@ -12302,6 +12284,27 @@
         "sleeper": 111,
         "consensus": 109.6,
         "variance": 0.013
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "spencer shrader": {
+      "name": "Spencer Shrader",
+      "pos": "K",
+      "team": "IND",
+      "weekly": {
+        "espn": null,
+        "sleeper": 7.31,
+        "consensus": 7.31,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 115.27372061,
+        "sleeper": 75,
+        "consensus": 94.6,
+        "variance": 0.212
       },
       "sources_used": [
         "sleeper",
@@ -12988,24 +12991,6 @@
         "espn"
       ]
     },
-    "packers dst": {
-      "name": "Packers D/ST",
-      "pos": "DST",
-      "team": "GB",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 51.9942531,
-        "consensus": 51.9942531,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "blake grupe": {
       "name": "Blake Grupe",
       "pos": "K",
@@ -13024,6 +13009,24 @@
       "sources_used": [
         "espn",
         "sleeper"
+      ]
+    },
+    "packers dst": {
+      "name": "Packers D/ST",
+      "pos": "DST",
+      "team": "GB",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 51.9942531,
+        "consensus": 51.9942531,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
       ]
     },
     "bills dst": {
@@ -13457,6 +13460,24 @@
         "espn"
       ]
     },
+    "carson steele": {
+      "name": "Carson Steele",
+      "pos": "RB",
+      "team": "PHI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 20.38423437,
+        "consensus": 20.38423437,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "jason sanders": {
       "name": "Jason Sanders",
       "pos": "K",
@@ -13475,24 +13496,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "carson steele": {
-      "name": "Carson Steele",
-      "pos": "RB",
-      "team": "PHI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 20.38423437,
-        "consensus": 20.38423437,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
