@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-20T09:08:41.784Z",
+  "fetched_at": "2026-10-20T14:40:54.281Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12488,6 +12488,24 @@
         "espn"
       ]
     },
+    "ers dst": {
+      "name": "49ers D/ST",
+      "pos": "DST",
+      "team": "SF",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 84.69586315,
+        "consensus": 84.69586315,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "dominic zvada": {
       "name": "Dominic Zvada",
       "pos": "K",
@@ -12506,24 +12524,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "ers dst": {
-      "name": "49ers D/ST",
-      "pos": "DST",
-      "team": "SF",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 84.69586315,
-        "consensus": 84.69586315,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -12973,6 +12973,24 @@
         "espn"
       ]
     },
+    "bills dst": {
+      "name": "Bills D/ST",
+      "pos": "DST",
+      "team": "BUF",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 49.62287345,
+        "consensus": 49.62287345,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "blake grupe": {
       "name": "Blake Grupe",
       "pos": "K",
@@ -12991,24 +13009,6 @@
       "sources_used": [
         "espn",
         "sleeper"
-      ]
-    },
-    "bills dst": {
-      "name": "Bills D/ST",
-      "pos": "DST",
-      "team": "BUF",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 49.62287345,
-        "consensus": 49.62287345,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
       ]
     },
     "cowboys dst": {
