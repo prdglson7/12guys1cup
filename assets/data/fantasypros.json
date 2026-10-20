@@ -2,8 +2,26 @@
   "sport": "NFL",
   "title": "Fantasy Player News",
   "description": "Breaking Fantasy Football player news along with the impact for fantasy managers",
-  "count": 46,
+  "count": 43,
   "items": [
+    {
+      "id": 614876,
+      "created": "2026-10-20 04:05:42",
+      "created_formated": "Tue, Oct 20th 4:05am UTC",
+      "author": "Ari Koslow",
+      "player_id": 12119,
+      "team_id": "SF",
+      "title": "Mike Evans dealing with Achilles soreness ",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Injury"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/614876/mike-evans-dealing-with-achilles-soreness.php",
+      "desc": "49ers head coach Kyle Shanahan said Mike Evans is dealing with Achilles soreness.",
+      "impact": "There is no rupture, which is a positive sign after Evans left Monday's game late in the first half. He'll continue to be further evaluated later in the week. "
+    },
     {
       "id": 614873,
       "created": "2026-10-20 01:01:52",
@@ -180,25 +198,6 @@
       "link": "https://www.fantasypros.com/nfl/news/614864/brandon-mcmanus-works-out-rams.php",
       "desc": "The Rams hosted veteran kicker Brandon McManus for a workout on Monday. ",
       "impact": "The Rams are in the market for a new kicker after losing Blake Grupe for the season. "
-    },
-    {
-      "id": 614863,
-      "created": "2026-10-19 22:51:21",
-      "created_formated": "Mon, Oct 19th 10:51pm UTC",
-      "author": "Chris Schommer",
-      "player_id": 12119,
-      "team_id": "SF",
-      "title": "Mike Evans (ribs/achilles) active for Week 6",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury",
-        "Breaking"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/614863/mike-evans-ribsachilles-active-week-6.php",
-      "desc": "Mike Evans (ribs/achilles) is officially active for Week 6 for the San Francisco 49ers according to Adam Schefter.",
-      "impact": ""
     },
     {
       "id": 614862,
@@ -761,63 +760,10 @@
       "link": "https://www.fantasypros.com/nfl/news/614784/alec-pierce-heel-will-not-practice-this-week.php",
       "desc": "Colts coach Shane Steichen said Alec Pierce will not practice this week. ",
       "impact": "Pierce remains without a clear timetable to return. He is week-to-week. "
-    },
-    {
-      "id": 614783,
-      "created": "2026-10-19 18:32:52",
-      "created_formated": "Mon, Oct 19th 6:32pm UTC",
-      "author": "Ari Koslow",
-      "player_id": 18232,
-      "team_id": "IND",
-      "title": "Daniel Jones will start in Week 7",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/614783/daniel-jones-will-start-week-7.php",
-      "desc": "Colts head coach Shane Steichen confirmed that Daniel Jones will start in Week 7 against the Vikings. ",
-      "impact": "Jones struggles continued in Sunday's loss against the Titans. He'll be a low-end QB2 play in Week 7 against the Vikings defense. "
-    },
-    {
-      "id": 614782,
-      "created": "2026-10-19 18:19:48",
-      "created_formated": "Mon, Oct 19th 6:19pm UTC",
-      "author": "Ari Koslow",
-      "player_id": 19337,
-      "team_id": "CIN",
-      "title": "Kyle Dugger back in uniform at practice Monday ",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/614782/kyle-dugger-back-uniform-practice-monday.php",
-      "desc": "Kyle Dugger was back in uniform for practice on Monday. ",
-      "impact": "Dugger will need to be monitored in practice throughout the week. "
-    },
-    {
-      "id": 614781,
-      "created": "2026-10-19 18:16:13",
-      "created_formated": "Mon, Oct 19th 6:16pm UTC",
-      "author": "Ari Koslow",
-      "player_id": 27102,
-      "team_id": "CLE",
-      "title": "Dylan Sampson (knee) uncertain for Week 7",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/614781/dylan-sampson-knee-uncertain-week-7.php",
-      "desc": "Browns head coach Todd Monken said \"it's too early to tell but I'm hopeful we'll get a number of (injured) guys back.\" ",
-      "impact": "Sampson was able to recently return to practice. He will need to be monitored in practice again throughout this week. "
     }
   ],
   "public_api": true,
   "tier": "premium",
-  "fetched_at": "2026-10-20T01:12:54Z",
+  "fetched_at": "2026-10-20T06:31:37Z",
   "source_url": "https://api.fantasypros.com/public/v2/json/nfl/news?limit=50"
 }
