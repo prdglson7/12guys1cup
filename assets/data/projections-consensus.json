@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-20T03:32:03.662Z",
+  "fetched_at": "2026-10-20T09:08:41.784Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12197,24 +12197,6 @@
         "espn"
       ]
     },
-    "rams dst": {
-      "name": "Rams D/ST",
-      "pos": "DST",
-      "team": "LAR",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 66.68742205,
-        "consensus": 66.68742205,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "ravens dst": {
       "name": "Ravens D/ST",
       "pos": "DST",
@@ -12233,24 +12215,21 @@
         "espn"
       ]
     },
-    "jason myers": {
-      "name": "Jason Myers",
-      "pos": "K",
-      "team": "SEA",
+    "rams dst": {
+      "name": "Rams D/ST",
+      "pos": "DST",
+      "team": "LAR",
       "weekly": {
         "espn": null,
-        "sleeper": 6.9,
-        "consensus": 6.9,
-        "variance": 0
+        "consensus": null,
+        "variance": null
       },
       "ros": {
-        "espn": 108.64946576,
-        "sleeper": 111,
-        "consensus": 109.9,
-        "variance": 0.011
+        "espn": 66.68742205,
+        "consensus": 66.68742205,
+        "variance": 0
       },
       "sources_used": [
-        "sleeper",
         "espn"
       ]
     },
@@ -12269,6 +12248,27 @@
         "sleeper": 75,
         "consensus": 95,
         "variance": 0.215
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "jason myers": {
+      "name": "Jason Myers",
+      "pos": "K",
+      "team": "SEA",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.9,
+        "consensus": 6.9,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 108.64946576,
+        "sleeper": 111,
+        "consensus": 109.9,
+        "variance": 0.011
       },
       "sources_used": [
         "sleeper",
