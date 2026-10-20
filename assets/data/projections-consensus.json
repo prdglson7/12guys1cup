@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-20T19:50:04.525Z",
+  "fetched_at": "2026-10-20T22:56:10.295Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1200,26 +1200,6 @@
         "sleeper"
       ]
     },
-    "jarrett stidham": {
-      "name": "Jarrett Stidham",
-      "pos": "QB",
-      "team": "DEN",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 8.95,
-        "sleeper": 12.22,
-        "consensus": 10.5,
-        "variance": 0.154
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "mason rudolph": {
       "name": "Mason Rudolph",
       "pos": "QB",
@@ -1234,6 +1214,26 @@
         "sleeper": 11.68,
         "consensus": 8.3,
         "variance": 0.383
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "jarrett stidham": {
+      "name": "Jarrett Stidham",
+      "pos": "QB",
+      "team": "DEN",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 8.95,
+        "sleeper": 12.22,
+        "consensus": 10.5,
+        "variance": 0.154
       },
       "sources_used": [
         "fp",
@@ -3696,7 +3696,7 @@
     "jaydon blue": {
       "name": "Jaydon Blue",
       "pos": "RB",
-      "team": "PHI",
+      "team": "FA",
       "weekly": {
         "fp": 0.01,
         "consensus": 0.01,
@@ -12784,24 +12784,6 @@
         "espn"
       ]
     },
-    "colts dst": {
-      "name": "Colts D/ST",
-      "pos": "DST",
-      "team": "IND",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 48.67647445,
-        "consensus": 48.67647445,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "panthers dst": {
       "name": "Panthers D/ST",
       "pos": "DST",
@@ -12814,6 +12796,24 @@
       "ros": {
         "espn": 52.47483067,
         "consensus": 52.47483067,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "colts dst": {
+      "name": "Colts D/ST",
+      "pos": "DST",
+      "team": "IND",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 48.67647445,
+        "consensus": 48.67647445,
         "variance": 0
       },
       "sources_used": [
@@ -14807,7 +14807,7 @@
     "elijah mitchell": {
       "name": "Elijah Mitchell",
       "pos": "RB",
-      "team": null,
+      "team": "PHI",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -15470,7 +15470,7 @@
     "brandon mcmanus": {
       "name": "Brandon McManus",
       "pos": "K",
-      "team": null,
+      "team": "LAR",
       "weekly": {
         "consensus": null,
         "variance": null
