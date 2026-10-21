@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-20T22:56:10.295Z",
+  "fetched_at": "2026-10-21T03:25:27.675Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1200,26 +1200,6 @@
         "sleeper"
       ]
     },
-    "mason rudolph": {
-      "name": "Mason Rudolph",
-      "pos": "QB",
-      "team": "PIT",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 5.21,
-        "sleeper": 11.68,
-        "consensus": 8.3,
-        "variance": 0.383
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "jarrett stidham": {
       "name": "Jarrett Stidham",
       "pos": "QB",
@@ -1234,6 +1214,26 @@
         "sleeper": 12.22,
         "consensus": 10.5,
         "variance": 0.154
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "mason rudolph": {
+      "name": "Mason Rudolph",
+      "pos": "QB",
+      "team": "PIT",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 5.21,
+        "sleeper": 11.68,
+        "consensus": 8.3,
+        "variance": 0.383
       },
       "sources_used": [
         "fp",
@@ -12314,24 +12314,6 @@
         "espn"
       ]
     },
-    "chiefs dst": {
-      "name": "Chiefs D/ST",
-      "pos": "DST",
-      "team": "KC",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 70.26106824,
-        "consensus": 70.26106824,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "broncos dst": {
       "name": "Broncos D/ST",
       "pos": "DST",
@@ -12344,6 +12326,24 @@
       "ros": {
         "espn": 68.4970561,
         "consensus": 68.4970561,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "chiefs dst": {
+      "name": "Chiefs D/ST",
+      "pos": "DST",
+      "team": "KC",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 70.26106824,
+        "consensus": 70.26106824,
         "variance": 0
       },
       "sources_used": [
@@ -13448,7 +13448,7 @@
     "riley patterson": {
       "name": "Riley Patterson",
       "pos": "K",
-      "team": "MIA",
+      "team": null,
       "weekly": {
         "espn": null,
         "sleeper": 5.37,
