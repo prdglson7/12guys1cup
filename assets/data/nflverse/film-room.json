@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "weeks_played": 6,
-  "generated_at": "2026-10-20T19:49:00.786099+00:00",
+  "generated_at": "2026-10-22T19:04:37.304922+00:00",
   "status": "ok",
   "weekly": {
     "RB": [
@@ -23261,12 +23261,12 @@
         "tprr": 0.88,
         "yprr": 7.07,
         "rz_tgt": 1,
-        "sep": 3.25,
-        "cushion": 5.56,
-        "adot": 8.66,
+        "sep": 3.31,
+        "cushion": 5.76,
+        "adot": 8.89,
         "catch_pct": 87.5,
-        "ngs_yac": 3.81,
-        "yac_vs_exp": 0.08
+        "ngs_yac": 3.54,
+        "yac_vs_exp": -0.18
       },
       {
         "player_id": "00-0034960",
@@ -41902,39 +41902,6 @@
         "fp": 1.8,
         "tprr": 0.35,
         "yprr": 1.21,
-        "rz_tgt": 0
-      },
-      {
-        "player_id": "00-0040390",
-        "sleeper_id": "12938",
-        "name": "Jackson Meeks",
-        "team": "DET",
-        "opp": "NYJ",
-        "week": 3,
-        "rookie": false,
-        "snap_pct": 0.15,
-        "route_pct": 0.084,
-        "tgt": 1,
-        "rec": 1,
-        "rec_yds": 8.0,
-        "rec_td": 0,
-        "car": 0,
-        "rush_yds": 0,
-        "rush_td": 0,
-        "ypc": null,
-        "yac_per_rec": 3.0,
-        "tgt_share": 0.032,
-        "ay_share": 0.026,
-        "wopr": 0.07,
-        "racr": 1.6,
-        "exp_10_rush": 0,
-        "exp_20_rush": 0,
-        "exp_40_rush": 0,
-        "exp_20_rec": 0,
-        "exp_40_rec": 0,
-        "fp": 1.8,
-        "tprr": null,
-        "yprr": null,
         "rz_tgt": 0
       },
       {
@@ -61620,6 +61587,39 @@
         "rz_tgt": 0
       },
       {
+        "player_id": "00-0040390",
+        "sleeper_id": "12938",
+        "name": "Jackson Meeks",
+        "team": "DET",
+        "opp": "NYJ",
+        "week": 3,
+        "rookie": false,
+        "snap_pct": 0.15,
+        "route_pct": 0.084,
+        "tgt": 1,
+        "rec": 1,
+        "rec_yds": 8.0,
+        "rec_td": 0,
+        "car": 0,
+        "rush_yds": 0,
+        "rush_td": 0,
+        "ypc": null,
+        "yac_per_rec": 3.0,
+        "tgt_share": 0.032,
+        "ay_share": 0.026,
+        "wopr": 0.07,
+        "racr": 1.6,
+        "exp_10_rush": 0,
+        "exp_20_rush": 0,
+        "exp_40_rush": 0,
+        "exp_20_rec": 0,
+        "exp_40_rec": 0,
+        "fp": 1.8,
+        "tprr": null,
+        "yprr": null,
+        "rz_tgt": 0
+      },
+      {
         "player_id": "00-0036754",
         "sleeper_id": "7891",
         "name": "Brock Wright",
@@ -69609,12 +69609,7 @@
         "gl_car": 4,
         "hvt": 55,
         "hvt_per_g": 9.2,
-        "touches_per_g": 7.2,
-        "ryoe_per_att": -0.9,
-        "ryoe_pct": 0.31,
-        "efficiency": 5.48,
-        "ttlos": 2.91,
-        "box8_pct": 16.1
+        "touches_per_g": 7.2
       },
       {
         "player_id": "00-0036973",
@@ -69653,12 +69648,7 @@
         "gl_car": 2,
         "hvt": 56,
         "hvt_per_g": 18.7,
-        "touches_per_g": 14.3,
-        "ryoe_per_att": -0.53,
-        "ryoe_pct": 0.267,
-        "efficiency": 3.28,
-        "ttlos": 2.64,
-        "box8_pct": 6.7
+        "touches_per_g": 14.3
       },
       {
         "player_id": "00-0038611",
@@ -69823,7 +69813,7 @@
         "ryoe_per_att": 0.05,
         "ryoe_pct": 0.347,
         "efficiency": 3.84,
-        "ttlos": 2.82,
+        "ttlos": 2.85,
         "box8_pct": 16.3
       },
       {
@@ -69980,12 +69970,7 @@
         "gl_car": 1,
         "hvt": 44,
         "hvt_per_g": 7.3,
-        "touches_per_g": 6.5,
-        "ryoe_per_att": 0.74,
-        "ryoe_pct": 0.324,
-        "efficiency": 3.85,
-        "ttlos": 2.99,
-        "box8_pct": 17.6
+        "touches_per_g": 6.5
       },
       {
         "player_id": "00-0039021",
@@ -70063,12 +70048,7 @@
         "gl_car": 1,
         "hvt": 58,
         "hvt_per_g": 19.3,
-        "touches_per_g": 15.3,
-        "ryoe_per_att": -0.28,
-        "ryoe_pct": 0.424,
-        "efficiency": 4.01,
-        "ttlos": 2.58,
-        "box8_pct": 17.6
+        "touches_per_g": 15.3
       },
       {
         "player_id": "00-0039384",
@@ -70624,12 +70604,7 @@
         "gl_car": 0,
         "hvt": 35,
         "hvt_per_g": 5.8,
-        "touches_per_g": 5.5,
-        "ryoe_per_att": 0.39,
-        "ryoe_pct": 0.333,
-        "efficiency": 3.3,
-        "ttlos": 2.65,
-        "box8_pct": 16.1
+        "touches_per_g": 5.5
       },
       {
         "player_id": "00-0037157",
@@ -71019,12 +70994,7 @@
         "gl_car": 3,
         "hvt": 33,
         "hvt_per_g": 6.6,
-        "touches_per_g": 6.4,
-        "ryoe_per_att": -0.68,
-        "ryoe_pct": 0.387,
-        "efficiency": 4.59,
-        "ttlos": 2.49,
-        "box8_pct": 25.8
+        "touches_per_g": 6.4
       },
       {
         "player_id": "00-0041326",
@@ -74414,12 +74384,12 @@
         "tprr": 0.53,
         "yprr": 3.18,
         "rz_tgt": 4,
-        "sep": 3.81,
-        "cushion": 6.29,
-        "adot": 11.88,
+        "sep": 3.83,
+        "cushion": 6.34,
+        "adot": 11.94,
         "catch_pct": 66.7,
-        "ngs_yac": 3.68,
-        "yac_vs_exp": 0.11
+        "ngs_yac": 3.59,
+        "yac_vs_exp": 0.02
       },
       {
         "player_id": "00-0037816",
@@ -75115,13 +75085,7 @@
         "fp_per_g": 7.6,
         "tprr": 0.29,
         "yprr": 1.95,
-        "rz_tgt": 4,
-        "sep": 2.87,
-        "cushion": 6.3,
-        "adot": 13.53,
-        "catch_pct": 53.3,
-        "ngs_yac": 7.67,
-        "yac_vs_exp": 3.87
+        "rz_tgt": 4
       },
       {
         "player_id": "00-0036550",
@@ -75193,13 +75157,7 @@
         "fp_per_g": 11.2,
         "tprr": 0.39,
         "yprr": 5.19,
-        "rz_tgt": 2,
-        "sep": 2.58,
-        "cushion": 5.14,
-        "adot": 17.43,
-        "catch_pct": 73.3,
-        "ngs_yac": 5.16,
-        "yac_vs_exp": 1.88
+        "rz_tgt": 2
       },
       {
         "player_id": "00-0039739",
@@ -75544,13 +75502,7 @@
         "fp_per_g": 12.7,
         "tprr": 0.49,
         "yprr": 3.59,
-        "rz_tgt": 4,
-        "sep": 4.13,
-        "cushion": 6.76,
-        "adot": 6.93,
-        "catch_pct": 76.5,
-        "ngs_yac": 9.34,
-        "yac_vs_exp": 1.89
+        "rz_tgt": 4
       },
       {
         "player_id": "00-0035891",
@@ -75583,13 +75535,7 @@
         "fp_per_g": 6.3,
         "tprr": 0.41,
         "yprr": 1.87,
-        "rz_tgt": 6,
-        "sep": 1.63,
-        "cushion": 5.89,
-        "adot": 10.67,
-        "catch_pct": 43.8,
-        "ngs_yac": 2.04,
-        "yac_vs_exp": 0.02
+        "rz_tgt": 6
       },
       {
         "player_id": "00-0040727",
@@ -75700,13 +75646,7 @@
         "fp_per_g": 7.2,
         "tprr": 0.32,
         "yprr": 2.53,
-        "rz_tgt": 3,
-        "sep": 2.59,
-        "cushion": 6.02,
-        "adot": 17.22,
-        "catch_pct": 52.9,
-        "ngs_yac": 3.4,
-        "yac_vs_exp": -0.9
+        "rz_tgt": 3
       },
       {
         "player_id": "00-0033555",
@@ -76333,13 +76273,7 @@
         "fp_per_g": 5.3,
         "tprr": 0.28,
         "yprr": 1.87,
-        "rz_tgt": 1,
-        "sep": 2.76,
-        "cushion": 7.94,
-        "adot": 13.17,
-        "catch_pct": 47.1,
-        "ngs_yac": 5.38,
-        "yac_vs_exp": 2.33
+        "rz_tgt": 1
       },
       {
         "player_id": "00-0040170",
@@ -76621,13 +76555,7 @@
         "fp_per_g": 10.7,
         "tprr": 0.53,
         "yprr": 4.07,
-        "rz_tgt": 1,
-        "sep": 2.69,
-        "cushion": 8.54,
-        "adot": 15.82,
-        "catch_pct": 60.0,
-        "ngs_yac": 2.9,
-        "yac_vs_exp": -0.88
+        "rz_tgt": 1
       },
       {
         "player_id": "00-0037614",
@@ -76732,13 +76660,7 @@
         "fp_per_g": 4.9,
         "tprr": 0.19,
         "yprr": 1.55,
-        "rz_tgt": 3,
-        "sep": 1.6,
-        "cushion": 6.33,
-        "adot": 15.24,
-        "catch_pct": 47.1,
-        "ngs_yac": 1.68,
-        "yac_vs_exp": 0.05
+        "rz_tgt": 3
       },
       {
         "player_id": "00-0032775",
@@ -76969,13 +76891,7 @@
         "fp_per_g": 3.4,
         "tprr": 0.29,
         "yprr": 2.69,
-        "rz_tgt": 0,
-        "sep": 2.0,
-        "cushion": 4.62,
-        "adot": 17.89,
-        "catch_pct": 31.2,
-        "ngs_yac": 7.92,
-        "yac_vs_exp": 3.79
+        "rz_tgt": 0
       },
       {
         "player_id": "00-0041044",
@@ -77041,13 +76957,7 @@
         "fp_per_g": 2.7,
         "tprr": 0.28,
         "yprr": 1.62,
-        "rz_tgt": 1,
-        "sep": 2.64,
-        "cushion": 5.2,
-        "adot": 16.58,
-        "catch_pct": 56.2,
-        "ngs_yac": 1.91,
-        "yac_vs_exp": -0.4
+        "rz_tgt": 1
       },
       {
         "player_id": "00-0036252",
@@ -77245,13 +77155,7 @@
         "fp_per_g": 3.6,
         "tprr": null,
         "yprr": null,
-        "rz_tgt": 2,
-        "sep": 1.54,
-        "cushion": 5.55,
-        "adot": 15.35,
-        "catch_pct": 29.4,
-        "ngs_yac": 1.22,
-        "yac_vs_exp": 0.07
+        "rz_tgt": 2
       },
       {
         "player_id": "00-0040782",
@@ -77416,13 +77320,7 @@
         "fp_per_g": 3.0,
         "tprr": 0.37,
         "yprr": 1.21,
-        "rz_tgt": 1,
-        "sep": 2.45,
-        "cushion": 6.63,
-        "adot": 12.11,
-        "catch_pct": 40.0,
-        "ngs_yac": 2.71,
-        "yac_vs_exp": -0.48
+        "rz_tgt": 1
       },
       {
         "player_id": "00-0039868",
@@ -78214,13 +78112,7 @@
         "fp_per_g": 6.4,
         "tprr": 0.19,
         "yprr": 1.55,
-        "rz_tgt": 3,
-        "sep": 1.6,
-        "cushion": 6.33,
-        "adot": 15.24,
-        "catch_pct": 47.1,
-        "ngs_yac": 1.68,
-        "yac_vs_exp": 0.05
+        "rz_tgt": 3
       },
       {
         "player_id": "00-0040184",
@@ -79243,39 +79135,6 @@
         "fp_per_g": 1.8,
         "tprr": 0.18,
         "yprr": 1.3,
-        "rz_tgt": 0
-      },
-      {
-        "player_id": "00-0040390",
-        "sleeper_id": "12938",
-        "name": "Jackson Meeks",
-        "team": "DET",
-        "games": 1,
-        "rookie": false,
-        "snap_pct": 0.042,
-        "route_pct": 0.025,
-        "car": 0,
-        "rush_yds": 0,
-        "rush_td": 0,
-        "tgt": 1,
-        "rec": 1,
-        "rec_yds": 8.0,
-        "rec_td": 0,
-        "ypc": null,
-        "yac_per_rec": 3.0,
-        "tgt_share": 0.032,
-        "ay_share": 0.026,
-        "wopr": 0.07,
-        "racr": 1.6,
-        "exp_10_rush": 0,
-        "exp_20_rush": 0,
-        "exp_40_rush": 0,
-        "exp_20_rec": 0,
-        "exp_40_rec": 0,
-        "fp": 1.8,
-        "fp_per_g": 1.8,
-        "tprr": null,
-        "yprr": null,
         "rz_tgt": 0
       },
       {
@@ -81222,13 +81081,7 @@
         "fp_per_g": 13.0,
         "tprr": 0.42,
         "yprr": 3.75,
-        "rz_tgt": 4,
-        "sep": 2.94,
-        "cushion": 4.95,
-        "adot": 11.31,
-        "catch_pct": 70.6,
-        "ngs_yac": 2.53,
-        "yac_vs_exp": -0.04
+        "rz_tgt": 4
       },
       {
         "player_id": "00-0033110",
@@ -81984,13 +81837,7 @@
         "fp_per_g": 6.9,
         "tprr": 0.38,
         "yprr": 1.93,
-        "rz_tgt": 4,
-        "sep": 2.63,
-        "cushion": 6.09,
-        "adot": 6.82,
-        "catch_pct": 76.5,
-        "ngs_yac": 5.16,
-        "yac_vs_exp": -0.53
+        "rz_tgt": 4
       },
       {
         "player_id": "00-0041395",
@@ -83836,6 +83683,39 @@
         "exp_40_rec": 0,
         "fp": 1.9,
         "fp_per_g": 0.6,
+        "tprr": null,
+        "yprr": null,
+        "rz_tgt": 0
+      },
+      {
+        "player_id": "00-0040390",
+        "sleeper_id": "12938",
+        "name": "Jackson Meeks",
+        "team": "DET",
+        "games": 1,
+        "rookie": false,
+        "snap_pct": 0.042,
+        "route_pct": 0.025,
+        "car": 0,
+        "rush_yds": 0,
+        "rush_td": 0,
+        "tgt": 1,
+        "rec": 1,
+        "rec_yds": 8.0,
+        "rec_td": 0,
+        "ypc": null,
+        "yac_per_rec": 3.0,
+        "tgt_share": 0.032,
+        "ay_share": 0.026,
+        "wopr": 0.07,
+        "racr": 1.6,
+        "exp_10_rush": 0,
+        "exp_20_rush": 0,
+        "exp_40_rush": 0,
+        "exp_20_rec": 0,
+        "exp_40_rec": 0,
+        "fp": 1.8,
+        "fp_per_g": 1.8,
         "tprr": null,
         "yprr": null,
         "rz_tgt": 0
