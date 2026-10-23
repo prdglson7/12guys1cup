@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-23T09:07:01.985Z",
+  "fetched_at": "2026-10-23T14:40:41.753Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12368,27 +12368,6 @@
         "espn"
       ]
     },
-    "spencer shrader": {
-      "name": "Spencer Shrader",
-      "pos": "K",
-      "team": "IND",
-      "weekly": {
-        "espn": null,
-        "sleeper": 7.31,
-        "consensus": 7.31,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 116.2081548,
-        "sleeper": 75,
-        "consensus": 95,
-        "variance": 0.216
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "will reichard": {
       "name": "Will Reichard",
       "pos": "K",
@@ -12404,6 +12383,27 @@
         "sleeper": 109,
         "consensus": 121.2,
         "variance": 0.103
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "spencer shrader": {
+      "name": "Spencer Shrader",
+      "pos": "K",
+      "team": "IND",
+      "weekly": {
+        "espn": null,
+        "sleeper": 7.31,
+        "consensus": 7.31,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 116.2081548,
+        "sleeper": 75,
+        "consensus": 95,
+        "variance": 0.216
       },
       "sources_used": [
         "sleeper",
@@ -12683,26 +12683,6 @@
         "espn"
       ]
     },
-    "dameon pierce": {
-      "name": "Dameon Pierce",
-      "pos": "RB",
-      "team": "PHI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 64.08129868,
-        "sleeper": 4.3,
-        "consensus": 33.3,
-        "variance": 0.874
-      },
-      "sources_used": [
-        "espn",
-        "sleeper"
-      ]
-    },
     "matt gay": {
       "name": "Matt Gay",
       "pos": "K",
@@ -12722,6 +12702,26 @@
       "sources_used": [
         "sleeper",
         "espn"
+      ]
+    },
+    "dameon pierce": {
+      "name": "Dameon Pierce",
+      "pos": "RB",
+      "team": "PHI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 64.08129868,
+        "sleeper": 4.3,
+        "consensus": 33.3,
+        "variance": 0.874
+      },
+      "sources_used": [
+        "espn",
+        "sleeper"
       ]
     },
     "kc concepcion": {
@@ -12952,6 +12952,27 @@
         "espn"
       ]
     },
+    "ryan fitzgerald": {
+      "name": "Ryan Fitzgerald",
+      "pos": "K",
+      "team": "CAR",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.01,
+        "consensus": 6.01,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 114.80741026,
+        "sleeper": 92,
+        "consensus": 103.1,
+        "variance": 0.11
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
     "cowboys dst": {
       "name": "Cowboys D/ST",
       "pos": "DST",
@@ -12985,27 +13006,6 @@
         "variance": 0
       },
       "sources_used": [
-        "espn"
-      ]
-    },
-    "ryan fitzgerald": {
-      "name": "Ryan Fitzgerald",
-      "pos": "K",
-      "team": "CAR",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.01,
-        "consensus": 6.01,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 114.80741026,
-        "sleeper": 92,
-        "consensus": 103.1,
-        "variance": 0.11
-      },
-      "sources_used": [
-        "sleeper",
         "espn"
       ]
     },
