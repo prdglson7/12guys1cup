@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-23T03:30:02.682Z",
+  "fetched_at": "2026-10-23T09:07:01.985Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -9538,19 +9538,22 @@
       "team": "BAL",
       "weekly": {
         "fp": 0.88,
+        "espn": null,
         "sleeper": 0.88,
         "consensus": 0.9,
         "variance": 0
       },
       "ros": {
         "fp": 17.97,
+        "espn": 17.37083697,
         "sleeper": 27.8,
-        "consensus": 22.6,
-        "variance": 0.215
+        "consensus": 21,
+        "variance": 0.227
       },
       "sources_used": [
         "fp",
-        "sleeper"
+        "sleeper",
+        "espn"
       ]
     },
     "hunter long": {
@@ -12949,24 +12952,6 @@
         "espn"
       ]
     },
-    "bengals dst": {
-      "name": "Bengals D/ST",
-      "pos": "DST",
-      "team": "CIN",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 57.94616257,
-        "consensus": 57.94616257,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "cowboys dst": {
       "name": "Cowboys D/ST",
       "pos": "DST",
@@ -12979,6 +12964,24 @@
       "ros": {
         "espn": 44.58143308,
         "consensus": 44.58143308,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "bengals dst": {
+      "name": "Bengals D/ST",
+      "pos": "DST",
+      "team": "CIN",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 57.94616257,
+        "consensus": 57.94616257,
         "variance": 0
       },
       "sources_used": [
@@ -13084,24 +13087,6 @@
         "espn"
       ]
     },
-    "bills dst": {
-      "name": "Bills D/ST",
-      "pos": "DST",
-      "team": "BUF",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 49.62223389,
-        "consensus": 49.62223389,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "chad ryland": {
       "name": "Chad Ryland",
       "pos": "K",
@@ -13123,36 +13108,18 @@
         "espn"
       ]
     },
-    "colts dst": {
-      "name": "Colts D/ST",
+    "bills dst": {
+      "name": "Bills D/ST",
       "pos": "DST",
-      "team": "IND",
+      "team": "BUF",
       "weekly": {
         "espn": null,
         "consensus": null,
         "variance": null
       },
       "ros": {
-        "espn": 48.6752319,
-        "consensus": 48.6752319,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
-    "giants dst": {
-      "name": "Giants D/ST",
-      "pos": "DST",
-      "team": "NYG",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 55.82776704,
-        "consensus": 55.82776704,
+        "espn": 49.62223389,
+        "consensus": 49.62223389,
         "variance": 0
       },
       "sources_used": [
@@ -13177,6 +13144,42 @@
       "sources_used": [
         "espn",
         "sleeper"
+      ]
+    },
+    "giants dst": {
+      "name": "Giants D/ST",
+      "pos": "DST",
+      "team": "NYG",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 55.82776704,
+        "consensus": 55.82776704,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "colts dst": {
+      "name": "Colts D/ST",
+      "pos": "DST",
+      "team": "IND",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 48.6752319,
+        "consensus": 48.6752319,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
       ]
     },
     "nick folk": {
@@ -13260,24 +13263,6 @@
         "espn"
       ]
     },
-    "commanders dst": {
-      "name": "Commanders D/ST",
-      "pos": "DST",
-      "team": "WAS",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 62.51881465,
-        "consensus": 62.51881465,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "saints dst": {
       "name": "Saints D/ST",
       "pos": "DST",
@@ -13290,6 +13275,24 @@
       "ros": {
         "espn": 34.80175094,
         "consensus": 34.80175094,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "commanders dst": {
+      "name": "Commanders D/ST",
+      "pos": "DST",
+      "team": "WAS",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 62.51881465,
+        "consensus": 62.51881465,
         "variance": 0
       },
       "sources_used": [
