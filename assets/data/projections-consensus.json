@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-24T03:24:15.104Z",
+  "fetched_at": "2026-10-24T08:40:16.584Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1204,26 +1204,6 @@
         "sleeper"
       ]
     },
-    "jarrett stidham": {
-      "name": "Jarrett Stidham",
-      "pos": "QB",
-      "team": "DEN",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 8.95,
-        "sleeper": 12.22,
-        "consensus": 10.5,
-        "variance": 0.154
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "mason rudolph": {
       "name": "Mason Rudolph",
       "pos": "QB",
@@ -1238,6 +1218,26 @@
         "sleeper": 11.68,
         "consensus": 8.3,
         "variance": 0.383
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "jarrett stidham": {
+      "name": "Jarrett Stidham",
+      "pos": "QB",
+      "team": "DEN",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 8.95,
+        "sleeper": 12.22,
+        "consensus": 10.5,
+        "variance": 0.154
       },
       "sources_used": [
         "fp",
@@ -12784,24 +12784,6 @@
         "espn"
       ]
     },
-    "jaguars dst": {
-      "name": "Jaguars D/ST",
-      "pos": "DST",
-      "team": "JAX",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 79.85631109,
-        "consensus": 79.85631109,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "titans dst": {
       "name": "Titans D/ST",
       "pos": "DST",
@@ -12814,6 +12796,24 @@
       "ros": {
         "espn": 52.98112149,
         "consensus": 52.98112149,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "jaguars dst": {
+      "name": "Jaguars D/ST",
+      "pos": "DST",
+      "team": "JAX",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 79.85631109,
+        "consensus": 79.85631109,
         "variance": 0
       },
       "sources_used": [
@@ -13466,24 +13466,6 @@
         "espn"
       ]
     },
-    "cardinals dst": {
-      "name": "Cardinals D/ST",
-      "pos": "DST",
-      "team": "ARI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 35.5610191,
-        "consensus": 35.5610191,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "dolphins dst": {
       "name": "Dolphins D/ST",
       "pos": "DST",
@@ -13496,6 +13478,24 @@
       "ros": {
         "espn": 32.79692451,
         "consensus": 32.79692451,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "cardinals dst": {
+      "name": "Cardinals D/ST",
+      "pos": "DST",
+      "team": "ARI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 35.5610191,
+        "consensus": 35.5610191,
         "variance": 0
       },
       "sources_used": [
