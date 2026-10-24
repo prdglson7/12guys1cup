@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-23T22:54:17.531Z",
+  "fetched_at": "2026-10-24T03:24:15.104Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1204,26 +1204,6 @@
         "sleeper"
       ]
     },
-    "mason rudolph": {
-      "name": "Mason Rudolph",
-      "pos": "QB",
-      "team": "PIT",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 5.21,
-        "sleeper": 11.68,
-        "consensus": 8.3,
-        "variance": 0.383
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "jarrett stidham": {
       "name": "Jarrett Stidham",
       "pos": "QB",
@@ -1238,6 +1218,26 @@
         "sleeper": 12.22,
         "consensus": 10.5,
         "variance": 0.154
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "mason rudolph": {
+      "name": "Mason Rudolph",
+      "pos": "QB",
+      "team": "PIT",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 5.21,
+        "sleeper": 11.68,
+        "consensus": 8.3,
+        "variance": 0.383
       },
       "sources_used": [
         "fp",
@@ -12218,27 +12218,6 @@
         "espn"
       ]
     },
-    "patrick mahomes": {
-      "name": "Patrick Mahomes",
-      "pos": "QB",
-      "team": "KC",
-      "weekly": {
-        "espn": null,
-        "sleeper": 15.03,
-        "consensus": 15.03,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 212.67001271,
-        "sleeper": 286.68,
-        "consensus": 250.7,
-        "variance": 0.148
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "kaimi fairbairn": {
       "name": "Ka'imi Fairbairn",
       "pos": "K",
@@ -12254,6 +12233,27 @@
         "sleeper": 113,
         "consensus": 115.5,
         "variance": 0.023
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "patrick mahomes": {
+      "name": "Patrick Mahomes",
+      "pos": "QB",
+      "team": "KC",
+      "weekly": {
+        "espn": null,
+        "sleeper": 15.03,
+        "consensus": 15.03,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 212.67001271,
+        "sleeper": 286.68,
+        "consensus": 250.7,
+        "variance": 0.148
       },
       "sources_used": [
         "sleeper",
@@ -12278,24 +12278,6 @@
         "espn"
       ]
     },
-    "seahawks dst": {
-      "name": "Seahawks D/ST",
-      "pos": "DST",
-      "team": "SEA",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 80.02612162,
-        "consensus": 80.02612162,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "vikings dst": {
       "name": "Vikings D/ST",
       "pos": "DST",
@@ -12308,6 +12290,24 @@
       "ros": {
         "espn": 71.45747272,
         "consensus": 71.45747272,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "seahawks dst": {
+      "name": "Seahawks D/ST",
+      "pos": "DST",
+      "team": "SEA",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 80.02612162,
+        "consensus": 80.02612162,
         "variance": 0
       },
       "sources_used": [
@@ -13466,24 +13466,6 @@
         "espn"
       ]
     },
-    "dolphins dst": {
-      "name": "Dolphins D/ST",
-      "pos": "DST",
-      "team": "MIA",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 32.79692451,
-        "consensus": 32.79692451,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "cardinals dst": {
       "name": "Cardinals D/ST",
       "pos": "DST",
@@ -13496,6 +13478,24 @@
       "ros": {
         "espn": 35.5610191,
         "consensus": 35.5610191,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "dolphins dst": {
+      "name": "Dolphins D/ST",
+      "pos": "DST",
+      "team": "MIA",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 32.79692451,
+        "consensus": 32.79692451,
         "variance": 0
       },
       "sources_used": [
