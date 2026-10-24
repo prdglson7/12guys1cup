@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-24T08:40:16.584Z",
+  "fetched_at": "2026-10-24T13:50:21.499Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12838,27 +12838,6 @@
         "espn"
       ]
     },
-    "cairo santos": {
-      "name": "Cairo Santos",
-      "pos": "K",
-      "team": "CHI",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.48,
-        "consensus": 6.48,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 97.55195452,
-        "sleeper": 100,
-        "consensus": 98.8,
-        "variance": 0.012
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "chase mclaughlin": {
       "name": "Chase McLaughlin",
       "pos": "K",
@@ -12874,6 +12853,27 @@
         "sleeper": 105,
         "consensus": 101.8,
         "variance": 0.033
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "cairo santos": {
+      "name": "Cairo Santos",
+      "pos": "K",
+      "team": "CHI",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.48,
+        "consensus": 6.48,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 97.55195452,
+        "sleeper": 100,
+        "consensus": 98.8,
+        "variance": 0.012
       },
       "sources_used": [
         "sleeper",
@@ -12919,24 +12919,6 @@
         "espn"
       ]
     },
-    "buccaneers dst": {
-      "name": "Buccaneers D/ST",
-      "pos": "DST",
-      "team": "TB",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 63.90931192,
-        "consensus": 63.90931192,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "bears dst": {
       "name": "Bears D/ST",
       "pos": "DST",
@@ -12949,6 +12931,24 @@
       "ros": {
         "espn": 54.62321958,
         "consensus": 54.62321958,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "buccaneers dst": {
+      "name": "Buccaneers D/ST",
+      "pos": "DST",
+      "team": "TB",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 63.90931192,
+        "consensus": 63.90931192,
         "variance": 0
       },
       "sources_used": [
