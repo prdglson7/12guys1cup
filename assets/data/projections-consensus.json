@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-26T03:21:36.779Z",
+  "fetched_at": "2026-10-26T09:44:34.746Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -13155,24 +13155,6 @@
         "sleeper"
       ]
     },
-    "giants dst": {
-      "name": "Giants D/ST",
-      "pos": "DST",
-      "team": "NYG",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 55.94513697,
-        "consensus": 55.94513697,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "jake elliott": {
       "name": "Jake Elliott",
       "pos": "K",
@@ -13191,6 +13173,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "giants dst": {
+      "name": "Giants D/ST",
+      "pos": "DST",
+      "team": "NYG",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 55.94513697,
+        "consensus": 55.94513697,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
