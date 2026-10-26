@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-25T23:49:42.088Z",
+  "fetched_at": "2026-10-26T03:21:36.779Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -13173,6 +13173,27 @@
         "espn"
       ]
     },
+    "jake elliott": {
+      "name": "Jake Elliott",
+      "pos": "K",
+      "team": "PHI",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.01,
+        "consensus": 6.01,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 67.8346983,
+        "sleeper": 90,
+        "consensus": 79.2,
+        "variance": 0.14
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
     "nick folk": {
       "name": "Nick Folk",
       "pos": "K",
@@ -13209,27 +13230,6 @@
         "variance": 0
       },
       "sources_used": [
-        "espn"
-      ]
-    },
-    "jake elliott": {
-      "name": "Jake Elliott",
-      "pos": "K",
-      "team": "PHI",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.01,
-        "consensus": 6.01,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 67.8346983,
-        "sleeper": 90,
-        "consensus": 79.2,
-        "variance": 0.14
-      },
-      "sources_used": [
-        "sleeper",
         "espn"
       ]
     },
