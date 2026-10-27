@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-27T15:44:19.610Z",
+  "fetched_at": "2026-10-27T20:27:17.078Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -6912,7 +6912,7 @@
     "montorie foster jr": {
       "name": "Montorie Foster Jr.",
       "pos": "WR",
-      "team": "FA",
+      "team": "SEA",
       "weekly": {
         "fp": 1.47,
         "consensus": 1.47,
@@ -12236,6 +12236,24 @@
         "espn"
       ]
     },
+    "steelers dst": {
+      "name": "Steelers D/ST",
+      "pos": "DST",
+      "team": "PIT",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 73.8756645,
+        "consensus": 73.8756645,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "patrick mahomes": {
       "name": "Patrick Mahomes",
       "pos": "QB",
@@ -12254,24 +12272,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "steelers dst": {
-      "name": "Steelers D/ST",
-      "pos": "DST",
-      "team": "PIT",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 73.8756645,
-        "consensus": 73.8756645,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -15078,7 +15078,7 @@
     "jack velling": {
       "name": "Jack Velling",
       "pos": "TE",
-      "team": "ATL",
+      "team": null,
       "weekly": {
         "consensus": null,
         "variance": null
