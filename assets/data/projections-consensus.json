@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-27T20:27:17.078Z",
+  "fetched_at": "2026-10-28T00:58:43.768Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1207,26 +1207,6 @@
         "sleeper"
       ]
     },
-    "mason rudolph": {
-      "name": "Mason Rudolph",
-      "pos": "QB",
-      "team": "PIT",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 5.21,
-        "sleeper": 11.68,
-        "consensus": 8.3,
-        "variance": 0.383
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "jarrett stidham": {
       "name": "Jarrett Stidham",
       "pos": "QB",
@@ -1241,6 +1221,26 @@
         "sleeper": 12.22,
         "consensus": 10.5,
         "variance": 0.154
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "mason rudolph": {
+      "name": "Mason Rudolph",
+      "pos": "QB",
+      "team": "PIT",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 5.21,
+        "sleeper": 11.68,
+        "consensus": 8.3,
+        "variance": 0.383
       },
       "sources_used": [
         "fp",
@@ -2571,7 +2571,7 @@
     "emari demercado": {
       "name": "Emari Demercado",
       "pos": "RB",
-      "team": "DAL",
+      "team": "FA",
       "weekly": {
         "fp": 5.29,
         "sleeper": 6.08,
@@ -5576,7 +5576,7 @@
     "malik turner": {
       "name": "Malik Turner",
       "pos": "WR",
-      "team": "SF",
+      "team": "FA",
       "weekly": {
         "fp": 6.17,
         "consensus": 6.17,
@@ -11631,7 +11631,7 @@
     "tejhaun palmer": {
       "name": "Tejhaun Palmer",
       "pos": "WR",
-      "team": "FA",
+      "team": "LAC",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -12527,24 +12527,6 @@
         "espn"
       ]
     },
-    "browns dst": {
-      "name": "Browns D/ST",
-      "pos": "DST",
-      "team": "CLE",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 65.93295268,
-        "consensus": 65.93295268,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "tyler loop": {
       "name": "Tyler Loop",
       "pos": "K",
@@ -12563,6 +12545,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "browns dst": {
+      "name": "Browns D/ST",
+      "pos": "DST",
+      "team": "CLE",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 65.93295268,
+        "consensus": 65.93295268,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
