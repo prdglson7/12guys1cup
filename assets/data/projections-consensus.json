@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-29T08:03:32.215Z",
+  "fetched_at": "2026-10-29T16:36:35.266Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1207,26 +1207,6 @@
         "sleeper"
       ]
     },
-    "mason rudolph": {
-      "name": "Mason Rudolph",
-      "pos": "QB",
-      "team": "PIT",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 5.21,
-        "sleeper": 11.68,
-        "consensus": 8.3,
-        "variance": 0.383
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "jarrett stidham": {
       "name": "Jarrett Stidham",
       "pos": "QB",
@@ -1241,6 +1221,26 @@
         "sleeper": 12.22,
         "consensus": 10.5,
         "variance": 0.154
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "mason rudolph": {
+      "name": "Mason Rudolph",
+      "pos": "QB",
+      "team": "PIT",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 5.21,
+        "sleeper": 11.68,
+        "consensus": 8.3,
+        "variance": 0.383
       },
       "sources_used": [
         "fp",
@@ -12272,18 +12272,18 @@
         "espn"
       ]
     },
-    "vikings dst": {
-      "name": "Vikings D/ST",
+    "rams dst": {
+      "name": "Rams D/ST",
       "pos": "DST",
-      "team": "MIN",
+      "team": "LAR",
       "weekly": {
         "espn": null,
         "consensus": null,
         "variance": null
       },
       "ros": {
-        "espn": 65.1527402,
-        "consensus": 65.1527402,
+        "espn": 70.6948301,
+        "consensus": 70.6948301,
         "variance": 0
       },
       "sources_used": [
@@ -12311,36 +12311,18 @@
         "espn"
       ]
     },
-    "rams dst": {
-      "name": "Rams D/ST",
+    "vikings dst": {
+      "name": "Vikings D/ST",
       "pos": "DST",
-      "team": "LAR",
+      "team": "MIN",
       "weekly": {
         "espn": null,
         "consensus": null,
         "variance": null
       },
       "ros": {
-        "espn": 70.6948301,
-        "consensus": 70.6948301,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
-    "broncos dst": {
-      "name": "Broncos D/ST",
-      "pos": "DST",
-      "team": "DEN",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 72.150051,
-        "consensus": 72.150051,
+        "espn": 65.1527402,
+        "consensus": 65.1527402,
         "variance": 0
       },
       "sources_used": [
@@ -12365,6 +12347,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "broncos dst": {
+      "name": "Broncos D/ST",
+      "pos": "DST",
+      "team": "DEN",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 72.150051,
+        "consensus": 72.150051,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
@@ -12599,6 +12599,24 @@
         "espn"
       ]
     },
+    "bengals dst": {
+      "name": "Bengals D/ST",
+      "pos": "DST",
+      "team": "CIN",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 57.33933233,
+        "consensus": 57.33933233,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "matt gay": {
       "name": "Matt Gay",
       "pos": "K",
@@ -12620,21 +12638,24 @@
         "espn"
       ]
     },
-    "bengals dst": {
-      "name": "Bengals D/ST",
-      "pos": "DST",
-      "team": "CIN",
+    "tyler bass": {
+      "name": "Tyler Bass",
+      "pos": "K",
+      "team": "BUF",
       "weekly": {
         "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 57.33933233,
-        "consensus": 57.33933233,
+        "sleeper": 6.05,
+        "consensus": 6.05,
         "variance": 0
       },
+      "ros": {
+        "espn": 110.64972453,
+        "sleeper": 103,
+        "consensus": 106.7,
+        "variance": 0.036
+      },
       "sources_used": [
+        "sleeper",
         "espn"
       ]
     },
@@ -12653,27 +12674,6 @@
         "sleeper": 101,
         "consensus": 88.7,
         "variance": 0.143
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
-    "tyler bass": {
-      "name": "Tyler Bass",
-      "pos": "K",
-      "team": "BUF",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.05,
-        "consensus": 6.05,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 110.64972453,
-        "sleeper": 103,
-        "consensus": 106.7,
-        "variance": 0.036
       },
       "sources_used": [
         "sleeper",
@@ -12740,24 +12740,6 @@
         "espn"
       ]
     },
-    "jets dst": {
-      "name": "Jets D/ST",
-      "pos": "DST",
-      "team": "NYJ",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 54.76274266,
-        "consensus": 54.76274266,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "eagles dst": {
       "name": "Eagles D/ST",
       "pos": "DST",
@@ -12794,6 +12776,42 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "jets dst": {
+      "name": "Jets D/ST",
+      "pos": "DST",
+      "team": "NYJ",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 54.76274266,
+        "consensus": 54.76274266,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "commanders dst": {
+      "name": "Commanders D/ST",
+      "pos": "DST",
+      "team": "WAS",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 50.9166674,
+        "consensus": 50.9166674,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
@@ -12875,24 +12893,6 @@
         "espn"
       ]
     },
-    "commanders dst": {
-      "name": "Commanders D/ST",
-      "pos": "DST",
-      "team": "WAS",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 50.9166674,
-        "consensus": 50.9166674,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "evan mcpherson": {
       "name": "Evan McPherson",
       "pos": "K",
@@ -12953,6 +12953,42 @@
         "espn"
       ]
     },
+    "packers dst": {
+      "name": "Packers D/ST",
+      "pos": "DST",
+      "team": "GB",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 55.33597803,
+        "consensus": 55.33597803,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "cowboys dst": {
+      "name": "Cowboys D/ST",
+      "pos": "DST",
+      "team": "DAL",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 45.52828448,
+        "consensus": 45.52828448,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "panthers dst": {
       "name": "Panthers D/ST",
       "pos": "DST",
@@ -12983,42 +13019,6 @@
       "ros": {
         "espn": 38.80620415,
         "consensus": 38.80620415,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
-    "cowboys dst": {
-      "name": "Cowboys D/ST",
-      "pos": "DST",
-      "team": "DAL",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 45.52828448,
-        "consensus": 45.52828448,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
-    "packers dst": {
-      "name": "Packers D/ST",
-      "pos": "DST",
-      "team": "GB",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 55.33597803,
-        "consensus": 55.33597803,
         "variance": 0
       },
       "sources_used": [
@@ -13145,24 +13145,6 @@
         "espn"
       ]
     },
-    "raiders dst": {
-      "name": "Raiders D/ST",
-      "pos": "DST",
-      "team": "LV",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 43.59211712,
-        "consensus": 43.59211712,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "falcons dst": {
       "name": "Falcons D/ST",
       "pos": "DST",
@@ -13175,6 +13157,24 @@
       "ros": {
         "espn": 54.49026253,
         "consensus": 54.49026253,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "raiders dst": {
+      "name": "Raiders D/ST",
+      "pos": "DST",
+      "team": "LV",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 43.59211712,
+        "consensus": 43.59211712,
         "variance": 0
       },
       "sources_used": [
@@ -13256,6 +13256,27 @@
         "espn"
       ]
     },
+    "jason sanders": {
+      "name": "Jason Sanders",
+      "pos": "K",
+      "team": "NYJ",
+      "weekly": {
+        "espn": null,
+        "sleeper": 5.55,
+        "consensus": 5.55,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 87.00372848,
+        "sleeper": 90,
+        "consensus": 88.5,
+        "variance": 0.017
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
     "austin ekeler": {
       "name": "Austin Ekeler",
       "pos": "RB",
@@ -13297,21 +13318,21 @@
         "espn"
       ]
     },
-    "jason sanders": {
-      "name": "Jason Sanders",
+    "andre szmyt": {
+      "name": "Andre Szmyt",
       "pos": "K",
-      "team": "NYJ",
+      "team": "CLE",
       "weekly": {
         "espn": null,
-        "sleeper": 5.55,
-        "consensus": 5.55,
+        "sleeper": 4.7,
+        "consensus": 4.7,
         "variance": 0
       },
       "ros": {
-        "espn": 87.00372848,
-        "sleeper": 90,
-        "consensus": 88.5,
-        "variance": 0.017
+        "espn": 90.26034473,
+        "sleeper": 84,
+        "consensus": 87,
+        "variance": 0.036
       },
       "sources_used": [
         "sleeper",
@@ -13333,27 +13354,6 @@
         "sleeper": 96,
         "consensus": 85.4,
         "variance": 0.128
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
-    "andre szmyt": {
-      "name": "Andre Szmyt",
-      "pos": "K",
-      "team": "CLE",
-      "weekly": {
-        "espn": null,
-        "sleeper": 4.7,
-        "consensus": 4.7,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 90.26034473,
-        "sleeper": 84,
-        "consensus": 87,
-        "variance": 0.036
       },
       "sources_used": [
         "sleeper",
@@ -13420,6 +13420,26 @@
         "espn"
       ]
     },
+    "tyler goodson": {
+      "name": "Tyler Goodson",
+      "pos": "RB",
+      "team": "DAL",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 42.68756091,
+        "sleeper": 4.8,
+        "consensus": 23.2,
+        "variance": 0.798
+      },
+      "sources_used": [
+        "espn",
+        "sleeper"
+      ]
+    },
     "cardinals dst": {
       "name": "Cardinals D/ST",
       "pos": "DST",
@@ -13452,26 +13472,6 @@
         "sleeper": 2.4,
         "consensus": 9.4,
         "variance": 0.75
-      },
-      "sources_used": [
-        "espn",
-        "sleeper"
-      ]
-    },
-    "tyler goodson": {
-      "name": "Tyler Goodson",
-      "pos": "RB",
-      "team": "DAL",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 42.68756091,
-        "sleeper": 4.8,
-        "consensus": 23.2,
-        "variance": 0.798
       },
       "sources_used": [
         "espn",
