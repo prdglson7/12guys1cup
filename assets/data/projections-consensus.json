@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-30T04:30:39.443Z",
+  "fetched_at": "2026-10-30T12:11:19.475Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12545,6 +12545,24 @@
         "espn"
       ]
     },
+    "bengals dst": {
+      "name": "Bengals D/ST",
+      "pos": "DST",
+      "team": "CIN",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 57.35475569,
+        "consensus": 57.35475569,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "tyler loop": {
       "name": "Tyler Loop",
       "pos": "K",
@@ -12563,24 +12581,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "bengals dst": {
-      "name": "Bengals D/ST",
-      "pos": "DST",
-      "team": "CIN",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 57.35475569,
-        "consensus": 57.35475569,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -12620,24 +12620,6 @@
         "espn"
       ]
     },
-    "chiefs dst": {
-      "name": "Chiefs D/ST",
-      "pos": "DST",
-      "team": "KC",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 60.58970017,
-        "consensus": 60.58970017,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "matt gay": {
       "name": "Matt Gay",
       "pos": "K",
@@ -12656,6 +12638,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "chiefs dst": {
+      "name": "Chiefs D/ST",
+      "pos": "DST",
+      "team": "KC",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 60.58970017,
+        "consensus": 60.58970017,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
@@ -13085,24 +13085,6 @@
         "espn"
       ]
     },
-    "bills dst": {
-      "name": "Bills D/ST",
-      "pos": "DST",
-      "team": "BUF",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 38.07330789,
-        "consensus": 38.07330789,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "falcons dst": {
       "name": "Falcons D/ST",
       "pos": "DST",
@@ -13115,6 +13097,24 @@
       "ros": {
         "espn": 54.4940776,
         "consensus": 54.4940776,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "bills dst": {
+      "name": "Bills D/ST",
+      "pos": "DST",
+      "team": "BUF",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 38.07330789,
+        "consensus": 38.07330789,
         "variance": 0
       },
       "sources_used": [
@@ -13297,26 +13297,6 @@
         "espn"
       ]
     },
-    "austin ekeler": {
-      "name": "Austin Ekeler",
-      "pos": "RB",
-      "team": "WAS",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 34.98938416,
-        "sleeper": 9.3,
-        "consensus": 21.8,
-        "variance": 0.58
-      },
-      "sources_used": [
-        "espn",
-        "sleeper"
-      ]
-    },
     "andre szmyt": {
       "name": "Andre Szmyt",
       "pos": "K",
@@ -13336,6 +13316,26 @@
       "sources_used": [
         "sleeper",
         "espn"
+      ]
+    },
+    "austin ekeler": {
+      "name": "Austin Ekeler",
+      "pos": "RB",
+      "team": "WAS",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 34.98938416,
+        "sleeper": 9.3,
+        "consensus": 21.8,
+        "variance": 0.58
+      },
+      "sources_used": [
+        "espn",
+        "sleeper"
       ]
     },
     "oronde gadsden": {
