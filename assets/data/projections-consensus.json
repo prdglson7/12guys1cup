@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-10-31T11:43:40.261Z",
+  "fetched_at": "2026-10-31T16:51:49.163Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1207,26 +1207,6 @@
         "sleeper"
       ]
     },
-    "jarrett stidham": {
-      "name": "Jarrett Stidham",
-      "pos": "QB",
-      "team": "DEN",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 8.95,
-        "sleeper": 12.22,
-        "consensus": 10.5,
-        "variance": 0.154
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "mason rudolph": {
       "name": "Mason Rudolph",
       "pos": "QB",
@@ -1241,6 +1221,26 @@
         "sleeper": 11.68,
         "consensus": 8.3,
         "variance": 0.383
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "jarrett stidham": {
+      "name": "Jarrett Stidham",
+      "pos": "QB",
+      "team": "DEN",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 8.95,
+        "sleeper": 12.22,
+        "consensus": 10.5,
+        "variance": 0.154
       },
       "sources_used": [
         "fp",
@@ -12509,6 +12509,24 @@
         "espn"
       ]
     },
+    "bengals dst": {
+      "name": "Bengals D/ST",
+      "pos": "DST",
+      "team": "CIN",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 57.35475572,
+        "consensus": 57.35475572,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "harrison butker": {
       "name": "Harrison Butker",
       "pos": "K",
@@ -12527,24 +12545,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "bengals dst": {
-      "name": "Bengals D/ST",
-      "pos": "DST",
-      "team": "CIN",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 57.35475572,
-        "consensus": 57.35475572,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -12704,27 +12704,6 @@
         "espn"
       ]
     },
-    "eddy pineiro": {
-      "name": "Eddy Pineiro",
-      "pos": "K",
-      "team": "SF",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.34,
-        "consensus": 6.34,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 75.71163808,
-        "sleeper": 101,
-        "consensus": 88.7,
-        "variance": 0.143
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "chase mclaughlin": {
       "name": "Chase McLaughlin",
       "pos": "K",
@@ -12740,6 +12719,27 @@
         "sleeper": 105,
         "consensus": 99.2,
         "variance": 0.06
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "eddy pineiro": {
+      "name": "Eddy Pineiro",
+      "pos": "K",
+      "team": "SF",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.34,
+        "consensus": 6.34,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 75.71163808,
+        "sleeper": 101,
+        "consensus": 88.7,
+        "variance": 0.143
       },
       "sources_used": [
         "sleeper",
@@ -12875,6 +12875,24 @@
         "espn"
       ]
     },
+    "bears dst": {
+      "name": "Bears D/ST",
+      "pos": "DST",
+      "team": "CHI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 55.35439536,
+        "consensus": 55.35439536,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "chad ryland": {
       "name": "Chad Ryland",
       "pos": "K",
@@ -12893,24 +12911,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "bears dst": {
-      "name": "Bears D/ST",
-      "pos": "DST",
-      "team": "CHI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 55.35439536,
-        "consensus": 55.35439536,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
