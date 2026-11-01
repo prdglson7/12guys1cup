@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-01T00:42:24.001Z",
+  "fetched_at": "2026-11-01T08:44:10.588Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12371,6 +12371,24 @@
         "espn"
       ]
     },
+    "jaguars dst": {
+      "name": "Jaguars D/ST",
+      "pos": "DST",
+      "team": "JAX",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 64.39042385,
+        "consensus": 64.39042385,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "chris boswell": {
       "name": "Chris Boswell",
       "pos": "K",
@@ -12389,24 +12407,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "jaguars dst": {
-      "name": "Jaguars D/ST",
-      "pos": "DST",
-      "team": "JAX",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 64.39042385,
-        "consensus": 64.39042385,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -12527,6 +12527,24 @@
         "espn"
       ]
     },
+    "kc concepcion": {
+      "name": "KC Concepcion",
+      "pos": "WR",
+      "team": "CLE",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 110.63122589,
+        "consensus": 110.63122589,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "harrison butker": {
       "name": "Harrison Butker",
       "pos": "K",
@@ -12545,24 +12563,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "kc concepcion": {
-      "name": "KC Concepcion",
-      "pos": "WR",
-      "team": "CLE",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 110.63122589,
-        "consensus": 110.63122589,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -12605,24 +12605,6 @@
         "espn"
       ]
     },
-    "ravens dst": {
-      "name": "Ravens D/ST",
-      "pos": "DST",
-      "team": "BAL",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 58.69875176,
-        "consensus": 58.69875176,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "matt gay": {
       "name": "Matt Gay",
       "pos": "K",
@@ -12641,6 +12623,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "ravens dst": {
+      "name": "Ravens D/ST",
+      "pos": "DST",
+      "team": "BAL",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 58.69875176,
+        "consensus": 58.69875176,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
@@ -12704,6 +12704,24 @@
         "espn"
       ]
     },
+    "commanders dst": {
+      "name": "Commanders D/ST",
+      "pos": "DST",
+      "team": "WAS",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 49.9258009,
+        "consensus": 49.9258009,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "jake bates": {
       "name": "Jake Bates",
       "pos": "K",
@@ -12722,24 +12740,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "commanders dst": {
-      "name": "Commanders D/ST",
-      "pos": "DST",
-      "team": "WAS",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 49.9258009,
-        "consensus": 49.9258009,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
