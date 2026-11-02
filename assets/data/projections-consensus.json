@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-01T21:43:32.316Z",
+  "fetched_at": "2026-11-02T01:17:18.908Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -13256,24 +13256,6 @@
         "espn"
       ]
     },
-    "colts dst": {
-      "name": "Colts D/ST",
-      "pos": "DST",
-      "team": "IND",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 47.24432354,
-        "consensus": 47.24432354,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "elijah mitchell": {
       "name": "Elijah Mitchell",
       "pos": "RB",
@@ -13294,6 +13276,24 @@
         "sleeper"
       ]
     },
+    "colts dst": {
+      "name": "Colts D/ST",
+      "pos": "DST",
+      "team": "IND",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 47.24432354,
+        "consensus": 47.24432354,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "saints dst": {
       "name": "Saints D/ST",
       "pos": "DST",
@@ -13309,6 +13309,27 @@
         "variance": 0
       },
       "sources_used": [
+        "espn"
+      ]
+    },
+    "drew stevens": {
+      "name": "Drew Stevens",
+      "pos": "K",
+      "team": "WAS",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.29,
+        "consensus": 6.29,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 90.2938232,
+        "sleeper": 74,
+        "consensus": 81.9,
+        "variance": 0.099
+      },
+      "sources_used": [
+        "sleeper",
         "espn"
       ]
     },
@@ -13369,27 +13390,6 @@
         "sleeper": 141.8,
         "consensus": 94,
         "variance": 0.531
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
-    "drew stevens": {
-      "name": "Drew Stevens",
-      "pos": "K",
-      "team": "WAS",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.29,
-        "consensus": 6.29,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 90.2938232,
-        "sleeper": 74,
-        "consensus": 81.9,
-        "variance": 0.099
       },
       "sources_used": [
         "sleeper",
