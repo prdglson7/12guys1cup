@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-02T19:58:38.063Z",
+  "fetched_at": "2026-11-03T02:10:39.070Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -7572,7 +7572,7 @@
     "khadarel hodge": {
       "name": "KhaDarel Hodge",
       "pos": "WR",
-      "team": "FA",
+      "team": "SF",
       "weekly": {
         "fp": 0.07,
         "consensus": 0.07,
@@ -10660,7 +10660,7 @@
     "audric estime": {
       "name": "Audric Estime",
       "pos": "RB",
-      "team": "CLE",
+      "team": "FA",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -10718,7 +10718,7 @@
     "terrell jennings": {
       "name": "Terrell Jennings",
       "pos": "RB",
-      "team": "FA",
+      "team": "NE",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -10810,7 +10810,7 @@
     "eric gray": {
       "name": "Eric Gray",
       "pos": "RB",
-      "team": "FA",
+      "team": "NYG",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -13516,26 +13516,6 @@
         "espn"
       ]
     },
-    "jordan watkins": {
-      "name": "Jordan Watkins",
-      "pos": "WR",
-      "team": "SF",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 16.7620647,
-        "sleeper": 2.4,
-        "consensus": 9.4,
-        "variance": 0.75
-      },
-      "sources_used": [
-        "espn",
-        "sleeper"
-      ]
-    },
     "brandon mcmanus": {
       "name": "Brandon McManus",
       "pos": "K",
@@ -13550,6 +13530,26 @@
         "sleeper": 107,
         "consensus": 84.2,
         "variance": 0.281
+      },
+      "sources_used": [
+        "espn",
+        "sleeper"
+      ]
+    },
+    "jordan watkins": {
+      "name": "Jordan Watkins",
+      "pos": "WR",
+      "team": "SF",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 16.7620647,
+        "sleeper": 2.4,
+        "consensus": 9.4,
+        "variance": 0.75
       },
       "sources_used": [
         "espn",
