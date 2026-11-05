@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "weeks_played": 8,
-  "generated_at": "2026-11-03T21:28:21.492947+00:00",
+  "generated_at": "2026-11-05T21:21:43.027432+00:00",
   "status": "ok",
   "weekly": {
     "RB": [
@@ -3422,11 +3422,11 @@
         "rush_yds": 100.0,
         "rush_td": 1,
         "ypc": 4.17,
-        "yac_per_rec": 8.0,
+        "yac_per_rec": 12.0,
         "tgt_share": 0.037,
-        "ay_share": 0.047,
-        "wopr": 0.09,
-        "racr": 2.14,
+        "ay_share": 0.021,
+        "wopr": 0.07,
+        "racr": 5.0,
         "exp_10_rush": 1,
         "exp_20_rush": 1,
         "exp_40_rush": 0,
@@ -27082,8 +27082,8 @@
         "ypc": 6.5,
         "yac_per_rec": 6.67,
         "tgt_share": 0.444,
-        "ay_share": 0.791,
-        "wopr": 1.22,
+        "ay_share": 0.812,
+        "wopr": 1.24,
         "racr": 1.28,
         "exp_10_rush": 0,
         "exp_20_rush": 0,
@@ -37978,10 +37978,10 @@
         "tprr": 0.42,
         "yprr": 1.43,
         "rz_tgt": 3,
-        "sep": 2.57,
-        "cushion": 7.59,
-        "adot": 10.49,
-        "catch_pct": 54.5,
+        "sep": 2.44,
+        "cushion": 7.88,
+        "adot": 12.11,
+        "catch_pct": 50.0,
         "ngs_yac": 0.39,
         "yac_vs_exp": -0.4
       },
@@ -42766,10 +42766,10 @@
         "tprr": 0.39,
         "yprr": 1.8,
         "rz_tgt": 0,
-        "sep": 2.69,
-        "cushion": 4.77,
-        "adot": 3.06,
-        "catch_pct": 80.0,
+        "sep": 2.36,
+        "cushion": 4.92,
+        "adot": 3.7,
+        "catch_pct": 66.7,
         "ngs_yac": 3.69,
         "yac_vs_exp": 0.93
       },
@@ -48295,7 +48295,7 @@
         "ypc": null,
         "yac_per_rec": 4.5,
         "tgt_share": 0.074,
-        "ay_share": 0.074,
+        "ay_share": 0.076,
         "wopr": 0.16,
         "racr": 1.82,
         "exp_10_rush": 0,
@@ -52786,7 +52786,7 @@
         "ypc": null,
         "yac_per_rec": 4.0,
         "tgt_share": 0.111,
-        "ay_share": -0.027,
+        "ay_share": -0.028,
         "wopr": 0.15,
         "racr": 0.0,
         "exp_10_rush": 0,
@@ -64636,7 +64636,7 @@
         "ypc": null,
         "yac_per_rec": null,
         "tgt_share": 0.037,
-        "ay_share": 0.095,
+        "ay_share": 0.097,
         "wopr": 0.12,
         "racr": 0.0,
         "exp_10_rush": 0,
@@ -72063,7 +72063,7 @@
         "ypc": 1.33,
         "yac_per_rec": 10.25,
         "tgt_share": 0.185,
-        "ay_share": 0.02,
+        "ay_share": 0.021,
         "wopr": 0.29,
         "racr": 14.0,
         "exp_10_rush": 0,
@@ -77850,7 +77850,7 @@
         "ypc": null,
         "yac_per_rec": 12.0,
         "tgt_share": 0.037,
-        "ay_share": 0.034,
+        "ay_share": 0.035,
         "wopr": 0.08,
         "racr": 3.4,
         "exp_10_rush": 0,
@@ -88412,11 +88412,11 @@
         "rec_yds": 65.0,
         "rec_td": 1,
         "ypc": 3.63,
-        "yac_per_rec": 12.5,
+        "yac_per_rec": 13.17,
         "tgt_share": 0.053,
-        "ay_share": -0.008,
+        "ay_share": -0.012,
         "wopr": 0.07,
-        "racr": -1.23,
+        "racr": -0.66,
         "exp_10_rush": 7,
         "exp_20_rush": 1,
         "exp_40_rush": 0,
@@ -88603,12 +88603,7 @@
         "gl_car": 2,
         "hvt": 95,
         "hvt_per_g": 15.8,
-        "touches_per_g": 11.3,
-        "ryoe_per_att": -1.18,
-        "ryoe_pct": 0.325,
-        "efficiency": 4.03,
-        "ttlos": 2.58,
-        "box8_pct": 7.3
+        "touches_per_g": 11.3
       },
       {
         "player_id": "00-0037256",
@@ -90341,12 +90336,7 @@
         "gl_car": 0,
         "hvt": 46,
         "hvt_per_g": 5.8,
-        "touches_per_g": 5.5,
-        "ryoe_per_att": 0.71,
-        "ryoe_pct": 0.341,
-        "efficiency": 3.22,
-        "ttlos": 2.61,
-        "box8_pct": 16.7
+        "touches_per_g": 5.5
       },
       {
         "player_id": "00-0038951",
@@ -93099,7 +93089,7 @@
         "ypc": 9.67,
         "yac_per_rec": 5.06,
         "tgt_share": 0.363,
-        "ay_share": 0.537,
+        "ay_share": 0.539,
         "wopr": 0.92,
         "racr": 1.11,
         "exp_10_rush": 1,
@@ -93970,10 +93960,10 @@
         "tprr": 0.37,
         "yprr": 2.22,
         "rz_tgt": 9,
-        "sep": 2.25,
-        "cushion": 5.81,
-        "adot": 15.5,
-        "catch_pct": 49.1,
+        "sep": 2.22,
+        "cushion": 5.91,
+        "adot": 15.76,
+        "catch_pct": 48.1,
         "ngs_yac": 4.77,
         "yac_vs_exp": 1.9
       },
@@ -94983,13 +94973,7 @@
         "fp_per_g": 12.1,
         "tprr": null,
         "yprr": null,
-        "rz_tgt": 5,
-        "sep": 4.73,
-        "cushion": 6.74,
-        "adot": 2.96,
-        "catch_pct": 80.0,
-        "ngs_yac": 5.55,
-        "yac_vs_exp": 0.62
+        "rz_tgt": 5
       },
       {
         "player_id": "00-0037741",
@@ -95751,13 +95735,7 @@
         "fp_per_g": 7.9,
         "tprr": 0.35,
         "yprr": 3.09,
-        "rz_tgt": 3,
-        "sep": 2.72,
-        "cushion": 6.12,
-        "adot": 17.31,
-        "catch_pct": 54.5,
-        "ngs_yac": 3.9,
-        "yac_vs_exp": -0.1
+        "rz_tgt": 3
       },
       {
         "player_id": "00-0041042",
@@ -96000,7 +95978,7 @@
         "ypc": 9.75,
         "yac_per_rec": 4.75,
         "tgt_share": 0.144,
-        "ay_share": 0.199,
+        "ay_share": 0.198,
         "wopr": 0.35,
         "racr": 0.43,
         "exp_10_rush": 1,
@@ -96195,13 +96173,7 @@
         "fp_per_g": 9.0,
         "tprr": 0.43,
         "yprr": 3.59,
-        "rz_tgt": 4,
-        "sep": 2.66,
-        "cushion": 6.03,
-        "adot": 14.92,
-        "catch_pct": 75.0,
-        "ngs_yac": 2.8,
-        "yac_vs_exp": 0.85
+        "rz_tgt": 4
       },
       {
         "player_id": "00-0040563",
@@ -96234,13 +96206,7 @@
         "fp_per_g": 5.0,
         "tprr": null,
         "yprr": null,
-        "rz_tgt": 4,
-        "sep": 3.08,
-        "cushion": 6.07,
-        "adot": 7.93,
-        "catch_pct": 75.0,
-        "ngs_yac": 2.49,
-        "yac_vs_exp": -0.94
+        "rz_tgt": 4
       },
       {
         "player_id": "00-0040237",
@@ -96423,13 +96389,7 @@
         "fp_per_g": 4.8,
         "tprr": null,
         "yprr": null,
-        "rz_tgt": 5,
-        "sep": 2.76,
-        "cushion": 6.65,
-        "adot": 14.92,
-        "catch_pct": 45.5,
-        "ngs_yac": 0.95,
-        "yac_vs_exp": -0.85
+        "rz_tgt": 5
       },
       {
         "player_id": "00-0036407",
@@ -96606,13 +96566,7 @@
         "fp_per_g": 5.0,
         "tprr": 0.26,
         "yprr": 3.02,
-        "rz_tgt": 5,
-        "sep": 3.81,
-        "cushion": 7.94,
-        "adot": 14.09,
-        "catch_pct": 47.6,
-        "ngs_yac": 6.05,
-        "yac_vs_exp": -0.31
+        "rz_tgt": 5
       },
       {
         "player_id": "00-0037614",
@@ -96645,13 +96599,7 @@
         "fp_per_g": 4.9,
         "tprr": null,
         "yprr": null,
-        "rz_tgt": 3,
-        "sep": 2.99,
-        "cushion": 5.65,
-        "adot": 7.62,
-        "catch_pct": 60.0,
-        "ngs_yac": 3.77,
-        "yac_vs_exp": -0.46
+        "rz_tgt": 3
       },
       {
         "player_id": "00-0040705",
@@ -96756,13 +96704,7 @@
         "fp_per_g": 4.2,
         "tprr": 0.3,
         "yprr": 1.89,
-        "rz_tgt": 2,
-        "sep": 2.52,
-        "cushion": 7.04,
-        "adot": 13.46,
-        "catch_pct": 42.9,
-        "ngs_yac": 5.12,
-        "yac_vs_exp": 1.54
+        "rz_tgt": 2
       },
       {
         "player_id": "00-0041525",
@@ -96796,10 +96738,10 @@
         "tprr": 0.39,
         "yprr": 2.54,
         "rz_tgt": 0,
-        "sep": 2.22,
-        "cushion": 4.86,
-        "adot": 12.76,
-        "catch_pct": 48.0,
+        "sep": 2.16,
+        "cushion": 4.89,
+        "adot": 12.53,
+        "catch_pct": 46.2,
         "ngs_yac": 5.77,
         "yac_vs_exp": 2.2
       },
@@ -96834,13 +96776,7 @@
         "fp_per_g": 4.7,
         "tprr": null,
         "yprr": null,
-        "rz_tgt": 3,
-        "sep": 1.72,
-        "cushion": 5.92,
-        "adot": 14.33,
-        "catch_pct": 38.1,
-        "ngs_yac": 2.74,
-        "yac_vs_exp": 1.11
+        "rz_tgt": 3
       },
       {
         "player_id": "00-0036988",
@@ -96894,7 +96830,7 @@
         "ypc": null,
         "yac_per_rec": 2.25,
         "tgt_share": 0.088,
-        "ay_share": 0.114,
+        "ay_share": 0.115,
         "wopr": 0.21,
         "racr": 0.71,
         "exp_10_rush": 0,
@@ -96939,13 +96875,7 @@
         "fp_per_g": 3.4,
         "tprr": 0.33,
         "yprr": 1.76,
-        "rz_tgt": 0,
-        "sep": 3.55,
-        "cushion": 7.56,
-        "adot": 14.28,
-        "catch_pct": 40.9,
-        "ngs_yac": 3.96,
-        "yac_vs_exp": -0.82
+        "rz_tgt": 0
       },
       {
         "player_id": "00-0041067",
@@ -96978,13 +96908,7 @@
         "fp_per_g": 3.3,
         "tprr": 0.24,
         "yprr": 0.86,
-        "rz_tgt": 4,
-        "sep": 2.77,
-        "cushion": 7.1,
-        "adot": 12.89,
-        "catch_pct": 40.9,
-        "ngs_yac": 1.38,
-        "yac_vs_exp": -0.69
+        "rz_tgt": 4
       },
       {
         "player_id": "00-0038976",
@@ -97116,13 +97040,7 @@
         "fp_per_g": 4.9,
         "tprr": 0.34,
         "yprr": 1.42,
-        "rz_tgt": 4,
-        "sep": 1.73,
-        "cushion": 6.03,
-        "adot": 16.46,
-        "catch_pct": 42.9,
-        "ngs_yac": 1.49,
-        "yac_vs_exp": 0.05
+        "rz_tgt": 4
       },
       {
         "player_id": "00-0040009",
@@ -97254,13 +97172,7 @@
         "fp_per_g": 6.4,
         "tprr": 0.55,
         "yprr": 1.99,
-        "rz_tgt": 3,
-        "sep": 2.5,
-        "cushion": 6.02,
-        "adot": 13.79,
-        "catch_pct": 45.0,
-        "ngs_yac": 2.06,
-        "yac_vs_exp": -0.8
+        "rz_tgt": 3
       },
       {
         "player_id": "00-0038824",
@@ -97623,13 +97535,7 @@
         "fp_per_g": 7.0,
         "tprr": 0.34,
         "yprr": 1.42,
-        "rz_tgt": 4,
-        "sep": 1.73,
-        "cushion": 6.03,
-        "adot": 16.46,
-        "catch_pct": 42.9,
-        "ngs_yac": 1.49,
-        "yac_vs_exp": 0.05
+        "rz_tgt": 4
       },
       {
         "player_id": "00-0040782",
@@ -102074,13 +101980,7 @@
         "fp_per_g": 6.0,
         "tprr": 0.35,
         "yprr": 2.53,
-        "rz_tgt": 5,
-        "sep": 2.84,
-        "cushion": 4.69,
-        "adot": 8.23,
-        "catch_pct": 65.0,
-        "ngs_yac": 4.78,
-        "yac_vs_exp": -0.19
+        "rz_tgt": 5
       },
       {
         "player_id": "00-0040189",
@@ -103286,7 +103186,7 @@
         "ypc": null,
         "yac_per_rec": 7.0,
         "tgt_share": 0.02,
-        "ay_share": 0.0,
+        "ay_share": 0.001,
         "wopr": 0.03,
         "racr": 1.39,
         "exp_10_rush": 0,
