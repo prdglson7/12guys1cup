@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-06T09:14:57.801Z",
+  "fetched_at": "2026-11-06T17:11:44.053Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -125,7 +125,7 @@
       },
       "ros": {
         "fp": 367.15,
-        "espn": 234.46096951,
+        "espn": 234.46081789,
         "sleeper": 361.5,
         "consensus": 324.3,
         "variance": 0.191
@@ -194,7 +194,7 @@
       },
       "ros": {
         "fp": 303.18,
-        "espn": 170.14870005,
+        "espn": 170.14842445,
         "sleeper": 299.34,
         "consensus": 260.8,
         "variance": 0.24
@@ -218,7 +218,7 @@
       },
       "ros": {
         "fp": 324.85,
-        "espn": 194.38479509,
+        "espn": 194.34185853,
         "sleeper": 320.76,
         "consensus": 283.2,
         "variance": 0.216
@@ -290,7 +290,7 @@
       },
       "ros": {
         "fp": 311.69,
-        "espn": 214.32905609,
+        "espn": 214.3101142,
         "sleeper": 303.42,
         "consensus": 278.9,
         "variance": 0.159
@@ -314,7 +314,7 @@
       },
       "ros": {
         "fp": 279.56,
-        "espn": 156.35839396,
+        "espn": 156.35833373,
         "sleeper": 270.94,
         "consensus": 238.7,
         "variance": 0.238
@@ -362,7 +362,7 @@
       },
       "ros": {
         "fp": 298.88,
-        "espn": 140.06833108,
+        "espn": 140.06856128,
         "sleeper": 283.06,
         "consensus": 244.6,
         "variance": 0.297
@@ -410,7 +410,7 @@
       },
       "ros": {
         "fp": 270.66,
-        "espn": 158.51726075,
+        "espn": 158.5414815,
         "sleeper": 270.12,
         "consensus": 235.8,
         "variance": 0.226
@@ -434,7 +434,7 @@
       },
       "ros": {
         "fp": 253.47,
-        "espn": 163.49688924,
+        "espn": 163.49686724,
         "sleeper": 235.58,
         "consensus": 219.8,
         "variance": 0.179
@@ -620,7 +620,7 @@
       },
       "ros": {
         "fp": 277.49,
-        "espn": 160.47712583,
+        "espn": 160.47720095,
         "sleeper": 278.52,
         "consensus": 241.7,
         "variance": 0.232
@@ -644,7 +644,7 @@
       },
       "ros": {
         "fp": 230.56,
-        "espn": 144.23139248,
+        "espn": 144.23118849,
         "sleeper": 222.48,
         "consensus": 201.2,
         "variance": 0.196
@@ -668,7 +668,7 @@
       },
       "ros": {
         "fp": 230.12,
-        "espn": 141.52807798,
+        "espn": 141.52827407,
         "sleeper": 177,
         "consensus": 185.4,
         "variance": 0.199
@@ -716,7 +716,7 @@
       },
       "ros": {
         "fp": 62.69,
-        "espn": 30.4086805,
+        "espn": 30.40866874,
         "sleeper": 39.16,
         "consensus": 45,
         "variance": 0.309
@@ -740,7 +740,7 @@
       },
       "ros": {
         "fp": 158.01,
-        "espn": 121.11067254,
+        "espn": 121.11095503,
         "sleeper": 102.06,
         "consensus": 128.3,
         "variance": 0.183
@@ -800,7 +800,7 @@
       },
       "ros": {
         "fp": 170.47,
-        "espn": 118.0555627,
+        "espn": 118.05566711,
         "sleeper": 212.16,
         "consensus": 167.9,
         "variance": 0.231
@@ -1002,7 +1002,7 @@
         "variance": 0
       },
       "ros": {
-        "espn": 15.67027164,
+        "espn": 15.67025232,
         "sleeper": 12.44,
         "consensus": 14,
         "variance": 0.115
@@ -1165,7 +1165,7 @@
       },
       "ros": {
         "fp": 7.87,
-        "espn": 138.45374772,
+        "espn": 138.4536848,
         "sleeper": 27.96,
         "consensus": 54.8,
         "variance": 0.988
@@ -1216,26 +1216,6 @@
         "sleeper"
       ]
     },
-    "mason rudolph": {
-      "name": "Mason Rudolph",
-      "pos": "QB",
-      "team": "PIT",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 5.21,
-        "sleeper": 11.68,
-        "consensus": 8.3,
-        "variance": 0.383
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "jarrett stidham": {
       "name": "Jarrett Stidham",
       "pos": "QB",
@@ -1250,6 +1230,26 @@
         "sleeper": 12.22,
         "consensus": 10.5,
         "variance": 0.154
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "mason rudolph": {
+      "name": "Mason Rudolph",
+      "pos": "QB",
+      "team": "PIT",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 5.21,
+        "sleeper": 11.68,
+        "consensus": 8.3,
+        "variance": 0.383
       },
       "sources_used": [
         "fp",
@@ -1429,10 +1429,10 @@
       },
       "ros": {
         "fp": 353.16,
-        "espn": 166.62804758,
+        "espn": 167.70738715,
         "sleeper": 324.9,
-        "consensus": 286.3,
-        "variance": 0.292
+        "consensus": 286.6,
+        "variance": 0.289
       },
       "sources_used": [
         "fp",
@@ -1453,7 +1453,7 @@
       },
       "ros": {
         "fp": 309.29,
-        "espn": 154.30304786,
+        "espn": 154.30302573,
         "sleeper": 272.3,
         "consensus": 249.3,
         "variance": 0.269
@@ -1594,7 +1594,7 @@
       },
       "ros": {
         "fp": 248.46,
-        "espn": 80.90024351,
+        "espn": 80.90026674,
         "sleeper": 242.9,
         "consensus": 194.8,
         "variance": 0.407
@@ -1642,7 +1642,7 @@
       },
       "ros": {
         "fp": 246.5,
-        "espn": 109.127257,
+        "espn": 109.12822951,
         "sleeper": 211,
         "consensus": 192.4,
         "variance": 0.308
@@ -1666,7 +1666,7 @@
       },
       "ros": {
         "fp": 285.81,
-        "espn": 161.83997059,
+        "espn": 161.83999166,
         "sleeper": 255.2,
         "consensus": 237.5,
         "variance": 0.225
@@ -1690,7 +1690,7 @@
       },
       "ros": {
         "fp": 234.18,
-        "espn": 113.56161374,
+        "espn": 113.56163245,
         "sleeper": 207.7,
         "consensus": 188.2,
         "variance": 0.28
@@ -1738,7 +1738,7 @@
       },
       "ros": {
         "fp": 212.26,
-        "espn": 157.82693337,
+        "espn": 157.82693758,
         "sleeper": 197.3,
         "consensus": 190.5,
         "variance": 0.121
@@ -1810,7 +1810,7 @@
       },
       "ros": {
         "fp": 233.51,
-        "espn": 128.62012969,
+        "espn": 128.62026725,
         "sleeper": 201.2,
         "consensus": 190.5,
         "variance": 0.234
@@ -1834,10 +1834,10 @@
       },
       "ros": {
         "fp": 198.25,
-        "espn": 113.18161741,
+        "espn": 116.00052544,
         "sleeper": 169,
-        "consensus": 162.4,
-        "variance": 0.22
+        "consensus": 163.3,
+        "variance": 0.211
       },
       "sources_used": [
         "fp",
@@ -1858,7 +1858,7 @@
       },
       "ros": {
         "fp": 225.99,
-        "espn": 146.0236421,
+        "espn": 146.02362732,
         "sleeper": 208,
         "consensus": 195.4,
         "variance": 0.177
@@ -1882,7 +1882,7 @@
       },
       "ros": {
         "fp": 224.76,
-        "espn": 161.49178782,
+        "espn": 161.49179142,
         "sleeper": 208,
         "consensus": 199.7,
         "variance": 0.135
@@ -1906,7 +1906,7 @@
       },
       "ros": {
         "fp": 172.96,
-        "espn": 86.44821748,
+        "espn": 86.44821742,
         "sleeper": 161.1,
         "consensus": 142.3,
         "variance": 0.273
@@ -1954,7 +1954,7 @@
       },
       "ros": {
         "fp": 163.45,
-        "espn": 90.4893468,
+        "espn": 90.48936127,
         "sleeper": 170,
         "consensus": 143,
         "variance": 0.255
@@ -1978,7 +1978,7 @@
       },
       "ros": {
         "fp": 188.31,
-        "espn": 161.88415322,
+        "espn": 161.88294148,
         "sleeper": 174.8,
         "consensus": 175.7,
         "variance": 0.062
@@ -2002,7 +2002,7 @@
       },
       "ros": {
         "fp": 178.98,
-        "espn": 145.12215884,
+        "espn": 145.12216091,
         "sleeper": 160.1,
         "consensus": 162.3,
         "variance": 0.086
@@ -2026,7 +2026,7 @@
       },
       "ros": {
         "fp": 231.74,
-        "espn": 52.75483689,
+        "espn": 52.75486565,
         "sleeper": 211.8,
         "consensus": 169.9,
         "variance": 0.484
@@ -2050,7 +2050,7 @@
       },
       "ros": {
         "fp": 209.45,
-        "espn": 118.22571237,
+        "espn": 118.22568825,
         "sleeper": 196,
         "consensus": 176.9,
         "variance": 0.23
@@ -2146,7 +2146,7 @@
       },
       "ros": {
         "fp": 174.99,
-        "espn": 75.81766383,
+        "espn": 75.81765553,
         "sleeper": 160.2,
         "consensus": 139.5,
         "variance": 0.319
@@ -2236,7 +2236,7 @@
       },
       "ros": {
         "fp": 155.33,
-        "espn": 76.36311036,
+        "espn": 76.36309929,
         "sleeper": 154.6,
         "consensus": 130.7,
         "variance": 0.288
@@ -2308,7 +2308,7 @@
       },
       "ros": {
         "fp": 131.48,
-        "espn": 92.0080694,
+        "espn": 92.00807333,
         "sleeper": 83.8,
         "consensus": 103.7,
         "variance": 0.203
@@ -2353,7 +2353,7 @@
       },
       "ros": {
         "fp": 128.85,
-        "espn": 59.74487917,
+        "espn": 59.74487402,
         "sleeper": 114.6,
         "consensus": 102.8,
         "variance": 0.295
@@ -2377,7 +2377,7 @@
       },
       "ros": {
         "fp": 99.7,
-        "espn": 86.34957578,
+        "espn": 86.34958492,
         "sleeper": 77.2,
         "consensus": 88.2,
         "variance": 0.105
@@ -2401,7 +2401,7 @@
       },
       "ros": {
         "fp": 88.42,
-        "espn": 59.28019328,
+        "espn": 59.27997118,
         "sleeper": 132.5,
         "consensus": 93.8,
         "variance": 0.322
@@ -2425,7 +2425,7 @@
       },
       "ros": {
         "fp": 152.56,
-        "espn": 128.33893942,
+        "espn": 128.49630436,
         "sleeper": 128.1,
         "consensus": 137.1,
         "variance": 0.084
@@ -2449,7 +2449,7 @@
       },
       "ros": {
         "fp": 84.62,
-        "espn": 74.45296492,
+        "espn": 74.45295089,
         "sleeper": 97.5,
         "consensus": 85.7,
         "variance": 0.11
@@ -2518,7 +2518,7 @@
       },
       "ros": {
         "fp": 94.42,
-        "espn": 91.59604946,
+        "espn": 91.59936989,
         "sleeper": 52.2,
         "consensus": 79.7,
         "variance": 0.243
@@ -2608,7 +2608,7 @@
       },
       "ros": {
         "fp": 43.52,
-        "espn": 24.73502158,
+        "espn": 24.73501441,
         "sleeper": 25.2,
         "consensus": 31.7,
         "variance": 0.281
@@ -2632,7 +2632,7 @@
       },
       "ros": {
         "fp": 89.81,
-        "espn": 54.60061793,
+        "espn": 54.60060648,
         "sleeper": 67.7,
         "consensus": 71.7,
         "variance": 0.206
@@ -2656,10 +2656,10 @@
       },
       "ros": {
         "fp": 85.51,
-        "espn": 54.0685344,
+        "espn": 48.00446236,
         "sleeper": 69.9,
-        "consensus": 70.7,
-        "variance": 0.184
+        "consensus": 68.8,
+        "variance": 0.227
       },
       "sources_used": [
         "fp",
@@ -2890,9 +2890,9 @@
       },
       "ros": {
         "fp": 15.06,
-        "espn": 34.05116548,
-        "consensus": 23.8,
-        "variance": 0.387
+        "espn": 36.3925186,
+        "consensus": 24.9,
+        "variance": 0.415
       },
       "sources_used": [
         "fp",
@@ -2913,7 +2913,7 @@
       },
       "ros": {
         "fp": 59.06,
-        "espn": 47.67434783,
+        "espn": 47.67719949,
         "sleeper": 44.1,
         "consensus": 50.6,
         "variance": 0.127
@@ -2982,7 +2982,7 @@
       },
       "ros": {
         "fp": 49.36,
-        "espn": 132.80308882,
+        "espn": 132.80310179,
         "sleeper": 63.9,
         "consensus": 79.9,
         "variance": 0.444
@@ -3030,7 +3030,7 @@
       },
       "ros": {
         "fp": 28.25,
-        "espn": 149.88654501,
+        "espn": 149.89249053,
         "sleeper": 23.2,
         "consensus": 64.2,
         "variance": 0.873
@@ -3141,7 +3141,7 @@
       },
       "ros": {
         "fp": 38.56,
-        "espn": 14.16015319,
+        "espn": 14.1598253,
         "sleeper": 56.2,
         "consensus": 36.8,
         "variance": 0.475
@@ -3165,7 +3165,7 @@
       },
       "ros": {
         "fp": 29.43,
-        "espn": 7.31678339,
+        "espn": 7.31678565,
         "sleeper": 9,
         "consensus": 15.9,
         "variance": 0.659
@@ -3632,7 +3632,7 @@
       },
       "ros": {
         "fp": 20.57,
-        "espn": 4.32182481,
+        "espn": 4.32182475,
         "consensus": 13.1,
         "variance": 0.653
       },
@@ -3753,7 +3753,7 @@
         "variance": 0
       },
       "ros": {
-        "espn": 1.65265132,
+        "espn": 1.65265135,
         "sleeper": 56.6,
         "consensus": 29.9,
         "variance": 0.943
@@ -3801,7 +3801,7 @@
       },
       "ros": {
         "fp": 324.18,
-        "espn": 195.5243802,
+        "espn": 195.52437155,
         "sleeper": 284.6,
         "consensus": 271.5,
         "variance": 0.201
@@ -3849,7 +3849,7 @@
       },
       "ros": {
         "fp": 333.4,
-        "espn": 191.98680273,
+        "espn": 191.98679529,
         "sleeper": 280.5,
         "consensus": 272.4,
         "variance": 0.217
@@ -3873,7 +3873,7 @@
       },
       "ros": {
         "fp": 285.24,
-        "espn": 181.13505712,
+        "espn": 181.13506169,
         "sleeper": 270.5,
         "consensus": 248.2,
         "variance": 0.187
@@ -3897,7 +3897,7 @@
       },
       "ros": {
         "fp": 252.44,
-        "espn": 116.7868236,
+        "espn": 116.78684009,
         "sleeper": 245.7,
         "consensus": 208.3,
         "variance": 0.305
@@ -4017,9 +4017,9 @@
       },
       "ros": {
         "fp": 265.79,
-        "espn": 107.57082968,
+        "espn": 107.54180563,
         "sleeper": 167,
-        "consensus": 184.6,
+        "consensus": 184.5,
         "variance": 0.362
       },
       "sources_used": [
@@ -4041,7 +4041,7 @@
       },
       "ros": {
         "fp": 252.19,
-        "espn": 117.03072211,
+        "espn": 117.03071086,
         "sleeper": 228.2,
         "consensus": 202.6,
         "variance": 0.296
@@ -4065,7 +4065,7 @@
       },
       "ros": {
         "fp": 234.15,
-        "espn": 106.20283465,
+        "espn": 106.20282436,
         "sleeper": 229.2,
         "consensus": 193,
         "variance": 0.312
@@ -4113,7 +4113,7 @@
       },
       "ros": {
         "fp": 271.24,
-        "espn": 149.46193198,
+        "espn": 149.51682293,
         "sleeper": 250.2,
         "consensus": 226.7,
         "variance": 0.238
@@ -4161,10 +4161,10 @@
       },
       "ros": {
         "fp": 236.81,
-        "espn": 119.48379935,
+        "espn": 106.76672241,
         "sleeper": 224.9,
-        "consensus": 196.6,
-        "variance": 0.272
+        "consensus": 192.7,
+        "variance": 0.31
       },
       "sources_used": [
         "fp",
@@ -4326,7 +4326,7 @@
       },
       "ros": {
         "fp": 202.73,
-        "espn": 135.30304546,
+        "espn": 135.30307459,
         "sleeper": 209,
         "consensus": 183.9,
         "variance": 0.183
@@ -4374,7 +4374,7 @@
       },
       "ros": {
         "fp": 193.93,
-        "espn": 116.77008728,
+        "espn": 116.77006991,
         "sleeper": 183.3,
         "consensus": 166.6,
         "variance": 0.207
@@ -4398,7 +4398,7 @@
       },
       "ros": {
         "fp": 196.55,
-        "espn": 131.92460561,
+        "espn": 131.92220385,
         "sleeper": 212.4,
         "consensus": 181.8,
         "variance": 0.193
@@ -4422,7 +4422,7 @@
       },
       "ros": {
         "fp": 193.09,
-        "espn": 97.90088417,
+        "espn": 97.90086784,
         "sleeper": 207.9,
         "consensus": 168.5,
         "variance": 0.293
@@ -4491,7 +4491,7 @@
       },
       "ros": {
         "fp": 199.86,
-        "espn": 129.22070333,
+        "espn": 129.22069891,
         "sleeper": 222.2,
         "consensus": 185.3,
         "variance": 0.216
@@ -4680,7 +4680,7 @@
       },
       "ros": {
         "fp": 173.42,
-        "espn": 69.4783787,
+        "espn": 69.4771624,
         "sleeper": 195.4,
         "consensus": 148.5,
         "variance": 0.376
@@ -4752,7 +4752,7 @@
       },
       "ros": {
         "fp": 173.95,
-        "espn": 84.55431359,
+        "espn": 84.55431415,
         "sleeper": 170.7,
         "consensus": 145.3,
         "variance": 0.289
@@ -4797,7 +4797,7 @@
       },
       "ros": {
         "fp": 144.42,
-        "espn": 122.24018195,
+        "espn": 122.24016441,
         "sleeper": 165.9,
         "consensus": 144.6,
         "variance": 0.124
@@ -4845,7 +4845,7 @@
       },
       "ros": {
         "fp": 128.07,
-        "espn": 80.65220995,
+        "espn": 80.65221258,
         "sleeper": 125.9,
         "consensus": 112.7,
         "variance": 0.196
@@ -4869,7 +4869,7 @@
       },
       "ros": {
         "fp": 180.38,
-        "espn": 111.64005634,
+        "espn": 111.63797424,
         "sleeper": 169.3,
         "consensus": 155.5,
         "variance": 0.196
@@ -4914,7 +4914,7 @@
       },
       "ros": {
         "fp": 158.98,
-        "espn": 155.86436129,
+        "espn": 155.86438781,
         "sleeper": 170,
         "consensus": 161.6,
         "variance": 0.038
@@ -4938,7 +4938,7 @@
       },
       "ros": {
         "fp": 119.01,
-        "espn": 64.37819768,
+        "espn": 64.37819505,
         "sleeper": 130.6,
         "consensus": 105.9,
         "variance": 0.276
@@ -4986,10 +4986,10 @@
       },
       "ros": {
         "fp": 164.63,
-        "espn": 126.64029178,
+        "espn": 127.04489667,
         "sleeper": 157.3,
-        "consensus": 150.5,
-        "variance": 0.11
+        "consensus": 150.6,
+        "variance": 0.109
       },
       "sources_used": [
         "fp",
@@ -5010,7 +5010,7 @@
       },
       "ros": {
         "fp": 153.21,
-        "espn": 65.1248429,
+        "espn": 65.12484536,
         "sleeper": 138.1,
         "consensus": 121,
         "variance": 0.324
@@ -5154,7 +5154,7 @@
       },
       "ros": {
         "fp": 123.71,
-        "espn": 42.04260027,
+        "espn": 42.04262628,
         "sleeper": 102.3,
         "consensus": 91.5,
         "variance": 0.387
@@ -5199,7 +5199,7 @@
       },
       "ros": {
         "fp": 153.81,
-        "espn": 57.39187253,
+        "espn": 57.39185392,
         "sleeper": 168.5,
         "consensus": 128.8,
         "variance": 0.389
@@ -5223,10 +5223,10 @@
       },
       "ros": {
         "fp": 94.6,
-        "espn": 92.22429748,
+        "espn": 93.81127238,
         "sleeper": 98.3,
-        "consensus": 95.1,
-        "variance": 0.026
+        "consensus": 95.6,
+        "variance": 0.02
       },
       "sources_used": [
         "fp",
@@ -5316,7 +5316,7 @@
       },
       "ros": {
         "fp": 149.24,
-        "espn": 41.08214221,
+        "espn": 41.082161,
         "sleeper": 119.6,
         "consensus": 106.1,
         "variance": 0.442
@@ -5340,7 +5340,7 @@
       },
       "ros": {
         "fp": 93.18,
-        "espn": 49.28794643,
+        "espn": 49.28797108,
         "sleeper": 104.9,
         "consensus": 83.4,
         "variance": 0.29
@@ -5436,7 +5436,7 @@
       },
       "ros": {
         "fp": 115.28,
-        "espn": 93.22542527,
+        "espn": 93.24094927,
         "sleeper": 131.3,
         "consensus": 113.7,
         "variance": 0.138
@@ -5460,7 +5460,7 @@
       },
       "ros": {
         "fp": 76.96,
-        "espn": 90.15870276,
+        "espn": 90.17410918,
         "sleeper": 94.8,
         "consensus": 86.9,
         "variance": 0.087
@@ -5508,7 +5508,7 @@
       },
       "ros": {
         "fp": 141.58,
-        "espn": 79.37371986,
+        "espn": 79.37372329,
         "sleeper": 106.8,
         "consensus": 111,
         "variance": 0.233
@@ -5532,7 +5532,7 @@
       },
       "ros": {
         "fp": 99.08,
-        "espn": 62.49080532,
+        "espn": 62.49078214,
         "sleeper": 112.9,
         "consensus": 92.3,
         "variance": 0.232
@@ -5580,7 +5580,7 @@
       },
       "ros": {
         "fp": 75.3,
-        "espn": 49.09035503,
+        "espn": 49.09032618,
         "sleeper": 96.4,
         "consensus": 74.1,
         "variance": 0.263
@@ -5712,7 +5712,7 @@
       },
       "ros": {
         "fp": 89.7,
-        "espn": 85.36384174,
+        "espn": 85.38550433,
         "sleeper": 80.4,
         "consensus": 85.3,
         "variance": 0.045
@@ -5781,7 +5781,7 @@
       },
       "ros": {
         "fp": 108.29,
-        "espn": 69.94322332,
+        "espn": 69.95594328,
         "sleeper": 67.2,
         "consensus": 83,
         "variance": 0.229
@@ -5829,10 +5829,10 @@
       },
       "ros": {
         "fp": 106.85,
-        "espn": 87.40290951,
+        "espn": 89.20002633,
         "sleeper": 127.1,
-        "consensus": 107.5,
-        "variance": 0.151
+        "consensus": 108,
+        "variance": 0.144
       },
       "sources_used": [
         "fp",
@@ -5877,7 +5877,7 @@
       },
       "ros": {
         "fp": 72.95,
-        "espn": 51.95486539,
+        "espn": 51.95487347,
         "sleeper": 97.9,
         "consensus": 74.6,
         "variance": 0.253
@@ -5922,7 +5922,7 @@
       },
       "ros": {
         "fp": 62.85,
-        "espn": 52.98176501,
+        "espn": 52.98178065,
         "sleeper": 85.8,
         "consensus": 67.3,
         "variance": 0.205
@@ -5967,10 +5967,10 @@
       },
       "ros": {
         "fp": 81.99,
-        "espn": 96.49562788,
+        "espn": 97.30663166,
         "sleeper": 75.2,
-        "consensus": 84.3,
-        "variance": 0.105
+        "consensus": 84.5,
+        "variance": 0.109
       },
       "sources_used": [
         "fp",
@@ -5991,7 +5991,7 @@
       },
       "ros": {
         "fp": 90.1,
-        "espn": 57.33849735,
+        "espn": 57.33849642,
         "sleeper": 56.7,
         "consensus": 69,
         "variance": 0.229
@@ -6015,7 +6015,7 @@
       },
       "ros": {
         "fp": 93.41,
-        "espn": 75.56233861,
+        "espn": 75.59766843,
         "sleeper": 71.2,
         "consensus": 80.6,
         "variance": 0.12
@@ -6039,7 +6039,7 @@
       },
       "ros": {
         "fp": 78.02,
-        "espn": 21.26425384,
+        "espn": 21.26425172,
         "sleeper": 71.5,
         "consensus": 58.3,
         "variance": 0.445
@@ -6063,7 +6063,7 @@
       },
       "ros": {
         "fp": 40.38,
-        "espn": 25.94325985,
+        "espn": 25.943259,
         "sleeper": 73.4,
         "consensus": 46.7,
         "variance": 0.426
@@ -6246,7 +6246,7 @@
       },
       "ros": {
         "fp": 69.09,
-        "espn": 31.316303,
+        "espn": 31.33140966,
         "sleeper": 75.8,
         "consensus": 59.6,
         "variance": 0.333
@@ -6270,10 +6270,10 @@
       },
       "ros": {
         "fp": 62.71,
-        "espn": 75.40152459,
+        "espn": 74.77640227,
         "sleeper": 57.6,
-        "consensus": 65,
-        "variance": 0.115
+        "consensus": 64.8,
+        "variance": 0.111
       },
       "sources_used": [
         "fp",
@@ -6366,7 +6366,7 @@
       },
       "ros": {
         "fp": 18.75,
-        "espn": 17.17579448,
+        "espn": 17.17579618,
         "sleeper": 63,
         "consensus": 32.7,
         "variance": 0.644
@@ -6390,7 +6390,7 @@
       },
       "ros": {
         "fp": 53.21,
-        "espn": 45.93644073,
+        "espn": 45.93643994,
         "sleeper": 27.7,
         "consensus": 42.6,
         "variance": 0.254
@@ -6431,7 +6431,7 @@
       },
       "ros": {
         "fp": 66.78,
-        "espn": 38.60265666,
+        "espn": 38.60798588,
         "sleeper": 32.4,
         "consensus": 46.8,
         "variance": 0.326
@@ -6455,7 +6455,7 @@
       },
       "ros": {
         "fp": 40.86,
-        "espn": 4.1046824,
+        "espn": 4.10468325,
         "sleeper": 62.8,
         "consensus": 36.7,
         "variance": 0.674
@@ -6479,7 +6479,7 @@
       },
       "ros": {
         "fp": 80.24,
-        "espn": 24.59162102,
+        "espn": 24.59162226,
         "sleeper": 78.5,
         "consensus": 62.5,
         "variance": 0.423
@@ -6503,7 +6503,7 @@
       },
       "ros": {
         "fp": 21.92,
-        "espn": 23.9907483,
+        "espn": 23.9907512,
         "sleeper": 57.2,
         "consensus": 34.1,
         "variance": 0.47
@@ -6569,7 +6569,7 @@
       },
       "ros": {
         "fp": 52.67,
-        "espn": 37.69289609,
+        "espn": 37.69290864,
         "sleeper": 94.5,
         "consensus": 61.7,
         "variance": 0.39
@@ -6617,10 +6617,10 @@
       },
       "ros": {
         "fp": 19.01,
-        "espn": 13.08050859,
+        "espn": 17.34392876,
         "sleeper": 31.3,
-        "consensus": 21.2,
-        "variance": 0.359
+        "consensus": 22.5,
+        "variance": 0.276
       },
       "sources_used": [
         "fp",
@@ -6641,7 +6641,7 @@
       },
       "ros": {
         "fp": 102.23,
-        "espn": 44.78884491,
+        "espn": 44.78805589,
         "sleeper": 104.6,
         "consensus": 85.3,
         "variance": 0.33
@@ -6665,10 +6665,10 @@
       },
       "ros": {
         "fp": 34.84,
-        "espn": 23.6531225,
+        "espn": 21.36091393,
         "sleeper": 4.9,
-        "consensus": 21.6,
-        "variance": 0.585
+        "consensus": 20.9,
+        "variance": 0.601
       },
       "sources_used": [
         "fp",
@@ -6689,10 +6689,10 @@
       },
       "ros": {
         "fp": 30.1,
-        "espn": 25.94911845,
+        "espn": 24.71379035,
         "sleeper": 31.2,
-        "consensus": 29.2,
-        "variance": 0.078
+        "consensus": 28.8,
+        "variance": 0.099
       },
       "sources_used": [
         "fp",
@@ -6880,7 +6880,7 @@
       },
       "ros": {
         "fp": 9.34,
-        "espn": 5.33116375,
+        "espn": 5.33116226,
         "sleeper": 1.7,
         "consensus": 5.6,
         "variance": 0.572
@@ -6965,7 +6965,7 @@
       },
       "ros": {
         "fp": 17.23,
-        "espn": 27.25851654,
+        "espn": 27.25851599,
         "consensus": 21.8,
         "variance": 0.225
       },
@@ -7228,7 +7228,7 @@
       },
       "ros": {
         "fp": 8.61,
-        "espn": 50.89476555,
+        "espn": 50.89385452,
         "sleeper": 59.6,
         "consensus": 38.4,
         "variance": 0.561
@@ -7289,7 +7289,7 @@
       },
       "ros": {
         "fp": 26.77,
-        "espn": 4.50033708,
+        "espn": 4.50033824,
         "consensus": 16.5,
         "variance": 0.712
       },
@@ -7416,7 +7416,7 @@
       },
       "ros": {
         "fp": 9.18,
-        "espn": 26.25282887,
+        "espn": 26.25282609,
         "consensus": 17,
         "variance": 0.482
       },
@@ -7715,7 +7715,7 @@
       },
       "ros": {
         "fp": 200.77,
-        "espn": 100.34552356,
+        "espn": 100.34553031,
         "sleeper": 201.1,
         "consensus": 169.8,
         "variance": 0.283
@@ -7835,7 +7835,7 @@
       },
       "ros": {
         "fp": 172.29,
-        "espn": 56.46111474,
+        "espn": 56.46110609,
         "sleeper": 162.5,
         "consensus": 133.3,
         "variance": 0.402
@@ -7931,9 +7931,9 @@
       },
       "ros": {
         "fp": 180.63,
-        "espn": 88.62990512,
+        "espn": 88.66848412,
         "sleeper": 171.6,
-        "consensus": 149.2,
+        "consensus": 149.3,
         "variance": 0.282
       },
       "sources_used": [
@@ -7955,7 +7955,7 @@
       },
       "ros": {
         "fp": 185.65,
-        "espn": 105.47941054,
+        "espn": 105.47941442,
         "sleeper": 171.4,
         "consensus": 156.2,
         "variance": 0.227
@@ -7979,10 +7979,10 @@
       },
       "ros": {
         "fp": 158.1,
-        "espn": 73.11044609,
+        "espn": 82.55065065,
         "sleeper": 153.5,
-        "consensus": 130.3,
-        "variance": 0.304
+        "consensus": 133.2,
+        "variance": 0.263
       },
       "sources_used": [
         "fp",
@@ -8003,7 +8003,7 @@
       },
       "ros": {
         "fp": 156.75,
-        "espn": 95.48004172,
+        "espn": 95.480057,
         "sleeper": 163.6,
         "consensus": 140.1,
         "variance": 0.221
@@ -8027,7 +8027,7 @@
       },
       "ros": {
         "fp": 158.68,
-        "espn": 41.98303474,
+        "espn": 41.98305864,
         "sleeper": 159.8,
         "consensus": 123,
         "variance": 0.46
@@ -8051,7 +8051,7 @@
       },
       "ros": {
         "fp": 153.14,
-        "espn": 97.15641318,
+        "espn": 97.15426923,
         "sleeper": 161,
         "consensus": 138.4,
         "variance": 0.207
@@ -8099,7 +8099,7 @@
       },
       "ros": {
         "fp": 112.51,
-        "espn": 73.04270721,
+        "espn": 73.0427345,
         "sleeper": 142.4,
         "consensus": 110.1,
         "variance": 0.26
@@ -8147,7 +8147,7 @@
       },
       "ros": {
         "fp": 124.73,
-        "espn": 54.25390994,
+        "espn": 54.25393663,
         "sleeper": 122.3,
         "consensus": 102.2,
         "variance": 0.325
@@ -8171,7 +8171,7 @@
       },
       "ros": {
         "fp": 142.39,
-        "espn": 85.36151645,
+        "espn": 85.3614878,
         "sleeper": 150.9,
         "consensus": 127.5,
         "variance": 0.231
@@ -8195,7 +8195,7 @@
       },
       "ros": {
         "fp": 137.94,
-        "espn": 83.93463216,
+        "espn": 83.95019791,
         "sleeper": 110.9,
         "consensus": 112.4,
         "variance": 0.199
@@ -8339,10 +8339,10 @@
       },
       "ros": {
         "fp": 118.96,
-        "espn": 95.4264356,
+        "espn": 95.64765275,
         "sleeper": 144.1,
-        "consensus": 119.9,
-        "variance": 0.166
+        "consensus": 120,
+        "variance": 0.165
       },
       "sources_used": [
         "fp",
@@ -8405,10 +8405,10 @@
       },
       "ros": {
         "fp": 129.92,
-        "espn": 32.71787267,
+        "espn": 33.21883279,
         "sleeper": 100.2,
-        "consensus": 90.1,
-        "variance": 0.464
+        "consensus": 90.3,
+        "variance": 0.461
       },
       "sources_used": [
         "fp",
@@ -8429,10 +8429,10 @@
       },
       "ros": {
         "fp": 88.48,
-        "espn": 78.55176087,
+        "espn": 79.11948629,
         "sleeper": 96.4,
-        "consensus": 88,
-        "variance": 0.083
+        "consensus": 88.2,
+        "variance": 0.08
       },
       "sources_used": [
         "fp",
@@ -8453,7 +8453,7 @@
       },
       "ros": {
         "fp": 88.81,
-        "espn": 53.63136029,
+        "espn": 53.63135133,
         "sleeper": 76.3,
         "consensus": 73.8,
         "variance": 0.2
@@ -8794,10 +8794,10 @@
       },
       "ros": {
         "fp": 37.22,
-        "espn": 66.42664544,
+        "espn": 63.9314102,
         "sleeper": 33,
-        "consensus": 44.9,
-        "variance": 0.326
+        "consensus": 44.1,
+        "variance": 0.306
       },
       "sources_used": [
         "fp",
@@ -8881,10 +8881,10 @@
       },
       "ros": {
         "fp": 55.66,
-        "espn": 18.66712732,
+        "espn": 18.67423311,
         "sleeper": 33.2,
         "consensus": 36.9,
-        "variance": 0.425
+        "variance": 0.424
       },
       "sources_used": [
         "fp",
@@ -8997,7 +8997,7 @@
         "variance": 0.09
       },
       "ros": {
-        "espn": 15.80238379,
+        "espn": 15.80238566,
         "sleeper": 31.8,
         "consensus": 24,
         "variance": 0.336
@@ -9111,7 +9111,7 @@
       },
       "ros": {
         "fp": 37.44,
-        "espn": 4.39548497,
+        "espn": 4.39548512,
         "sleeper": 15.4,
         "consensus": 20,
         "variance": 0.72
@@ -9177,7 +9177,7 @@
       },
       "ros": {
         "fp": 27.39,
-        "espn": 5.04837549,
+        "espn": 5.0483757,
         "sleeper": 31.9,
         "consensus": 22,
         "variance": 0.547
@@ -9222,7 +9222,7 @@
       },
       "ros": {
         "fp": 37.22,
-        "espn": 30.0700787,
+        "espn": 30.0695009,
         "sleeper": 27.4,
         "consensus": 31.8,
         "variance": 0.131
@@ -9461,7 +9461,7 @@
       },
       "ros": {
         "fp": 15.97,
-        "espn": 30.33450091,
+        "espn": 30.33450324,
         "sleeper": 29.4,
         "consensus": 24.8,
         "variance": 0.26
@@ -9991,7 +9991,7 @@
       },
       "ros": {
         "fp": 74.02,
-        "espn": 142.30665597,
+        "espn": 142.33643721,
         "sleeper": 143.16,
         "consensus": 117.8,
         "variance": 0.27
@@ -10257,10 +10257,10 @@
       },
       "ros": {
         "fp": 179.69,
-        "espn": 50.35786539,
+        "espn": 43.78260988,
         "sleeper": 171,
-        "consensus": 136.9,
-        "variance": 0.442
+        "consensus": 134.8,
+        "variance": 0.472
       },
       "sources_used": [
         "fp",
@@ -10874,7 +10874,7 @@
       },
       "ros": {
         "fp": 135.15,
-        "espn": 58.7463976,
+        "espn": 58.74638355,
         "sleeper": 111,
         "consensus": 103.6,
         "variance": 0.314
@@ -10915,7 +10915,7 @@
       },
       "ros": {
         "fp": 101.02,
-        "espn": 8.24398782,
+        "espn": 8.24528979,
         "sleeper": 34.2,
         "consensus": 50.5,
         "variance": 0.817
@@ -10937,7 +10937,7 @@
       },
       "ros": {
         "fp": 96.01,
-        "espn": 15.5001375,
+        "espn": 15.50013935,
         "sleeper": 28.8,
         "consensus": 49.1,
         "variance": 0.753
@@ -11063,7 +11063,7 @@
       },
       "ros": {
         "fp": 64.4,
-        "espn": 39.54798711,
+        "espn": 39.54798942,
         "sleeper": 10.7,
         "consensus": 39.1,
         "variance": 0.574
@@ -11085,7 +11085,7 @@
       },
       "ros": {
         "fp": 59.15,
-        "espn": 7.35372289,
+        "espn": 7.353725,
         "sleeper": 29.9,
         "consensus": 33.6,
         "variance": 0.66
@@ -11148,10 +11148,10 @@
       },
       "ros": {
         "fp": 46.71,
-        "espn": 1.32978844,
+        "espn": 5.59005596,
         "sleeper": 9.3,
-        "consensus": 20.4,
-        "variance": 1.035
+        "consensus": 21.8,
+        "variance": 0.904
       },
       "sources_used": [
         "fp",
@@ -11170,10 +11170,10 @@
       },
       "ros": {
         "fp": 48.94,
-        "espn": 103.99281631,
+        "espn": 93.93817007,
         "sleeper": 34.8,
-        "consensus": 61.3,
-        "variance": 0.477
+        "consensus": 58.2,
+        "variance": 0.426
       },
       "sources_used": [
         "fp",
@@ -11413,10 +11413,10 @@
       },
       "ros": {
         "fp": 19.52,
-        "espn": 22.77877233,
+        "espn": 22.20048792,
         "sleeper": 4.6,
-        "consensus": 15.6,
-        "variance": 0.506
+        "consensus": 15.5,
+        "variance": 0.501
       },
       "sources_used": [
         "fp",
@@ -11818,7 +11818,7 @@
       },
       "ros": {
         "fp": 30.82,
-        "espn": 8.65805138,
+        "espn": 8.65805163,
         "consensus": 20.6,
         "variance": 0.561
       },
@@ -12269,6 +12269,24 @@
         "espn"
       ]
     },
+    "texans dst": {
+      "name": "Texans D/ST",
+      "pos": "DST",
+      "team": "HOU",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 56.7936317,
+        "consensus": 56.7936317,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "jason myers": {
       "name": "Jason Myers",
       "pos": "K",
@@ -12287,24 +12305,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "texans dst": {
-      "name": "Texans D/ST",
-      "pos": "DST",
-      "team": "HOU",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 56.7936317,
-        "consensus": 56.7936317,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -12528,8 +12528,8 @@
         "variance": null
       },
       "ros": {
-        "espn": 95.77517745,
-        "consensus": 95.77517745,
+        "espn": 95.77515626,
+        "consensus": 95.77515626,
         "variance": 0
       },
       "sources_used": [
@@ -12666,8 +12666,8 @@
         "variance": null
       },
       "ros": {
-        "espn": 51.96765324,
-        "consensus": 51.96765324,
+        "espn": 52.03008376,
+        "consensus": 52.03008376,
         "variance": 0
       },
       "sources_used": [
@@ -12801,8 +12801,8 @@
         "variance": null
       },
       "ros": {
-        "espn": 39.88938118,
-        "consensus": 39.88938118,
+        "espn": 39.81044291,
+        "consensus": 39.81044291,
         "variance": 0
       },
       "sources_used": [
@@ -13262,7 +13262,7 @@
         "variance": null
       },
       "ros": {
-        "espn": 118.94086427,
+        "espn": 118.94090971,
         "sleeper": 12.4,
         "consensus": 64.1,
         "variance": 0.811
@@ -13324,7 +13324,7 @@
         "variance": null
       },
       "ros": {
-        "espn": 3.45450593,
+        "espn": 3.45450529,
         "sleeper": 7.5,
         "consensus": 5.5,
         "variance": 0.369
@@ -13383,7 +13383,7 @@
         "variance": null
       },
       "ros": {
-        "espn": 74.67842986,
+        "espn": 74.74141747,
         "sleeper": 9.3,
         "consensus": 41.1,
         "variance": 0.779
@@ -13445,7 +13445,7 @@
         "variance": null
       },
       "ros": {
-        "espn": 42.70512697,
+        "espn": 42.70511399,
         "sleeper": 4.8,
         "consensus": 23.2,
         "variance": 0.798
@@ -13521,7 +13521,7 @@
         "variance": null
       },
       "ros": {
-        "espn": 21.25232953,
+        "espn": 21.25233036,
         "sleeper": 2.4,
         "consensus": 11.6,
         "variance": 0.797
