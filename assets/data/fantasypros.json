@@ -2,8 +2,44 @@
   "sport": "NFL",
   "title": "Fantasy Player News",
   "description": "Breaking Fantasy Football player news along with the impact for fantasy managers",
-  "count": 50,
+  "count": 49,
   "items": [
+    {
+      "id": 618394,
+      "created": "2026-11-07 21:36:25",
+      "created_formated": "Sat, Nov 7th 9:36pm UTC",
+      "author": "Garrett Ball",
+      "player_id": 20094,
+      "team_id": "ATL",
+      "title": " Brian Robinson Jr. (hamstring) placed on Injured Reserve",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Injury"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/618394/brian-robinson-jr-hamstring-placed-on-injured-reserve.php",
+      "desc": "Brian Robinson Jr. (hamstring) has been placed on Injured Reserve.",
+      "impact": "Robinson has missed the last several games with a hamstring injury, and apparently hasn't made enough progress for the team to keep him off of IR. He will miss at least the next four games. The Falcons will need to elevate someone to back up Bijan Robinson."
+    },
+    {
+      "id": 618389,
+      "created": "2026-11-07 21:32:54",
+      "created_formated": "Sat, Nov 7th 9:32pm UTC",
+      "author": "Garrett Ball",
+      "player_id": 27211,
+      "team_id": "DEN",
+      "title": "Pat Bryant (ankle) activated off of IR",
+      "sport_id": "NFL",
+      "categories": [
+        "Commentary",
+        "News",
+        "Injury"
+      ],
+      "link": "https://www.fantasypros.com/nfl/news/618389/pat-bryant-ankle-activated-off-ir.php",
+      "desc": "Pat Bryant (ankle) has been activated from injured reserve ahead of Denver's game against the Panthers on Sunday.",
+      "impact": "Bryant is still officially questionable, but his activation indicates that he will play on Sunday. He'll be a tough start in his first game back, but could have some flex appeal in later weeks."
+    },
     {
       "id": 618377,
       "created": "2026-11-07 19:32:18",
@@ -599,24 +635,6 @@
       "impact": "Jones suffered a hamstring injury in last week's game and won't be available to play on Sunday as a result. Denver's secondary will be weaker with him out of the lineup against Carolina."
     },
     {
-      "id": 618247,
-      "created": "2026-11-06 22:06:46",
-      "created_formated": "Fri, Nov 6th 10:06pm UTC",
-      "author": "Leo Sells",
-      "player_id": 27211,
-      "team_id": "DEN",
-      "title": "Pat Bryant (ankle) questionable to play Sunday",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/618247/pat-bryant-ankle-questionable-to-play-sunday.php",
-      "desc": "Pat Bryant (ankle) is questionable to play in Sunday's game against the Carolina Panthers.",
-      "impact": "Bryant has missed several weeks while on injured reserve, but he was able to practice in full all week and is now considered questionable to make his return on Sunday. He isn't likely to be a strong fantasy option for his first game or two back even if active, but his presence should help QB Bo Nix and Denver's offense as a whole."
-    },
-    {
       "id": 618246,
       "created": "2026-11-06 22:03:46",
       "created_formated": "Fri, Nov 6th 10:03pm UTC",
@@ -867,46 +885,10 @@
       "link": "https://www.fantasypros.com/nfl/news/618233/jerzhan-newton-pec-questionable-sunday.php",
       "desc": "Jer'Zhan Newton (pec) is questionable for Sunday's game against the Los Angeles Rams.",
       "impact": "Newton may be available to make his season debut on Sunday after spending the start of the season recovering from a procedure he underwent on his pec. His return, whenever it comes, will be a nice boost for Washington's defensive front moving forward."
-    },
-    {
-      "id": 618232,
-      "created": "2026-11-06 21:32:06",
-      "created_formated": "Fri, Nov 6th 9:32pm UTC",
-      "author": "Leo Sells",
-      "player_id": 22905,
-      "team_id": "WAS",
-      "title": "Treylon Burks (foot) won't play Sunday",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/618232/treylon-burks-foot-wont-play-sunday.php",
-      "desc": "Treylon Burks (foot) won't play in Sunday's game against the Los Angeles Rams.",
-      "impact": "The Commanders are going to be down a key wideout on Sunday, with Burks set to be sidelined due to a foot issue that he's dealing with. Dyami Brown (calf) is also set to be sidelined, so rookie Antonio Williams is expected to see a large portion of the team's targets this week."
-    },
-    {
-      "id": 618231,
-      "created": "2026-11-06 21:27:52",
-      "created_formated": "Fri, Nov 6th 9:27pm UTC",
-      "author": "Leo Sells",
-      "player_id": 25693,
-      "team_id": "DET",
-      "title": "Jacob Saylors (neck) listed questionable for Sunday",
-      "sport_id": "NFL",
-      "categories": [
-        "Commentary",
-        "News",
-        "Injury"
-      ],
-      "link": "https://www.fantasypros.com/nfl/news/618231/jacob-saylors-neck-listed-questionable-sunday.php",
-      "desc": "Jacob Saylors (neck) is listed questionable for Sunday's game against the Miami Dolphins.",
-      "impact": "Saylors is uncertain to play on Sunday due to the neck injury that he's currently recovering from. Sione Vaki (ankle) is also uncertain to play, so it looks like Detroit might not have much healthy depth behind Jahmyr Gibbs in the backfield this week."
     }
   ],
   "public_api": true,
   "tier": "premium",
-  "fetched_at": "2026-11-07T20:09:14Z",
+  "fetched_at": "2026-11-07T23:53:56Z",
   "source_url": "https://api.fantasypros.com/public/v2/json/nfl/news?limit=50"
 }
