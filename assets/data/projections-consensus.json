@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-07T04:45:59.098Z",
+  "fetched_at": "2026-11-07T12:29:54.948Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -7,7 +7,7 @@
     "espn": 0.85,
     "sleeper": 0.9
   },
-  "player_count": 763,
+  "player_count": 764,
   "sources_status": {
     "fp_weekly_qb": true,
     "fp_weekly_rb": true,
@@ -8988,21 +8988,18 @@
       "team": "BAL",
       "weekly": {
         "fp": 2.18,
-        "espn": null,
         "sleeper": 1.82,
         "consensus": 2,
         "variance": 0.09
       },
       "ros": {
-        "espn": 15.80238571,
         "sleeper": 31.8,
-        "consensus": 24,
-        "variance": 0.336
+        "consensus": 31.8,
+        "variance": 0
       },
       "sources_used": [
         "fp",
-        "sleeper",
-        "espn"
+        "sleeper"
       ]
     },
     "drew sample": {
@@ -12809,27 +12806,6 @@
         "espn"
       ]
     },
-    "eddy pineiro": {
-      "name": "Eddy Pineiro",
-      "pos": "K",
-      "team": "SF",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.34,
-        "consensus": 6.34,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 75.71332529,
-        "sleeper": 101,
-        "consensus": 88.7,
-        "variance": 0.143
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "dominic zvada": {
       "name": "Dominic Zvada",
       "pos": "K",
@@ -12845,6 +12821,27 @@
         "sleeper": 68,
         "consensus": 86.3,
         "variance": 0.217
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "eddy pineiro": {
+      "name": "Eddy Pineiro",
+      "pos": "K",
+      "team": "SF",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.34,
+        "consensus": 6.34,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 75.71332529,
+        "sleeper": 101,
+        "consensus": 88.7,
+        "variance": 0.143
       },
       "sources_used": [
         "sleeper",
@@ -13666,6 +13663,24 @@
       "sources_used": [
         "espn",
         "sleeper"
+      ]
+    },
+    "khalil herbert": {
+      "name": "Khalil Herbert",
+      "pos": "RB",
+      "team": "ATL",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 4.69610609,
+        "consensus": 4.69610609,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
       ]
     },
     "kansas city chiefs": {
