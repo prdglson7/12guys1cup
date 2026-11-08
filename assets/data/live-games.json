@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-08T08:47:44.780Z",
+  "fetched_at": "2026-11-08T16:34:05.269Z",
   "season": 2026,
   "week": 9,
   "game_count": 15,
@@ -8,8 +8,8 @@
       "9": {
         "opp": "CIN",
         "home": true,
-        "spread": -3,
-        "total": 52.5,
+        "spread": null,
+        "total": null,
         "roof": "closed",
         "temp": null,
         "wind": null,
@@ -21,8 +21,8 @@
       "9": {
         "opp": "ATL",
         "home": false,
-        "spread": 3,
-        "total": 52.5,
+        "spread": null,
+        "total": null,
         "roof": "closed",
         "temp": null,
         "wind": null,
@@ -34,7 +34,7 @@
       "9": {
         "opp": "DAL",
         "home": true,
-        "spread": -5.5,
+        "spread": -4.5,
         "total": 51.5,
         "roof": "closed",
         "temp": null,
@@ -47,7 +47,7 @@
       "9": {
         "opp": "IND",
         "home": false,
-        "spread": 5.5,
+        "spread": 4.5,
         "total": 51.5,
         "roof": "closed",
         "temp": null,
@@ -61,10 +61,10 @@
         "opp": "NYJ",
         "home": true,
         "spread": 9.5,
-        "total": 48.5,
+        "total": 47.5,
         "roof": "outdoors",
         "temp": 54,
-        "wind": 3,
+        "wind": 4,
         "precip": null,
         "kickoff": "2026-11-08T18:00Z"
       }
@@ -74,10 +74,10 @@
         "opp": "KC",
         "home": false,
         "spread": -9.5,
-        "total": 48.5,
+        "total": 47.5,
         "roof": "outdoors",
         "temp": 54,
-        "wind": 3,
+        "wind": 4,
         "precip": null,
         "kickoff": "2026-11-08T18:00Z"
       }
@@ -86,11 +86,11 @@
       "9": {
         "opp": "DET",
         "home": true,
-        "spread": -6,
+        "spread": -6.5,
         "total": 49.5,
         "roof": "outdoors",
-        "temp": 78,
-        "wind": 5,
+        "temp": 79,
+        "wind": 6,
         "precip": null,
         "kickoff": "2026-11-08T18:00Z"
       }
@@ -99,11 +99,11 @@
       "9": {
         "opp": "MIA",
         "home": false,
-        "spread": 6,
+        "spread": 6.5,
         "total": 49.5,
         "roof": "outdoors",
-        "temp": 78,
-        "wind": 5,
+        "temp": 79,
+        "wind": 6,
         "precip": null,
         "kickoff": "2026-11-08T18:00Z"
       }
@@ -112,7 +112,7 @@
       "9": {
         "opp": "CLE",
         "home": true,
-        "spread": 3,
+        "spread": 3.5,
         "total": 42.5,
         "roof": "dome",
         "temp": null,
@@ -125,7 +125,7 @@
       "9": {
         "opp": "NO",
         "home": false,
-        "spread": -3,
+        "spread": -3.5,
         "total": 42.5,
         "roof": "dome",
         "temp": null,
@@ -141,7 +141,7 @@
         "spread": -3,
         "total": 38.5,
         "roof": "outdoors",
-        "temp": 51,
+        "temp": 52,
         "wind": 7,
         "precip": null,
         "kickoff": "2026-11-08T18:00Z"
@@ -154,7 +154,7 @@
         "spread": 3,
         "total": 38.5,
         "roof": "outdoors",
-        "temp": 51,
+        "temp": 52,
         "wind": 7,
         "precip": null,
         "kickoff": "2026-11-08T18:00Z"
@@ -167,8 +167,8 @@
         "spread": -4.5,
         "total": 47.5,
         "roof": "outdoors",
-        "temp": 56,
-        "wind": 6,
+        "temp": 55,
+        "wind": 7,
         "precip": null,
         "kickoff": "2026-11-08T18:00Z"
       }
@@ -180,8 +180,8 @@
         "spread": 4.5,
         "total": 47.5,
         "roof": "outdoors",
-        "temp": 56,
-        "wind": 6,
+        "temp": 55,
+        "wind": 7,
         "precip": null,
         "kickoff": "2026-11-08T18:00Z"
       }
@@ -194,7 +194,7 @@
         "total": 44.5,
         "roof": "outdoors",
         "temp": 59,
-        "wind": 5,
+        "wind": 6,
         "precip": null,
         "kickoff": "2026-11-08T18:00Z"
       }
@@ -207,7 +207,7 @@
         "total": 44.5,
         "roof": "outdoors",
         "temp": 59,
-        "wind": 5,
+        "wind": 6,
         "precip": null,
         "kickoff": "2026-11-08T18:00Z"
       }
@@ -216,7 +216,7 @@
       "9": {
         "opp": "HOU",
         "home": true,
-        "spread": -6,
+        "spread": -5.5,
         "total": 40.5,
         "roof": "dome",
         "temp": null,
@@ -229,7 +229,7 @@
       "9": {
         "opp": "LAC",
         "home": false,
-        "spread": 6,
+        "spread": 5.5,
         "total": 40.5,
         "roof": "dome",
         "temp": null,
@@ -242,11 +242,11 @@
       "9": {
         "opp": "GB",
         "home": true,
-        "spread": 3.5,
+        "spread": 3,
         "total": 44.5,
         "roof": "outdoors",
         "temp": 44,
-        "wind": 6,
+        "wind": 5,
         "precip": null,
         "kickoff": "2026-11-08T21:25Z"
       }
@@ -255,11 +255,11 @@
       "9": {
         "opp": "NE",
         "home": false,
-        "spread": -3.5,
+        "spread": -3,
         "total": 44.5,
         "roof": "outdoors",
         "temp": 44,
-        "wind": 6,
+        "wind": 5,
         "precip": null,
         "kickoff": "2026-11-08T21:25Z"
       }
@@ -271,8 +271,8 @@
         "spread": 9.5,
         "total": 51.5,
         "roof": "outdoors",
-        "temp": 55,
-        "wind": 2,
+        "temp": 54,
+        "wind": 3,
         "precip": null,
         "kickoff": "2026-11-08T21:25Z"
       }
@@ -284,8 +284,8 @@
         "spread": -9.5,
         "total": 51.5,
         "roof": "outdoors",
-        "temp": 55,
-        "wind": 2,
+        "temp": 54,
+        "wind": 3,
         "precip": null,
         "kickoff": "2026-11-08T21:25Z"
       }
@@ -297,8 +297,8 @@
         "spread": 8.5,
         "total": 39.5,
         "roof": "outdoors",
-        "temp": 44,
-        "wind": 4,
+        "temp": 47,
+        "wind": 3,
         "precip": null,
         "kickoff": "2026-11-08T21:25Z"
       }
@@ -310,8 +310,8 @@
         "spread": -8.5,
         "total": 39.5,
         "roof": "outdoors",
-        "temp": 44,
-        "wind": 4,
+        "temp": 47,
+        "wind": 3,
         "precip": null,
         "kickoff": "2026-11-08T21:25Z"
       }
