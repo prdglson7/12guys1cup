@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-08T04:36:45.522Z",
+  "fetched_at": "2026-11-08T12:47:51.417Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12629,24 +12629,6 @@
         "espn"
       ]
     },
-    "ravens dst": {
-      "name": "Ravens D/ST",
-      "pos": "DST",
-      "team": "BAL",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 52.03008363,
-        "consensus": 52.03008363,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "giants dst": {
       "name": "Giants D/ST",
       "pos": "DST",
@@ -12659,6 +12641,24 @@
       "ros": {
         "espn": 48.9986036,
         "consensus": 48.9986036,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "ravens dst": {
+      "name": "Ravens D/ST",
+      "pos": "DST",
+      "team": "BAL",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 52.03008363,
+        "consensus": 52.03008363,
         "variance": 0
       },
       "sources_used": [
@@ -13328,22 +13328,24 @@
         "sleeper"
       ]
     },
-    "colts dst": {
-      "name": "Colts D/ST",
-      "pos": "DST",
-      "team": "IND",
+    "austin ekeler": {
+      "name": "Austin Ekeler",
+      "pos": "RB",
+      "team": "WAS",
       "weekly": {
         "espn": null,
         "consensus": null,
         "variance": null
       },
       "ros": {
-        "espn": 38.20801622,
-        "consensus": 38.20801622,
-        "variance": 0
+        "espn": 74.82396665,
+        "sleeper": 9.3,
+        "consensus": 41.1,
+        "variance": 0.779
       },
       "sources_used": [
-        "espn"
+        "espn",
+        "sleeper"
       ]
     },
     "drew stevens": {
@@ -13367,24 +13369,22 @@
         "espn"
       ]
     },
-    "austin ekeler": {
-      "name": "Austin Ekeler",
-      "pos": "RB",
-      "team": "WAS",
+    "colts dst": {
+      "name": "Colts D/ST",
+      "pos": "DST",
+      "team": "IND",
       "weekly": {
         "espn": null,
         "consensus": null,
         "variance": null
       },
       "ros": {
-        "espn": 74.82396665,
-        "sleeper": 9.3,
-        "consensus": 41.1,
-        "variance": 0.779
+        "espn": 38.20801622,
+        "consensus": 38.20801622,
+        "variance": 0
       },
       "sources_used": [
-        "espn",
-        "sleeper"
+        "espn"
       ]
     },
     "oronde gadsden": {
@@ -13564,6 +13564,24 @@
         "espn"
       ]
     },
+    "khalil herbert": {
+      "name": "Khalil Herbert",
+      "pos": "RB",
+      "team": "ATL",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 43.55316195,
+        "consensus": 43.55316195,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "dare ogunbowale": {
       "name": "Dare Ogunbowale",
       "pos": "RB",
@@ -13582,24 +13600,6 @@
       "sources_used": [
         "espn",
         "sleeper"
-      ]
-    },
-    "khalil herbert": {
-      "name": "Khalil Herbert",
-      "pos": "RB",
-      "team": "ATL",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 43.55316195,
-        "consensus": 43.55316195,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
       ]
     },
     "jake moody": {
