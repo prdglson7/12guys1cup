@@ -1,35 +1,9 @@
 {
-  "fetched_at": "2026-11-10T04:00:11.904Z",
+  "fetched_at": "2026-11-10T12:29:50.400Z",
   "season": 2026,
   "week": 9,
   "game_count": 15,
   "teams": {
-    "MIN": {
-      "9": {
-        "opp": "BUF",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-11-10T01:15Z"
-      }
-    },
-    "BUF": {
-      "9": {
-        "opp": "MIN",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-11-10T01:15Z"
-      }
-    },
     "BAL": {
       "9": {
         "opp": "JAX",
@@ -392,6 +366,32 @@
         "wind": 6,
         "precip": null,
         "kickoff": "2026-11-09T01:20Z"
+      }
+    },
+    "MIN": {
+      "9": {
+        "opp": "BUF",
+        "home": true,
+        "spread": null,
+        "total": null,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-11-10T01:15Z"
+      }
+    },
+    "BUF": {
+      "9": {
+        "opp": "MIN",
+        "home": false,
+        "spread": null,
+        "total": null,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "2026-11-10T01:15Z"
       }
     }
   }
