@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-10T22:51:48.118Z",
+  "fetched_at": "2026-11-11T04:50:05.233Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -3730,7 +3730,7 @@
     "jaydon blue": {
       "name": "Jaydon Blue",
       "pos": "RB",
-      "team": "PHI",
+      "team": "FA",
       "weekly": {
         "fp": 0.01,
         "espn": null,
@@ -10646,7 +10646,7 @@
     "jarquez hunter": {
       "name": "Jarquez Hunter",
       "pos": "RB",
-      "team": "NO",
+      "team": "FA",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -11487,7 +11487,7 @@
     "david sills v": {
       "name": "David Sills V",
       "pos": "WR",
-      "team": "TB",
+      "team": "FA",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -12058,7 +12058,7 @@
     "john fitzpatrick": {
       "name": "John FitzPatrick",
       "pos": "TE",
-      "team": "CLE",
+      "team": "FA",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -12971,6 +12971,24 @@
         "espn"
       ]
     },
+    "saints dst": {
+      "name": "Saints D/ST",
+      "pos": "DST",
+      "team": "NO",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 34.2583642,
+        "consensus": 34.2583642,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "elijah mitchell": {
       "name": "Elijah Mitchell",
       "pos": "RB",
@@ -12989,24 +13007,6 @@
       "sources_used": [
         "espn",
         "sleeper"
-      ]
-    },
-    "saints dst": {
-      "name": "Saints D/ST",
-      "pos": "DST",
-      "team": "NO",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 34.2583642,
-        "consensus": 34.2583642,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
       ]
     },
     "trey smack": {
