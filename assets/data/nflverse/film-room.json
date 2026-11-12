@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "weeks_played": 9,
-  "generated_at": "2026-11-10T21:37:52.017442+00:00",
+  "generated_at": "2026-11-12T21:46:17.065591+00:00",
   "status": "ok",
   "weekly": {
     "RB": [
@@ -5420,13 +5420,13 @@
       {
         "player_id": "00-0039373",
         "sleeper_id": "11579",
-        "name": "Audric Estim\u00e9",
+        "name": "Audric Estime",
         "team": "NO",
         "opp": "CLE",
         "week": 9,
         "rookie": false,
-        "snap_pct": null,
-        "route_pct": null,
+        "snap_pct": 0.47,
+        "route_pct": 0.213,
         "tgt": 1,
         "rec": 1,
         "rec_yds": 5.0,
@@ -11988,13 +11988,13 @@
       {
         "player_id": "00-0039373",
         "sleeper_id": "11579",
-        "name": "Audric Estim\u00e9",
+        "name": "Audric Estime",
         "team": "CLE",
         "opp": "BAL",
         "week": 6,
         "rookie": false,
-        "snap_pct": null,
-        "route_pct": null,
+        "snap_pct": 0.3,
+        "route_pct": 0.139,
         "tgt": 0,
         "rec": 0,
         "rec_yds": 0,
@@ -33177,10 +33177,10 @@
         "tprr": null,
         "yprr": null,
         "rz_tgt": 0,
-        "sep": 3.22,
-        "cushion": 7.94,
-        "adot": 6.18,
-        "catch_pct": 77.8,
+        "sep": 2.95,
+        "cushion": 7.75,
+        "adot": 6.64,
+        "catch_pct": 70.0,
         "ngs_yac": 9.55,
         "yac_vs_exp": 5.89
       },
@@ -35058,7 +35058,7 @@
         "ypc": null,
         "yac_per_rec": 3.8,
         "tgt_share": 0.206,
-        "ay_share": 0.341,
+        "ay_share": 0.345,
         "wopr": 0.55,
         "racr": 0.67,
         "exp_10_rush": 0,
@@ -35798,7 +35798,7 @@
         "adot": 9.39,
         "catch_pct": 100.0,
         "ngs_yac": 0.41,
-        "yac_vs_exp": -1.16
+        "yac_vs_exp": -0.76
       },
       {
         "player_id": "00-0039067",
@@ -40322,7 +40322,7 @@
         "adot": 9.13,
         "catch_pct": 54.5,
         "ngs_yac": 4.13,
-        "yac_vs_exp": -0.97
+        "yac_vs_exp": 0.06
       },
       {
         "player_id": "00-0037238",
@@ -40585,11 +40585,11 @@
         "yprr": 1.58,
         "rz_tgt": 1,
         "sep": 3.71,
-        "cushion": 7.68,
+        "cushion": 8.6,
         "adot": 3.76,
         "catch_pct": 40.0,
-        "ngs_yac": 8.8,
-        "yac_vs_exp": 4.75
+        "ngs_yac": 9.3,
+        "yac_vs_exp": 5.25
       },
       {
         "player_id": "00-0037741",
@@ -43498,8 +43498,8 @@
         "cushion": 8.27,
         "adot": 6.98,
         "catch_pct": 66.7,
-        "ngs_yac": 4.05,
-        "yac_vs_exp": -1.21
+        "ngs_yac": 6.55,
+        "yac_vs_exp": 1.29
       },
       {
         "player_id": "00-0039890",
@@ -45276,9 +45276,9 @@
         "ypc": null,
         "yac_per_rec": 8.0,
         "tgt_share": 0.147,
-        "ay_share": 0.242,
+        "ay_share": 0.241,
         "wopr": 0.39,
-        "racr": 0.84,
+        "racr": 0.85,
         "exp_10_rush": 0,
         "exp_20_rush": 0,
         "exp_40_rush": 0,
@@ -50886,7 +50886,7 @@
         "ypc": null,
         "yac_per_rec": 2.33,
         "tgt_share": 0.176,
-        "ay_share": 0.238,
+        "ay_share": 0.241,
         "wopr": 0.43,
         "racr": 0.42,
         "exp_10_rush": 0,
@@ -59194,11 +59194,11 @@
         "rush_yds": 0,
         "rush_td": 0,
         "ypc": null,
-        "yac_per_rec": 0.0,
+        "yac_per_rec": 1.0,
         "tgt_share": 0.029,
-        "ay_share": 0.048,
+        "ay_share": 0.044,
         "wopr": 0.08,
-        "racr": 1.0,
+        "racr": 1.09,
         "exp_10_rush": 0,
         "exp_20_rush": 0,
         "exp_40_rush": 0,
@@ -78517,6 +78517,45 @@
         "yac_vs_exp": -0.56
       },
       {
+        "player_id": "00-0037809",
+        "sleeper_id": "8210",
+        "name": "Chig Okonkwo",
+        "team": "WAS",
+        "opp": "LA",
+        "week": 9,
+        "rookie": false,
+        "snap_pct": 0.74,
+        "route_pct": 0.523,
+        "tgt": 7,
+        "rec": 6,
+        "rec_yds": 57.0,
+        "rec_td": 0,
+        "car": 0,
+        "rush_yds": 0,
+        "rush_td": 0,
+        "ypc": null,
+        "yac_per_rec": 4.17,
+        "tgt_share": 0.206,
+        "ay_share": 0.145,
+        "wopr": 0.41,
+        "racr": 1.58,
+        "exp_10_rush": 0,
+        "exp_20_rush": 0,
+        "exp_40_rush": 0,
+        "exp_20_rec": 0,
+        "exp_40_rec": 0,
+        "fp": 11.7,
+        "tprr": 0.39,
+        "yprr": 2.72,
+        "rz_tgt": 0,
+        "sep": 3.26,
+        "cushion": 4.11,
+        "adot": 4.81,
+        "catch_pct": 85.7,
+        "ngs_yac": 5.32,
+        "yac_vs_exp": 1.47
+      },
+      {
         "player_id": "00-0038996",
         "sleeper_id": "9484",
         "name": "Tucker Kraft",
@@ -78587,45 +78626,6 @@
         "tprr": 0.4,
         "yprr": 3.89,
         "rz_tgt": 1
-      },
-      {
-        "player_id": "00-0037809",
-        "sleeper_id": "8210",
-        "name": "Chig Okonkwo",
-        "team": "WAS",
-        "opp": "LA",
-        "week": 9,
-        "rookie": false,
-        "snap_pct": 0.74,
-        "route_pct": 0.523,
-        "tgt": 7,
-        "rec": 6,
-        "rec_yds": 56.0,
-        "rec_td": 0,
-        "car": 0,
-        "rush_yds": 0,
-        "rush_td": 0,
-        "ypc": null,
-        "yac_per_rec": 4.0,
-        "tgt_share": 0.206,
-        "ay_share": 0.143,
-        "wopr": 0.41,
-        "racr": 1.56,
-        "exp_10_rush": 0,
-        "exp_20_rush": 0,
-        "exp_40_rush": 0,
-        "exp_20_rec": 0,
-        "exp_40_rec": 0,
-        "fp": 11.6,
-        "tprr": 0.39,
-        "yprr": 2.68,
-        "rz_tgt": 0,
-        "sep": 3.26,
-        "cushion": 4.11,
-        "adot": 4.81,
-        "catch_pct": 85.7,
-        "ngs_yac": 5.32,
-        "yac_vs_exp": 1.47
       },
       {
         "player_id": "00-0036290",
@@ -99307,12 +99307,7 @@
         "gl_car": 2,
         "hvt": 109,
         "hvt_per_g": 15.6,
-        "touches_per_g": 11.1,
-        "ryoe_per_att": -0.71,
-        "ryoe_pct": 0.348,
-        "efficiency": 3.71,
-        "ttlos": 2.57,
-        "box8_pct": 6.4
+        "touches_per_g": 11.1
       },
       {
         "player_id": "00-0037256",
@@ -99610,12 +99605,7 @@
         "gl_car": 6,
         "hvt": 75,
         "hvt_per_g": 15.0,
-        "touches_per_g": 12.2,
-        "ryoe_per_att": 0.1,
-        "ryoe_pct": 0.404,
-        "efficiency": 3.86,
-        "ttlos": 2.85,
-        "box8_pct": 29.8
+        "touches_per_g": 12.2
       },
       {
         "player_id": "00-0036158",
@@ -100084,12 +100074,7 @@
         "gl_car": 0,
         "hvt": 90,
         "hvt_per_g": 11.2,
-        "touches_per_g": 8.5,
-        "ryoe_per_att": -0.84,
-        "ryoe_pct": 0.267,
-        "efficiency": 6.08,
-        "ttlos": 3.16,
-        "box8_pct": 13.0
+        "touches_per_g": 8.5
       },
       {
         "player_id": "00-0035685",
@@ -100172,12 +100157,7 @@
         "gl_car": 1,
         "hvt": 68,
         "hvt_per_g": 8.5,
-        "touches_per_g": 7.1,
-        "ryoe_per_att": 0.44,
-        "ryoe_pct": 0.591,
-        "efficiency": 3.24,
-        "ttlos": 2.28,
-        "box8_pct": 19.6
+        "touches_per_g": 7.1
       },
       {
         "player_id": "00-0040242",
@@ -100260,12 +100240,7 @@
         "gl_car": 1,
         "hvt": 80,
         "hvt_per_g": 16.0,
-        "touches_per_g": 12.6,
-        "ryoe_per_att": 0.06,
-        "ryoe_pct": 0.435,
-        "efficiency": 4.05,
-        "ttlos": 2.87,
-        "box8_pct": 21.7
+        "touches_per_g": 12.6
       },
       {
         "player_id": "00-0035700",
@@ -100836,12 +100811,7 @@
         "gl_car": 1,
         "hvt": 77,
         "hvt_per_g": 15.4,
-        "touches_per_g": 12.4,
-        "ryoe_per_att": -0.82,
-        "ryoe_pct": 0.34,
-        "efficiency": 5.32,
-        "ttlos": 3.19,
-        "box8_pct": 34.0
+        "touches_per_g": 12.4
       },
       {
         "player_id": "00-0040162",
@@ -101704,12 +101674,12 @@
       {
         "player_id": "00-0039373",
         "sleeper_id": "11579",
-        "name": "Audric Estim\u00e9",
+        "name": "Audric Estime",
         "team": "NO",
         "games": 1,
         "rookie": false,
-        "snap_pct": null,
-        "route_pct": null,
+        "snap_pct": 0.385,
+        "route_pct": 0.176,
         "car": 15,
         "rush_yds": 72.0,
         "rush_td": 1,
@@ -102133,12 +102103,12 @@
       {
         "player_id": "00-0039373",
         "sleeper_id": "11579",
-        "name": "Audric Estim\u00e9",
+        "name": "Audric Estime",
         "team": "CLE",
         "games": 1,
         "rookie": false,
-        "snap_pct": null,
-        "route_pct": null,
+        "snap_pct": 0.385,
+        "route_pct": 0.176,
         "car": 9,
         "rush_yds": 19.0,
         "rush_td": 1,
@@ -104582,10 +104552,10 @@
         "tprr": null,
         "yprr": null,
         "rz_tgt": 11,
-        "sep": 3.37,
-        "cushion": 7.2,
-        "adot": 7.39,
-        "catch_pct": 75.4,
+        "sep": 3.33,
+        "cushion": 7.19,
+        "adot": 7.44,
+        "catch_pct": 74.2,
         "ngs_yac": 7.21,
         "yac_vs_exp": 2.48
       },
@@ -104704,7 +104674,7 @@
         "adot": 11.04,
         "catch_pct": 64.8,
         "ngs_yac": 3.79,
-        "yac_vs_exp": -0.25
+        "yac_vs_exp": -0.11
       },
       {
         "player_id": "00-0037238",
@@ -105328,7 +105298,7 @@
         "adot": 15.0,
         "catch_pct": 62.7,
         "ngs_yac": 3.88,
-        "yac_vs_exp": 0.65
+        "yac_vs_exp": 0.88
       },
       {
         "player_id": "00-0041547",
@@ -105402,11 +105372,11 @@
         "yprr": 2.87,
         "rz_tgt": 7,
         "sep": 2.9,
-        "cushion": 6.61,
+        "cushion": 6.75,
         "adot": 10.82,
         "catch_pct": 63.3,
-        "ngs_yac": 4.46,
-        "yac_vs_exp": -0.03
+        "ngs_yac": 4.49,
+        "yac_vs_exp": -0.0
       },
       {
         "player_id": "00-0039410",
@@ -105714,11 +105684,11 @@
         "yprr": 3.89,
         "rz_tgt": 8,
         "sep": 4.12,
-        "cushion": 6.94,
+        "cushion": 6.84,
         "adot": 5.04,
         "catch_pct": 73.8,
-        "ngs_yac": 9.59,
-        "yac_vs_exp": 1.33
+        "ngs_yac": 10.07,
+        "yac_vs_exp": 1.81
       },
       {
         "player_id": "00-0039880",
@@ -106102,13 +106072,7 @@
         "fp_per_g": 9.5,
         "tprr": 0.39,
         "yprr": 5.1,
-        "rz_tgt": 4,
-        "sep": 3.69,
-        "cushion": 7.61,
-        "adot": 10.26,
-        "catch_pct": 82.6,
-        "ngs_yac": 6.33,
-        "yac_vs_exp": 1.99
+        "rz_tgt": 4
       },
       {
         "player_id": "00-0038618",
@@ -106336,13 +106300,7 @@
         "fp_per_g": 15.7,
         "tprr": null,
         "yprr": null,
-        "rz_tgt": 2,
-        "sep": 4.01,
-        "cushion": 6.6,
-        "adot": 7.16,
-        "catch_pct": 83.3,
-        "ngs_yac": 8.53,
-        "yac_vs_exp": 1.99
+        "rz_tgt": 2
       },
       {
         "player_id": "00-0041523",
@@ -106525,13 +106483,7 @@
         "fp_per_g": 9.7,
         "tprr": 0.4,
         "yprr": 3.62,
-        "rz_tgt": 5,
-        "sep": 3.17,
-        "cushion": 5.04,
-        "adot": 17.63,
-        "catch_pct": 58.3,
-        "ngs_yac": 2.74,
-        "yac_vs_exp": 0.29
+        "rz_tgt": 5
       },
       {
         "player_id": "00-0033921",
@@ -106876,13 +106828,7 @@
         "fp_per_g": 8.6,
         "tprr": 0.45,
         "yprr": 4.25,
-        "rz_tgt": 2,
-        "sep": 3.53,
-        "cushion": 6.77,
-        "adot": 12.48,
-        "catch_pct": 70.8,
-        "ngs_yac": 3.53,
-        "yac_vs_exp": 0.55
+        "rz_tgt": 2
       },
       {
         "player_id": "00-0040563",
@@ -106921,7 +106867,7 @@
         "adot": 8.22,
         "catch_pct": 80.0,
         "ngs_yac": 1.97,
-        "yac_vs_exp": -0.99
+        "yac_vs_exp": -0.89
       },
       {
         "player_id": "00-0033555",
@@ -107785,13 +107731,7 @@
         "fp_per_g": 4.2,
         "tprr": 0.28,
         "yprr": 1.89,
-        "rz_tgt": 3,
-        "sep": 2.6,
-        "cushion": 6.93,
-        "adot": 12.92,
-        "catch_pct": 47.8,
-        "ngs_yac": 4.68,
-        "yac_vs_exp": 1.41
+        "rz_tgt": 3
       },
       {
         "player_id": "00-0040009",
@@ -107896,13 +107836,7 @@
         "fp_per_g": 4.5,
         "tprr": 0.26,
         "yprr": 2.58,
-        "rz_tgt": 5,
-        "sep": 3.81,
-        "cushion": 7.84,
-        "adot": 13.26,
-        "catch_pct": 47.8,
-        "ngs_yac": 6.03,
-        "yac_vs_exp": -0.31
+        "rz_tgt": 5
       },
       {
         "player_id": "00-0036309",
@@ -107936,10 +107870,10 @@
         "tprr": 0.35,
         "yprr": 2.2,
         "rz_tgt": 0,
-        "sep": 3.38,
-        "cushion": 7.55,
-        "adot": 14.25,
-        "catch_pct": 46.2,
+        "sep": 3.48,
+        "cushion": 7.54,
+        "adot": 14.4,
+        "catch_pct": 48.0,
         "ngs_yac": 3.63,
         "yac_vs_exp": -1.05
       },
@@ -108211,13 +108145,7 @@
         "fp_per_g": 2.9,
         "tprr": 0.23,
         "yprr": 0.86,
-        "rz_tgt": 4,
-        "sep": 2.8,
-        "cushion": 6.95,
-        "adot": 12.47,
-        "catch_pct": 39.1,
-        "ngs_yac": 1.38,
-        "yac_vs_exp": -0.69
+        "rz_tgt": 4
       },
       {
         "player_id": "00-0038976",
@@ -108349,13 +108277,7 @@
         "fp_per_g": 4.9,
         "tprr": 0.33,
         "yprr": 1.47,
-        "rz_tgt": 4,
-        "sep": 1.82,
-        "cushion": 6.0,
-        "adot": 15.96,
-        "catch_pct": 45.8,
-        "ngs_yac": 1.14,
-        "yac_vs_exp": -0.1
+        "rz_tgt": 4
       },
       {
         "player_id": "00-0039868",
@@ -108553,13 +108475,7 @@
         "fp_per_g": 6.0,
         "tprr": 0.33,
         "yprr": 1.47,
-        "rz_tgt": 4,
-        "sep": 1.82,
-        "cushion": 6.0,
-        "adot": 15.96,
-        "catch_pct": 45.8,
-        "ngs_yac": 1.14,
-        "yac_vs_exp": -0.1
+        "rz_tgt": 4
       },
       {
         "player_id": "00-0040870",
@@ -108745,7 +108661,7 @@
         "ypc": null,
         "yac_per_rec": 3.8,
         "tgt_share": 0.121,
-        "ay_share": 0.183,
+        "ay_share": 0.185,
         "wopr": 0.31,
         "racr": 0.34,
         "exp_10_rush": 0,
@@ -110723,11 +110639,11 @@
         "rec_yds": 12.0,
         "rec_td": 0,
         "ypc": null,
-        "yac_per_rec": 0.0,
+        "yac_per_rec": 1.0,
         "tgt_share": 0.029,
-        "ay_share": 0.048,
+        "ay_share": 0.044,
         "wopr": 0.08,
-        "racr": 1.0,
+        "racr": 1.09,
         "exp_10_rush": 0,
         "exp_20_rush": 0,
         "exp_40_rush": 0,
@@ -113389,23 +113305,23 @@
         "rush_td": 0,
         "tgt": 31,
         "rec": 23,
-        "rec_yds": 238.0,
+        "rec_yds": 239.0,
         "rec_td": 0,
         "ypc": null,
-        "yac_per_rec": 4.35,
+        "yac_per_rec": 4.39,
         "tgt_share": 0.172,
         "ay_share": 0.138,
         "wopr": 0.35,
-        "racr": 1.04,
+        "racr": 1.05,
         "exp_10_rush": 0,
         "exp_20_rush": 0,
         "exp_40_rush": 0,
         "exp_20_rec": 4,
         "exp_40_rec": 0,
-        "fp": 44.8,
+        "fp": 44.9,
         "fp_per_g": 7.5,
         "tprr": 0.38,
-        "yprr": 2.09,
+        "yprr": 2.1,
         "rz_tgt": 1,
         "sep": 3.16,
         "cushion": 5.61,
@@ -113733,13 +113649,7 @@
         "fp_per_g": 5.1,
         "tprr": 0.27,
         "yprr": 1.36,
-        "rz_tgt": 7,
-        "sep": 4.11,
-        "cushion": 5.41,
-        "adot": 1.29,
-        "catch_pct": 78.3,
-        "ngs_yac": 6.56,
-        "yac_vs_exp": 1.03
+        "rz_tgt": 7
       },
       {
         "player_id": "00-0041503",
