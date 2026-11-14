@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-14T00:40:10.514Z",
+  "fetched_at": "2026-11-14T08:37:51.176Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12377,24 +12377,6 @@
         "espn"
       ]
     },
-    "steelers dst": {
-      "name": "Steelers D/ST",
-      "pos": "DST",
-      "team": "PIT",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 67.2193644,
-        "consensus": 67.2193644,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "ravens dst": {
       "name": "Ravens D/ST",
       "pos": "DST",
@@ -12407,6 +12389,24 @@
       "ros": {
         "espn": 45.55098237,
         "consensus": 45.55098237,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "steelers dst": {
+      "name": "Steelers D/ST",
+      "pos": "DST",
+      "team": "PIT",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 67.2193644,
+        "consensus": 67.2193644,
         "variance": 0
       },
       "sources_used": [
@@ -12893,27 +12893,6 @@
         "espn"
       ]
     },
-    "cairo santos": {
-      "name": "Cairo Santos",
-      "pos": "K",
-      "team": "CHI",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.48,
-        "consensus": 6.48,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 73.48055887,
-        "sleeper": 100,
-        "consensus": 87.1,
-        "variance": 0.153
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "evan mcpherson": {
       "name": "Evan McPherson",
       "pos": "K",
@@ -12929,6 +12908,27 @@
         "sleeper": 106,
         "consensus": 90.7,
         "variance": 0.175
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "cairo santos": {
+      "name": "Cairo Santos",
+      "pos": "K",
+      "team": "CHI",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.48,
+        "consensus": 6.48,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 73.48055887,
+        "sleeper": 100,
+        "consensus": 87.1,
+        "variance": 0.153
       },
       "sources_used": [
         "sleeper",
@@ -13521,6 +13521,24 @@
         "espn"
       ]
     },
+    "gavin bartholomew": {
+      "name": "Gavin Bartholomew",
+      "pos": "TE",
+      "team": "MIN",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 8.76015503,
+        "consensus": 8.76015503,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "van jefferson": {
       "name": "Van Jefferson",
       "pos": "WR",
@@ -13600,24 +13618,6 @@
       "sources_used": [
         "espn",
         "sleeper"
-      ]
-    },
-    "gavin bartholomew": {
-      "name": "Gavin Bartholomew",
-      "pos": "TE",
-      "team": "MIN",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 8.76015503,
-        "consensus": 8.76015503,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
       ]
     },
     "charlie jones": {
