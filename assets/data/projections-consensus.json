@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-14T08:37:51.176Z",
+  "fetched_at": "2026-11-14T16:22:56.381Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1204,26 +1204,6 @@
         "sleeper"
       ]
     },
-    "jarrett stidham": {
-      "name": "Jarrett Stidham",
-      "pos": "QB",
-      "team": "DEN",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 8.95,
-        "sleeper": 12.22,
-        "consensus": 10.5,
-        "variance": 0.154
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "mason rudolph": {
       "name": "Mason Rudolph",
       "pos": "QB",
@@ -1238,6 +1218,26 @@
         "sleeper": 11.68,
         "consensus": 8.3,
         "variance": 0.383
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "jarrett stidham": {
+      "name": "Jarrett Stidham",
+      "pos": "QB",
+      "team": "DEN",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 8.95,
+        "sleeper": 12.22,
+        "consensus": 10.5,
+        "variance": 0.154
       },
       "sources_used": [
         "fp",
@@ -13503,24 +13503,6 @@
         "espn"
       ]
     },
-    "khalil herbert": {
-      "name": "Khalil Herbert",
-      "pos": "RB",
-      "team": "ATL",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 29.92536523,
-        "consensus": 29.92536523,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "gavin bartholomew": {
       "name": "Gavin Bartholomew",
       "pos": "TE",
@@ -13533,6 +13515,24 @@
       "ros": {
         "espn": 8.76015503,
         "consensus": 8.76015503,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "khalil herbert": {
+      "name": "Khalil Herbert",
+      "pos": "RB",
+      "team": "ATL",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 29.92536523,
+        "consensus": 29.92536523,
         "variance": 0
       },
       "sources_used": [
@@ -13559,26 +13559,6 @@
         "sleeper"
       ]
     },
-    "jake moody": {
-      "name": "Jake Moody",
-      "pos": "K",
-      "team": "ATL",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 56.50969654,
-        "sleeper": 88,
-        "consensus": 72.7,
-        "variance": 0.218
-      },
-      "sources_used": [
-        "espn",
-        "sleeper"
-      ]
-    },
     "riley patterson": {
       "name": "Riley Patterson",
       "pos": "K",
@@ -13598,6 +13578,26 @@
       "sources_used": [
         "sleeper",
         "espn"
+      ]
+    },
+    "jake moody": {
+      "name": "Jake Moody",
+      "pos": "K",
+      "team": "ATL",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 56.50969654,
+        "sleeper": 88,
+        "consensus": 72.7,
+        "variance": 0.218
+      },
+      "sources_used": [
+        "espn",
+        "sleeper"
       ]
     },
     "zane gonzalez": {
