@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-15T22:29:53.586Z",
+  "fetched_at": "2026-11-16T04:52:37.287Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -1204,26 +1204,6 @@
         "sleeper"
       ]
     },
-    "jarrett stidham": {
-      "name": "Jarrett Stidham",
-      "pos": "QB",
-      "team": "DEN",
-      "weekly": {
-        "fp": 0.4,
-        "consensus": 0.4,
-        "variance": 0
-      },
-      "ros": {
-        "fp": 8.95,
-        "sleeper": 12.22,
-        "consensus": 10.5,
-        "variance": 0.154
-      },
-      "sources_used": [
-        "fp",
-        "sleeper"
-      ]
-    },
     "mason rudolph": {
       "name": "Mason Rudolph",
       "pos": "QB",
@@ -1238,6 +1218,26 @@
         "sleeper": 11.68,
         "consensus": 8.3,
         "variance": 0.383
+      },
+      "sources_used": [
+        "fp",
+        "sleeper"
+      ]
+    },
+    "jarrett stidham": {
+      "name": "Jarrett Stidham",
+      "pos": "QB",
+      "team": "DEN",
+      "weekly": {
+        "fp": 0.4,
+        "consensus": 0.4,
+        "variance": 0
+      },
+      "ros": {
+        "fp": 8.95,
+        "sleeper": 12.22,
+        "consensus": 10.5,
+        "variance": 0.154
       },
       "sources_used": [
         "fp",
@@ -7015,19 +7015,22 @@
       "team": "LAC",
       "weekly": {
         "fp": 0.92,
+        "espn": null,
         "sleeper": 0.92,
         "consensus": 0.9,
         "variance": 0
       },
       "ros": {
         "fp": 31.31,
+        "espn": 8.97313797,
         "sleeper": 35.5,
-        "consensus": 33.3,
-        "variance": 0.063
+        "consensus": 25.8,
+        "variance": 0.461
       },
       "sources_used": [
         "fp",
-        "sleeper"
+        "sleeper",
+        "espn"
       ]
     },
     "skyy moore": {
@@ -12830,6 +12833,24 @@
         "espn"
       ]
     },
+    "commanders dst": {
+      "name": "Commanders D/ST",
+      "pos": "DST",
+      "team": "WAS",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 46.18243411,
+        "consensus": 46.18243411,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "chase mclaughlin": {
       "name": "Chase McLaughlin",
       "pos": "K",
@@ -12848,24 +12869,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "commanders dst": {
-      "name": "Commanders D/ST",
-      "pos": "DST",
-      "team": "WAS",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 46.18243411,
-        "consensus": 46.18243411,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -13028,24 +13031,6 @@
         "espn"
       ]
     },
-    "cowboys dst": {
-      "name": "Cowboys D/ST",
-      "pos": "DST",
-      "team": "DAL",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 39.11012864,
-        "consensus": 39.11012864,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "chargers dst": {
       "name": "Chargers D/ST",
       "pos": "DST",
@@ -13058,6 +13043,24 @@
       "ros": {
         "espn": 32.48836802,
         "consensus": 32.48836802,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "cowboys dst": {
+      "name": "Cowboys D/ST",
+      "pos": "DST",
+      "team": "DAL",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 39.11012864,
+        "consensus": 39.11012864,
         "variance": 0
       },
       "sources_used": [
@@ -13477,24 +13480,6 @@
         "sleeper"
       ]
     },
-    "cardinals dst": {
-      "name": "Cardinals D/ST",
-      "pos": "DST",
-      "team": "ARI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 36.04910208,
-        "consensus": 36.04910208,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "riley patterson": {
       "name": "Riley Patterson",
       "pos": "K",
@@ -13513,6 +13498,24 @@
       },
       "sources_used": [
         "sleeper",
+        "espn"
+      ]
+    },
+    "cardinals dst": {
+      "name": "Cardinals D/ST",
+      "pos": "DST",
+      "team": "ARI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 36.04910208,
+        "consensus": 36.04910208,
+        "variance": 0
+      },
+      "sources_used": [
         "espn"
       ]
     },
