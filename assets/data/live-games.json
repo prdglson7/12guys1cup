@@ -1,61 +1,9 @@
 {
-  "fetched_at": "2026-11-17T10:25:59.714Z",
+  "fetched_at": "2026-11-17T20:42:06.702Z",
   "season": 2026,
   "week": 10,
   "game_count": 14,
   "teams": {
-    "NYG": {
-      "10": {
-        "opp": "WAS",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 47,
-        "wind": 10,
-        "precip": null,
-        "kickoff": "2026-11-13T01:15Z"
-      }
-    },
-    "WAS": {
-      "10": {
-        "opp": "NYG",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 47,
-        "wind": 10,
-        "precip": null,
-        "kickoff": "2026-11-13T01:15Z"
-      }
-    },
-    "DET": {
-      "10": {
-        "opp": "NE",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-11-15T14:30Z"
-      }
-    },
-    "NE": {
-      "10": {
-        "opp": "DET",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-11-15T14:30Z"
-      }
-    },
     "ATL": {
       "10": {
         "opp": "KC",
@@ -66,7 +14,7 @@
         "temp": null,
         "wind": null,
         "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
+        "kickoff": "1993-01-31T23:30Z"
       }
     },
     "KC": {
@@ -79,7 +27,33 @@
         "temp": null,
         "wind": null,
         "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "CIN": {
+      "10": {
+        "opp": "PIT",
+        "home": true,
+        "spread": null,
+        "total": null,
+        "roof": "outdoors",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "PIT": {
+      "10": {
+        "opp": "CIN",
+        "home": false,
+        "spread": null,
+        "total": null,
+        "roof": "outdoors",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
       }
     },
     "CLE": {
@@ -89,10 +63,10 @@
         "spread": null,
         "total": null,
         "roof": "outdoors",
-        "temp": 46,
-        "wind": 12,
+        "temp": null,
+        "wind": null,
         "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
+        "kickoff": "1993-01-31T23:30Z"
       }
     },
     "HOU": {
@@ -102,192 +76,10 @@
         "spread": null,
         "total": null,
         "roof": "outdoors",
-        "temp": 46,
-        "wind": 12,
-        "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
-      }
-    },
-    "GB": {
-      "10": {
-        "opp": "MIN",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 37,
-        "wind": 1,
-        "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
-      }
-    },
-    "MIN": {
-      "10": {
-        "opp": "GB",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 37,
-        "wind": 1,
-        "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
-      }
-    },
-    "TEN": {
-      "10": {
-        "opp": "JAX",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 48,
-        "wind": 3,
-        "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
-      }
-    },
-    "JAX": {
-      "10": {
-        "opp": "TEN",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 48,
-        "wind": 3,
-        "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
-      }
-    },
-    "IND": {
-      "10": {
-        "opp": "MIA",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "closed",
         "temp": null,
         "wind": null,
         "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
-      }
-    },
-    "MIA": {
-      "10": {
-        "opp": "IND",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "closed",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
-      }
-    },
-    "NO": {
-      "10": {
-        "opp": "CAR",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
-      }
-    },
-    "CAR": {
-      "10": {
-        "opp": "NO",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
-      }
-    },
-    "NYJ": {
-      "10": {
-        "opp": "BUF",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 46,
-        "wind": 7,
-        "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
-      }
-    },
-    "BUF": {
-      "10": {
-        "opp": "NYJ",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "outdoors",
-        "temp": 46,
-        "wind": 7,
-        "precip": null,
-        "kickoff": "2026-11-15T18:00Z"
-      }
-    },
-    "LV": {
-      "10": {
-        "opp": "SEA",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-11-15T21:05Z"
-      }
-    },
-    "SEA": {
-      "10": {
-        "opp": "LV",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "dome",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-11-15T21:05Z"
-      }
-    },
-    "ARI": {
-      "10": {
-        "opp": "LAR",
-        "home": true,
-        "spread": null,
-        "total": null,
-        "roof": "closed",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-11-15T21:05Z"
-      }
-    },
-    "LAR": {
-      "10": {
-        "opp": "ARI",
-        "home": false,
-        "spread": null,
-        "total": null,
-        "roof": "closed",
-        "temp": null,
-        "wind": null,
-        "precip": null,
-        "kickoff": "2026-11-15T21:05Z"
+        "kickoff": "1993-01-31T23:30Z"
       }
     },
     "DAL": {
@@ -300,7 +92,7 @@
         "temp": null,
         "wind": null,
         "precip": null,
-        "kickoff": "2026-11-15T21:25Z"
+        "kickoff": "1993-01-31T23:30Z"
       }
     },
     "SF": {
@@ -313,33 +105,241 @@
         "temp": null,
         "wind": null,
         "precip": null,
-        "kickoff": "2026-11-15T21:25Z"
+        "kickoff": "1993-01-31T23:30Z"
       }
     },
-    "CIN": {
+    "DET": {
       "10": {
-        "opp": "PIT",
+        "opp": "NE",
+        "home": true,
+        "spread": null,
+        "total": null,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "NE": {
+      "10": {
+        "opp": "DET",
+        "home": false,
+        "spread": null,
+        "total": null,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "GB": {
+      "10": {
+        "opp": "MIN",
         "home": true,
         "spread": null,
         "total": null,
         "roof": "outdoors",
-        "temp": 35,
-        "wind": 2,
+        "temp": null,
+        "wind": null,
         "precip": null,
-        "kickoff": "2026-11-16T01:20Z"
+        "kickoff": "1993-01-31T23:30Z"
       }
     },
-    "PIT": {
+    "MIN": {
       "10": {
-        "opp": "CIN",
+        "opp": "GB",
         "home": false,
         "spread": null,
         "total": null,
         "roof": "outdoors",
-        "temp": 35,
-        "wind": 2,
+        "temp": null,
+        "wind": null,
         "precip": null,
-        "kickoff": "2026-11-16T01:20Z"
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "TEN": {
+      "10": {
+        "opp": "JAX",
+        "home": true,
+        "spread": null,
+        "total": null,
+        "roof": "outdoors",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "JAX": {
+      "10": {
+        "opp": "TEN",
+        "home": false,
+        "spread": null,
+        "total": null,
+        "roof": "outdoors",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "IND": {
+      "10": {
+        "opp": "MIA",
+        "home": true,
+        "spread": null,
+        "total": null,
+        "roof": "closed",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "MIA": {
+      "10": {
+        "opp": "IND",
+        "home": false,
+        "spread": null,
+        "total": null,
+        "roof": "closed",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "LV": {
+      "10": {
+        "opp": "SEA",
+        "home": true,
+        "spread": null,
+        "total": null,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "SEA": {
+      "10": {
+        "opp": "LV",
+        "home": false,
+        "spread": null,
+        "total": null,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "NO": {
+      "10": {
+        "opp": "CAR",
+        "home": true,
+        "spread": null,
+        "total": null,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "CAR": {
+      "10": {
+        "opp": "NO",
+        "home": false,
+        "spread": null,
+        "total": null,
+        "roof": "dome",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "NYG": {
+      "10": {
+        "opp": "WAS",
+        "home": true,
+        "spread": null,
+        "total": null,
+        "roof": "outdoors",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "WAS": {
+      "10": {
+        "opp": "NYG",
+        "home": false,
+        "spread": null,
+        "total": null,
+        "roof": "outdoors",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "NYJ": {
+      "10": {
+        "opp": "BUF",
+        "home": true,
+        "spread": null,
+        "total": null,
+        "roof": "outdoors",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "BUF": {
+      "10": {
+        "opp": "NYJ",
+        "home": false,
+        "spread": null,
+        "total": null,
+        "roof": "outdoors",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "ARI": {
+      "10": {
+        "opp": "LAR",
+        "home": true,
+        "spread": null,
+        "total": null,
+        "roof": "closed",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
+      }
+    },
+    "LAR": {
+      "10": {
+        "opp": "ARI",
+        "home": false,
+        "spread": null,
+        "total": null,
+        "roof": "closed",
+        "temp": null,
+        "wind": null,
+        "precip": null,
+        "kickoff": "1993-01-31T23:30Z"
       }
     },
     "BAL": {
@@ -349,10 +349,10 @@
         "spread": null,
         "total": null,
         "roof": "outdoors",
-        "temp": 39,
-        "wind": 4,
+        "temp": null,
+        "wind": null,
         "precip": null,
-        "kickoff": "2026-11-17T01:15Z"
+        "kickoff": "1993-01-31T23:30Z"
       }
     },
     "LAC": {
@@ -362,10 +362,10 @@
         "spread": null,
         "total": null,
         "roof": "outdoors",
-        "temp": 39,
-        "wind": 4,
+        "temp": null,
+        "wind": null,
         "precip": null,
-        "kickoff": "2026-11-17T01:15Z"
+        "kickoff": "1993-01-31T23:30Z"
       }
     }
   }
