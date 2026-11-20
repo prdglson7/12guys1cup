@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-20T09:42:08.454Z",
+  "fetched_at": "2026-11-20T18:20:03.575Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12365,6 +12365,24 @@
         "espn"
       ]
     },
+    "chiefs dst": {
+      "name": "Chiefs D/ST",
+      "pos": "DST",
+      "team": "KC",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 55.35147718,
+        "consensus": 55.35147718,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "tyler bass": {
       "name": "Tyler Bass",
       "pos": "K",
@@ -12404,24 +12422,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "chiefs dst": {
-      "name": "Chiefs D/ST",
-      "pos": "DST",
-      "team": "KC",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 55.35147718,
-        "consensus": 55.35147718,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -12752,6 +12752,27 @@
         "espn"
       ]
     },
+    "chase mclaughlin": {
+      "name": "Chase McLaughlin",
+      "pos": "K",
+      "team": "TB",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.23,
+        "consensus": 6.23,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 78.34669744,
+        "sleeper": 105,
+        "consensus": 92.1,
+        "variance": 0.145
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
     "patriots dst": {
       "name": "Patriots D/ST",
       "pos": "DST",
@@ -12788,24 +12809,21 @@
         "espn"
       ]
     },
-    "chase mclaughlin": {
-      "name": "Chase McLaughlin",
-      "pos": "K",
-      "team": "TB",
+    "jets dst": {
+      "name": "Jets D/ST",
+      "pos": "DST",
+      "team": "NYJ",
       "weekly": {
         "espn": null,
-        "sleeper": 6.23,
-        "consensus": 6.23,
-        "variance": 0
+        "consensus": null,
+        "variance": null
       },
       "ros": {
-        "espn": 78.34669744,
-        "sleeper": 105,
-        "consensus": 92.1,
-        "variance": 0.145
+        "espn": 40.96355459,
+        "consensus": 40.96355459,
+        "variance": 0
       },
       "sources_used": [
-        "sleeper",
         "espn"
       ]
     },
@@ -12827,24 +12845,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "jets dst": {
-      "name": "Jets D/ST",
-      "pos": "DST",
-      "team": "NYJ",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 40.96355459,
-        "consensus": 40.96355459,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -12986,24 +12986,6 @@
         "espn"
       ]
     },
-    "commanders dst": {
-      "name": "Commanders D/ST",
-      "pos": "DST",
-      "team": "WAS",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 34.17287626,
-        "consensus": 34.17287626,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "panthers dst": {
       "name": "Panthers D/ST",
       "pos": "DST",
@@ -13016,6 +12998,24 @@
       "ros": {
         "espn": 40.03150029,
         "consensus": 40.03150029,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "commanders dst": {
+      "name": "Commanders D/ST",
+      "pos": "DST",
+      "team": "WAS",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 34.17287626,
+        "consensus": 34.17287626,
         "variance": 0
       },
       "sources_used": [
@@ -13177,27 +13177,6 @@
         "espn"
       ]
     },
-    "andre szmyt": {
-      "name": "Andre Szmyt",
-      "pos": "K",
-      "team": "CLE",
-      "weekly": {
-        "espn": null,
-        "sleeper": 4.7,
-        "consensus": 4.7,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 68.99557073,
-        "sleeper": 90,
-        "consensus": 79.8,
-        "variance": 0.132
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "jake elliott": {
       "name": "Jake Elliott",
       "pos": "K",
@@ -13213,6 +13192,27 @@
         "sleeper": 90,
         "consensus": 67.7,
         "variance": 0.343
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "andre szmyt": {
+      "name": "Andre Szmyt",
+      "pos": "K",
+      "team": "CLE",
+      "weekly": {
+        "espn": null,
+        "sleeper": 4.7,
+        "consensus": 4.7,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 68.99557073,
+        "sleeper": 90,
+        "consensus": 79.8,
+        "variance": 0.132
       },
       "sources_used": [
         "sleeper",
@@ -14471,7 +14471,7 @@
     "pierre strong jr": {
       "name": "Pierre Strong Jr.",
       "pos": "RB",
-      "team": "GB",
+      "team": null,
       "weekly": {
         "consensus": null,
         "variance": null
