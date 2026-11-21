@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-21T17:06:40.680Z",
+  "fetched_at": "2026-11-21T22:47:33.129Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -3669,18 +3669,15 @@
       "team": "MIN",
       "weekly": {
         "fp": 0.18,
-        "espn": null,
         "consensus": 0.18,
         "variance": 0
       },
       "ros": {
-        "espn": 7.7546347,
-        "consensus": 7.7546347,
-        "variance": 0
+        "consensus": null,
+        "variance": null
       },
       "sources_used": [
-        "fp",
-        "espn"
+        "fp"
       ]
     },
     "josh williams": {
@@ -6900,19 +6897,22 @@
       "team": "LAR",
       "weekly": {
         "fp": 1.54,
+        "espn": null,
         "sleeper": 1.7,
         "consensus": 1.6,
         "variance": 0.049
       },
       "ros": {
         "fp": 25.72,
+        "espn": 1.69228331,
         "sleeper": 24.1,
-        "consensus": 25,
-        "variance": 0.033
+        "consensus": 17.8,
+        "variance": 0.639
       },
       "sources_used": [
         "fp",
-        "sleeper"
+        "sleeper",
+        "espn"
       ]
     },
     "montorie foster jr": {
@@ -10917,7 +10917,7 @@
     "brandin cooks": {
       "name": "Brandin Cooks",
       "pos": "WR",
-      "team": "SF",
+      "team": "FA",
       "weekly": {
         "consensus": null,
         "variance": null
@@ -13195,6 +13195,26 @@
         "espn"
       ]
     },
+    "joe milton": {
+      "name": "Joe Milton",
+      "pos": "QB",
+      "team": "PHI",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 105.36034721,
+        "sleeper": 12.4,
+        "consensus": 57.6,
+        "variance": 0.789
+      },
+      "sources_used": [
+        "espn",
+        "sleeper"
+      ]
+    },
     "andre szmyt": {
       "name": "Andre Szmyt",
       "pos": "K",
@@ -13214,26 +13234,6 @@
       "sources_used": [
         "sleeper",
         "espn"
-      ]
-    },
-    "joe milton": {
-      "name": "Joe Milton",
-      "pos": "QB",
-      "team": "PHI",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 105.36034721,
-        "sleeper": 12.4,
-        "consensus": 57.6,
-        "variance": 0.789
-      },
-      "sources_used": [
-        "espn",
-        "sleeper"
       ]
     },
     "raiders dst": {
@@ -13474,7 +13474,7 @@
     "daniel carlson": {
       "name": "Daniel Carlson",
       "pos": "K",
-      "team": null,
+      "team": "MIA",
       "weekly": {
         "espn": null,
         "sleeper": 6.27,
@@ -14488,7 +14488,7 @@
     "pierre strong jr": {
       "name": "Pierre Strong Jr.",
       "pos": "RB",
-      "team": null,
+      "team": "GB",
       "weekly": {
         "consensus": null,
         "variance": null
