@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-21T01:05:52.642Z",
+  "fetched_at": "2026-11-21T09:13:48.752Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -12752,6 +12752,24 @@
         "espn"
       ]
     },
+    "jets dst": {
+      "name": "Jets D/ST",
+      "pos": "DST",
+      "team": "NYJ",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 41.48840746,
+        "consensus": 41.48840746,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "dominic zvada": {
       "name": "Dominic Zvada",
       "pos": "K",
@@ -12770,24 +12788,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "jets dst": {
-      "name": "Jets D/ST",
-      "pos": "DST",
-      "team": "NYJ",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 41.48840746,
-        "consensus": 41.48840746,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
@@ -13555,24 +13555,6 @@
         "sleeper"
       ]
     },
-    "khalil herbert": {
-      "name": "Khalil Herbert",
-      "pos": "RB",
-      "team": "ATL",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 25.64351733,
-        "consensus": 25.64351733,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "josh johnson": {
       "name": "Josh Johnson",
       "pos": "QB",
@@ -13591,6 +13573,24 @@
       "sources_used": [
         "espn",
         "sleeper"
+      ]
+    },
+    "khalil herbert": {
+      "name": "Khalil Herbert",
+      "pos": "RB",
+      "team": "ATL",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 25.64351733,
+        "consensus": 25.64351733,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
       ]
     },
     "jake moody": {
