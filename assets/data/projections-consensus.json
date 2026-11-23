@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-22T21:32:56.383Z",
+  "fetched_at": "2026-11-23T02:14:46.912Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -3666,15 +3666,18 @@
       "team": "MIN",
       "weekly": {
         "fp": 0.18,
+        "espn": null,
         "consensus": 0.18,
         "variance": 0
       },
       "ros": {
-        "consensus": null,
-        "variance": null
+        "espn": 7.75495523,
+        "consensus": 7.75495523,
+        "variance": 0
       },
       "sources_used": [
-        "fp"
+        "fp",
+        "espn"
       ]
     },
     "josh williams": {
@@ -7599,22 +7602,19 @@
       "team": "HOU",
       "weekly": {
         "fp": 0.05,
-        "espn": null,
         "sleeper": 0.13,
         "consensus": 0.1,
         "variance": 0.444
       },
       "ros": {
         "fp": 4.81,
-        "espn": 0.97856656,
         "sleeper": 0.6,
-        "consensus": 2.2,
-        "variance": 0.893
+        "consensus": 2.8,
+        "variance": 0.778
       },
       "sources_used": [
         "fp",
-        "sleeper",
-        "espn"
+        "sleeper"
       ]
     },
     "myles price": {
@@ -12683,24 +12683,6 @@
         "espn"
       ]
     },
-    "buccaneers dst": {
-      "name": "Buccaneers D/ST",
-      "pos": "DST",
-      "team": "TB",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 54.89554923,
-        "consensus": 54.89554923,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "bengals dst": {
       "name": "Bengals D/ST",
       "pos": "DST",
@@ -12713,6 +12695,24 @@
       "ros": {
         "espn": 47.02144849,
         "consensus": 47.02144849,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "buccaneers dst": {
+      "name": "Buccaneers D/ST",
+      "pos": "DST",
+      "team": "TB",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 54.89554923,
+        "consensus": 54.89554923,
         "variance": 0
       },
       "sources_used": [
@@ -12761,27 +12761,6 @@
         "espn"
       ]
     },
-    "dominic zvada": {
-      "name": "Dominic Zvada",
-      "pos": "K",
-      "team": "NYG",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.21,
-        "consensus": 6.21,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 74.95884953,
-        "sleeper": 68,
-        "consensus": 71.4,
-        "variance": 0.049
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "eddy pineiro": {
       "name": "Eddy Pineiro",
       "pos": "K",
@@ -12797,6 +12776,27 @@
         "sleeper": 101,
         "consensus": 80.5,
         "variance": 0.264
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "dominic zvada": {
+      "name": "Dominic Zvada",
+      "pos": "K",
+      "team": "NYG",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.21,
+        "consensus": 6.21,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 74.95884953,
+        "sleeper": 68,
+        "consensus": 71.4,
+        "variance": 0.049
       },
       "sources_used": [
         "sleeper",
@@ -12896,27 +12896,6 @@
         "espn"
       ]
     },
-    "jason sanders": {
-      "name": "Jason Sanders",
-      "pos": "K",
-      "team": "NYJ",
-      "weekly": {
-        "espn": null,
-        "sleeper": 5.55,
-        "consensus": 5.55,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 66.42485485,
-        "sleeper": 92,
-        "consensus": 79.6,
-        "variance": 0.161
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "evan mcpherson": {
       "name": "Evan McPherson",
       "pos": "K",
@@ -12932,6 +12911,27 @@
         "sleeper": 106,
         "consensus": 86.8,
         "variance": 0.23
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "jason sanders": {
+      "name": "Jason Sanders",
+      "pos": "K",
+      "team": "NYJ",
+      "weekly": {
+        "espn": null,
+        "sleeper": 5.55,
+        "consensus": 5.55,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 66.42485485,
+        "sleeper": 92,
+        "consensus": 79.6,
+        "variance": 0.161
       },
       "sources_used": [
         "sleeper",
