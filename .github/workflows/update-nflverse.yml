@@ -52,6 +52,12 @@ jobs:
         # route-participation files are available for the join.
         run: python .github/scripts/fetch-film-room.py
 
+      - name: Build Playoff Schedule-of-Strength (W15-17)
+        # Reads def-vs-pos.json (just refreshed above) + pulls 2026 schedule.
+        run: python .github/scripts/fetch-playoff-sos.py
+        env:
+          NFL_SEASON: "2026"
+
       - name: Commit + push updated files
         run: |
           git config user.name  "github-actions[bot]"
