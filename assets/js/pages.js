@@ -6887,13 +6887,188 @@ async function renderFilmRoom() {
   }
 }
 
+/* ============================================================
+   PLAYOFF SCHEDULE RANKINGS (W15-17 strength of schedule)
+   Paste this block anywhere inside the pages.js IIFE, BEFORE the
+   final `window.Pages = { ... }` line, then add `renderPlayoffSoS`
+   to the exports.
+   Data source: assets/data/nflverse/playoff-sos.json
+   ============================================================ */
+
+/* Tier buckets by rank (1 = best playoff schedule) */
+function psosTier(rank) {
+  if (rank <= 3)  return { label: 'Elite',  cls: 'psos-tier-elite'  };
+  if (rank <= 8)  return { label: 'Strong', cls: 'psos-tier-strong' };
+  if (rank <= 16) return { label: 'Mid',    cls: 'psos-tier-mid'    };
+  if (rank <= 24) return { label: 'Tough',  cls: 'psos-tier-tough'  };
+  return             { label: 'Avoid',  cls: 'psos-tier-avoid' };
+}
+
+/* Opponent chip for offensive positions (QB/RB/WR/TE) */
+function psosOppChipOff(o) {
+  // Higher DVP rank = softer defense = green
+  const r = o.dvp_rank;
+  let cls = 'opp-mid';
+  if (r >= 24) cls = 'opp-soft';
+  else if (r >= 17) cls = 'opp-okay';
+  else if (r >= 9)  cls = 'opp-tough';
+  else              cls = 'opp-brick';
+  return `<span class="opp-chip ${cls}" title="Allows ${o.avg_allowed} FP/g — rank #${r}">
+    W${o.wk} <b>${o.opp}</b> <em>#${r}</em>
+  </span>`;
+}
+
+/* Opponent chip for DST (lower opp PPG = better DST matchup) */
+function psosOppChipDst(o) {
+  const p = o.opp_ppg;
+  let cls = 'opp-mid';
+  if (p <= 19) cls = 'opp-soft';
+  else if (p <= 22) cls = 'opp-okay';
+  else if (p <= 26) cls = 'opp-tough';
+  else cls = 'opp-brick';
+  return `<span class="opp-chip ${cls}" title="Opponent scores ${p} PPG">
+    W${o.wk} <b>${o.opp}</b> <em>${p}</em>
+  </span>`;
+}
+
+function renderPlayoffSoSTable(pos, rows) {
+  const isDst = (pos === 'DST');
+  const chip  = isDst ? psosOppChipDst : psosOppChipOff;
+  const metricHdr = isDst ? 'Avg opp PPG (lower = better)' : 'Avg FP allowed to pos (higher = better)';
+
+  const body = rows.map(r => {
+    const tier = psosTier(r.rank);
+    const opps = r.opponents.map(chip).join('');
+    const metric = isDst ? r.avg_opp_ppg : r.avg_opp_allowed;
+    return `
+      <tr>
+        <td class="psos-rk"><span class="psos-rank-pill">${r.rank}</span></td>
+        <td class="psos-team"><b>${r.team}</b> <span class="psos-tier ${tier.cls}">${tier.label}</span></td>
+        <td class="psos-opps">${opps}</td>
+        <td class="psos-metric">${metric}</td>
+      </tr>`;
+  }).join('');
+
+  return `
+    <table class="psos-table">
+      <thead>
+        <tr>
+          <th style="width:48px">#</th>
+          <th>Team</th>
+          <th>Playoff slate (W15 · W16 · W17)</th>
+          <th style="width:140px" class="psos-metric-hdr">${metricHdr}</th>
+        </tr>
+      </thead>
+      <tbody>${body}</tbody>
+    </table>`;
+}
+
+async function renderPlayoffSoS() {
+  const el = document.getElementById('playoff-sos');
+  if (!el) return;
+  el.innerHTML = UI.loading('Loading playoff schedule rankings…');
+
+  let data;
+  try {
+    const res = await fetch('assets/data/nflverse/playoff-sos.json', { cache: 'default' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    data = await res.json();
+  } catch (e) {
+    el.innerHTML = UI.errBox(`Could not load playoff-sos.json — ${e.message}`);
+    return;
+  }
+
+  const positions = ['QB', 'RB', 'WR', 'TE', 'DST'];
+  const tabsHtml = positions.map((p, i) =>
+    `<button class="psos-tab ${i===0?'active':''}" data-pos="${p}">${p}</button>`
+  ).join('');
+
+  const panelsHtml = positions.map((p, i) => {
+    const rows = (data.by_position[p] || []).slice(0, 10);
+    const bottom = (data.by_position[p] || []).slice(-5).reverse();
+    return `
+      <div class="psos-panel ${i===0?'active':''}" data-pos="${p}">
+        <h3 class="psos-section-hdr">
+          <span class="psos-section-dot psos-dot-good"></span>
+          Top 10 easiest ${p} playoff schedules
+        </h3>
+        ${renderPlayoffSoSTable(p, rows)}
+
+        <h3 class="psos-section-hdr psos-section-hdr-bad">
+          <span class="psos-section-dot psos-dot-bad"></span>
+          Toughest 5 — avoid starting ${p} from these teams in the playoffs
+        </h3>
+        ${renderPlayoffSoSTable(p, bottom)}
+      </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="psos-header">
+      <div class="psos-meta">
+        <span class="psos-badge">Season ${data.season}</span>
+        <span class="psos-badge">Through W${data.through_week}</span>
+        <span class="psos-badge">Playoff Weeks ${data.playoff_weeks.join('–')}</span>
+      </div>
+      <div class="psos-legend">
+        <span class="psos-tier psos-tier-elite">Elite (1-3)</span>
+        <span class="psos-tier psos-tier-strong">Strong (4-8)</span>
+        <span class="psos-tier psos-tier-mid">Mid (9-16)</span>
+        <span class="psos-tier psos-tier-tough">Tough (17-24)</span>
+        <span class="psos-tier psos-tier-avoid">Avoid (25-32)</span>
+      </div>
+    </div>
+
+    <div class="psos-tabs">${tabsHtml}</div>
+    <div class="psos-panels">${panelsHtml}</div>
+
+    <details class="psos-method">
+      <summary>How this is calculated</summary>
+      <div class="psos-method-body">
+        <p><b>Offense (QB / RB / WR / TE)</b> — For each playoff week, we look at the position's
+        average fantasy points allowed by your opponent defense, then rank defenses 1 (toughest)
+        to 32 (softest). Each matchup contributes a "softness score" of (33 &minus; opponent rank).
+        We sum those three scores for W15, W16, W17 and rank all 32 teams. Lower-numbered opponent
+        ranks are harder; the easiest playoff slate gets rank #1.</p>
+        <p><b>DST</b> — Fantasy defenses score most of their points against bad offenses: they get
+        sacks, picks, short fields, and fewer points allowed. So we rank by the <em>average points
+        per game scored</em> by the three playoff opponents — the lower, the better. #1 DST slate
+        plays the three worst offenses in the league during championship weeks.</p>
+        <p><b>Updates</b> — Numbers refresh automatically every Tuesday and Thursday during the
+        season, right after nflverse's weekly stats land. Opponent defenses update continuously as
+        the season goes on, so rankings move around through Week 14.</p>
+        <p><b>Caveats</b> — Season-long DVP is the main signal. Late-season weighting (last 4 weeks
+        at 1.5x) is a planned upgrade. We don't currently fold in Vegas totals, home/away, weather,
+        or opposing-team injuries — those are useful overlays but noisy. Use these rankings as the
+        first-pass filter for championship-week trades, stashes, and FAAB.</p>
+      </div>
+    </details>
+  `;
+
+  // Tab wiring
+  el.querySelectorAll('.psos-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pos = btn.dataset.pos;
+      el.querySelectorAll('.psos-tab').forEach(b => b.classList.toggle('active', b === btn));
+      el.querySelectorAll('.psos-panel').forEach(p =>
+        p.classList.toggle('active', p.dataset.pos === pos)
+      );
+    });
+  });
+}
+
+/* ============================================================
+   REMEMBER: add renderPlayoffSoS to the window.Pages = {...} export
+   at the bottom of pages.js (next to renderFilmRoom).
+   ============================================================ */
+
+
 window.Pages = {
   renderHome, renderMatchups, renderStandings, renderNews,
   renderTransactions, renderHistory,
   renderWire, renderTrending, renderInsiders,
   renderInjuries, renderInjuriesWidget,
   renderDraftKit, renderDues, renderTools, renderWaiver, renderShame,
-  renderFilmRoom,
+  renderFilmRoom, renderPlayoffSoS,
 };
 
 })();
