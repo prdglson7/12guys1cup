@@ -4,19 +4,21 @@ fetch-playoff-sos.py — Build Playoff Schedule-of-Strength rankings for Weeks 1
 
 Inputs (all already produced by fetch-nflverse.py):
   assets/data/nflverse/def-vs-pos.json   — per-defense avg fantasy pts allowed to QB/RB/WR/TE
-  (schedule pulled live from nflverse/nfldata)
 
 Output:
   assets/data/nflverse/playoff-sos.json
 
-Methodology (see site "How this is calculated" panel):
+Methodology:
+  DVP rank 1 = toughest defense (allows LEAST FP to position)
+  DVP rank 32 = softest defense (allows MOST FP to position)
+
   Offense positions (QB/RB/WR/TE):
-    softness_i = 33 - opp_DVP_rank_i      # 32 = softest opponent, 1 = toughest
-    team_total = sum(softness) across W15, W16, W17
-    Rank teams 1..32 by team_total (desc)
+    team score = avg FP that W15, W16, W17 opponent defenses allow to the position
+    Rank teams 1..32 by that score DESC (higher = easier playoff schedule)
+
   DST:
-    use opponent PPG (team points scored) — lower = better DST matchup
-    Rank teams 1..32 by sum(opp_PPG) asc
+    team score = avg PPG scored by W15, W16, W17 opponent OFFENSES
+    Rank teams 1..32 by that score ASC (lower = easier DST playoff schedule)
 """
 import csv, io, json, os, sys, urllib.request
 from collections import defaultdict
@@ -89,25 +91,25 @@ def main():
         for team, matches in sched.items():
             opps = []
             total_allowed = 0.0
-            total_softness = 0
             n = 0
             for wk in PLAYOFF_WEEKS:
                 opp = matches.get(wk)
                 if not opp or opp not in allowed: continue
-                a = allowed[opp]; r = rank_of[opp]
-                opps.append({"wk": wk, "opp": opp, "dvp_rank": r, "avg_allowed": a, "softness": 33 - r})
+                a = allowed[opp]; rk = rank_of[opp]
+                # softness = rank itself (higher rank = softer defense = easier matchup)
+                opps.append({"wk": wk, "opp": opp, "dvp_rank": rk, "avg_allowed": a, "softness": rk})
                 total_allowed += a
-                total_softness += (33 - r)
                 n += 1
             if n == 0: continue
             scores.append({
                 "team": team,
                 "avg_opp_allowed": round(total_allowed / n, 2),
-                "softness_total": total_softness,
+                "softness_total": sum(o["softness"] for o in opps),
                 "games": n,
                 "opponents": opps,
             })
-        scores.sort(key=lambda x: -x["softness_total"])
+        # Sort by avg_opp_allowed DESC (higher FP allowed by opponents = easier for the offense)
+        scores.sort(key=lambda x: -x["avg_opp_allowed"])
         for i, s in enumerate(scores, 1): s["rank"] = i
         out["by_position"][pos] = scores
 
