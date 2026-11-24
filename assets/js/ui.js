@@ -11,6 +11,7 @@ const NAV = [
   { href: "tools.html",        label: "Tools" },
   { href: "waiver.html",       label: "Waivers" },
   { href: "film-room.html",    label: "Film Room" },
+  { href: "playoff-sos.html", label: "Playoff SoS" },
   { href: "injuries.html",     label: "Injuries" },
   { href: "news.html",         label: "News" },
   { href: "transactions.html", label: "Moves" },
