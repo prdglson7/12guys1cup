@@ -4567,3 +4567,135 @@ main { padding: 32px 0 60px; }
   .report-table th, .report-table td { padding: 7px 6px; font-size: 11px; }
   .report-table th { font-size: 9px; }
 }
+/* ============================================================
+   PLAYOFF SCHEDULE RANKINGS — append to the end of styles.css
+   ============================================================ */
+
+#playoff-sos { margin-top: 4px; }
+
+.psos-header {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  justify-content: space-between; align-items: center;
+  padding: 10px 14px; margin-bottom: 14px;
+  background: var(--panel, #fffaf0);
+  border: 2px solid var(--line, #1a2440);
+  border-radius: 10px;
+}
+.psos-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.psos-badge {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: .06em;
+  background: var(--navy, #1a2440);
+  color: var(--cream, #fffaf0);
+  padding: 4px 10px; border-radius: 6px; font-size: 13px;
+}
+.psos-legend { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.psos-tier {
+  display: inline-block;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: .05em;
+  padding: 2px 8px; border-radius: 4px; font-size: 12px;
+  margin-left: 4px;
+}
+.psos-tier-elite  { background: #0b7a3e; color: #fff; }
+.psos-tier-strong { background: #4ba35a; color: #fff; }
+.psos-tier-mid    { background: #e8b64c; color: #1a2440; }
+.psos-tier-tough  { background: #d26a3a; color: #fff; }
+.psos-tier-avoid  { background: #a3242a; color: #fff; }
+
+.psos-tabs {
+  display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.psos-tab {
+  font-family: 'Alfa Slab One', serif;
+  font-size: 15px; letter-spacing: .04em;
+  padding: 8px 18px; border: 2px solid var(--navy, #1a2440);
+  background: var(--cream, #fffaf0); color: var(--navy, #1a2440);
+  cursor: pointer; border-radius: 8px;
+  transition: all .15s;
+}
+.psos-tab:hover { background: #fde9b6; }
+.psos-tab.active {
+  background: var(--navy, #1a2440); color: var(--gold, #e8b64c);
+}
+
+.psos-panel { display: none; }
+.psos-panel.active { display: block; }
+
+.psos-section-hdr {
+  font-family: 'Alfa Slab One', serif;
+  font-size: 16px; margin: 18px 0 8px;
+  display: flex; align-items: center; gap: 10px;
+  color: var(--navy, #1a2440);
+}
+.psos-section-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.psos-dot-good { background: #0b7a3e; box-shadow: 0 0 0 3px rgba(11,122,62,.18); }
+.psos-dot-bad  { background: #a3242a; box-shadow: 0 0 0 3px rgba(163,36,42,.18); }
+.psos-section-hdr-bad { color: #7a1c20; }
+
+.psos-table {
+  width: 100%; border-collapse: collapse;
+  background: var(--panel, #fffaf0);
+  border: 2px solid var(--line, #1a2440);
+  border-radius: 10px; overflow: hidden;
+  margin-bottom: 8px;
+}
+.psos-table thead th {
+  background: var(--navy, #1a2440); color: var(--gold, #e8b64c);
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: .06em; text-align: left;
+  padding: 10px 12px; font-size: 14px;
+}
+.psos-table tbody td {
+  padding: 10px 12px; border-top: 1px solid rgba(26,36,64,.14);
+  vertical-align: middle; font-size: 14px;
+}
+.psos-table tbody tr:nth-child(odd) { background: rgba(26,36,64,.04); }
+
+.psos-rank-pill {
+  display: inline-block;
+  font-family: 'Alfa Slab One', serif;
+  background: var(--gold, #e8b64c); color: var(--navy, #1a2440);
+  min-width: 30px; text-align: center;
+  padding: 3px 8px; border-radius: 6px;
+  border: 2px solid var(--navy, #1a2440);
+}
+.psos-team { font-family: 'Bebas Neue', sans-serif; letter-spacing: .04em; font-size: 16px; }
+.psos-metric { font-family: 'Bebas Neue', sans-serif; letter-spacing: .04em; text-align: right; }
+.psos-metric-hdr { text-align: right; }
+
+.psos-opps { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 12px !important; }
+.opp-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: 'Bebas Neue', sans-serif; letter-spacing: .04em;
+  padding: 4px 8px; border-radius: 6px; font-size: 13px;
+  border: 1.5px solid rgba(0,0,0,.12);
+}
+.opp-chip b { font-family: 'Alfa Slab One', serif; font-size: 12px; }
+.opp-chip em { font-style: normal; opacity: .75; font-size: 11px; }
+.opp-soft  { background: #d9efdb; color: #0b4d26; }
+.opp-okay  { background: #f0eac3; color: #5a4a0f; }
+.opp-mid   { background: #f0e1cf; color: #5a2e0f; }
+.opp-tough { background: #f4d2bd; color: #6b2a0e; }
+.opp-brick { background: #f0c6c6; color: #611418; }
+
+.psos-method {
+  margin-top: 20px;
+  background: var(--panel, #fffaf0);
+  border: 2px solid var(--line, #1a2440);
+  border-radius: 10px; padding: 12px 16px;
+}
+.psos-method summary {
+  cursor: pointer; font-family: 'Alfa Slab One', serif;
+  font-size: 15px; color: var(--navy, #1a2440);
+}
+.psos-method-body { margin-top: 10px; }
+.psos-method-body p { margin: 8px 0; line-height: 1.5; }
+
+@media (max-width: 720px) {
+  .psos-table thead th:nth-child(4),
+  .psos-table tbody td:nth-child(4) { display: none; }
+  .psos-opps { gap: 4px; }
+  .opp-chip { font-size: 12px; padding: 3px 6px; }
+}
