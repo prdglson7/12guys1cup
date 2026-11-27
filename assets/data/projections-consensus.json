@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-26T22:48:57.927Z",
+  "fetched_at": "2026-11-27T06:51:56.487Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -11531,16 +11531,19 @@
       "pos": "WR",
       "team": "NYG",
       "weekly": {
+        "espn": null,
         "consensus": null,
         "variance": null
       },
       "ros": {
         "fp": 8.8,
-        "consensus": 8.8,
-        "variance": 0
+        "espn": 1.16185487,
+        "consensus": 5.3,
+        "variance": 0.767
       },
       "sources_used": [
-        "fp"
+        "fp",
+        "espn"
       ]
     },
     "keshawn williams": {
@@ -12448,24 +12451,6 @@
         "espn"
       ]
     },
-    "chiefs dst": {
-      "name": "Chiefs D/ST",
-      "pos": "DST",
-      "team": "KC",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 48.10664244,
-        "consensus": 48.10664244,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
     "ers dst": {
       "name": "49ers D/ST",
       "pos": "DST",
@@ -12478,6 +12463,24 @@
       "ros": {
         "espn": 53.68244133,
         "consensus": 53.68244133,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
+    "chiefs dst": {
+      "name": "Chiefs D/ST",
+      "pos": "DST",
+      "team": "KC",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 48.10664244,
+        "consensus": 48.10664244,
         "variance": 0
       },
       "sources_used": [
@@ -12580,27 +12583,6 @@
         "espn"
       ]
     },
-    "jason myers": {
-      "name": "Jason Myers",
-      "pos": "K",
-      "team": "SEA",
-      "weekly": {
-        "espn": null,
-        "sleeper": 6.9,
-        "consensus": 6.9,
-        "variance": 0
-      },
-      "ros": {
-        "espn": 53.56396452,
-        "sleeper": 111,
-        "consensus": 83.1,
-        "variance": 0.349
-      },
-      "sources_used": [
-        "sleeper",
-        "espn"
-      ]
-    },
     "jake bates": {
       "name": "Jake Bates",
       "pos": "K",
@@ -12616,6 +12598,27 @@
         "sleeper": 105,
         "consensus": 86.6,
         "variance": 0.22
+      },
+      "sources_used": [
+        "sleeper",
+        "espn"
+      ]
+    },
+    "jason myers": {
+      "name": "Jason Myers",
+      "pos": "K",
+      "team": "SEA",
+      "weekly": {
+        "espn": null,
+        "sleeper": 6.9,
+        "consensus": 6.9,
+        "variance": 0
+      },
+      "ros": {
+        "espn": 53.56396452,
+        "sleeper": 111,
+        "consensus": 83.1,
+        "variance": 0.349
       },
       "sources_used": [
         "sleeper",
@@ -12988,6 +12991,24 @@
         "espn"
       ]
     },
+    "cowboys dst": {
+      "name": "Cowboys D/ST",
+      "pos": "DST",
+      "team": "DAL",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 28.20684919,
+        "consensus": 28.20684919,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "chad ryland": {
       "name": "Chad Ryland",
       "pos": "K",
@@ -13006,24 +13027,6 @@
       },
       "sources_used": [
         "sleeper",
-        "espn"
-      ]
-    },
-    "cowboys dst": {
-      "name": "Cowboys D/ST",
-      "pos": "DST",
-      "team": "DAL",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 28.20684919,
-        "consensus": 28.20684919,
-        "variance": 0
-      },
-      "sources_used": [
         "espn"
       ]
     },
