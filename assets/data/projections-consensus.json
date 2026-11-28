@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-28T01:07:38.775Z",
+  "fetched_at": "2026-11-28T09:48:56.926Z",
   "season": 2026,
   "week": 1,
   "source_weights": {
@@ -13681,6 +13681,24 @@
         "espn"
       ]
     },
+    "dj uiagalelei": {
+      "name": "DJ Uiagalelei",
+      "pos": "QB",
+      "team": "LAC",
+      "weekly": {
+        "espn": null,
+        "consensus": null,
+        "variance": null
+      },
+      "ros": {
+        "espn": 13.04635452,
+        "consensus": 13.04635452,
+        "variance": 0
+      },
+      "sources_used": [
+        "espn"
+      ]
+    },
     "jake moody": {
       "name": "Jake Moody",
       "pos": "K",
@@ -13713,24 +13731,6 @@
       "ros": {
         "espn": 0.31330748,
         "consensus": 0.31330748,
-        "variance": 0
-      },
-      "sources_used": [
-        "espn"
-      ]
-    },
-    "dj uiagalelei": {
-      "name": "DJ Uiagalelei",
-      "pos": "QB",
-      "team": "LAC",
-      "weekly": {
-        "espn": null,
-        "consensus": null,
-        "variance": null
-      },
-      "ros": {
-        "espn": 13.04635452,
-        "consensus": 13.04635452,
         "variance": 0
       },
       "sources_used": [
